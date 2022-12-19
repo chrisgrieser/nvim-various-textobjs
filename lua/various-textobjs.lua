@@ -194,9 +194,9 @@ function M.value(inner)
 	local comStrPattern = bo
 		.commentstring
 		:gsub(" ?%%s.*", "") -- remove placeholder and backside of commentstring
-		:gsub("(.)", "%%%1") -- escape commentstring so it's a valid lua pattern
+	comStrPattern = vim.pesc(comStrPattern)	
 
-	local isCommentLine = lineContent:find("%s*" .. comStrPattern)
+	local isCommentLine = lineContent:find("^%s*" .. comStrPattern)
 	if isCommentLine then return end
 
 	local ending, _ = lineContent:find(" ?" .. comStrPattern)
