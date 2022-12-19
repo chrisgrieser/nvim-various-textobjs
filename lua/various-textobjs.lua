@@ -191,10 +191,8 @@ function M.value(inner)
 	-- valueEnd either comment or end of line
 	---@diagnostic disable-next-line: assign-type-mismatch
 	local lineContent = fn.getline(row) ---@type string
-	local comStrPattern = bo
-		.commentstring
-		:gsub(" ?%%s.*", "") -- remove placeholder and backside of commentstring
-	comStrPattern = vim.pesc(comStrPattern)	
+	local comStrPattern = bo.commentstring:gsub(" ?%%s.*", "") -- remove placeholder and backside of commentstring
+	comStrPattern = vim.pesc(comStrPattern) -- escape lua pattern
 
 	local isCommentLine = lineContent:find("^%s*" .. comStrPattern)
 	if isCommentLine then return end
