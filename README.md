@@ -10,18 +10,18 @@ Bundle of about a dozen custom text objects for Neovim.
 <!--toc:end-->
 
 ## Text Objects included
-- `indentation`: Indentation text object. Similar to [vim-indent-object](https://github.com/michaeljsmith/vim-indent-object), but in written in lua.
-- `value`: Value of a key-value-pair, or the <!-- vale RedHat.TermsErrors = NO --> right-hand-side of a variable assignment. Looks for the first `:` or `=` in the line. Inner value excludes trailing comma or semicolon, outer value includes them. Always excludes trailing comments.\*
-- `number`: Number text object. Inner number excludes decimal points and minus sign, outer number includes them.\*
-- `diagnostic`: Diagnostic from the built-in LSP. Similar to [textobj-diagnostic.nvim](https://github.com/andrewferrier/textobj-diagnostic.nvim).\*
-- `subword`: like `iw`, but treating dashes and underscores always as word delimiters, regardless of the `iskeyword` option.
-- `nearEoL`: from cursor position to end of line minus 1 character. Useful to change everything except a trailing comma or semicolon.
-- `restOfParagraph`: like `}`, but linewise.
+- `.indentation(startBorder, endBorder)`: Indentation text object. Similar to [vim-indent-object](https://github.com/michaeljsmith/vim-indent-object), The two Boolean parameters determine whether the line in front is included (`aI` or `ai`). Setting both to `false` results in no border inclusion (`ii`).
+- `.value(inner)`: Value of a key-value-pair, or the <!-- vale RedHat.TermsErrors = NO --> right-hand-side of a variable assignment. Looks for the first `:` or `=` in the line. Inner value excludes trailing comma or semicolon, outer value includes them. Always excludes trailing comments.\*
+- `.number(inner)`: Number text object. Inner number excludes decimal points and minus sign, outer number includes them.\*
+- `.diagnostic()`: Diagnostic from the built-in LSP. Similar to [textobj-diagnostic.nvim](https://github.com/andrewferrier/textobj-diagnostic.nvim).\*
+- `.subword()`: like `iw`, but treating dashes and underscores always as word delimiters, regardless of the `iskeyword` option.
+- `.nearEoL()`: from cursor position to end of line minus 1 character. Useful to change everything except a trailing comma or semicolon.
+- `.restOfParagraph()`: like `}`, but linewise.
 
 __FileType specific__
-- `mdlink`: Markdown link like `[title](url)`. Inner link only includes the link title inside the `[]`.\*
-- `jsRegex`: JavaScript regex like `/exp/`. Inner regex excludes the surrounding `/`, outer regex includes them.\* 
-- `cssSelector`: CSS class selector like `.my-class`. Similar to `iw`, but does not treat `-` as word-delimiter, and only accepts words with leading `.` as selectors. Inner selector excludes the leading `.`, outer selector includes it.\*
+- `.mdlink(inner)`: Markdown link like `[title](url)`. Inner link only includes the link title inside the `[]`.\*
+- `.jsRegex(inner)`: JavaScript regex like `/exp/`. Inner regex excludes the surrounding `/`, outer regex includes them.\* 
+- `.cssSelector(inner)`: CSS class selector like `.my-class`. Similar to `iw`, but does not treat `-` as word-delimiter, and only accepts words with leading `.` as selectors. Inner selector excludes the leading `.`, outer selector includes it.\*
 
 > __Note__  
 > Text objects marked with `*` seek up to 5 lines forward if the cursor is not standing on the text object. (Number of lines can be configured.)
@@ -41,6 +41,16 @@ require("various-textobjs").setup {
 	lookForwardLines = 10,
 }
 ```
+
+The plugin comes without any default keybindings. Set any keybindings you want to have yourself. All parameters are Boolean.
+
+```lua
+-- example: `an` for outer number, `in` for inner number
+vim.keymap.set({"o", "x"}, "an", function () require("various-textobjs").number(false) end)
+vim.keymap.set({"o", "x"}, "in", function () require("various-textobjs").number(true) end)
+```
+
+
 
 ## Roadmap
 - [ ] Figure out how to make dot-repeatability work. (Pointers are welcome.)
