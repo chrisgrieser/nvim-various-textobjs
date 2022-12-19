@@ -4,13 +4,14 @@ Bundle of about a dozen custom text objects for Neovim.
 <!--toc:start-->
 - [Text Objects included](#text-objects-included)
 - [Installation and Setup](#installation-and-setup)
+- [Roadmap](#roadmap)
 - [Credits](#credits)
 - [About me](#about-me)
 <!--toc:end-->
 
 ## Text Objects included
 - `indentation`: Indentation text object. Similar to [vim-indent-object](https://github.com/michaeljsmith/vim-indent-object), but in written in lua.
-- `value`: Value of a key-value-pair, or the right-hand-side of a variable assignment. Looks for the first `:` or `=` in the line. Inner value excludes trailing comma or semicolon, outer value includes them. Always excludes trailing comments.\*
+- `value`: Value of a key-value-pair, or the <!-- vale RedHat.TermsErrors = NO --> right-hand-side of a variable assignment. Looks for the first `:` or `=` in the line. Inner value excludes trailing comma or semicolon, outer value includes them. Always excludes trailing comments.\*
 - `number`: Number text object. Inner number excludes decimal points and minus sign, outer number includes them.\*
 - `diagnostic`: Diagnostic from the built-in LSP. Similar to [textobj-diagnostic.nvim](https://github.com/andrewferrier/textobj-diagnostic.nvim).\*
 - `subword`: like `iw`, but treating dashes and underscores always as word delimiters, regardless of the `iskeyword` option.
@@ -42,7 +43,7 @@ require("various-textobjs").setup {
 ```
 
 ## Roadmap
-- [ ] Figure out how dot-repeatability works and implement it.
+- [ ] Figure out how to make dot-repeatability work. (Pointers are welcome.)
 
 ## Credits
 Thanks to the Valuable Dev for [their blogpost on how to get started with creating custom text objects](https://thevaluable.dev/vim-create-text-objects/).

@@ -90,6 +90,7 @@ local function seekForward(pattern, seekInStartRowBeforeCursor)
 end
 
 --------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 
 ---Subword (word with "-_" as delimiters)
 function M.subword()
