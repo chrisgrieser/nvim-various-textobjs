@@ -50,8 +50,6 @@ vim.keymap.set({"o", "x"}, "an", function () require("various-textobjs").number(
 vim.keymap.set({"o", "x"}, "in", function () require("various-textobjs").number(true) end)
 ```
 
-
-
 ## Roadmap
 - [ ] Figure out how to make dot-repeatability work. (Pointers are welcome.)
 
