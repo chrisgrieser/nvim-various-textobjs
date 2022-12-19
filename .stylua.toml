@@ -1,0 +1,5 @@
+indent_type = "Tabs"
+indent_width = 3
+quote_style = "AutoPreferDouble"
+call_parentheses = "NoSingleTable"
+collapse_simple_statement = "Always"
