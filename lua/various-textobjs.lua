@@ -8,7 +8,7 @@ local M = {}
 --------------------------------------------------------------------------------
 
 -- default value
-local lookForwardLines = 8
+local lookForwardLines = 5
 
 ---optional setup function
 ---@param opts table

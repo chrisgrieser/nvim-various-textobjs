@@ -41,6 +41,9 @@ require("various-textobjs").setup {
 }
 ```
 
+## Roadmap
+- [ ] Figure out how dot-repeatability works and implement it.
+
 ## Credits
 Thanks to the Valuable Dev for [their blogpost on how to get started with creating custom text objects](https://thevaluable.dev/vim-create-text-objects/).
 
