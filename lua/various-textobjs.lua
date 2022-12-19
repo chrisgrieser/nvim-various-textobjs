@@ -51,29 +51,35 @@ end
 
 ---seek forwards for pattern
 ---@param pattern string lua pattern
----@param seekInStartRowBeforeCursor? boolean Default: false
+---@param premove string normal commands to move back for detection of text obj under the cursor. Leave empty to search whole line.
 ---@return integer|nil line pattern was found, or nil if not found
 ---@return integer beginCol
 ---@return integer endCol
 ---@return string capture capture group from pattern (if provided)
-local function seekForward(pattern, seekInStartRowBeforeCursor)
-	local i = -1
-	local lineContent, hasPattern
+local function seekForward(pattern, premove)
+	local prevCursor = getCursor(0)
+	local startRow, startCol = unpack(prevCursor)
 	local lastLine = fn.line("$")
-	local startRow, startCol = unpack(getCursor(0))
-	if seekInStartRowBeforeCursor then startCol = 1 end
+
+	local lineContent, hasPattern
+	local i = -1
+
+	if premove == "" then
+		-- for first line, also search the whole line
+		startCol = 1
+	else
+		-- move to detect text objects cursor stands on
+		normal(premove)
+	end
 
 	repeat
 		i = i + 1
 		if i > 0 then startCol = 1 end -- after the current row, pattern can occur everywhere in the line
 		if i > lookForwardLines or startRow + i > lastLine then
 			local msg = "Textobject not found within " .. tostring(lookForwardLines) .. " lines."
-			if lookForwardLines == 1 then
-				msg = msg:gsub("s%.$", ".") -- no plural
-			elseif lookForwardLines == 0 then
-				msg = "No textobject found within the current line."
-			end
+			if lookForwardLines == 1 then msg = msg:gsub("s%.$", ".") end
 			vim.notify(msg, vim.log.levels.WARN)
+			setCursor(0, prevCursor) -- restore cursor position
 			return nil, 0, 0, "" -- not found return values
 		end
 		---@diagnostic disable-next-line: assign-type-mismatch
@@ -178,7 +184,7 @@ end
 function M.value(inner)
 	local pattern = "[^=:][=:] ?[^=:]"
 
-	local row, _, start = seekForward(pattern, true)
+	local row, _, start = seekForward(pattern, "") -- no premove, since searching full line
 	if not row then return end
 
 	-- valueEnd either comment or end of line
@@ -209,16 +215,10 @@ end
 ---number textobj
 ---@param inner boolean inner number (no decimal or minus-sign)
 function M.number(inner)
-	local pattern
-	if inner then
-		normal("lb") -- go to beginning of word
-		pattern = "%d+"
-	else
-		normal("lB")
-		pattern = "%-?%d*%.?%d+" -- number, including minus-sign and decimal point
-	end
+	local pattern = inner and "%d+" or "%-?%d*%.?%d+"
+	local premove = inner and "lb" or "lB"
 
-	local row, start, ending = seekForward(pattern)
+	local row, start, ending = seekForward(pattern, premove)
 	if not row then return end
 
 	setSelection(row, row, start, ending)
@@ -230,10 +230,10 @@ end
 ---md links textobj
 ---@param inner boolean inner or outer link
 function M.mdlink(inner)
-	normal("F[") -- go to beginning of link so it can be found when standing on it
+	local premove = "F["
 	local pattern = "(%b[])%b()"
 
-	local row, start, ending, barelink = seekForward(pattern)
+	local row, start, ending, barelink = seekForward(pattern, premove)
 	if not row then return end
 
 	if inner then ending = start + #barelink - 3 end
@@ -244,10 +244,10 @@ end
 ---JS Regex
 ---@param inner boolean inner regex
 function M.jsRegex(inner)
-	normal("F/") -- go to beginning of regex
+	local premove = "F/" -- go to beginning of regex
 	local pattern = [[/.-[^\]/]] -- to not match escaped slash in regex
 
-	local row, start, ending = seekForward(pattern)
+	local row, start, ending = seekForward(pattern, premove)
 	if not row then return end
 
 	if inner then ending = ending - 1 end
@@ -258,10 +258,10 @@ end
 ---CSS Selector Textobj
 ---@param inner boolean inner selector
 function M.cssSelector(inner)
-	normal("F.") -- go to beginning of selector
+	local premove = "F." -- go to beginning of selector
 	local pattern = "%.[%w-_]+"
 
-	local row, start, ending = seekForward(pattern)
+	local row, start, ending = seekForward(pattern, premove)
 	if not row then return end
 
 	if inner then start = start + 1 end
