@@ -133,7 +133,7 @@ function M.diagnostic()
 	if not diag then return end
 	local curLine = fn.line(".")
 	if curLine + lookForwardLines > diag.lnum then return end
-	setSelection({diag.lnum + 1, diag.col}, {diag.end_lnum + 1, diag.end_col})
+	setSelection({ diag.lnum + 1, diag.col }, { diag.end_lnum + 1, diag.end_col })
 end
 
 -- INDENTATION OBJECT
@@ -201,7 +201,7 @@ function M.value(inner)
 	local lastChar = lineContent:sub(ending + 1, ending + 1)
 	if inner and lastChar:find("[,;]") then ending = ending - 1 end
 
-	setSelection({row, start}, {row, ending})
+	setSelection({ row, start }, { row, ending })
 end
 
 ---number textobj
@@ -212,7 +212,7 @@ function M.number(inner)
 	local row, start, ending = seekForward(pattern)
 	if not row then return end
 
-	setSelection({row, start}, {row, ending})
+	setSelection({ row, start }, { row, ending })
 end
 
 --------------------------------------------------------------------------------
@@ -226,9 +226,12 @@ function M.mdlink(inner)
 	local row, start, ending, barelink = seekForward(pattern)
 	if not row then return end
 
-	if inner then ending = start + #barelink - 3 end
+	if inner then
+		ending = start + #barelink - 2
+		start = start + 1
+	end
 
-	setSelection({row, start}, {row, ending})
+	setSelection({ row, start }, { row, ending })
 end
 
 ---double square brackets
@@ -244,7 +247,7 @@ function M.doubleSquareBrackets(inner)
 		ending = ending - 2
 	end
 
-	setSelection({row, start}, {row, ending})
+	setSelection({ row, start }, { row, ending })
 end
 
 ---JS Regex
@@ -260,7 +263,7 @@ function M.jsRegex(inner)
 		ending = ending - 1
 	end
 
-	setSelection({row, start}, {row, ending})
+	setSelection({ row, start }, { row, ending })
 end
 
 ---CSS Selector Textobj
@@ -273,7 +276,7 @@ function M.cssSelector(inner)
 
 	if inner then start = start + 1 end
 
-	setSelection({row, start}, {row, ending})
+	setSelection({ row, start }, { row, ending })
 end
 
 --------------------------------------------------------------------------------
