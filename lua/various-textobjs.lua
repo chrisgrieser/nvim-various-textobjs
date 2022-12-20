@@ -49,6 +49,16 @@ local function setSelection(startpos, endpos)
 	setCursor(0, endpos)
 end
 
+---sets the selection for the textobj (linewise)
+---@param startline integer
+---@param endline integer
+local function setLinewiseSelection(startline, endline)
+	setCursor(0, { startline, 0 })
+	if not (isVisualLineMode()) then normal("V") end
+	normal("o")
+	setCursor(0, { endline, 0 })
+end
+
 ---seek forwards for pattern
 ---@param pattern string lua pattern
 ---@param seekFullStartRow? boolean also seek before cursor in starting row. Mostly for value-textobj
@@ -147,10 +157,8 @@ function M.indentation(startBorder, endBorder)
 		return string.find(lineContent, "^%s*$") == 1
 	end
 
-	if isBlankLine(fn.line(".")) then return end -- abort on blank line
-
 	local indentofStart = fn.indent(fn.line("."))
-	if indentofStart == 0 then return end -- do not select whole file
+	if indentofStart == 0 then return end -- do not select whole file or blank line
 
 	local prevLnum = fn.line(".") - 1 -- line before cursor
 	while prevLnum > 0 and (isBlankLine(prevLnum) or fn.indent(prevLnum) >= indentofStart) do
@@ -166,11 +174,41 @@ function M.indentation(startBorder, endBorder)
 	if not startBorder then prevLnum = prevLnum + 1 end
 	if not endBorder then nextLnum = nextLnum - 1 end
 
-	-- set selection
-	setCursor(0, { prevLnum, 0 })
-	if not (isVisualLineMode()) then normal("V") end
-	normal("o")
-	setCursor(0, { nextLnum, 0 })
+	setLinewiseSelection(prevLnum, nextLnum)
+end
+
+-- Md Fenced Code Block Textobj
+---@param inner boolean
+function M.mdFencedCodeBlock(inner)
+	local lastLine = fn.line("$")
+	local codeBlockStart = "^```%w*"
+	local codeBlockEnd = "^```$"
+
+	local lineContent = ""
+
+	---@diagnostic disable: assign-type-mismatch
+	local start = fn.line(".") + 1
+	while not (lineContent:find(codeBlockStart)) do
+		if start == 1 then return end
+		start = start - 1
+		lineContent = fn.getline(start) ---@type string
+	end
+
+	local ending = fn.line(".") - 1
+	lineContent = ""
+	while not (lineContent:find(codeBlockEnd)) do
+		if ending == lastLine then return end
+		-- if lineContent:find(codeBlockStart) then return end -- TODO find better mechanism to exclude when between two code blocks
+		ending = ending + 1
+		lineContent = fn.getline(ending) ---@type string
+	end
+	---@diagnostic enable: assign-type-mismatch
+
+	if inner then
+		start = start + 1
+		ending = ending - 1
+	end
+	setLinewiseSelection(start, ending)
 end
 
 ---VALUE TEXT OBJECT
