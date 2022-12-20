@@ -34,62 +34,55 @@ local function isVisualLineMode()
 	return (modeWithV ~= nil and modeWithV ~= false)
 end
 
+---@class position <integer>fsfsf[2]
+
 ---sets the selection for the textobj (characterwise)
----@param startLine integer
----@param endLine integer
----@param startCol integer
----@param endCol integer
-local function setSelection(startLine, endLine, startCol, endCol)
-	setCursor(0, { startLine, startCol })
+---@param startpos position
+---@param endpos position
+local function setSelection(startpos, endpos)
+	setCursor(0, startpos)
 	if isVisualMode() then
 		normal("o")
 	else
 		normal("v")
 	end
-	setCursor(0, { endLine, endCol })
+	setCursor(0, endpos)
 end
 
 ---seek forwards for pattern
 ---@param pattern string lua pattern
----@param premove string normal commands to move back for detection of text obj under the cursor. Leave empty to search whole line.
+---@param seekFullStartRow? boolean also seek before cursor in starting row. Mostly for value-textobj
 ---@return integer|nil line pattern was found, or nil if not found
 ---@return integer beginCol
 ---@return integer endCol
 ---@return string capture group from pattern (if provided)
-local function seekForward(pattern, premove)
-	local prevCursor = getCursor(0)
+local function seekForward(pattern, seekFullStartRow)
+	local startRow, startCol = unpack(getCursor(0))
+	if seekFullStartRow then startCol = 1 end
 	local lastLine = fn.line("$")
-	local lineContent, hasPattern, startRow, startCol
+	local lineContent, beginCol, endCol, capture
+
 	local i = -1
-
-	if premove == "" then
-		-- for first line, also search the whole line
-		startRow, _ = unpack(prevCursor)
-		startCol = 1
-	else
-		-- move to detect text objects cursor stands on
-		normal(premove)
-		startRow, startCol = unpack(getCursor(0)) -- to update start-search-postion
-	end
-
 	repeat
 		i = i + 1
-		if i > 0 then startCol = 1 end -- after the current row, pattern can occur everywhere in the line
 
 		if i > lookForwardLines or startRow + i > lastLine then
 			local msg = "Textobject not found within " .. tostring(lookForwardLines) .. " lines."
 			if lookForwardLines == 1 then msg = msg:gsub("s%.$", ".") end
 			vim.notify(msg, vim.log.levels.WARN)
-			setCursor(0, prevCursor) -- restore cursor position
 			return nil, 0, 0, ""
 		end
-		---@diagnostic disable-next-line: assign-type-mismatch
+
 		lineContent = fn.getline(startRow + i) ---@type string
-		hasPattern = lineContent:find(pattern, startCol)
+		beginCol, endCol, capture = lineContent:find(pattern)
+
+		-- after the current row, pattern can occur everywhere in the line
+		if i > 0 then startCol = 1 end
+		local hasPattern = endCol and (endCol > startCol or endCol == 1)
+
 	until hasPattern
 
 	local findrow = startRow + i
-	local beginCol, endCol, capture = lineContent:find(pattern, startCol)
 	beginCol = beginCol - 1
 	endCol = endCol - 1
 
@@ -140,7 +133,7 @@ function M.diagnostic()
 	if not diag then return end
 	local curLine = fn.line(".")
 	if curLine + lookForwardLines > diag.lnum then return end
-	setSelection(diag.lnum + 1, diag.end_lnum + 1, diag.col, diag.end_col)
+	setSelection({diag.lnum + 1, diag.col}, {diag.end_lnum + 1, diag.end_col})
 end
 
 -- INDENTATION OBJECT
@@ -183,9 +176,9 @@ end
 ---VALUE TEXT OBJECT
 ---@param inner boolean
 function M.value(inner)
-	local pattern = "[^=:][=:] ?[^=:]"
+	local pattern = "[^=:][=:] ?[^=:]" -- negative sets to not find equality comparators == or css pseudo-elements ::
 
-	local row, _, start = seekForward(pattern, "") -- no premove, since searching full line
+	local row, _, start = seekForward(pattern, true)
 	if not row then return end
 
 	-- valueEnd either comment or end of line
@@ -208,19 +201,18 @@ function M.value(inner)
 	local lastChar = lineContent:sub(ending + 1, ending + 1)
 	if inner and lastChar:find("[,;]") then ending = ending - 1 end
 
-	setSelection(row, row, start, ending)
+	setSelection({row, start}, {row, ending})
 end
 
 ---number textobj
 ---@param inner boolean inner number (no decimal or minus-sign)
 function M.number(inner)
 	local pattern = inner and "%d+" or "%-?%d*%.?%d+"
-	local premove = inner and "lb" or "lB"
 
-	local row, start, ending = seekForward(pattern, premove)
+	local row, start, ending = seekForward(pattern)
 	if not row then return end
 
-	setSelection(row, row, start, ending)
+	setSelection({row, start}, {row, ending})
 end
 
 --------------------------------------------------------------------------------
@@ -229,24 +221,22 @@ end
 ---md links textobj
 ---@param inner boolean inner or outer link
 function M.mdlink(inner)
-	local premove = "F["
 	local pattern = "(%b[])%b()"
 
-	local row, start, ending, barelink = seekForward(pattern, premove)
+	local row, start, ending, barelink = seekForward(pattern)
 	if not row then return end
 
 	if inner then ending = start + #barelink - 3 end
 
-	setSelection(row, row, start, ending)
+	setSelection({row, start}, {row, ending})
 end
 
 ---double square brackets
 ---@param inner boolean inner or outer link
 function M.doubleSquareBrackets(inner)
-	local premove = "F[h"
 	local pattern = "%[%[.-%]%]"
 
-	local row, start, ending = seekForward(pattern, premove)
+	local row, start, ending = seekForward(pattern)
 	if not row then return end
 
 	if inner then
@@ -254,16 +244,15 @@ function M.doubleSquareBrackets(inner)
 		ending = ending - 2
 	end
 
-	setSelection(row, row, start, ending)
+	setSelection({row, start}, {row, ending})
 end
 
 ---JS Regex
 ---@param inner boolean inner regex
 function M.jsRegex(inner)
-	local premove = "F/" -- go to beginning of regex
 	local pattern = [[/.-[^\]/]] -- to not match escaped slash in regex
 
-	local row, start, ending = seekForward(pattern, premove)
+	local row, start, ending = seekForward(pattern)
 	if not row then return end
 
 	if inner then
@@ -271,21 +260,20 @@ function M.jsRegex(inner)
 		ending = ending - 1
 	end
 
-	setSelection(row, row, start, ending)
+	setSelection({row, start}, {row, ending})
 end
 
 ---CSS Selector Textobj
 ---@param inner boolean inner selector
 function M.cssSelector(inner)
-	local premove = "F." -- go to beginning of selector
 	local pattern = "%.[%w-_]+"
 
-	local row, start, ending = seekForward(pattern, premove)
+	local row, start, ending = seekForward(pattern)
 	if not row then return end
 
 	if inner then start = start + 1 end
 
-	setSelection(row, row, start, ending)
+	setSelection({row, start}, {row, ending})
 end
 
 --------------------------------------------------------------------------------
