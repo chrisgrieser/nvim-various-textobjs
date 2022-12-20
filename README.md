@@ -11,19 +11,19 @@ Bundle of about a dozen custom text objects for Neovim. Includes text objects fo
 
 ## List of all Text Objects
 - `.indentation(startBorder, endBorder)`: Indentation text object. Similar to [vim-indent-object](https://github.com/michaeljsmith/vim-indent-object), The two Boolean parameters determine whether the line in front is included (`aI` or `ai`). Setting both to `false` results in no border inclusion (`ii`).
-- `.value(inner)`: Value of a key-value-pair, or the <!-- vale RedHat.TermsErrors = NO --> right-hand-side of a variable assignment. Looks for the first `:` or `=` in the line. Inner value excludes trailing comma or semicolon, outer value includes them. Always excludes trailing comments.\*
-- `.number(inner)`: Number text object. Inner number excludes decimal points and minus sign, outer number includes them.\*
-- `.diagnostic()`: Diagnostic from the built-in LSP. Similar to [textobj-diagnostic.nvim](https://github.com/andrewferrier/textobj-diagnostic.nvim).\*
+- `.value(inner)`: Value of a key-value-pair, or the <!-- vale RedHat.TermsErrors = NO --> right-hand-side of a variable assignment. Looks for the first `:` or `=` in the line. Inner value excludes trailing comma or semicolon, outer value includes them. Always excludes trailing comments. \*
+- `.number(inner)`: Number text object. Inner number excludes decimal points and minus sign, outer number includes them. \*
+- `.diagnostic()`: Diagnostic from the built-in LSP. Similar to [textobj-diagnostic.nvim](https://github.com/andrewferrier/textobj-diagnostic.nvim). \*
 - `.subword()`: like `iw`, but treating dashes and underscores always as word delimiters, regardless of the `iskeyword` option.
 - `.nearEoL()`: from cursor position to end of line minus 1 character. Useful to change everything except a trailing comma or semicolon.
 - `.restOfParagraph()`: like `}`, but linewise.
 
 __FileType specific__
-- `.mdlink(inner)`: Markdown link like `[title](url)`. Inner link only includes the link title inside the `[]`.\*
-- `.mdFencedCodeBlock(inner)`: Markdown code block enclosed by three backticks. Inner code block excludes the backticks, outer includes them. 
-- `.jsRegex(inner)`: JavaScript regex like `/exp/`. Inner regex excludes the surrounding `/`, outer regex includes them.\* 
-- `.cssSelector(inner)`: CSS class selector like `.my-class`. Similar to `iw`, but does not treat `-` as word-delimiter, and only accepts words with leading `.` as selectors. Inner selector excludes the leading `.`, outer selector includes it.\*
-- `.doubleSquareBrackets(inner)`: text surrounded by `[[` and `]]`. Multi-line strings in lua, conditionals in shell, or wikilinks in note-filetypes.\*
+- `.mdlink(inner)`: Markdown link like `[title](url)`. Inner link only includes the link title inside the `[]`. \*
+- `.mdFencedCodeBlock(inner)`: Markdown code block enclosed by three backticks. Inner code block excludes the backticks, outer includes them. \*
+- `.jsRegex(inner)`: JavaScript regex like `/exp/`. Inner regex excludes the surrounding `/`, outer regex includes them. \* 
+- `.cssSelector(inner)`: CSS class selector like `.my-class`. Similar to `iw`, but does not treat `-` as word-delimiter, and only accepts words with leading `.` as selectors. Inner selector excludes the leading `.`, outer selector includes it. \*
+- `.doubleSquareBrackets(inner)`: text surrounded by `[[` and `]]`. Multi-line strings in lua, conditionals in shell, or wikilinks in note-filetypes. \*
 
 > __Note__  
 > Text objects marked with `*` seek up to 5 lines forward if the cursor is not standing on the text object. (Number of lines can be configured.)

@@ -34,6 +34,12 @@ local function isVisualLineMode()
 	return (modeWithV ~= nil and modeWithV ~= false)
 end
 
+local function notFoundMsg()
+	local msg = "Textobject not found within " .. tostring(lookForwardLines) .. " lines."
+	if lookForwardLines == 1 then msg = msg:gsub("s%.$", ".") end -- remove plural s
+	vim.notify(msg, vim.log.levels.WARN)
+end
+
 ---@class position <integer>[]
 
 ---sets the selection for the textobj (characterwise)
@@ -77,9 +83,7 @@ local function seekForward(pattern, seekFullStartRow)
 		i = i + 1
 
 		if i > lookForwardLines or startRow + i > lastLine then
-			local msg = "Textobject not found within " .. tostring(lookForwardLines) .. " lines."
-			if lookForwardLines == 1 then msg = msg:gsub("s%.$", ".") end
-			vim.notify(msg, vim.log.levels.WARN)
+			notFoundMsg()
 			return nil, 0, 0, ""
 		end
 
@@ -180,34 +184,46 @@ end
 -- Md Fenced Code Block Textobj
 ---@param inner boolean
 function M.mdFencedCodeBlock(inner)
-	local lastLine = fn.line("$")
-	local codeBlockStart = "^```%w*"
-	local codeBlockEnd = "^```$"
+	local lastLnum = fn.line("$")
+	local cursorLnum = fn.line(".")
+	local codeBlockPattern = "^```%w*$"
 
-	local lineContent = ""
-
-	---@diagnostic disable: assign-type-mismatch
-	local start = fn.line(".") + 1
-	while not (lineContent:find(codeBlockStart)) do
-		if start == 1 then return end
-		start = start - 1
-		lineContent = fn.getline(start) ---@type string
+	-- scan buffer for all code blocks
+	local cbBegin = {}
+	local cbEnd = {}
+	for i = 1, lastLnum, 1 do
+		---@diagnostic disable: assign-type-mismatch
+		local lineContent = fn.getline(i) ---@type string
+		if lineContent:find(codeBlockPattern) then
+			if #cbBegin == #cbEnd then
+				table.insert(cbBegin, i)
+			else
+				table.insert(cbEnd, i)
+			end
+		end
 	end
+	if #cbBegin > #cbEnd then table.remove(cbEnd) end -- incomplete codeblock
 
-	local ending = fn.line(".") - 1
-	lineContent = ""
-	while not (lineContent:find(codeBlockEnd)) do
-		if ending == lastLine then return end
-		-- if lineContent:find(codeBlockStart) then return end -- TODO find better mechanism to exclude when between two code blocks
-		ending = ending + 1
-		lineContent = fn.getline(ending) ---@type string
-	end
-	---@diagnostic enable: assign-type-mismatch
+	-- determine cursor location in a codeblock
+	local j = 0
+	repeat
+		j = j + 1
+		if j > #cbBegin then
+			notFoundMsg()
+			return
+		end
+		local cursorInBetween = (cbBegin[j] <= cursorLnum) and (cbEnd[j] >= cursorLnum)
+		-- seek forward for a codeblock
+		local cursorInFront = (cbBegin[j] > cursorLnum) and (cbBegin[j] <= cursorLnum + lookForwardLines)
+	until cursorInBetween or cursorInFront
 
+	local start = cbBegin[j]
+	local ending = cbEnd[j]
 	if inner then
 		start = start + 1
 		ending = ending - 1
 	end
+
 	setLinewiseSelection(start, ending)
 end
 
