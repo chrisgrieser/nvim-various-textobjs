@@ -34,7 +34,7 @@ local function isVisualLineMode()
 	return (modeWithV ~= nil and modeWithV ~= false)
 end
 
----@class position <integer>fsfsf[2]
+---@class position <integer>[]
 
 ---sets the selection for the textobj (characterwise)
 ---@param startpos position
