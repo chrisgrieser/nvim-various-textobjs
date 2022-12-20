@@ -2,19 +2,19 @@
 Bundle of about a dozen custom text objects for Neovim. Includes text objects for: indentation, number, value, diagnostic, markdown link, double square bracket, and many more.
 
 <!--toc:start-->
-- [List of all Text Objects](#list-of-all-text-objects)
+- [List of Text Objects](#list-of-text-objects)
 - [Installation and Setup](#installation-and-setup)
 - [Roadmap](#roadmap)
 - [Credits](#credits)
 - [About me](#about-me)
 <!--toc:end-->
 
-## List of all Text Objects
+## List of Text Objects
 - `.indentation(startBorder, endBorder)`: Indentation text object. Similar to [vim-indent-object](https://github.com/michaeljsmith/vim-indent-object), The two Boolean parameters determine whether the line in front is included (`aI` or `ai`). Setting both to `false` results in no border inclusion (`ii`).
 - `.value(inner)`: Value of a key-value-pair, or the <!-- vale RedHat.TermsErrors = NO --> right-hand-side of a variable assignment. Looks for the first `:` or `=` in the line. Inner value excludes trailing comma or semicolon, outer value includes them. Always excludes trailing comments. \*
 - `.number(inner)`: Number text object. Inner number excludes decimal points and minus sign, outer number includes them. \*
 - `.diagnostic()`: Diagnostic from the built-in LSP. Similar to [textobj-diagnostic.nvim](https://github.com/andrewferrier/textobj-diagnostic.nvim). \*
-- `.subword()`: like `iw`, but treating dashes and underscores always as word delimiters, regardless of the `iskeyword` option.
+- `.subword()`: like `iw`, but treating dashes, underscores, and dots *always* as word delimiters, regardless of the `iskeyword` option.
 - `.nearEoL()`: from cursor position to end of line minus 1 character. Useful to change everything except a trailing comma or semicolon.
 - `.restOfParagraph()`: like `}`, but linewise.
 
