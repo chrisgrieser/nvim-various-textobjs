@@ -67,10 +67,6 @@ end
 
 --------------------------------------------------------------------------------
 
--- 4248 bla 142428
-
---------------------------------------------------------------------------------
-
 ---seek forwards for pattern
 ---@param pattern string lua pattern
 ---@param seekFullStartRow? boolean also seek before cursor in starting row. Mostly for value-textobj
@@ -82,10 +78,10 @@ end
 local function seekForward(pattern, seekFullStartRow)
 	local cursorRow, cursorCol = unpack(getCursor(0))
 	if seekFullStartRow then cursorCol = 1 end
+	local lineContent = fn.getline(cursorRow) ---@type string
 	local lastLine = fn.line("$")
 	local beginCol = 0
 	local endCol, capture
-	local lineContent = fn.getline(cursorRow) ---@type string
 
 	-- first line: check if standing on or in front of textobj
 	repeat
@@ -107,7 +103,7 @@ local function seekForward(pattern, seekFullStartRow)
 		if beginCol then break end
 	end
 
-	return cursorRow + i, beginCol-1, endCol-1, capture
+	return cursorRow + i, beginCol - 1, endCol - 1, capture
 end
 ---@diagnostic enable: assign-type-mismatch
 
@@ -243,18 +239,16 @@ function M.value(inner)
 	local row, _, start = seekForward(pattern, true)
 	if not row then return end
 
-	-- valueEnd either comment or end of line
 	---@diagnostic disable-next-line: assign-type-mismatch
 	local lineContent = fn.getline(row) ---@type string
 	local comStrPattern = bo.commentstring:gsub(" ?%%s.*", "") -- remove placeholder and backside of commentstring
 	comStrPattern = vim.pesc(comStrPattern) -- escape lua pattern
-
-	local isCommentLine = lineContent:find("^%s*" .. comStrPattern)
-	if isCommentLine then return end
-
 	local ending, _ = lineContent:find(" ?" .. comStrPattern)
+
+	-- ending of value is EoL
 	if not ending or comStrPattern == "" then
 		ending = #lineContent - 1
+	-- ending of value is comment
 	else
 		ending = ending - 2
 	end
