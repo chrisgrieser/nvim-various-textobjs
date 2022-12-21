@@ -324,12 +324,12 @@ end
 ---CSS Selector Textobj
 ---@param inner boolean inner selector
 function M.cssSelector(inner)
-	local pattern = "%.[%w-_]+"
+	local pattern = "%.[%w-_]+(,? ?)"
 
-	local row, start, ending = seekForward(pattern)
+	local row, start, ending, capture = seekForward(pattern)
 	if not row then return end
 
-	if inner then start = start + 1 end
+	if inner then ending = ending - #capture end
 
 	setSelection({ row, start }, { row, ending })
 end

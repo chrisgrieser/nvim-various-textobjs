@@ -22,7 +22,7 @@ __FileType specific__
 - `.mdlink(inner)`: Markdown link like `[title](url)`. Inner link only includes the link title inside the `[]`. \*
 - `.mdFencedCodeBlock(inner)`: Markdown code block enclosed by three backticks. Inner code block excludes the backticks, outer includes them. \*
 - `.jsRegex(inner)`: JavaScript regex like `/exp/`. Inner regex excludes the surrounding `/`, outer regex includes them. \* 
-- `.cssSelector(inner)`: CSS class selector like `.my-class`. Similar to `iw`, but does not treat `-` as word-delimiter, and only accepts words with leading `.` as selectors. Inner selector excludes the leading `.`, outer selector includes it. \*
+- `.cssSelector(inner)`: CSS class selector like `.my-class`. Similar to `iw`, but does not treat `-` as word-delimiter, and only accepts words with leading `.` as selectors. Outer selector includes the comma and space after the selector, if there are any.\*
 - `.doubleSquareBrackets(inner)`: text surrounded by `[[` and `]]`. Multi-line strings in lua, conditionals in shell, or wikilinks in note-filetypes. \*
 
 > __Note__  
