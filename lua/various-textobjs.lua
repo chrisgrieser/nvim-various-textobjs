@@ -152,9 +152,9 @@ end
 
 -- INDENTATION OBJECT
 ---indentation textobj, based on https://thevaluable.dev/vim-create-text-objects/
----@param startBorder boolean
----@param endBorder boolean
-function M.indentation(startBorder, endBorder)
+---@param noStartBorder boolean
+---@param noEndBorder boolean
+function M.indentation(noStartBorder, noEndBorder)
 	local function isBlankLine(lineNr)
 		---@diagnostic disable-next-line: assign-type-mismatch
 		local lineContent = fn.getline(lineNr) ---@type string
@@ -175,8 +175,8 @@ function M.indentation(startBorder, endBorder)
 	end
 
 	-- differentiate ai and ii
-	if not startBorder then prevLnum = prevLnum + 1 end
-	if not endBorder then nextLnum = nextLnum - 1 end
+	if noStartBorder then prevLnum = prevLnum + 1 end
+	if noEndBorder then nextLnum = nextLnum - 1 end
 
 	setLinewiseSelection(prevLnum, nextLnum)
 end
