@@ -246,7 +246,8 @@ function M.value(inner)
 	local ending, _ = lineContent:find(" ?" .. comStrPattern)
 
 	-- ending of value is EoL
-	if not ending or comStrPattern == "" then
+	local endingIsComment = ending and comStrPattern ~= ""
+	if endingIsComment then
 		ending = #lineContent - 1
 	-- ending of value is comment
 	else
