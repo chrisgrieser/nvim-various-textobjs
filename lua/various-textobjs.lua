@@ -65,6 +65,12 @@ local function setLinewiseSelection(startline, endline)
 	setCursor(0, { endline, 0 })
 end
 
+--------------------------------------------------------------------------------
+
+-- 4248 bla 142428
+
+--------------------------------------------------------------------------------
+
 ---seek forwards for pattern
 ---@param pattern string lua pattern
 ---@param seekFullStartRow? boolean also seek before cursor in starting row. Mostly for value-textobj
@@ -72,36 +78,38 @@ end
 ---@return integer beginCol
 ---@return integer endCol
 ---@return string capture group from pattern (if provided)
+---@diagnostic disable: assign-type-mismatch
 local function seekForward(pattern, seekFullStartRow)
-	local startRow, startCol = unpack(getCursor(0))
-	if seekFullStartRow then startCol = 1 end
+	local cursorRow, cursorCol = unpack(getCursor(0))
+	if seekFullStartRow then cursorCol = 1 end
 	local lastLine = fn.line("$")
-	local lineContent, beginCol, endCol, capture
+	local beginCol = 0
+	local endCol, capture
+	local lineContent = fn.getline(cursorRow) ---@type string
 
-	local i = -1
+	-- first line: check if standing on or in front of textobj
 	repeat
-		i = i + 1
+		beginCol, endCol, capture = lineContent:find(pattern, beginCol + 1)
+		standingOnOrInFront = endCol and endCol >= cursorCol
+	until not beginCol or standingOnOrInFront
 
-		if i > lookForwardLines or startRow + i > lastLine then
+	-- subsequent lines: search full line for first occurrence
+	local i = 0
+	while not standingOnOrInFront do
+		i = i + 1
+		if i > lookForwardLines or cursorRow + i > lastLine then
 			notFoundMsg()
 			return nil, 0, 0, ""
 		end
+		lineContent = fn.getline(cursorRow + i) ---@type string
 
-		lineContent = fn.getline(startRow + i) ---@type string
 		beginCol, endCol, capture = lineContent:find(pattern)
+		if beginCol then break end
+	end
 
-		-- after the current row, pattern can occur everywhere in the line
-		if i > 0 then startCol = 1 end
-		local hasPattern = endCol and (endCol > startCol or endCol == 1)
-
-	until hasPattern
-
-	local findrow = startRow + i
-	beginCol = beginCol - 1
-	endCol = endCol - 1
-
-	return findrow, beginCol, endCol, capture
+	return cursorRow + i, beginCol-1, endCol-1, capture
 end
+---@diagnostic enable: assign-type-mismatch
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
