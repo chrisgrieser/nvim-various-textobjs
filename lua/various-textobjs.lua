@@ -124,7 +124,7 @@ function M.nearEoL()
 	if not isVisualMode() then normal("v") end
 	normal("$")
 
-	-- loop ensure trailing whitespace is not counted
+	-- loop ensures trailing whitespace is not counted, relevant e.g., for markdown
 	---@diagnostic disable-next-line: assign-type-mismatch, param-type-mismatch
 	local lineContent = fn.getline(".") ---@type string
 	local col = fn.col("$")
@@ -245,13 +245,11 @@ function M.value(inner)
 	comStrPattern = vim.pesc(comStrPattern) -- escape lua pattern
 	local ending, _ = lineContent:find(" ?" .. comStrPattern)
 
-	-- ending of value is EoL
 	local endingIsComment = ending and comStrPattern ~= ""
 	if endingIsComment then
-		ending = #lineContent - 1
-	-- ending of value is comment
-	else
 		ending = ending - 2
+	else
+		ending = #lineContent - 1
 	end
 
 	-- inner value = without trailing comma/semicolon
