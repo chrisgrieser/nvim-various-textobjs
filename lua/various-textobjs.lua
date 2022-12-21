@@ -72,7 +72,7 @@ end
 ---@param inner boolean true = inner textobj
 ---@param seekFullStartRow? boolean also seek before cursor in starting row. Mostly for value-textobj
 ---@return integer|nil line pattern was found, or nil if not found
----@return integer beginCol 
+---@return integer beginCol
 ---@return integer endCol
 ---@diagnostic disable: assign-type-mismatch
 local function seekForward(pattern, inner, seekFullStartRow)
@@ -240,6 +240,8 @@ end
 ---value text object
 ---@param inner boolean inner value excludes trailing commas or semicolons, outer includes them. Both exclude trailing comments.
 function M.value(inner)
+	-- TODO use the same logic for the value textobj as the other characterwise
+	-- textobjs use (capture groups to mark inner/outer differences)
 	local pattern = "[^=:][=:] ?[^=:]" -- negative sets to not find equality comparators == or css pseudo-elements ::
 
 	local row, _, start = seekForward(pattern, false, true)
@@ -280,7 +282,7 @@ function M.number(inner)
 end
 
 --------------------------------------------------------------------------------
--- FILETYPE SPECIFIC TEXTOBJS 
+-- FILETYPE SPECIFIC TEXTOBJS
 
 ---md links textobj
 ---@param inner boolean inner link only includes the link title, outer link includes link, url, and the four brackets.
