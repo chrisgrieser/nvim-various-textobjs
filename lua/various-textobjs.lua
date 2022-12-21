@@ -140,7 +140,7 @@ end
 ---rest of paragraph (linewise)
 function M.restOfParagraph()
 	if not isVisualLineMode() then normal("V") end
-	normal("}k")
+	normal("}")
 end
 
 ---DIAGNOSTIC TEXT OBJECT
@@ -308,14 +308,14 @@ end
 ---JS Regex
 ---@param inner boolean inner regex
 function M.jsRegex(inner)
-	local pattern = [[/.-[^\]/]] -- to not match escaped slash in regex
+	local pattern = [[/.-[^\]/(%l*)]] -- [^\] to not match escaped slash in regex, %l* to match flags
 
-	local row, start, ending = seekForward(pattern)
+	local row, start, ending, capture = seekForward(pattern)
 	if not row then return end
 
 	if inner then
 		start = start + 1
-		ending = ending - 1
+		ending = ending - #capture
 	end
 
 	setSelection({ row, start }, { row, ending })
