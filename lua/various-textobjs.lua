@@ -40,11 +40,10 @@ local function notFoundMsg()
 	vim.notify(msg, vim.log.levels.WARN)
 end
 
----@class position <integer>[]
-
 ---sets the selection for the textobj (characterwise)
----@param startpos position
----@param endpos position
+---@class pos number[]
+---@param startpos pos
+---@param endpos pos
 local function setSelection(startpos, endpos)
 	setCursor(0, startpos)
 	if isVisualMode() then
@@ -101,9 +100,12 @@ local function seekForward(pattern, inner)
 	end
 
 	-- capture groups determine the inner/outer difference
+	-- INFO :find() returns integers of the position if the capture group is empty
+	local frontOuterLen = type(captureG1) ~= "number" and #captureG1 or 0
+	local backOuterLen = type(captureG2) ~= "number" and #captureG2 or 0
 	if inner then
-		beginCol = beginCol + #captureG1
-		endCol = endCol - #captureG2
+		beginCol = beginCol + frontOuterLen
+		endCol = endCol - backOuterLen
 	end
 
 	setSelection({ cursorRow + i, beginCol - 1 }, { cursorRow + i, endCol - 1 })
@@ -150,11 +152,11 @@ end
 ---similar to https://github.com/andrewferrier/textobj-diagnostic.nvim
 ---requires builtin LSP
 function M.diagnostic()
-	local diag = vim.diagnostic.get_next { wrap = false }
-	if not diag then return end
+	local d = vim.diagnostic.get_next { wrap = false }
+	if not d then return end
 	local curLine = fn.line(".")
-	if curLine + lookForwardLines > diag.lnum then return end
-	setSelection({ diag.lnum + 1, diag.col }, { diag.end_lnum + 1, diag.end_col })
+	if curLine + lookForwardLines > d.lnum then return end
+	setSelection({ d.lnum + 1, d.col }, { d.end_lnum + 1, d.end_col })
 end
 
 -- INDENTATION OBJECT
@@ -236,33 +238,35 @@ end
 
 ---value text object
 ---@param inner boolean inner value excludes trailing commas or semicolons, outer includes them. Both exclude trailing comments.
+---@diagnostic disable: param-type-mismatch
 function M.value(inner)
 	-- captures value till the end of the line
 	-- negative sets to not find equality comparators == or css pseudo-elements ::
-	local pattern = "[^=:][=:] ?[^=:].*"
+	local pattern = "([^=:][=:] ?)[^=:].*()"
 
-	local valueFound = seekForward(pattern, false)
+	local valueFound = seekForward(pattern, true)
 	if not valueFound then return end
 
-	---@diagnostic disable-next-line: assign-type-mismatch
-	local lineContent = fn.getline(row) ---@type string
-	local comStrPattern = bo.commentstring:gsub(" ?%%s.*", "") -- remove placeholder and backside of commentstring
-	comStrPattern = vim.pesc(comStrPattern) -- escape lua pattern
-	local ending, _ = lineContent:find(" ?" .. comStrPattern)
+	-- if value found, remove trailing comment from it
+	local commentPat = bo.commentstring:gsub(" ?%%s.*", "") -- remove placeholder and backside of commentstring
+	commentPat = vim.pesc(commentPat) -- escape lua pattern
+	commentPat = " ?" .. commentPat .. ".*" -- to match till end of line
 
-	local endingIsComment = ending and comStrPattern ~= ""
-	if endingIsComment then
-		ending = ending - 2
-	else
-		ending = #lineContent - 1
-	end
+	---@diagnostic disable-next-line: undefined-field
+	local lineContent = fn.getline("."):gsub(commentPat, "") -- remove commentstring
+	local valueEndCol = #lineContent - 1
 
 	-- inner value = without trailing comma/semicolon
-	local lastChar = lineContent:sub(ending + 1, ending + 1)
-	if inner and lastChar:find("[,;]") then ending = ending - 1 end
+	if inner and lineContent:find("[,;]$") then valueEndCol = valueEndCol - 1 end
 
-	setSelection({ row, start }, { row, ending })
+	local curRow = fn.line(".")
+	setCursor(0, { curRow, valueEndCol })
 end
+---@diagnostic enable: param-type-mismatch
+
+
+
+
 
 ---number textobj
 ---@param inner boolean inner number consists purely of digits, outer number factors in decimal points and includes minus sign
