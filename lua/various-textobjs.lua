@@ -34,6 +34,7 @@ local function isVisualLineMode()
 	return (modeWithV ~= nil and modeWithV ~= false)
 end
 
+---notification when no textobj could be found
 local function notFoundMsg()
 	local msg = "Textobject not found within " .. tostring(lookForwardLines) .. " lines."
 	if lookForwardLines == 1 then msg = msg:gsub("s%.$", ".") end -- remove plural s
@@ -250,7 +251,7 @@ function M.value(inner)
 	-- if value found, remove trailing comment from it
 	local commentPat = bo.commentstring:gsub(" ?%%s.*", "") -- remove placeholder and backside of commentstring
 	commentPat = vim.pesc(commentPat) -- escape lua pattern
-	commentPat = " ?" .. commentPat .. ".*" -- to match till end of line
+	commentPat = " *" .. commentPat .. ".*" -- to match till end of line
 
 	---@diagnostic disable-next-line: undefined-field
 	local lineContent = fn.getline("."):gsub(commentPat, "") -- remove commentstring
@@ -263,10 +264,6 @@ function M.value(inner)
 	setCursor(0, { curRow, valueEndCol })
 end
 ---@diagnostic enable: param-type-mismatch
-
-
-
-
 
 ---number textobj
 ---@param inner boolean inner number consists purely of digits, outer number factors in decimal points and includes minus sign
