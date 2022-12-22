@@ -2,12 +2,12 @@
 Bundle of about a dozen custom text objects for Neovim. Includes text objects for: indentation, number, value, diagnostic, markdown link, double square bracket, and many more.
 
 <!--toc:start-->
-  - [List of Text Objects](#list-of-text-objects)
-  - [Installation and Setup](#installation-and-setup)
-  - [Advanced Usage](#advanced-usage)
-  - [Roadmap](#roadmap)
-  - [Credits](#credits)
-  - [About me](#about-me)
+- [List of Text Objects](#list-of-text-objects)
+- [Installation and Setup](#installation-and-setup)
+- [Advanced Usage](#advanced-usage)
+- [Roadmap](#roadmap)
+- [Credits](#credits)
+- [About me](#about-me)
 <!--toc:end-->
 
 ## List of Text Objects
