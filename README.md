@@ -2,11 +2,12 @@
 Bundle of about a dozen custom text objects for Neovim. Includes text objects for: indentation, number, value, diagnostic, markdown link, double square bracket, and many more.
 
 <!--toc:start-->
-- [List of Text Objects](#list-of-text-objects)
-- [Installation and Setup](#installation-and-setup)
-- [Roadmap](#roadmap)
-- [Credits](#credits)
-- [About me](#about-me)
+  - [List of Text Objects](#list-of-text-objects)
+  - [Installation and Setup](#installation-and-setup)
+  - [Advanced Usage](#advanced-usage)
+  - [Roadmap](#roadmap)
+  - [Credits](#credits)
+  - [About me](#about-me)
 <!--toc:end-->
 
 ## List of Text Objects
@@ -50,6 +51,31 @@ The plugin comes without any default keybindings. Set any keybindings you want t
 -- example: `an` for outer number, `in` for inner number
 vim.keymap.set({"o", "x"}, "an", function () require("various-textobjs").number(false) end)
 vim.keymap.set({"o", "x"}, "in", function () require("various-textobjs").number(true) end)
+```
+
+## Advanced Usage
+You can also use the text objects as input for small snippets by yanking them and using `getreg()`. The following example uses the outer regex text object to retrieve pattern and flags of the next regex, and opens them in [regex101](https://regex101.com/):
+
+```lua
+keymap("n", "gR", function()
+	require("various-textobjs").jsRegex(false) -- set visual selection to outer regex
+	vim.cmd.normal { '"zy', bang = true }
+	local regex = fn.getreg("z")
+	local pattern = regex:match("/(.*)/")
+	local flags = regex:match("/.*/(.*)")
+	-- https://github.com/firasdib/Regex101/wiki/FAQ#how-to-prefill-the-fields-on-the-interface-via-url
+	local url = "https://regex101.com/?regex=" .. pattern .. "&flags=" .. flags
+
+	local opener
+	if fn.has("macunix") then
+		opener = "open"
+	elseif fn.has("unix") then
+		opener = "xdg-open"
+	elseif fn.has("win64") or fn.has("win32") then
+		opener = "start"
+	end
+	os.execute(opener .. "'" .. url .. "'")
+end, { desc = "Open next js regex in regex101" })
 ```
 
 ## Roadmap
