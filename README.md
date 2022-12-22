@@ -60,7 +60,7 @@ You can also use the text objects as input for small snippets by yanking them an
 keymap("n", "gR", function()
 	require("various-textobjs").jsRegex(false) -- set visual selection to outer regex
 	vim.cmd.normal { '"zy', bang = true }
-	local regex = fn.getreg("z")
+	local regex = vim.fn.getreg("z")
 	local pattern = regex:match("/(.*)/")
 	local flags = regex:match("/.*/(.*)")
 	local replacement = fn.getline("."):match('replace ?%(/.*/.*, ?"(.-)"')
@@ -69,11 +69,11 @@ keymap("n", "gR", function()
 	if replacement then url = url .. "&subst=" .. replacement end
 
 	local opener
-	if fn.has("macunix") then
+	if vim.fn.has("macunix") then
 		opener = "open"
-	elseif fn.has("unix") then
+	elseif vim.fn.has("unix") then
 		opener = "xdg-open"
-	elseif fn.has("win64") or fn.has("win32") then
+	elseif vim.fn.has("win64") or fn.has("win32") then
 		opener = "start"
 	end
 	os.execute(opener .. "'" .. url .. "'")
