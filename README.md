@@ -27,25 +27,28 @@ __FileType specific__
 - `.doubleSquareBrackets(inner)`: text surrounded by `[[` and `]]`. Multi-line strings in lua, conditionals in shell, or wikilinks in note-filetypes. \*
 
 > __Note__  
-> Text objects marked with `*` seek up to 5 lines forward if the cursor is not standing on the text object. (Number of lines can be configured.)
+> Text objects marked with `*` seek up to 5 lines forward if the cursor is not standing on the text object.
 
 ## Installation and Setup
 
 ```lua
--- packer
+-- packer.nvim
 use "chrisgrieser/nvim-various-textobjs"
+
+-- lazy.nvim
+"chrisgrieser/nvim-various-textobjs"
 ```
 
 A `.setup()` call is not required. It is only needed if you want to change the amount of lines below the cursor where the plugin looks for a text object:
 
 ```lua
+-- default values. Call optional if the default is fine.
 require("various-textobjs").setup {
-	-- default 5. Set to 0 to only look in the current line
-	lookForwardLines = 10,
+	lookForwardLines = 5, -- set to 0 to only look in the current line
 }
 ```
 
-The plugin comes without any default keybindings. Set any keybindings you want to have yourself. All parameters are Boolean.
+The plugin comes without any default keybindings. Set keybindings for the textobj you want to have like this. (All parameters are boolean.)
 
 ```lua
 -- example: `an` for outer number, `in` for inner number
@@ -54,7 +57,7 @@ vim.keymap.set({"o", "x"}, "in", function () require("various-textobjs").number(
 ```
 
 ## Advanced Usage
-You can also use the text objects as input for small snippets by yanking them and using `getreg()`. The following example uses the outer regex text object to retrieve pattern, flags, and replacement value of the next regex, and opens them prefilled in [regex101](https://regex101.com/):
+You can also use the text objects as input for small snippets by yanking them and using `getreg()`. The following example uses the outer regex text object to retrieve pattern, flags, and replacement value of the next regex, and opens [regex101](https://regex101.com/) prefilled with them:
 
 ```lua
 keymap("n", "gR", function()
