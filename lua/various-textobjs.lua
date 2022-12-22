@@ -70,14 +70,10 @@ end
 ---seek forwards for pattern (characterwise)
 ---@param pattern string lua pattern. Requires two capture groups marking the two additions for the outer variant of the textobj. Use an empty capture group when there is no difference between inner and outer on that side.
 ---@param inner boolean true = inner textobj
----@param seekFullStartRow? boolean also seek before cursor in starting row. Mostly for value-textobj
----@return integer|nil line pattern was found, or nil if not found
----@return integer beginCol
----@return integer endCol
----@diagnostic disable: assign-type-mismatch
-local function seekForward(pattern, inner, seekFullStartRow)
+---@return boolean whether textobj search was successful
+local function seekForward(pattern, inner)
 	local cursorRow, cursorCol = unpack(getCursor(0))
-	if seekFullStartRow then cursorCol = 1 end
+	---@diagnostic disable-next-line: assign-type-mismatch
 	local lineContent = fn.getline(cursorRow) ---@type string
 	local lastLine = fn.line("$")
 	local beginCol = 0
@@ -95,8 +91,9 @@ local function seekForward(pattern, inner, seekFullStartRow)
 		i = i + 1
 		if i > lookForwardLines or cursorRow + i > lastLine then
 			notFoundMsg()
-			return nil, 0, 0
+			return false
 		end
+		---@diagnostic disable-next-line: assign-type-mismatch
 		lineContent = fn.getline(cursorRow + i) ---@type string
 
 		beginCol, endCol, captureG1, captureG2 = lineContent:find(pattern)
@@ -109,9 +106,9 @@ local function seekForward(pattern, inner, seekFullStartRow)
 		endCol = endCol - #captureG2
 	end
 
-	return cursorRow + i, beginCol - 1, endCol - 1
+	setSelection({ cursorRow + i, beginCol - 1 }, { cursorRow + i, endCol - 1 })
+	return true
 end
----@diagnostic enable: assign-type-mismatch
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
@@ -240,12 +237,12 @@ end
 ---value text object
 ---@param inner boolean inner value excludes trailing commas or semicolons, outer includes them. Both exclude trailing comments.
 function M.value(inner)
-	-- TODO use the same logic for the value textobj as the other characterwise
-	-- textobjs use (capture groups to mark inner/outer differences)
-	local pattern = "[^=:][=:] ?[^=:]" -- negative sets to not find equality comparators == or css pseudo-elements ::
+	-- captures value till the end of the line
+	-- negative sets to not find equality comparators == or css pseudo-elements ::
+	local pattern = "[^=:][=:] ?[^=:].*"
 
-	local row, _, start = seekForward(pattern, false, true)
-	if not row then return end
+	local valueFound = seekForward(pattern, false)
+	if not valueFound then return end
 
 	---@diagnostic disable-next-line: assign-type-mismatch
 	local lineContent = fn.getline(row) ---@type string
@@ -274,11 +271,7 @@ function M.number(inner)
 	-- before and after the decimal dot. enforcing digital after dot so outer
 	-- excludes enumrations.
 	local pattern = inner and "%d+" or "%-?%d*%.?%d+"
-
-	local row, start, ending = seekForward(pattern, false)
-	if not row then return end
-
-	setSelection({ row, start }, { row, ending })
+	seekForward(pattern, false)
 end
 
 --------------------------------------------------------------------------------
@@ -288,44 +281,28 @@ end
 ---@param inner boolean inner link only includes the link title, outer link includes link, url, and the four brackets.
 function M.mdlink(inner)
 	local pattern = "(%[).-(%]%b())"
-
-	local row, start, ending = seekForward(pattern, inner)
-	if not row then return end
-
-	setSelection({ row, start }, { row, ending })
+	seekForward(pattern, inner)
 end
 
 ---double square brackets
 ---@param inner boolean inner double square brackets exclude the brackets themselves
 function M.doubleSquareBrackets(inner)
 	local pattern = "(%[%[).-(%]%])"
-
-	local row, start, ending = seekForward(pattern, inner)
-	if not row then return end
-
-	setSelection({ row, start }, { row, ending })
+	seekForward(pattern, inner)
 end
 
 ---JS Regex
 ---@param inner boolean inner regex excludes the slashes (and flags)
 function M.jsRegex(inner)
 	local pattern = [[(/).-[^\](/%l*)]] -- [^\] to not match escaped slash in regex, %l* to match flags
-
-	local row, start, ending = seekForward(pattern, inner)
-	if not row then return end
-
-	setSelection({ row, start }, { row, ending })
+	seekForward(pattern, inner)
 end
 
 ---CSS Selector Textobj
 ---@param inner boolean inner selector or outer selector which includes trailing comma and whitespace
 function M.cssSelector(inner)
 	local pattern = "()%.[%w-_]+(,? ?)"
-
-	local row, start, ending = seekForward(pattern, inner)
-	if not row then return end
-
-	setSelection({ row, start }, { row, ending })
+	seekForward(pattern, inner)
 end
 
 --------------------------------------------------------------------------------

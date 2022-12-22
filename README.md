@@ -54,7 +54,7 @@ vim.keymap.set({"o", "x"}, "in", function () require("various-textobjs").number(
 ```
 
 ## Advanced Usage
-You can also use the text objects as input for small snippets by yanking them and using `getreg()`. The following example uses the outer regex text object to retrieve pattern and flags of the next regex, and opens them in [regex101](https://regex101.com/):
+You can also use the text objects as input for small snippets by yanking them and using `getreg()`. The following example uses the outer regex text object to retrieve pattern, flags, and replacement value of the next regex, and opens them prefilled in [regex101](https://regex101.com/):
 
 ```lua
 keymap("n", "gR", function()
@@ -63,8 +63,10 @@ keymap("n", "gR", function()
 	local regex = fn.getreg("z")
 	local pattern = regex:match("/(.*)/")
 	local flags = regex:match("/.*/(.*)")
+	local replacement = fn.getline("."):match('replace ?%(/.*/.*, ?"(.-)"')
 	-- https://github.com/firasdib/Regex101/wiki/FAQ#how-to-prefill-the-fields-on-the-interface-via-url
 	local url = "https://regex101.com/?regex=" .. pattern .. "&flags=" .. flags
+	if replacement then url = url .. "&subst=" .. replacement end
 
 	local opener
 	if fn.has("macunix") then
