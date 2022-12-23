@@ -167,9 +167,9 @@ local function searchTextobj(pattern, inner)
 
 	-- capture groups determine the inner/outer difference
 	-- INFO :find() returns integers of the position if the capture group is empty
-	local frontOuterLen = captureG1 and type(captureG1) ~= "number" and #captureG1 or 0
-	local backOuterLen = captureG2 and type(captureG2) ~= "number" and #captureG2 or 0
 	if inner then
+		local frontOuterLen = type(captureG1) ~= "number" and #captureG1 or 0
+		local backOuterLen = type(captureG2) ~= "number" and #captureG2 or 0
 		beginCol = beginCol + frontOuterLen
 		endCol = endCol - backOuterLen
 	end
