@@ -3,7 +3,8 @@ Bundle of about a dozen custom text objects for Neovim. Includes text objects fo
 
 <!--toc:start-->
 - [List of Text Objects](#list-of-text-objects)
-- [Installation and Setup](#installation-and-setup)
+- [Installation](#installation)
+- [Configuration](#configuration)
 - [Advanced Usage](#advanced-usage)
 - [Roadmap](#roadmap)
 - [Credits](#credits)
@@ -11,44 +12,54 @@ Bundle of about a dozen custom text objects for Neovim. Includes text objects fo
 <!--toc:end-->
 
 ## List of Text Objects
+*WIP, overview of default keymaps will be added soon.*
+
 - `.indentation(noStartBorder, noEndBorder)`: Indentation text object. Similar to [vim-indent-object](https://github.com/michaeljsmith/vim-indent-object), The two boolean parameters determine whether the line in front is included (`aI` or `ai`). Setting both to `false` results in no border inclusion (`ii`).
-- `.value(inner)`: Value of a key-value-pair, or the <!-- vale RedHat.TermsErrors = NO --> right-hand-side of a variable assignment. Looks for the first `:` or `=` in the line. Inner value excludes trailing comma or semicolon, outer value includes them. Always excludes trailing comments. \*
-- `.number(inner)`: Number text object. Inner number excludes decimal points and minus sign, outer number includes them. \*
-- `.diagnostic()`: Diagnostic from the built-in LSP. Similar to [textobj-diagnostic.nvim](https://github.com/andrewferrier/textobj-diagnostic.nvim). \*
+- `.value(inner)`: Value of a key-value-pair, or the <!-- vale RedHat.TermsErrors = NO --> right-hand-side of a variable assignment. Looks for the first `:` or `=` in the line. Inner value excludes trailing comma or semicolon, outer value includes them. Always excludes trailing comments. 
+- `.number(inner)`: Number text object. Inner number excludes decimal points and minus sign, outer number includes them. 
+- `.diagnostic()`: Diagnostic from the built-in LSP. Similar to [textobj-diagnostic.nvim](https://github.com/andrewferrier/textobj-diagnostic.nvim). 
 - `.subword()`: like `iw`, but treating dashes, underscores, and dots *always* as word delimiters, regardless of the `iskeyword` option.
 - `.nearEoL()`: from cursor position to end of line minus 1 character. Useful to change everything except a trailing comma or semicolon.
 - `.restOfParagraph()`: like `}`, but linewise.
 
 __FileType specific__
-- `.mdlink(inner)`: Markdown link like `[title](url)`. Inner link only includes the link title inside the `[]`. \*
-- `.mdFencedCodeBlock(inner)`: Markdown code block enclosed by three backticks. Inner code block excludes the backticks, outer includes them. \*
-- `.jsRegex(inner)`: JavaScript regex like `/exp/`. Inner regex excludes the surrounding `/`, outer regex includes them and any flags. \* 
-- `.cssSelector(inner)`: CSS class selector like `.my-class`. Similar to `iw`, but does not treat `-` as word-delimiter, and only accepts words with leading `.` as selectors. Outer selector includes the comma and space after the selector, if there are any.\*
-- `.doubleSquareBrackets(inner)`: text surrounded by `[[` and `]]`. Multi-line strings in lua, conditionals in shell, or wikilinks in note-filetypes. \*
+- `.mdlink(inner)`: Markdown link like `[title](url)`. Inner link only includes the link title inside the `[]`. 
+- `.mdFencedCodeBlock(inner)`: Markdown code block enclosed by three backticks. Inner code block excludes the backticks, outer includes them. 
+- `.jsRegex(inner)`: JavaScript regex like `/exp/`. Inner regex excludes the surrounding `/`, outer regex includes them and any flags.  
+- `.cssSelector(inner)`: CSS class selector like `.my-class`. Similar to `iw`, but does not treat `-` as word-delimiter, and only accepts words with leading `.` as selectors. Outer selector includes the comma and space after the selector, if there are any.
+- `.doubleSquareBrackets(inner)`: text surrounded by `[[` and `]]`. Multi-line strings in lua, conditionals in shell, or wikilinks in note-filetypes. 
 
-> __Note__  
-> Text objects marked with `*` seek up to 5 lines forward if the cursor is not standing on the text object.
-
-## Installation and Setup
+## Installation
 
 ```lua
 -- packer
-use "chrisgrieser/nvim-various-textobjs"
+use {
+	"chrisgrieser/nvim-various-textobjs",
+	config = function () 
+		require("various-textobj").setup({ useSuggestedKeymaps = true })
+	end,
+}
 
 -- lazy.nvim
-"chrisgrieser/nvim-various-textobjs"
+{
+	"chrisgrieser/nvim-various-textobjs",
+	config = function () 
+		require("various-textobj").setup({ useSuggestedKeymaps = true })
+	end,
+},
 ```
 
-A `.setup()` call is not required. It is only needed if you want to change the amount of lines below the cursor where the plugin looks for a text object:
+## Configuration
+The `.setup()` call is optional and only required when you want to change the default configuration:
 
 ```lua
--- default values. Call optional if the default is fine.
 require("various-textobjs").setup {
-	lookForwardLines = 5, -- set to 0 to only look in the current line
+	lookForwardLines = 5, -- default: 5. Set to 0 to only look in the current line
+	useSuggestedKeymaps = false, -- Use suggested keymaps (see README). Default: false.
 }
 ```
 
-The plugin comes without any default keybindings. Set keybindings for the textobj you want to have like this. (All parameters are boolean.)
+If you want to set keybindings yourself, you can define them like this. Note that for the text objects that differentiate between outer and inner, the parameters are required and all boolean (`true` always meaning "inner").
 
 ```lua
 -- example: `an` for outer number, `in` for inner number

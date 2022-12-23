@@ -6,14 +6,81 @@ local opt = vim.opt
 
 local M = {}
 --------------------------------------------------------------------------------
-
+-- CONFIG
 -- default value
-local lookForwardLines = 5
+local lookForwL = 5
+
+local function setupKeymaps()
+	local innerOuterMaps = {
+		number = "n",
+		value = "v",
+	}
+	local oneMaps = {
+		nearEoL = "n",
+		restOfParagraph = "r",
+		subWord = "S",
+		diagnostic = "!",
+	}
+	local ftMaps = {
+		{
+			map = { jsRegex = "/" },
+			fts = { "javascript", "typescript" },
+		},
+		{
+			map = { mdlink = "l" },
+			fts = { "markdown" },
+		},
+		{
+			map = { mdFencedCodeBlock = "C" },
+			fts = { "markdown" },
+		},
+		{
+			map = { doubleSquareBrackets = "D" },
+			fts = { "lua", "norg", "sh", "fish", "zsh", "bash" },
+		},
+		{
+			map = { cssSelector = "c" },
+			fts = { "css", "scss" },
+		},
+	}
+	-----------------------------------------------------------------------------
+	local keymap = vim.keymap.set
+	for objName, map in pairs(innerOuterMaps) do
+		local name = " " .. objName .. " textobj"
+		keymap({ "o", "x" }, "a" .. map, function() M[objName](false) end, { desc = "outer" .. name })
+		keymap({ "o", "x" }, "i" .. map, function() M[objName](true) end, { desc = "inner" .. name })
+	end
+	for objName, map in pairs(oneMaps) do
+		keymap({ "o", "x" }, map, M[objName], { desc = objName .. " textobj" })
+	end
+	-- stylua: ignore start
+	keymap( { "o", "x" }, "ii" , function() M.indentation(true, true) end, { desc = "inner-inner indentation textobj" })
+	keymap( { "o", "x" }, "ai" , function() M.indentation(false, true) end, { desc = "outer-inner indentation textobj" })
+	keymap( { "o", "x" }, "iI" , function() M.indentation(true, true) end, { desc = "inner-inner indentation textobj" })
+	keymap( { "o", "x" }, "aI" , function() M.indentation(false, false) end, { desc = "outer-outer indentation textobj" })
+
+	vim.api.nvim_create_augroup("VariousTextobjs", {})
+	for _, textobj in pairs(ftMaps) do
+		vim.api.nvim_create_autocmd("FileType", {
+			group = "VariousTextobjs",
+			pattern = textobj.fts,
+			callback = function()
+				for objName, map in pairs(textobj.map) do
+					local name = " " .. objName .. " textobj"
+					keymap( { "o", "x" }, "a" .. map, function() M[objName](false) end, { desc = "outer" .. name, buffer = true })
+					keymap( { "o", "x" }, "i" .. map, function() M[objName](true) end, { desc = "inner" .. name, buffer = true })
+				end
+			end,
+		})
+	end
+	-- stylua: ignore end
+end
 
 ---optional setup function
 ---@param opts table
 function M.setup(opts)
-	if opts.lookForwardLines then lookForwardLines = opts.lookForwardLines end
+	if opts.lookForwardLines then lookForwL = opts.lookForwardLines end
+	if opts.useSuggestedKeymaps then setupKeymaps() end
 end
 
 --------------------------------------------------------------------------------
@@ -36,8 +103,8 @@ end
 
 ---notification when no textobj could be found
 local function notFoundMsg()
-	local msg = "Textobject not found within " .. tostring(lookForwardLines) .. " lines."
-	if lookForwardLines == 1 then msg = msg:gsub("s%.$", ".") end -- remove plural s
+	local msg = "Textobject not found within " .. tostring(lookForwL) .. " lines."
+	if lookForwL == 1 then msg = msg:gsub("s%.$", ".") end -- remove plural s
 	vim.notify(msg, vim.log.levels.WARN)
 end
 
@@ -65,8 +132,6 @@ local function setLinewiseSelection(startline, endline)
 	setCursor(0, { endline, 0 })
 end
 
---------------------------------------------------------------------------------
-
 ---Seek and select characterwise text object based on pattern.
 ---@param pattern string lua pattern. Requires two capture groups marking the two additions for the outer variant of the textobj. Use an empty capture group when there is no difference between inner and outer on that side.
 ---@param inner boolean true = inner textobj
@@ -89,7 +154,7 @@ local function searchTextobj(pattern, inner)
 	local i = 0
 	while not standingOnOrInFront do
 		i = i + 1
-		if i > lookForwardLines or cursorRow + i > lastLine then
+		if i > lookForwL or cursorRow + i > lastLine then
 			notFoundMsg()
 			return false
 		end
@@ -102,8 +167,8 @@ local function searchTextobj(pattern, inner)
 
 	-- capture groups determine the inner/outer difference
 	-- INFO :find() returns integers of the position if the capture group is empty
-	local frontOuterLen = type(captureG1) ~= "number" and #captureG1 or 0
-	local backOuterLen = type(captureG2) ~= "number" and #captureG2 or 0
+	local frontOuterLen = captureG1 and type(captureG1) ~= "number" and #captureG1 or 0
+	local backOuterLen = captureG2 and type(captureG2) ~= "number" and #captureG2 or 0
 	if inner then
 		beginCol = beginCol + frontOuterLen
 		endCol = endCol - backOuterLen
@@ -156,7 +221,7 @@ function M.diagnostic()
 	local d = vim.diagnostic.get_next { wrap = false }
 	if not d then return end
 	local curLine = fn.line(".")
-	if curLine + lookForwardLines > d.lnum then return end
+	if curLine + lookForwL > d.lnum then return end
 	setSelection({ d.lnum + 1, d.col }, { d.end_lnum + 1, d.end_col })
 end
 
@@ -198,7 +263,7 @@ function M.mdFencedCodeBlock(inner)
 	local cursorLnum = fn.line(".")
 	local codeBlockPattern = "^```%w*$"
 
-	-- scan buffer for all code blocks
+	-- scan buffer for all code blocks, add beginnings & endings to a table each
 	local cbBegin = {}
 	local cbEnd = {}
 	for i = 1, lastLnum, 1 do
@@ -224,7 +289,7 @@ function M.mdFencedCodeBlock(inner)
 		end
 		local cursorInBetween = (cbBegin[j] <= cursorLnum) and (cbEnd[j] >= cursorLnum)
 		-- seek forward for a codeblock
-		local cursorInFront = (cbBegin[j] > cursorLnum) and (cbBegin[j] <= cursorLnum + lookForwardLines)
+		local cursorInFront = (cbBegin[j] > cursorLnum) and (cbBegin[j] <= cursorLnum + lookForwL)
 	until cursorInBetween or cursorInFront
 
 	local start = cbBegin[j]
@@ -296,7 +361,7 @@ end
 ---@param inner boolean inner regex excludes the slashes (and flags)
 function M.jsRegex(inner)
 	-- [^\] to not match escaped slash in regex, %l* to match flags
-	local pattern = [[(/).-[^\](/%l*)]] 
+	local pattern = [[(/).-[^\](/%l*)]]
 	searchTextobj(pattern, inner)
 end
 
