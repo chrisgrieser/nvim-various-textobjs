@@ -36,7 +36,7 @@ local function setupKeymaps()
 		},
 		{
 			map = { doubleSquareBrackets = "D" },
-			fts = { "lua", "norg", "sh", "fish", "zsh", "bash" },
+			fts = { "lua", "norg", "sh", "fish", "zsh", "bash", "markdown" },
 		},
 		{
 			map = { cssSelector = "c" },
