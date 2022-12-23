@@ -36,7 +36,7 @@ __FileType specific__
 use {
 	"chrisgrieser/nvim-various-textobjs",
 	config = function () 
-		require("various-textobj").setup({ useSuggestedKeymaps = true })
+		require("various-textobj").setup({ useDefaultKeymaps = true })
 	end,
 }
 
@@ -44,7 +44,7 @@ use {
 {
 	"chrisgrieser/nvim-various-textobjs",
 	config = function () 
-		require("various-textobj").setup({ useSuggestedKeymaps = true })
+		require("various-textobj").setup({ useDefaultKeymaps = true })
 	end,
 },
 ```
@@ -55,7 +55,7 @@ The `.setup()` call is optional and only required when you want to change the de
 ```lua
 require("various-textobjs").setup {
 	lookForwardLines = 5, -- default: 5. Set to 0 to only look in the current line
-	useSuggestedKeymaps = false, -- Use suggested keymaps (see README). Default: false.
+	useDefaultKeymaps = false, -- Use suggested keymaps (see README). Default: false.
 }
 ```
 

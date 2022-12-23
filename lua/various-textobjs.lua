@@ -80,7 +80,7 @@ end
 ---@param opts table
 function M.setup(opts)
 	if opts.lookForwardLines then lookForwL = opts.lookForwardLines end
-	if opts.useSuggestedKeymaps then setupKeymaps() end
+	if opts.useDefaultKeymaps then setupKeymaps() end
 end
 
 --------------------------------------------------------------------------------
