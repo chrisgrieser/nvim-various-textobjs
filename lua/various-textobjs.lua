@@ -14,11 +14,11 @@ local function setupKeymaps()
 	local innerOuterMaps = {
 		number = "n",
 		value = "v",
+		subWord = "S",
 	}
 	local oneMaps = {
 		nearEoL = "n",
 		restOfParagraph = "r",
-		subWord = "S",
 		diagnostic = "!",
 	}
 	local ftMaps = {
@@ -182,11 +182,18 @@ end
 --------------------------------------------------------------------------------
 
 ---Subword (word with "-_" as delimiters)
-function M.subword()
+---@param inner boolean
+function M.subword(inner)
 	local iskeywBefore = opt.iskeyword:get()
 	opt.iskeyword:remove { "_", "-", "." }
 	if not isVisualMode() then normal("v") end
-	normal("iw")
+
+	if inner then
+		normal("iw")
+	else
+		normal("aw")
+	end
+
 	opt.iskeyword = iskeywBefore
 end
 
