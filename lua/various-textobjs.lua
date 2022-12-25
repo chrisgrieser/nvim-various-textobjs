@@ -20,6 +20,7 @@ local function setupKeymaps()
 		nearEoL = "n",
 		restOfParagraph = "r",
 		diagnostic = "!",
+		column = "|",
 	}
 	local ftMaps = {
 		{
@@ -263,7 +264,31 @@ function M.indentation(noStartBorder, noEndBorder)
 	setLinewiseSelection(prevLnum, nextLnum)
 end
 
--- Md Fenced Code Block Textobj
+---Column Textobj (blockwise down until indent or shorter line)
+function M.column()
+	-- yes this seems to be the easiest method to get the accurate column count for this m(
+	local indentLevel = (fn.indent(".") / bo.tabstop) ---@diagnostic disable-line: param-type-mismatch
+	local cursorCol = fn.col(".") + (indentLevel * (bo.tabstop - 1))
+
+	local lastLnum = fn.line("$")
+	local nextLnum = fn.line(".")
+
+	repeat
+		nextLnum = nextLnum + 1
+		local trueLineLength = #fn.getline(nextLnum):gsub("\t", string.rep(" ", bo.tabstop)) ---@diagnostic disable-line: undefined-field
+		local shorterLine = trueLineLength < cursorCol
+		local hitsIndent = cursorCol < fn.indent(nextLnum)
+		local eof = nextLnum > lastLnum
+	until eof or hitsIndent or shorterLine
+	nextLnum = nextLnum - 1
+
+	-- start visual block mode
+	if not (fn.mode() == "CTRL-V") then vim.cmd.execute([["normal! \<C-v>"]]) end
+
+	normal(nextLnum .. "G")
+end
+
+---Md Fenced Code Block Textobj
 ---@param inner boolean inner excludes the backticks
 function M.mdFencedCodeBlock(inner)
 	local lastLnum = fn.line("$")
