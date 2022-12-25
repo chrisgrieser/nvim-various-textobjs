@@ -6,6 +6,7 @@ Bundle of about a dozen custom text objects for Neovim. Includes text objects fo
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Advanced Usage](#advanced-usage)
+- [Other Text-object-related neovim plugins](#other-text-object-related-neovim-plugins)
 - [Roadmap](#roadmap)
 - [Credits](#credits)
 - [About me](#about-me)
@@ -94,6 +95,13 @@ keymap("n", "gR", function()
 	os.execute(opener .. "'" .. url .. "'")
 end, { desc = "Open next js regex in regex101" })
 ```
+
+## Other Text-object-related neovim plugins
+- [treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects)
+- [treesitter-textsubjects](https://github.com/RRethy/nvim-treesitter-textsubjects)
+- [ts-hint-textobject](https://github.com/mfussenegger/nvim-ts-hint-textobject)
+- [mini.ai](https://github.com/echasnovski/mini.nvim/blob/main/readmes/mini-ai.md)
+- [textobj-diagnostic](https://github.com/andrewferrier/textobj-diagnostic.nvim)
 
 ## Roadmap
 - [ ] Figure out how to make dot-repeatability work. (Pointers are welcome.)
