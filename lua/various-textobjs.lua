@@ -93,13 +93,13 @@ local function normal(cmdStr) vim.cmd.normal { cmdStr, bang = true } end
 ---@return boolean
 local function isVisualMode()
 	local modeWithV = fn.mode():find("v")
-	return (modeWithV ~= nil and modeWithV ~= false)
+	return modeWithV ~= nil
 end
 
 ---@return boolean
 local function isVisualLineMode()
 	local modeWithV = fn.mode():find("V")
-	return (modeWithV ~= nil and modeWithV ~= false)
+	return modeWithV ~= nil
 end
 
 ---notification when no textobj could be found
@@ -264,14 +264,18 @@ function M.indentation(noStartBorder, noEndBorder)
 	setLinewiseSelection(prevLnum, nextLnum)
 end
 
----Column Textobj (blockwise down until indent or shorter line)
+ ---Column Textobj (blockwise down until indent or shorter line)
 function M.column()
-	-- yes this seems to be the easiest method to get the accurate column count for this m(
-	local indentLevel = (fn.indent(".") / bo.tabstop) ---@diagnostic disable-line: param-type-mismatch
-	local cursorCol = fn.col(".") + (indentLevel * (bo.tabstop - 1))
-
 	local lastLnum = fn.line("$")
 	local nextLnum = fn.line(".")
+	local cursorCol = fn.col(".")
+
+
+	-- get accurate cursorCol (account for tabs/spaces properly)
+	if not bo.expandtab then
+		local indentLevel = (fn.indent(".") / bo.tabstop) ---@diagnostic disable-line: param-type-mismatch
+		cursorCol = cursorCol + (indentLevel * (bo.tabstop - 1))
+	end
 
 	repeat
 		nextLnum = nextLnum + 1
