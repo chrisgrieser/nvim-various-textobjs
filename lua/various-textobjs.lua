@@ -267,9 +267,8 @@ end
 ---Column Textobj (blockwise down until indent or shorter line)
 function M.column()
 	local lastLnum = fn.line("$")
-	local nextLnum = fn.line(".")
-	local cursorCol = fn.col(".")
-	local extraColumns = vim.v.count1 > 1 and vim.v.count - 1 or false
+	local nextLnum, cursorCol = unpack(getCursor(0))
+	local extraColumns = vim.v.count1 - 1 -- has to be done before running the other :normal commands, since they change v:count
 
 	-- get accurate cursorCol (account for tabs/spaces properly)
 	if not bo.expandtab then
@@ -290,7 +289,7 @@ function M.column()
 	if not (fn.mode() == "CTRL-V") then vim.cmd.execute([["normal! \<C-v>"]]) end
 
 	normal(nextLnum .. "G")
-	if extraColumns then normal(tostring(extraColumns) .. "l") end
+	if extraColumns > 0 then normal(tostring(extraColumns) .. "l") end
 end
 
 ---Md Fenced Code Block Textobj
