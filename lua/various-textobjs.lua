@@ -128,7 +128,7 @@ end
 ---@param endline integer
 local function setLinewiseSelection(startline, endline)
 	setCursor(0, { startline, 0 })
-	if not (isVisualLineMode()) then normal("V") end
+	if not isVisualLineMode() then normal("V") end
 	normal("o")
 	setCursor(0, { endline, 0 })
 end
@@ -182,7 +182,7 @@ end
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 
----Subword (word with "-_" as delimiters)
+---Subword (word with "-_." as delimiters)
 ---@param inner boolean
 function M.subword(inner)
 	local iskeywBefore = opt.iskeyword:get()
