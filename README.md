@@ -6,7 +6,7 @@ Bundle of about a dozen custom text objects for Neovim. Includes text objects fo
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Advanced Usage](#advanced-usage)
-- [Other Text-object-related neovim plugins](#other-text-object-related-neovim-plugins)
+- [Other Text-Object Plugins](#other-text-object-plugins)
 - [Roadmap](#roadmap)
 - [Credits](#credits)
 - [About me](#about-me)
@@ -97,7 +97,7 @@ keymap("n", "gR", function()
 end, { desc = "Open next js regex in regex101" })
 ```
 
-## Other Text-object-related neovim plugins
+## Other Text-Object Plugins
 - [treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects)
 - [treesitter-textsubjects](https://github.com/RRethy/nvim-treesitter-textsubjects)
 - [ts-hint-textobject](https://github.com/mfussenegger/nvim-ts-hint-textobject)
