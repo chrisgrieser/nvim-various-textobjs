@@ -37,7 +37,7 @@ Bundle of about a dozen custom text objects for Neovim. Includes text objects fo
 use {
 	"chrisgrieser/nvim-various-textobjs",
 	config = function () 
-		require("various-textobj").setup({ useDefaultKeymaps = true })
+		require("various-textobjs").setup({ useDefaultKeymaps = true })
 	end,
 }
 
@@ -45,7 +45,7 @@ use {
 {
 	"chrisgrieser/nvim-various-textobjs",
 	config = function () 
-		require("various-textobj").setup({ useDefaultKeymaps = true })
+		require("various-textobjs").setup({ useDefaultKeymaps = true })
 	end,
 },
 ```
