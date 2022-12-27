@@ -350,15 +350,16 @@ function M.value(inner)
 	if not valueFound then return end
 
 	-- if value found, remove trailing comment from it
-	local commentPat = bo.commentstring:gsub(" ?%%s.*", "") -- remove placeholder and backside of commentstring
-	commentPat = vim.pesc(commentPat) -- escape lua pattern
-	commentPat = " *" .. commentPat .. ".*" -- to match till end of line
-
-	---@diagnostic disable-next-line: undefined-field
-	local lineContent = fn.getline("."):gsub(commentPat, "") -- remove commentstring
+	local lineContent = fn.getline(".") ---@type string
+	if bo.commentstring ~= "" then -- JSON has empty commentstring
+		local commentPat = bo.commentstring:gsub(" ?%%s.*", "") -- remove placeholder and backside of commentstring
+		commentPat = vim.pesc(commentPat) -- escape lua pattern
+		commentPat = " *" .. commentPat .. ".*" -- to match till end of line
+		lineContent = lineContent:gsub(commentPat, "") -- remove commentstring
+	end
 	local valueEndCol = #lineContent - 1
 
-	-- inner value = without trailing comma/semicolon
+	-- inner value = exclude trailing comma/semicolon
 	if inner and lineContent:find("[,;]$") then valueEndCol = valueEndCol - 1 end
 
 	local curRow = fn.line(".")
