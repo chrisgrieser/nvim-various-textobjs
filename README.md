@@ -28,7 +28,7 @@ Bundle of about a dozen custom text objects for Neovim. Includes text objects fo
 | doubleSquareBrackets   | text enclosed by `[[]]`                                                                       | outer includes the four square brackets                                                   | yes             | `iD`, `aD`               | lua, shell, neorg, markdown       |
 | column                 | column down until indent or shorter line. Accepts `{count}` for multiple columns.              | -                                                                                         | no              | `\|` (pipe char)         | all                               |
 | restOfParagraph        | like `}`, but linewise                                                                        | -                                                                                         | no              | `r`                      | all                               |
-| subword                | like `iw`, but never treating `-`, `_` or `.` as word delimiters                              | analog to `iw` / `aw`                                                                     | no              | `iS`, `aS`               | all                               |
+| subword                | like `iw`, but always treating `-`, `_` or `.` as word delimiters                              | analog to `iw` / `aw`                                                                     | no              | `iS`, `aS`               | all                               |
 
 ## Installation
 
