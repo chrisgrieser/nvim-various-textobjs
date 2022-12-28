@@ -75,7 +75,7 @@ vim.keymap.set({"o", "x"}, "in", function () require("various-textobjs").number(
 You can also use the text objects as input for small snippets by yanking them and using `getreg()`. The following example uses the outer regex text object to retrieve pattern, flags, and replacement value of the next regex, and opens [regex101](https://regex101.com/) prefilled with them:
 
 ```lua
-keymap("n", "gR", function()
+vim.keymap.set("n", "gR", function()
 	require("various-textobjs").jsRegex(false) -- set visual selection to outer regex
 	vim.cmd.normal { '"zy', bang = true }
 	local regex = vim.fn.getreg("z")
