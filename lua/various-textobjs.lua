@@ -90,6 +90,14 @@ end
 ---@param cmdStr any
 local function normal(cmdStr) vim.cmd.normal { cmdStr, bang = true } end
 
+---equivalent to fn.getline(), but using more efficient nvim api
+---@param lnum integer
+---@return string
+local function getline(lnum)
+	local lineContent = vim.api.nvim_buf_get_lines(0, lnum - 1, lnum, true)
+	return lineContent[1]
+end
+
 ---@return boolean
 local function isVisualMode()
 	local modeWithV = fn.mode():find("v")
@@ -139,8 +147,7 @@ end
 ---@return boolean whether textobj search was successful
 local function searchTextobj(pattern, inner)
 	local cursorRow, cursorCol = unpack(getCursor(0))
-	---@diagnostic disable-next-line: assign-type-mismatch
-	local lineContent = fn.getline(cursorRow) ---@type string
+	local lineContent = getline(cursorRow)
 	local lastLine = fn.line("$")
 	local beginCol = 0
 	local endCol, captureG1, captureG2
@@ -159,8 +166,7 @@ local function searchTextobj(pattern, inner)
 			notFoundMsg()
 			return false
 		end
-		---@diagnostic disable-next-line: assign-type-mismatch
-		lineContent = fn.getline(cursorRow + i) ---@type string
+		lineContent = getline(cursorRow + i)
 
 		beginCol, endCol, captureG1, captureG2 = lineContent:find(pattern)
 		if beginCol then break end
@@ -204,14 +210,14 @@ function M.nearEoL()
 	normal("$")
 
 	-- loop ensures trailing whitespace is not counted, relevant e.g., for markdown
-	---@diagnostic disable-next-line: assign-type-mismatch, param-type-mismatch
-	local lineContent = fn.getline(".") ---@type string
-	local col = fn.col("$")
+	local curRow = fn.line(".")
+	local lineContent = getline(curRow)
+	local lastCol = fn.col("$")
 	repeat
 		normal("h")
-		col = col - 1
-		local lastChar = lineContent:sub(col, col)
-	until not lastChar:find("%s") or col == 1
+		lastCol = lastCol - 1
+		local lastChar = lineContent:sub(lastCol, lastCol)
+	until not lastChar:find("%s") or lastCol == 1
 
 	normal("h")
 end
@@ -239,8 +245,7 @@ end
 ---@param noEndBorder boolean exclude the endline
 function M.indentation(noStartBorder, noEndBorder)
 	local function isBlankLine(lineNr)
-		---@diagnostic disable-next-line: assign-type-mismatch
-		local lineContent = fn.getline(lineNr) ---@type string
+		local lineContent = getline(lineNr)
 		return string.find(lineContent, "^%s*$") == 1
 	end
 
@@ -278,7 +283,7 @@ function M.column()
 
 	repeat
 		nextLnum = nextLnum + 1
-		local trueLineLength = #fn.getline(nextLnum):gsub("\t", string.rep(" ", bo.tabstop)) ---@diagnostic disable-line: undefined-field
+		local trueLineLength = #getline(nextLnum):gsub("\t", string.rep(" ", bo.tabstop)) ---@diagnostic disable-line: undefined-field
 		local shorterLine = trueLineLength < cursorCol
 		local hitsIndent = cursorCol < fn.indent(nextLnum)
 		local eof = nextLnum > lastLnum
@@ -303,8 +308,7 @@ function M.mdFencedCodeBlock(inner)
 	local cbBegin = {}
 	local cbEnd = {}
 	for i = 1, lastLnum, 1 do
-		---@diagnostic disable: assign-type-mismatch
-		local lineContent = fn.getline(i) ---@type string
+		local lineContent = getline(i)
 		if lineContent:find(codeBlockPattern) then
 			if #cbBegin == #cbEnd then
 				table.insert(cbBegin, i)
@@ -350,7 +354,8 @@ function M.value(inner)
 	if not valueFound then return end
 
 	-- if value found, remove trailing comment from it
-	local lineContent = fn.getline(".") ---@type string
+	local curRow = fn.line(".")
+	local lineContent = getline(curRow)
 	if bo.commentstring ~= "" then -- JSON has empty commentstring
 		local commentPat = bo.commentstring:gsub(" ?%%s.*", "") -- remove placeholder and backside of commentstring
 		commentPat = vim.pesc(commentPat) -- escape lua pattern
@@ -362,7 +367,6 @@ function M.value(inner)
 	-- inner value = exclude trailing comma/semicolon
 	if inner and lineContent:find("[,;]$") then valueEndCol = valueEndCol - 1 end
 
-	local curRow = fn.line(".")
 	setCursor(0, { curRow, valueEndCol })
 end
 ---@diagnostic enable: param-type-mismatch
