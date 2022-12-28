@@ -14,6 +14,7 @@ local function setupKeymaps()
 	local innerOuterMaps = {
 		number = "n",
 		value = "v",
+		key = "k",
 		subWord = "S",
 	}
 	local oneMaps = {
@@ -142,7 +143,7 @@ local function setLinewiseSelection(startline, endline)
 end
 
 ---Seek and select characterwise text object based on pattern.
----@param pattern string lua pattern. Requires two capture groups marking the two additions for the outer variant of the textobj. Use an empty capture group when there is no difference between inner and outer on that side.
+---@param pattern string lua pattern. Requires two capture groups marking the two additions for the outer variant of the textobj. Use an empty capture group when there is no difference between inner and outer on that side. (Essentially, the two capture groups work as lookbehind and lookahead.)
 ---@param inner boolean true = inner textobj
 ---@return boolean whether textobj search was successful
 local function searchTextobj(pattern, inner)
@@ -370,6 +371,23 @@ function M.value(inner)
 	setCursor(0, { curRow, valueEndCol })
 end
 ---@diagnostic enable: param-type-mismatch
+
+---key / left side of variable assignment textobj
+---@param inner boolean outer key includes the `:` or `=` after the key
+function M.key(inner)
+	local pattern = "(%s*).-( ?[:=] ?)"
+
+	local valueFound = searchTextobj(pattern, inner)
+	if not valueFound then return end
+
+	-- 1st capture is included for the outer obj, but we don't want it
+	if not inner then
+		local curRow = fn.line(".")
+		local leadingWhitespace = getline(curRow):find("[^%s]") - 1
+		normal("o")
+		setCursor(0, { curRow, leadingWhitespace }) ---@diagnostic disable-line: param-type-mismatch
+	end
+end
 
 ---number textobj
 ---@param inner boolean inner number consists purely of digits, outer number factors in decimal points and includes minus sign
