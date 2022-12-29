@@ -77,7 +77,7 @@ vim.keymap.set({"o", "x"}, "in", function () require("various-textobjs").number(
 -- starting border, second for the exclusion of ending border
 vim.keymap.set({"o", "x"}, "ii", function () require("various-textobjs").indentation(true, true) end)
 vim.keymap.set({"o", "x"}, "ai", function () require("various-textobjs").indentation(false, true) end)
-vim.keymap.set({"o", "x"}, "ai", function () require("various-textobjs").indentation(false, false) end)
+vim.keymap.set({"o", "x"}, "aI", function () require("various-textobjs").indentation(false, false) end)
 ```
 
 ## Advanced Usage
