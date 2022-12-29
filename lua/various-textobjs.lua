@@ -235,9 +235,7 @@ end
 function M.diagnostic()
 	local d = vim.diagnostic.get_next { wrap = false }
 	local curLine = fn.line(".")
-	if not d or curLine + lookForwL > d.lnum then 
-		notFoundMsg()
-	end
+	if not d or curLine + lookForwL > d.lnum then notFoundMsg() end
 	setSelection({ d.lnum + 1, d.col }, { d.end_lnum + 1, d.end_col })
 end
 
@@ -252,17 +250,31 @@ function M.indentation(noStartBorder, noEndBorder)
 	end
 
 	local indentofStart = fn.indent(fn.line("."))
-	-- TODO at indention 0, should work with consecutive
-	if indentofStart == 0 then return end -- do not select whole file or blank line
 
 	local prevLnum = fn.line(".") - 1 -- line before cursor
-	while prevLnum > 0 and (isBlankLine(prevLnum) or fn.indent(prevLnum) >= indentofStart) do
-		prevLnum = prevLnum - 1
-	end
 	local nextLnum = fn.line(".") + 1 -- line after cursor
 	local lastLine = fn.line("$")
-	while nextLnum <= lastLine and (isBlankLine(nextLnum) or fn.indent(nextLnum) >= indentofStart) do
-		nextLnum = nextLnum + 1
+
+	-- indented start: textobj is everything with same indentation
+	if indentofStart ~= 0 then
+		while isBlankLine(prevLnum) or fn.indent(prevLnum) >= indentofStart do
+			if prevLnum < 0 then break end
+			prevLnum = prevLnum - 1
+		end
+		while isBlankLine(nextLnum) or fn.indent(nextLnum) >= indentofStart do
+			if nextLnum >= lastLine then break end
+			nextLnum = nextLnum + 1
+		end
+	-- unindented start: textobj is consecutive lines of with no indentation
+	else
+		while not (isBlankLine(prevLnum)) and fn.indent(prevLnum) == 0 do
+			if prevLnum < 0 then break end
+			prevLnum = prevLnum - 1
+		end
+		while not (isBlankLine(nextLnum)) and fn.indent(nextLnum) == 0 do
+			if nextLnum >= lastLine then break end
+			nextLnum = nextLnum + 1
+		end
 	end
 
 	-- differentiate ai and ii
