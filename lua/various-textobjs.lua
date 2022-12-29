@@ -279,8 +279,8 @@ function M.indentation(noStartBorder, noEndBorder)
 	end
 
 	-- differentiate ai and ii
-	if noStartBorder and not (unindentedStart) then prevLnum = prevLnum + 1 end
-	if noEndBorder  and not (unindentedStart) then nextLnum = nextLnum - 1 end
+	if noStartBorder and not unindentedStart then prevLnum = prevLnum + 1 end
+	if noEndBorder and not unindentedStart then nextLnum = nextLnum - 1 end
 
 	setLinewiseSelection(prevLnum, nextLnum)
 end
