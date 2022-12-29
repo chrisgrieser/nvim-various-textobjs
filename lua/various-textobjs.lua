@@ -246,27 +246,18 @@ end
 function M.indentation(noStartBorder, noEndBorder)
 	local function isBlankLine(lineNr)
 		local lineContent = getline(lineNr)
-		return string.find(lineContent, "^%s*$") == 1
+		return lineContent:find("^%s*$") == 1
 	end
 
 	local indentofStart = fn.indent(fn.line("."))
+	local unindentedStart = indentofStart == 0
 
 	local prevLnum = fn.line(".") - 1 -- line before cursor
 	local nextLnum = fn.line(".") + 1 -- line after cursor
 	local lastLine = fn.line("$")
 
-	-- indented start: textobj is everything with same indentation
-	if indentofStart ~= 0 then
-		while isBlankLine(prevLnum) or fn.indent(prevLnum) >= indentofStart do
-			if prevLnum < 0 then break end
-			prevLnum = prevLnum - 1
-		end
-		while isBlankLine(nextLnum) or fn.indent(nextLnum) >= indentofStart do
-			if nextLnum >= lastLine then break end
-			nextLnum = nextLnum + 1
-		end
 	-- unindented start: textobj is consecutive lines of with no indentation
-	else
+	if unindentedStart then
 		while not (isBlankLine(prevLnum)) and fn.indent(prevLnum) == 0 do
 			if prevLnum < 0 then break end
 			prevLnum = prevLnum - 1
@@ -275,11 +266,21 @@ function M.indentation(noStartBorder, noEndBorder)
 			if nextLnum >= lastLine then break end
 			nextLnum = nextLnum + 1
 		end
+	-- indented start: textobj is everything with same indentation
+	else
+		while isBlankLine(prevLnum) or fn.indent(prevLnum) >= indentofStart do
+			if prevLnum < 0 then break end
+			prevLnum = prevLnum - 1
+		end
+		while isBlankLine(nextLnum) or fn.indent(nextLnum) >= indentofStart do
+			if nextLnum >= lastLine then break end
+			nextLnum = nextLnum + 1
+		end
 	end
 
 	-- differentiate ai and ii
-	if noStartBorder then prevLnum = prevLnum + 1 end
-	if noEndBorder then nextLnum = nextLnum - 1 end
+	if noStartBorder and not (unindentedStart) then prevLnum = prevLnum + 1 end
+	if noEndBorder  and not (unindentedStart) then nextLnum = nextLnum - 1 end
 
 	setLinewiseSelection(prevLnum, nextLnum)
 end
