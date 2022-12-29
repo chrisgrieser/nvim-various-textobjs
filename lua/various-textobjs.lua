@@ -234,9 +234,10 @@ end
 ---requires builtin LSP
 function M.diagnostic()
 	local d = vim.diagnostic.get_next { wrap = false }
-	if not d then return end
 	local curLine = fn.line(".")
-	if curLine + lookForwL > d.lnum then return end
+	if not d or curLine + lookForwL > d.lnum then 
+		notFoundMsg()
+	end
 	setSelection({ d.lnum + 1, d.col }, { d.end_lnum + 1, d.end_col })
 end
 
@@ -251,6 +252,7 @@ function M.indentation(noStartBorder, noEndBorder)
 	end
 
 	local indentofStart = fn.indent(fn.line("."))
+	-- TODO at indention 0, should work with consecutive
 	if indentofStart == 0 then return end -- do not select whole file or blank line
 
 	local prevLnum = fn.line(".") - 1 -- line before cursor
