@@ -66,9 +66,18 @@ If you want to set keybindings yourself, you can define them like this. The func
 Note that for the text objects that differentiate between outer and inner, the parameters are required and all boolean (`true` always meaning "inner"). 
 
 ```lua
+-- example: `?` for diagnostic textobj
+vim.keymap.set({"o", "x"}, "?", function () require("various-textobjs").diagnostic() end)
+
 -- example: `an` for outer number, `in` for inner number
 vim.keymap.set({"o", "x"}, "an", function () require("various-textobjs").number(false) end)
 vim.keymap.set({"o", "x"}, "in", function () require("various-textobjs").number(true) end)
+
+-- exception: indentation textobj requires two parameters, first for exclusion of the 
+-- starting border, second for the exclusion of ending border
+vim.keymap.set({"o", "x"}, "ii", function () require("various-textobjs").indentation(true, true) end)
+vim.keymap.set({"o", "x"}, "ai", function () require("various-textobjs").indentation(false, true) end)
+vim.keymap.set({"o", "x"}, "ai", function () require("various-textobjs").indentation(false, false) end)
 ```
 
 ## Advanced Usage
