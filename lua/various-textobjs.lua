@@ -235,8 +235,11 @@ end
 function M.diagnostic()
 	local d = vim.diagnostic.get_next { wrap = false }
 	local curLine = fn.line(".")
-	if not d or curLine + lookForwL > d.lnum then notFoundMsg() end
-	setSelection({ d.lnum + 1, d.col }, { d.end_lnum + 1, d.end_col })
+	if not d or (curLine + lookForwL < d.lnum) then
+		notFoundMsg()
+		return
+	end
+	setSelection({ d.lnum + 1, d.col }, { d.end_lnum + 1, d.end_col - 1 })
 end
 
 -- INDENTATION OBJECT
