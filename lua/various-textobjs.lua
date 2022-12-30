@@ -319,7 +319,6 @@ end
 ---Md Fenced Code Block Textobj
 ---@param inner boolean inner excludes the backticks
 function M.mdFencedCodeBlock(inner)
-	local lastLnum = fn.line("$")
 	local cursorLnum = fn.line(".")
 	local codeBlockPattern = "^```%w*$"
 
@@ -338,7 +337,7 @@ function M.mdFencedCodeBlock(inner)
 		end
 		i = i + 1
 	end
-	
+
 	if #cbBegin > #cbEnd then table.remove(cbEnd) end -- incomplete codeblock
 
 	-- determine cursor location in a codeblock
@@ -366,7 +365,6 @@ end
 
 ---value text object
 ---@param inner boolean inner value excludes trailing commas or semicolons, outer includes them. Both exclude trailing comments.
----@diagnostic disable: param-type-mismatch
 function M.value(inner)
 	-- captures value till the end of the line
 	-- negative sets to not find equality comparators == or css pseudo-elements ::
@@ -391,7 +389,6 @@ function M.value(inner)
 
 	setCursor(0, { curRow, valueEndCol })
 end
----@diagnostic enable: param-type-mismatch
 
 ---key / left side of variable assignment textobj
 ---@param inner boolean outer key includes the `:` or `=` after the key
@@ -406,7 +403,7 @@ function M.key(inner)
 		local curRow = fn.line(".")
 		local leadingWhitespace = getline(curRow):find("[^%s]") - 1
 		normal("o")
-		setCursor(0, { curRow, leadingWhitespace }) ---@diagnostic disable-line: param-type-mismatch
+		setCursor(0, { curRow, leadingWhitespace })
 	end
 end
 
