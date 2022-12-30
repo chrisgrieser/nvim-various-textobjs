@@ -30,7 +30,7 @@ local function setupKeymaps()
 		},
 		{
 			map = { mdlink = "l" },
-			fts = { "markdown" },
+			fts = { "markdown", "toml" },
 		},
 		{
 			map = { mdFencedCodeBlock = "C" },
