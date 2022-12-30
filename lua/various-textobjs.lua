@@ -323,16 +323,19 @@ function M.mdFencedCodeBlock(inner)
 	-- scan buffer for all code blocks, add beginnings & endings to a table each
 	local cbBegin = {}
 	local cbEnd = {}
-	for i = 1, lastLnum, 1 do
-		local lineContent = getline(i)
-		if lineContent:find(codeBlockPattern) then
+	local allLines = vim.api.nvim_buf_get_lines(0, 0, -1, true)
+	local i = 1
+	for _, line in pairs(allLines) do
+		if line:find(codeBlockPattern) then
 			if #cbBegin == #cbEnd then
 				table.insert(cbBegin, i)
 			else
 				table.insert(cbEnd, i)
 			end
 		end
+		i = i + 1
 	end
+	
 	if #cbBegin > #cbEnd then table.remove(cbEnd) end -- incomplete codeblock
 
 	-- determine cursor location in a codeblock
