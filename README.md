@@ -113,12 +113,13 @@ end, { desc = "Open next js regex in regex101" })
 - [ts-hint-textobject](https://github.com/mfussenegger/nvim-ts-hint-textobject)
 - [mini.ai](https://github.com/echasnovski/mini.nvim/blob/main/readmes/mini-ai.md)
 - [textobj-diagnostic](https://github.com/andrewferrier/textobj-diagnostic.nvim)
+- [targets.vim](https://github.com/wellle/targets.vim)
 
 ## Roadmap
-- [ ] Figure out how to make dot-repeatability work. (Pointers are welcome.)
+- [ ] Figure out how to make dot-repeatability work properly. (Pointers are welcome.) Until there is dot-repeatability, [you can use vim-repeat with custom mappings](https://github.com/chrisgrieser/nvim-various-textobjs/issues/7#issue-1514404084).
 
 ## Credits
-Thanks to the Valuable Dev for [their blogpost on how to get started with creating custom text objects](https://thevaluable.dev/vim-create-text-objects/).
+Thanks to the Valuable Dev for [their blog post on how to get started with creating custom text objects](https://thevaluable.dev/vim-create-text-objects/).
 
 <!-- vale Google.FirstPerson = NO -->
 ## About me
