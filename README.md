@@ -1,5 +1,4 @@
 # nvim-various-textobjs
-
 Bundle of more than a dozen new text objects for Neovim.
 
 <!--toc:start-->
@@ -14,7 +13,6 @@ Bundle of more than a dozen new text objects for Neovim.
 <!--toc:end-->
 
 ## List of Text Objects
-
 | textobj                | description                                                                                   | inner / outer                                                                             | forward-seeking | default keymaps          | filetypes (for default keymaps)   |
 |:---------------------- |:--------------------------------------------------------------------------------------------- |:----------------------------------------------------------------------------------------- |:--------------- |:------------------------:|:--------------------------------- |
 | indentation            | lines with same amount of indentation                                                         | [see overview from vim-indent-object](https://github.com/michaeljsmith/vim-indent-object) | no              | `ii`, `ia`, `aI`, (`iI`) | all                               |
@@ -54,7 +52,6 @@ use {
 ```
 
 ## Configuration
-
 The `.setup()` call is optional if you are fine with the defaults below. (Note that the default is to not set any keymaps by this plugin.)
 
 ```lua
@@ -84,7 +81,6 @@ vim.keymap.set({"o", "x"}, "aI", function () require("various-textobjs").indenta
 ```
 
 ## Advanced Usage
-
 You can also use the text objects as input for small snippets by yanking them and using `getreg()`. The following example uses the outer regex text object to retrieve pattern, flags, and replacement value of the next regex, and opens [regex101](https://regex101.com/) prefilled with them:
 
 ```lua
