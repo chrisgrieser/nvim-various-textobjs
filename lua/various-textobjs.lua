@@ -113,7 +113,7 @@ end
 
 ---notification when no textobj could be found
 local function notFoundMsg()
-	local msg = "Textobject not found within " .. tostring(lookForwL) .. " lines."
+	local msg = "Textobject not found within the next " .. tostring(lookForwL) .. " lines."
 	if lookForwL == 1 then msg = msg:gsub("s%.$", ".") end -- remove plural s
 	vim.notify(msg, vim.log.levels.WARN)
 end
