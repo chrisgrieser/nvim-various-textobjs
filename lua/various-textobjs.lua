@@ -233,9 +233,23 @@ end
 ---similar to https://github.com/andrewferrier/textobj-diagnostic.nvim
 ---requires builtin LSP
 function M.diagnostic()
-	local d = vim.diagnostic.get_next { wrap = false }
-	local curLine = fn.line(".")
-	if not d or (curLine + lookForwL < d.lnum) then
+	local next_d = vim.diagnostic.get_next { wrap = false }
+	local prev_d = vim.diagnostic.get_prev { wrap = false }
+	local cursorRow, cursorCol = unpack(getCursor(0))
+
+	local is_prev_in_cursor_line = prev_d and prev_d.lnum == cursorRow - 1
+	local is_next_in_cursor_line = next_d and next_d.lnum == cursorRow - 1
+
+	local d
+	if not is_prev_in_cursor_line then
+		d = next_d
+	elseif not is_next_in_cursor_line then
+		d = prev_d
+	else
+		d = math.abs(prev_d.col - cursorCol) < math.abs(next_d.col - cursorCol) and prev_d or next_d
+	end
+
+	if not d or (cursorRow + lookForwL < d.lnum) then
 		notFoundMsg()
 		return
 	end
