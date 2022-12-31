@@ -257,10 +257,8 @@ function M.diagnostic()
 	if prevD then
 		local curAfterPrevDstart = (curRow == prevD.lnum + 1 and curCol >= prevD.col)
 			or (curRow > prevD.lnum + 1)
-		print("curAfterPrevDstart:", curAfterPrevDstart)
 		local curBeforePrevDend = (curRow == prevD.end_lnum + 1 and curCol <= prevD.end_col - 1)
 			or (curRow < prevD.end_lnum)
-		print("curBeforePrevDend:", curBeforePrevDend)
 		curStandingOnPrevD = curAfterPrevDstart and curBeforePrevDend
 	end
 
