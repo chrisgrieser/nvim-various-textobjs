@@ -15,7 +15,7 @@ local function setupKeymaps()
 		number = "n",
 		value = "v",
 		key = "k",
-		subWord = "S",
+		subword = "S",
 	}
 	local oneMaps = {
 		nearEoL = "n",
