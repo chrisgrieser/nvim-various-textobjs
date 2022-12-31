@@ -242,9 +242,9 @@ function M.diagnostic()
 	-- INFO for whatever reason, diagnostic line numbers and the end column (but
 	-- not the start column) are all off-by-one…
 
-	-- HACK if cursor is standing on a diagnostic, get_prev() will return that diagnostic. 
-	-- *BUT* only if the cursor is not on the first character of the diagnostic, 
-	-- since the columns checked seem to be off-by-one as well m( 
+	-- HACK if cursor is standing on a diagnostic, get_prev() will return that
+	-- diagnostic *BUT* only if the cursor is not on the first character of the 
+	-- diagnostic, since the columns checked seem to be off-by-one as well m( 
 	-- Therefore counteracted by temporarily moving the cursor
 	normal("l")
 	local prevD = vim.diagnostic.get_prev { wrap = false } 
