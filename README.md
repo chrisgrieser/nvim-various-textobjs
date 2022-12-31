@@ -38,18 +38,18 @@ Bundle of more than a dozen new text objects for Neovim.
 ```lua
 -- packer
 use {
- "chrisgrieser/nvim-various-textobjs",
- config = function () 
-  require("various-textobjs").setup({ useDefaultKeymaps = true })
- end,
+	"chrisgrieser/nvim-various-textobjs",
+	config = function () 
+		require("various-textobjs").setup({ useDefaultKeymaps = true })
+	end,
 }
 
 -- lazy.nvim
 {
- "chrisgrieser/nvim-various-textobjs",
- config = function () 
-  require("various-textobjs").setup({ useDefaultKeymaps = true })
- end,
+	"chrisgrieser/nvim-various-textobjs",
+	config = function () 
+		require("various-textobjs").setup({ useDefaultKeymaps = true })
+	end,
 },
 ```
 
@@ -59,8 +59,8 @@ The `.setup()` call is optional if you are fine with the defaults below. (Note t
 
 ```lua
 require("various-textobjs").setup {
- lookForwardLines = 5, -- default: 5. Set to 0 to only look in the current line
- useDefaultKeymaps = false, -- Use suggested keymaps (see README). Default: false.
+	lookForwardLines = 5, -- default: 5. Set to 0 to only look in the current line
+	useDefaultKeymaps = false, -- Use suggested keymaps (see README). Default: false.
 }
 ```
 
@@ -89,30 +89,29 @@ You can also use the text objects as input for small snippets by yanking them an
 
 ```lua
 vim.keymap.set("n", "gR", function()
- require("various-textobjs").jsRegex(false) -- set visual selection to outer regex
- vim.cmd.normal { '"zy', bang = true }
- local regex = vim.fn.getreg("z")
- local pattern = regex:match("/(.*)/")
- local flags = regex:match("/.*/(.*)")
- local replacement = fn.getline("."):match('replace ?%(/.*/.*, ?"(.-)"')
- -- https://github.com/firasdib/Regex101/wiki/FAQ#how-to-prefill-the-fields-on-the-interface-via-url
- local url = "https://regex101.com/?regex=" .. pattern .. "&flags=" .. flags
- if replacement then url = url .. "&subst=" .. replacement end
+	require("various-textobjs").jsRegex(false) -- set visual selection to outer regex
+	vim.cmd.normal { '"zy', bang = true }
+	local regex = vim.fn.getreg("z")
+	local pattern = regex:match("/(.*)/")
+	local flags = regex:match("/.*/(.*)")
+	local replacement = fn.getline("."):match('replace ?%(/.*/.*, ?"(.-)"')
+	-- https://github.com/firasdib/Regex101/wiki/FAQ#how-to-prefill-the-fields-on-the-interface-via-url
+	local url = "https://regex101.com/?regex=" .. pattern .. "&flags=" .. flags
+	if replacement then url = url .. "&subst=" .. replacement end
 
- local opener
- if vim.fn.has("macunix") then
-  opener = "open"
- elseif vim.fn.has("unix") then
-  opener = "xdg-open"
- elseif vim.fn.has("win64") or fn.has("win32") then
-  opener = "start"
- end
- os.execute(opener .. "'" .. url .. "'")
+	local opener
+	if vim.fn.has("macunix") then
+		opener = "open"
+	elseif vim.fn.has("unix") then
+		opener = "xdg-open"
+	elseif vim.fn.has("win64") or fn.has("win32") then
+		opener = "start"
+	end
+	os.execute(opener .. "'" .. url .. "'")
 end, { desc = "Open next js regex in regex101" })
 ```
 
 ## Other Text-Object Plugins
-
 - [treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects)
 - [treesitter-textsubjects](https://github.com/RRethy/nvim-treesitter-textsubjects)
 - [ts-hint-textobject](https://github.com/mfussenegger/nvim-ts-hint-textobject)
@@ -121,20 +120,16 @@ end, { desc = "Open next js regex in regex101" })
 - [targets.vim](https://github.com/wellle/targets.vim)
 
 ## Roadmap
-
 - [ ] Figure out how to make dot-repeatability work properly. (Pointers are welcome.) Until there is dot-repeatability, [you can use vim-repeat with custom mappings](https://github.com/chrisgrieser/nvim-various-textobjs/issues/7#issue-1514404084).
 
 ## Credits
-
 Thanks to the Valuable Dev for [their blog post on how to get started with creating custom text objects](https://thevaluable.dev/vim-create-text-objects/).
 
 <!-- vale Google.FirstPerson = NO -->
 ## About me
-
 In my day job, I am a sociologist studying the social mechanisms underlying the digital economy. For my PhD project, I investigate the governance of the app economy and how software ecosystems manage the tension between innovation and compatibility. If you are interested in this subject, feel free to get in touch.
 
-__Profiles__
-
+__Profiles__  
 - [Discord](https://discordapp.com/users/462774483044794368/)
 - [Academic Website](https://chris-grieser.de/)
 - [GitHub](https://github.com/chrisgrieser/)
