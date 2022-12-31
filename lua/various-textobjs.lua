@@ -233,13 +233,41 @@ end
 ---similar to https://github.com/andrewferrier/textobj-diagnostic.nvim
 ---requires builtin LSP
 function M.diagnostic()
-	local d = vim.diagnostic.get_next { wrap = false }
-	local curLine = fn.line(".")
-	if not d or (curLine + lookForwL < d.lnum) then
+	-- INFO for whatever reason, diagnostic line numbers and the end column (but
+	-- not the start column) are all off-by-one…
+
+	-- HACK if cursor is standing on a diagnostic, get_prev() will return that diagnostic. 
+	-- *BUT* only if the cursor is not on the first character of the diagnostic, 
+	-- since the columns checked seem to be off-by-one as well m( 
+	-- Therefore counteracted by temporarily moving the cursor
+	normal("l")
+	local prevD = vim.diagnostic.get_prev { wrap = false } 
+	normal("h")
+
+	local nextD = vim.diagnostic.get_next { wrap = false }
+	local curStandingOnPrevD = false -- however, if prev diag is covered by or before the cursor has yet to be determined
+	local curRow, curCol = unpack(getCursor(0))
+
+	if prevD then
+		local curAfterPrevDstart = (curRow == prevD.lnum + 1 and curCol >= prevD.col)
+			or (curRow > prevD.lnum + 1)
+		print("curAfterPrevDstart:", curAfterPrevDstart)
+		local curBeforePrevDend = (curRow == prevD.end_lnum + 1 and curCol <= prevD.end_col - 1)
+			or (curRow < prevD.end_lnum)
+		print("curBeforePrevDend:", curBeforePrevDend)
+		curStandingOnPrevD = curAfterPrevDstart and curBeforePrevDend
+	end
+
+	local target
+	if curStandingOnPrevD then
+		target = prevD
+	elseif nextD and (curRow + lookForwL > nextD.lnum) then
+		target = nextD
+	else
 		notFoundMsg()
 		return
 	end
-	setSelection({ d.lnum + 1, d.col }, { d.end_lnum + 1, d.end_col - 1 })
+	setSelection({ target.lnum + 1, target.col }, { target.end_lnum + 1, target.end_col - 1 })
 end
 
 -- INDENTATION OBJECT
