@@ -22,6 +22,7 @@ local function setupKeymaps()
 		restOfParagraph = "r",
 		diagnostic = "!",
 		column = "|",
+		entireBuffer = "gG",
 	}
 	local ftMaps = {
 		{
@@ -188,6 +189,11 @@ end
 
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
+
+--Textobject for the entire buffer content
+function M.entireBuffer()
+	setLinewiseSelection(1, fn.line("$"))
+end
 
 ---Subword (word with "-_." as delimiters)
 ---@param inner boolean

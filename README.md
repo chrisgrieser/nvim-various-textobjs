@@ -30,6 +30,7 @@ Bundle of about a dozen custom text objects for Neovim. Includes text objects fo
 | column                 | column down until indent or shorter line. Accepts `{count}` for multiple columns.             | -                                                                                         | no              | `\|` (pipe char)         | all                               |
 | restOfParagraph        | like `}`, but linewise                                                                        | -                                                                                         | no              | `r`                      | all                               |
 | subword                | like `iw`, but always treating `-`, `_` or `.` as word delimiters (relevant if you change [`iskeyword`](https://neovim.io/doc/user/options.html#'iskeyword'))                             | analog to `iw` / `aw`                                                                     | no              | `iS`, `aS`               | all                               |
+| entireBuffer           | entire buffer as one text object                                                              | -                                                                                         | 🤔              | `gG`                     | all                               |
 
 ## Installation
 
