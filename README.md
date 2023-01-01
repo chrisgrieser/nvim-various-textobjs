@@ -55,15 +55,18 @@ use {
 The `.setup()` call is optional if you are fine with the defaults below. (Note that the default is to not set any keymaps by this plugin.)
 
 ```lua
+-- default config
 require("various-textobjs").setup {
-	lookForwardLines = 5, -- default: 5. Set to 0 to only look in the current line
-	useDefaultKeymaps = false, -- Use suggested keymaps (see README). Default: false.
+	lookForwardLines = 5, -- Set to 0 to only look in the current line.
+	useDefaultKeymaps = false, -- Use suggested keymaps (see README).
 }
 ```
 
-If you want to set keybindings yourself, you can define them like this. The function names correspond to the textobj-names from the [overview table](#list-of-text-objects).
+---
 
-Note that for the text objects that differentiate between outer and inner, the parameters are required and all boolean (`true` always meaning "inner").
+If you want to set keybindings yourself, you can define them as follows.
+- The function names correspond to the textobj-names from the [overview table](#list-of-text-objects).
+- For the text objects that differentiate between outer and inner, the parameters are required and all boolean (`true` always meaning "inner").
 
 ```lua
 -- example: `?` for diagnostic textobj
@@ -77,8 +80,7 @@ vim.keymap.set({"o", "x"}, "in", function () require("various-textobjs").number(
 -- starting border, second for the exclusion of ending border
 vim.keymap.set({"o", "x"}, "ii", function () require("various-textobjs").indentation(true, true) end)
 vim.keymap.set({"o", "x"}, "ai", function () require("various-textobjs").indentation(false, true) end)
-vim.keymap.set({"o", "x"}, "aI", function () require("various-textobjs").indentation(false, false) end)
-```
+``````
 
 ## Advanced Usage
 You can also use the text objects as input for small snippets by yanking them and using `getreg()`. The following example uses the outer regex text object to retrieve pattern, flags, and replacement value of the next regex, and opens [regex101](https://regex101.com/) prefilled with them:
@@ -116,7 +118,7 @@ end, { desc = "Open next js regex in regex101" })
 - [targets.vim](https://github.com/wellle/targets.vim)
 
 ## Roadmap
-- [ ] Figure out how to make dot-repeatability work properly. (Pointers are welcome.) Until there is dot-repeatability, [you can use vim-repeat with custom mappings](https://github.com/chrisgrieser/nvim-various-textobjs/issues/7#issue-1514404084).
+- [ ] Figure out how to make dot-repeatability work properly. [See also](https://github.com/chrisgrieser/nvim-various-textobjs/issues/7#issue-1514404084).
 
 ## Credits
 Thanks to the Valuable Dev for [their blog post on how to get started with creating custom text objects](https://thevaluable.dev/vim-create-text-objects/).
