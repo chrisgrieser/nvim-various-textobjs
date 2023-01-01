@@ -454,7 +454,7 @@ end
 ---@param inner boolean inner link only includes the link title, outer link includes link, url, and the four brackets.
 function M.mdlink(inner)
 	local pattern = "(%[)"
-		.. "[^]]-" -- first letter in lua pattern set being `]` escapes it
+		.. "[^]]-" -- first character in lua pattern set being `]` escapes it
 		.. "(%]%b())"
 	searchTextobj(pattern, inner)
 end
