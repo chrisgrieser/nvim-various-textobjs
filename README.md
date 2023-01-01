@@ -80,7 +80,7 @@ vim.keymap.set({"o", "x"}, "in", function () require("various-textobjs").number(
 -- starting border, second for the exclusion of ending border
 vim.keymap.set({"o", "x"}, "ii", function () require("various-textobjs").indentation(true, true) end)
 vim.keymap.set({"o", "x"}, "ai", function () require("various-textobjs").indentation(false, true) end)
-``````
+```
 
 ## Advanced Usage
 You can also use the text objects as input for small snippets by yanking them and using `getreg()`. The following example uses the outer regex text object to retrieve pattern, flags, and replacement value of the next regex, and opens [regex101](https://regex101.com/) prefilled with them:

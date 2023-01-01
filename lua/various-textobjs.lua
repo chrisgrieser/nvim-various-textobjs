@@ -191,9 +191,7 @@ end
 --------------------------------------------------------------------------------
 
 --Textobject for the entire buffer content
-function M.entireBuffer()
-	setLinewiseSelection(1, fn.line("$"))
-end
+function M.entireBuffer() setLinewiseSelection(1, fn.line("$")) end
 
 ---Subword (word with "-_." as delimiters)
 ---@param inner boolean
@@ -243,11 +241,11 @@ function M.diagnostic()
 	-- not the start column) are all off-by-one…
 
 	-- HACK if cursor is standing on a diagnostic, get_prev() will return that
-	-- diagnostic *BUT* only if the cursor is not on the first character of the 
-	-- diagnostic, since the columns checked seem to be off-by-one as well m( 
+	-- diagnostic *BUT* only if the cursor is not on the first character of the
+	-- diagnostic, since the columns checked seem to be off-by-one as well m(
 	-- Therefore counteracted by temporarily moving the cursor
 	normal("l")
-	local prevD = vim.diagnostic.get_prev { wrap = false } 
+	local prevD = vim.diagnostic.get_prev { wrap = false }
 	normal("h")
 
 	local nextD = vim.diagnostic.get_next { wrap = false }
@@ -455,7 +453,9 @@ end
 ---md links textobj
 ---@param inner boolean inner link only includes the link title, outer link includes link, url, and the four brackets.
 function M.mdlink(inner)
-	local pattern = "(%[).-(%]%b())"
+	local pattern = "(%[)"
+		.. "[^]]-" -- first letter in lua pattern set being `]` escapes it
+		.. "(%]%b())"
 	searchTextobj(pattern, inner)
 end
 
