@@ -64,9 +64,9 @@ require("various-textobjs").setup {
 
 ---
 
-If you want to set keybindings yourself, you can define them as follows.
+If you want to set your own keybindings yourself, you can define do so by calling the respective function.
 - The function names correspond to the textobj-names from the [overview table](#list-of-text-objects).
-- For the text objects that differentiate between outer and inner, the parameters are required and all boolean (`true` always meaning "inner").
+- The text objects that differentiate between outer and inner require a boolean parameter, `true` always meaning "inner," and `false` meaning "outer."
 
 ```lua
 -- example: `?` for diagnostic textobj
@@ -118,7 +118,7 @@ end, { desc = "Open next js regex in regex101" })
 - [targets.vim](https://github.com/wellle/targets.vim)
 
 ## Roadmap
-- [ ] Figure out how to make dot-repeatability work properly. [See also](https://github.com/chrisgrieser/nvim-various-textobjs/issues/7#issue-1514404084).
+- [ ] Figure out how to make dot-repeatability work properly. [See also this issue.](https://github.com/chrisgrieser/nvim-various-textobjs/issues/7#issue-1514404084).
 
 ## Credits
 Thanks to the Valuable Dev for [their blog post on how to get started with creating custom text objects](https://thevaluable.dev/vim-create-text-objects/).
