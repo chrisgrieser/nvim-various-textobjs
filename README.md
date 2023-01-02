@@ -9,7 +9,6 @@ Bundle of more than a dozen new text objects for Neovim.
 - [Other Text-Object Plugins](#other-text-object-plugins)
 - [Roadmap](#roadmap)
 - [Credits](#credits)
-- [About me](#about-me)
 <!--toc:end-->
 
 ## List of Text Objects
@@ -118,16 +117,17 @@ end, { desc = "Open next js regex in regex101" })
 - [targets.vim](https://github.com/wellle/targets.vim)
 
 ## Roadmap
-- [ ] Figure out how to make dot-repeatability work properly. [See also this issue.](https://github.com/chrisgrieser/nvim-various-textobjs/issues/7#issue-1514404084).
+- [ ] Make dot-repeatability work correctly. [See also this issue](https://github.com/chrisgrieser/nvim-various-textobjs/issues/7#issue-1514404084).
 
 ## Credits
-Thanks to the Valuable Dev for [their blog post on how to get started with creating custom text objects](https://thevaluable.dev/vim-create-text-objects/).
+__Thanks__  
+Kudos to the Valuable Dev for [their blog post on how to get started with creating custom text objects](https://thevaluable.dev/vim-create-text-objects/).
 
 <!-- vale Google.FirstPerson = NO -->
-## About me
+__About Me__  
 In my day job, I am a sociologist studying the social mechanisms underlying the digital economy. For my PhD project, I investigate the governance of the app economy and how software ecosystems manage the tension between innovation and compatibility. If you are interested in this subject, feel free to get in touch.
 
-__Profiles__  
+*Profiles*  
 - [Discord](https://discordapp.com/users/462774483044794368/)
 - [Academic Website](https://chris-grieser.de/)
 - [GitHub](https://github.com/chrisgrieser/)
