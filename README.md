@@ -117,7 +117,8 @@ end, { desc = "Open next js regex in regex101" })
 - [targets.vim](https://github.com/wellle/targets.vim)
 
 ## Roadmap
-- [ ] Make dot-repeatability work correctly. [See also this issue](https://github.com/chrisgrieser/nvim-various-textobjs/issues/7#issue-1514404084).
+- [ ] dot-repeatability ([See also this issue.](https://github.com/chrisgrieser/nvim-various-textobjs/issues/7#issue-1514404084))
+- [ ] use treesitter for some textobjs
 
 ## Credits
 __Thanks__  
