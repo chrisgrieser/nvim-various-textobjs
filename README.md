@@ -126,6 +126,7 @@ vim.keymap.set("n", "gx", function ()
 	if foundURL then
 		vim.cmd.normal { '"zy', bang = true } -- retrieve URL with "z as intermediary
 		url = fn.getreg("z")
+
 		local opener
 		if vim.fn.has("macunix") then
 			opener = "open"
