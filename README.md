@@ -29,6 +29,7 @@ Bundle of more than a dozen new text objects for Neovim.
 | restOfParagraph        | like `}`, but linewise                                                                        | -                                                                                         | no              | `r`                      | all                               |
 | subword                | like `iw`, but always treating `-`, `_` or `.` as word delimiters (relevant if you change [`iskeyword`](https://neovim.io/doc/user/options.html#'iskeyword'))                             | analog to `iw` / `aw`                                                                     | no              | `iS`, `aS`               | all                               |
 | entireBuffer           | entire buffer as one text object                                                              | -                                                                                         | -               | `gG`                     | all                               |
+| url                    | URL beginning with "http"                                                                     | -                                                                                         | yes             | `U`                      | all                               |
 
 ## Installation
 

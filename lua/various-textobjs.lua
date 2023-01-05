@@ -15,14 +15,15 @@ local function setupKeymaps()
 		number = "n",
 		value = "v",
 		key = "k",
-		subword = "S",
+		subword = "S", -- lowercase taken for sentence textobj
 	}
 	local oneMaps = {
 		nearEoL = "n",
 		restOfParagraph = "r",
 		diagnostic = "!",
 		column = "|",
-		entireBuffer = "gG",
+		entireBuffer = "gG", -- G + gg
+		url = "U", -- uppercase to avoid conflict with some comments plugin mapping `u` to comments textobjs for undoing
 	}
 	local ftMaps = {
 		{
@@ -444,6 +445,15 @@ function M.number(inner)
 	-- before and after the decimal dot. enforcing digital after dot so outer
 	-- excludes enumrations.
 	local pattern = inner and "%d+" or "%-?%d*%.?%d+"
+	searchTextobj(pattern, false)
+end
+
+---URL textobj
+function M.url()
+	-- TODO match other urls (file://, ftp://) as well. Requires searchTextobj() 
+	-- being able to handle multiple patterns, though, since lua pattern do not
+	-- have optional groups
+	local pattern = "https?://[A-Za-z0-9_%-/.#]+"
 	searchTextobj(pattern, false)
 end
 
