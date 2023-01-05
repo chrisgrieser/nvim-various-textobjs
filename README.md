@@ -6,6 +6,8 @@ Bundle of more than a dozen new text objects for Neovim.
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Advanced Usage](#advanced-usage)
+	- [Opening a regex at regex101](#opening-a-regex-at-regex101)
+	- [Smart Alternative to `gx`](#smart-alternative-to-gx)
 - [Other Text-Object Plugins](#other-text-object-plugins)
 - [Roadmap](#roadmap)
 - [Credits](#credits)
@@ -83,16 +85,20 @@ vim.keymap.set({"o", "x"}, "ai", function () require("various-textobjs").indenta
 ```
 
 ## Advanced Usage
+
+### Opening a regex at regex101
 You can also use the text objects as input for small snippets by yanking them and using `getreg()`. The following example uses the outer regex text object to retrieve pattern, flags, and replacement value of the next regex, and opens [regex101](https://regex101.com/) prefilled with them:
 
 ```lua
 vim.keymap.set("n", "gR", function()
 	require("various-textobjs").jsRegex(false) -- set visual selection to outer regex
-	vim.cmd.normal { '"zy', bang = true }
+	vim.cmd.normal { '"zy', bang = true } -- retrieve regex with "z as intermediary
 	local regex = vim.fn.getreg("z")
+
 	local pattern = regex:match("/(.*)/")
 	local flags = regex:match("/.*/(.*)")
 	local replacement = fn.getline("."):match('replace ?%(/.*/.*, ?"(.-)"')
+
 	-- https://github.com/firasdib/Regex101/wiki/FAQ#how-to-prefill-the-fields-on-the-interface-via-url
 	local url = "https://regex101.com/?regex=" .. pattern .. "&flags=" .. flags
 	if replacement then url = url .. "&subst=" .. replacement end
@@ -109,12 +115,39 @@ vim.keymap.set("n", "gR", function()
 end, { desc = "Open next js regex in regex101" })
 ```
 
+### Smart Alternative to `gx`
+Using the URL textobj, you can also write a small snippet for a smarter `gx`. This snippet retrieves the next URL (within the amount of lines configured in the `setup` call), and opens it in your browser. While this is already an improvement to vim's builtin `gx`, which requires the cursor to be standing on an URL to work, you can go one step further: if no URL has been found within the next few lines, the `:UrlView` command from [urlview.nvim](https://github.com/axieax/urlview.nvim) is triggered, searching the entire buffer for a URL to open. 
+
+```lua
+vim.keymap.set("n", "gx", function ()
+	require("various-textobjs").url() -- select URL
+	local foundURL = fn.mode():find("v") -- only switches to visual mode if found
+	local url
+	if foundURL then
+		vim.cmd.normal { '"zy', bang = true } -- retrieve URL with "z as intermediary
+		url = fn.getreg("z")
+		local opener
+		if vim.fn.has("macunix") then
+			opener = "open"
+		elseif vim.fn.has("unix") then
+			opener = "xdg-open"
+		elseif vim.fn.has("win64") or fn.has("win32") then
+			opener = "start"
+		end
+		os.execute(opener .. "'" .. url .. "'")
+	else
+		-- if not found in proximity, search whole buffer via urlview.nvim instead
+		cmd.UrlView("buffer")
+	end
+end, {desc = "Smart URL Opener"})
+
+```
+
 ## Other Text-Object Plugins
 - [treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects)
 - [treesitter-textsubjects](https://github.com/RRethy/nvim-treesitter-textsubjects)
 - [ts-hint-textobject](https://github.com/mfussenegger/nvim-ts-hint-textobject)
 - [mini.ai](https://github.com/echasnovski/mini.nvim/blob/main/readmes/mini-ai.md)
-- [textobj-diagnostic](https://github.com/andrewferrier/textobj-diagnostic.nvim)
 - [targets.vim](https://github.com/wellle/targets.vim)
 
 ## Roadmap
