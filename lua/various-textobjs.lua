@@ -231,7 +231,7 @@ end
 ---rest of paragraph (linewise)
 function M.restOfParagraph()
 	if not isVisualLineMode() then normal("V") end
-	normal("}")
+	normal("}k")
 end
 
 ---DIAGNOSTIC TEXT OBJECT
