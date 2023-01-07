@@ -198,11 +198,11 @@ end
 function M.entireBuffer() setLinewiseSelection(1, fn.line("$")) end
 
 ---Subword
----@param inner boolean outer includes a potential trailing space
+---@param inner boolean outer includes trailing -_
 function M.subword(inner)
 	-- first character restricted to letter, since in most languages also
 	-- stipulate that variable names may not start with a digit
-	local pattern = "()%a[%l%d]+( ?)"
+	local pattern = "()%a[%l%d]+([_%-]?)"
 	searchTextobj(pattern, inner)
 end
 
