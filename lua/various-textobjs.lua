@@ -2,7 +2,6 @@ local getCursor = vim.api.nvim_win_get_cursor
 local setCursor = vim.api.nvim_win_set_cursor
 local bo = vim.bo
 local fn = vim.fn
-local opt = vim.opt
 
 local M = {}
 --------------------------------------------------------------------------------
@@ -159,22 +158,24 @@ local function searchTextobj(pattern, inner)
 	repeat
 		beginCol = beginCol + 1
 		beginCol, endCol, captureG1, captureG2 = lineContent:find(pattern, beginCol)
-		local noneInStartingLine = not beginCol
-		standingOnOrInFront = endCol and endCol > cursorCol
+		noneInStartingLine = not beginCol
+		local standingOnOrInFront = endCol and endCol > cursorCol
 	until standingOnOrInFront or noneInStartingLine
 
 	-- subsequent lines: search full line for first occurrence
 	local i = 0
-	while not standingOnOrInFront do
-		i = i + 1
-		if i > lookForwL or cursorRow + i > lastLine then
-			notFoundMsg()
-			return false
-		end
-		lineContent = getline(cursorRow + i)
+	if noneInStartingLine then
+		while true do
+			i = i + 1
+			if i > lookForwL or cursorRow + i > lastLine then
+				notFoundMsg()
+				return false
+			end
+			lineContent = getline(cursorRow + i)
 
-		beginCol, endCol, captureG1, captureG2 = lineContent:find(pattern)
-		if beginCol then break end
+			beginCol, endCol, captureG1, captureG2 = lineContent:find(pattern)
+			if beginCol then break end
+		end
 	end
 
 	-- capture groups determine the inner/outer difference
@@ -199,6 +200,8 @@ function M.entireBuffer() setLinewiseSelection(1, fn.line("$")) end
 ---Subword
 ---@param inner boolean outer includes a potential trailing space
 function M.subword(inner)
+	-- first character restricted to letter, since in most languages also
+	-- stipulate that variable names may not start with a digit
 	local pattern = "()%a[%l%d]+( ?)"
 	searchTextobj(pattern, inner)
 end
@@ -443,7 +446,7 @@ end
 
 ---URL textobj
 function M.url()
-	-- TODO match other urls (file://, ftp://) as well. Requires searchTextobj() 
+	-- TODO match other urls (file://, ftp://) as well. Requires searchTextobj()
 	-- being able to handle multiple patterns, though, since lua pattern do not
 	-- have optional groups
 	local pattern = "https?://[A-Za-z0-9_%-/.#]+"
