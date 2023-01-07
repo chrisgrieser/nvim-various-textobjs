@@ -282,8 +282,8 @@ function M.indentation(noStartBorder, noEndBorder)
 	local indentofStart = fn.indent(fn.line("."))
 	local unindentedStart = indentofStart == 0
 
-	local prevLnum = fn.line(".") - 1 -- line before cursor
-	local nextLnum = fn.line(".") + 1 -- line after cursor
+	local prevLnum = fn.line(".") - 1 
+	local nextLnum = fn.line(".") + 1 
 	local lastLine = fn.line("$")
 
 	-- unindented start: textobj is consecutive lines of with no indentation
