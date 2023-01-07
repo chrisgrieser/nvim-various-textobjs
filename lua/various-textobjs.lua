@@ -157,9 +157,11 @@ local function searchTextobj(pattern, inner)
 
 	-- first line: check if standing on or in front of textobj
 	repeat
-		beginCol, endCol, captureG1, captureG2 = lineContent:find(pattern, beginCol + 1)
-		standingOnOrInFront = endCol and endCol >= cursorCol
-	until not beginCol or standingOnOrInFront
+		beginCol = beginCol + 1
+		beginCol, endCol, captureG1, captureG2 = lineContent:find(pattern, beginCol)
+		local noneInStartingLine = not beginCol
+		standingOnOrInFront = endCol and endCol > cursorCol
+	until standingOnOrInFront or noneInStartingLine
 
 	-- subsequent lines: search full line for first occurrence
 	local i = 0
