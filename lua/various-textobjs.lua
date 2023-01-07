@@ -194,20 +194,11 @@ end
 --Textobject for the entire buffer content
 function M.entireBuffer() setLinewiseSelection(1, fn.line("$")) end
 
----Subword (word with "-_." as delimiters)
----@param inner boolean
+---Subword
+---@param inner boolean outer includes a potential trailing space
 function M.subword(inner)
-	local iskeywBefore = opt.iskeyword:get()
-	opt.iskeyword:remove { "_", "-", "." }
-	if not isVisualMode() then normal("v") end
-
-	if inner then
-		normal("iw")
-	else
-		normal("aw")
-	end
-
-	opt.iskeyword = iskeywBefore
+	local pattern = "()%a[%l%d]+( ?)"
+	searchTextobj(pattern, inner)
 end
 
 ---near end of the line, ignoring trailing whitespace (relevant for markdown)
