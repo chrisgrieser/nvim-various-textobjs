@@ -116,7 +116,7 @@ end, { desc = "Open next js regex in regex101" })
 ```
 
 ### Smart Alternative to `gx`
-Using the URL textobj, you can also write a small snippet for a smarter `gx`. This snippet retrieves the next URL (within the amount of lines configured in the `setup` call), and opens it in your browser. While this is already an improvement to vim's builtin `gx`, which requires the cursor to be standing on an URL to work, you can go one step further: if no URL has been found within the next few lines, the `:UrlView` command from [urlview.nvim](https://github.com/axieax/urlview.nvim) is triggered, searching the entire buffer for a URL to open. 
+Using the URL textobj, you can also write a small snippet for a smarter `gx`. The code below retrieves the next URL (within the amount of lines configured in the `setup` call), and opens it in your browser. While this is already an improvement to vim's built-in `gx`, which requires the cursor to be standing on a URL to work, you can even go one step further. If no URL has been found within the next few lines, the `:UrlView` command from [urlview.nvim](https://github.com/axieax/urlview.nvim) is triggered, searching the entire buffer for URLs from which you can choose which to open.
 
 ```lua
 vim.keymap.set("n", "gx", function ()
