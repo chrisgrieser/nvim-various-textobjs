@@ -152,7 +152,7 @@ end, {desc = "Smart URL Opener"})
 - [targets.vim](https://github.com/wellle/targets.vim)
 
 ## Roadmap
-- [ ] dot-repeatability ([See also this issue.](https://github.com/chrisgrieser/nvim-various-textobjs/issues/7#issue-1514404084))
+- [ ] dot-repeatability. Any pointers or help on making *text objects* dot-repeatable are welcome. (All plugins/guides I could found implement dot-repeatability for normal mode mappings, and that method doesn't seem to work for operator-pending mode.) [See also this issue.](https://github.com/chrisgrieser/nvim-various-textobjs/issues/7#issue-1514404084)
 - [ ] use treesitter for some textobjs
 
 ## Credits
