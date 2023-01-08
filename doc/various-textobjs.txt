@@ -195,7 +195,7 @@ OTHER TEXT-OBJECT PLUGINS         *various-textobjs-other-text-object-plugins*
 ROADMAP                                             *various-textobjs-roadmap*
 
 
-- ☐ dot-repeatability (See also this issue. <https://github.com/chrisgrieser/nvim-various-textobjs/issues/7#issue-1514404084>)
+- ☐ dot-repeatability. Any pointers or help on making _text objects_ dot-repeatable are welcome. (All plugins/guides I could found implement dot-repeatability for normal mode mappings, and that method doesn’t seem to work for operator-pending mode.) See also this issue. <https://github.com/chrisgrieser/nvim-various-textobjs/issues/7#issue-1514404084>
 - ☐ use treesitter for some textobjs
 
 
