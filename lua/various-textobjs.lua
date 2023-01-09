@@ -45,6 +45,10 @@ local function setupKeymaps()
 			map = { cssSelector = "c" },
 			fts = { "css", "scss" },
 		},
+		{
+			map = { shellPipe = "P" },
+			fts = { "sh", "bash", "zsh", "fish" },
+		},
 	}
 	-----------------------------------------------------------------------------
 	local keymap = vim.keymap.set
@@ -481,9 +485,16 @@ function M.jsRegex(inner)
 end
 
 ---CSS Selector Textobj
----@param inner boolean inner selector or outer selector which includes trailing comma and whitespace
+---@param inner boolean outer selector includes trailing comma and whitespace
 function M.cssSelector(inner)
 	local pattern = "()%.[%w-_]+(,? ?)"
+	searchTextobj(pattern, inner)
+end
+
+---Shell Pipe Textobj
+---@param inner boolean outer selector includes the front pipe
+function M.shellPipe(inner)
+	local pattern = "(| ?)[^|]+()"
 	searchTextobj(pattern, inner)
 end
 

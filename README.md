@@ -32,6 +32,7 @@ Bundle of more than a dozen new text objects for Neovim.
 | subword                | like `iw`, but treating `-`, `_` or `.` as word delimiters *and* only part of camelcase.      | outer includes trailing `_` or `-`                                                        | yes             | `iS`, `aS`               | all                               |
 | entireBuffer           | entire buffer as one text object                                                              | -                                                                                         | -               | `gG`                     | all                               |
 | url                    | URL beginning with "http"                                                                     | -                                                                                         | yes             | `U`                      | all                               |
+| shellPipe              | command stdout is piped to                                                                    | outer includes the front pipe character                                                   | yes             | `iP`/`aP`                | bash, zsh, fish, sh               |
 
 ## Installation
 
