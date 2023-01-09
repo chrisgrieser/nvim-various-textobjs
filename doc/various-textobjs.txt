@@ -1,4 +1,4 @@
-*various-textobjs.txt*       For NVIM v0.8.0      Last change: 2023 January 08
+*various-textobjs.txt*       For NVIM v0.8.0      Last change: 2023 January 09
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
@@ -49,6 +49,7 @@ LIST OF TEXT OBJECTS                   *various-textobjs-list-of-text-objects*
 │subword             │like iw, but treating -, _ or . as word delimiters _and_ only part of camelcase.                │outer includes trailing _ or -                                                          │yes            │             iS, aS             │all                            │
 │entireBuffer        │entire buffer as one text object                                                                │-                                                                                       │-              │               gG               │all                            │
 │url                 │URL beginning with "http"                                                                       │-                                                                                       │yes            │               U                │all                            │
+│shellPipe           │command stdout is piped to                                                                      │outer includes the front pipe character                                                 │yes            │             iP/aP              │bash, zsh, fish, sh            │
 
 
 INSTALLATION                                   *various-textobjs-installation*
