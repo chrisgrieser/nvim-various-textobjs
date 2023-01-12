@@ -22,7 +22,7 @@ local function setupKeymaps()
 		diagnostic = "!",
 		column = "|",
 		entireBuffer = "gG", -- G + gg
-		url = "U", -- uppercase to avoid conflict with some comments plugin mapping `u` to comments textobjs for undoing
+		url = "L", -- gu, gU, and U would conflight with gugu, gUgU, and gUU. u would conflict with gcu (undo comment).
 	}
 	local ftMaps = {
 		{
