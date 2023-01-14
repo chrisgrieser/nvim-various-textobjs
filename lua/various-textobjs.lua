@@ -453,7 +453,7 @@ function M.url()
 	-- TODO match other urls (file://, ftp://) as well. Requires searchTextobj()
 	-- being able to handle multiple patterns, though, since lua pattern do not
 	-- have optional groups
-	local pattern = "https?://[A-Za-z0-9_%-/.#]+"
+	local pattern = "https?://[A-Za-z0-9_%-/.#%%]+"
 	searchTextobj(pattern, false)
 end
 
