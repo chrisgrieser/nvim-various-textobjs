@@ -1,4 +1,4 @@
-*various-textobjs.txt*       For NVIM v0.8.0      Last change: 2023 January 14
+*various-textobjs.txt*       For NVIM v0.8.0      Last change: 2023 January 17
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
@@ -33,7 +33,7 @@ Bundle of more than a dozen new text objects for Neovim.
 LIST OF TEXT OBJECTS                   *various-textobjs-list-of-text-objects*
 
 │      textobj       │                                          description                                           │                                     inner / outer                                      │forward-seeking│        default keymaps         │filetypes (for default keymaps)│
-│indentation         │lines with same amount of indentation                                                           │see overview from vim-indent-object <https://github.com/michaeljsmith/vim-indent-object>│no             │        ii, ia, aI, (iI)        │all                            │
+│indentation         │lines with same amount of indentation                                                           │see overview from vim-indent-object <https://github.com/michaeljsmith/vim-indent-object>│no             │        ii, ai, (aI, iI)        │all                            │
 │value               │value of key-value pair, or right side of a variable assignment (inside one line)               │outer includes trailing commas or semicolons                                            │yes            │             iv, av             │all                            │
 │key                 │key of key-value pair, or left side of a variable assignment                                    │outer includes the = or :                                                               │yes            │             ik, ak             │all                            │
 │number              │numbers, similar to <C-a>                                                                       │inner: only pure digits, outer: number including minus sign and decimal point           │yes            │             in, an             │all                            │
