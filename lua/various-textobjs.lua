@@ -450,10 +450,11 @@ end
 
 ---URL textobj
 function M.url()
-	-- TODO match other urls (file://, ftp://) as well. Requires searchTextobj()
+	-- TODO match other urls (file://, ftp://, etc.) as well. Requires searchTextobj()
 	-- being able to handle multiple patterns, though, since lua pattern do not
-	-- have optional groups
-	local pattern = "https?://[A-Za-z0-9_%-/.#%%]+"
+	-- have optional groups. Think of a way to implement this without making
+	-- searchTextobj unnecessarily complex for other methods
+	local pattern = "https?://[A-Za-z0-9_%-/.#%%=?]+"
 	searchTextobj(pattern, false)
 end
 
