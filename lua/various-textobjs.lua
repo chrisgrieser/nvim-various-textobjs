@@ -454,7 +454,7 @@ function M.url()
 	-- being able to handle multiple patterns, though, since lua pattern do not
 	-- have optional groups. Think of a way to implement this without making
 	-- searchTextobj unnecessarily complex for other methods
-	local pattern = "https?://[A-Za-z0-9_%-/.#%%=?]+"
+	local pattern = "https?://[A-Za-z0-9_%-/.#%%=?&]+"
 	searchTextobj(pattern, false)
 end
 
