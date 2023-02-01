@@ -22,7 +22,7 @@ local function setupKeymaps()
 		diagnostic = "!",
 		column = "|",
 		entireBuffer = "gG", -- G + gg
-		url = "L", -- gu, gU, and U would conflight with gugu, gUgU, and gUU. u would conflict with gcu (undo comment).
+		url = "L", -- gu, gU, and U would conflict with gugu, gUgU, and gUU. u would conflict with gcu (undo comment)
 	}
 	local ftMaps = {
 		{
