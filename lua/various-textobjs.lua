@@ -231,7 +231,8 @@ end
 ---rest of paragraph (linewise)
 function M.restOfParagraph()
 	if not isVisualLineMode() then normal("V") end
-	normal("}k")
+	normal("}")
+	if fn.line(".") ~= fn.line("$") then normal("k") end -- one up, except on last line
 end
 
 ---DIAGNOSTIC TEXT OBJECT
@@ -286,8 +287,8 @@ function M.indentation(noStartBorder, noEndBorder)
 	local indentofStart = fn.indent(fn.line("."))
 	local unindentedStart = indentofStart == 0
 
-	local prevLnum = fn.line(".") - 1 
-	local nextLnum = fn.line(".") + 1 
+	local prevLnum = fn.line(".") - 1
+	local nextLnum = fn.line(".") + 1
 	local lastLine = fn.line("$")
 
 	-- unindented start: textobj is consecutive lines of with no indentation
