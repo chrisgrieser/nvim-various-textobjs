@@ -1,16 +1,16 @@
-*various-textobjs.txt*      For NVIM v0.8.0      Last change: 2023 February 07
+*various-textobjs.txt*      For NVIM v0.8.0      Last change: 2023 February 22
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
 
 1. nvim-various-textobjs              |various-textobjs-nvim-various-textobjs|
-  - List of Text Objects               |various-textobjs-list-of-text-objects|
-  - Installation                               |various-textobjs-installation|
-  - Configuration                             |various-textobjs-configuration|
-  - Advanced Usage                           |various-textobjs-advanced-usage|
-  - Other Text-Object Plugins     |various-textobjs-other-text-object-plugins|
-  - Roadmap                                         |various-textobjs-roadmap|
-  - Credits                                         |various-textobjs-credits|
+  - List of Text Objects|various-textobjs-nvim-various-textobjs-list-of-text-objects|
+  - Installation         |various-textobjs-nvim-various-textobjs-installation|
+  - Configuration       |various-textobjs-nvim-various-textobjs-configuration|
+  - Advanced Usage     |various-textobjs-nvim-various-textobjs-advanced-usage|
+  - Other Text-Object Plugins|various-textobjs-nvim-various-textobjs-other-text-object-plugins|
+  - Roadmap                   |various-textobjs-nvim-various-textobjs-roadmap|
+  - Credits                   |various-textobjs-nvim-various-textobjs-credits|
 
 ==============================================================================
 1. nvim-various-textobjs              *various-textobjs-nvim-various-textobjs*
@@ -27,35 +27,86 @@ Bundle of more than a dozen new text objects for Neovim.
 - |various-textobjs-other-text-object-plugins|
 - |various-textobjs-roadmap|
 - |various-textobjs-credits|
-    <!--toc:end-->
 
 
-LIST OF TEXT OBJECTS                   *various-textobjs-list-of-text-objects*
+LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs-list-of-text-objects*
 
-│      textobj       │                                          description                                           │                                     inner / outer                                      │forward-seeking│        default keymaps         │filetypes (for default keymaps)│
-│indentation         │surrounding lines with same or higher indentation                                               │see overview from vim-indent-object <https://github.com/michaeljsmith/vim-indent-object>│no             │        ii, ai, (aI, iI)        │all                            │
-│restOfIndentation   │lines down with same or higher indentation                                                      │see overview from vim-indent-object <https://github.com/michaeljsmith/vim-indent-object>│no             │               R                │all                            │
-│value               │value of key-value pair, or right side of a variable assignment (inside one line)               │outer includes trailing commas or semicolons                                            │yes            │             iv, av             │all                            │
-│key                 │key of key-value pair, or left side of a variable assignment                                    │outer includes the = or :                                                               │yes            │             ik, ak             │all                            │
-│number              │numbers, similar to <C-a>                                                                       │inner: only pure digits, outer: number including minus sign and decimal point           │yes            │             in, an             │all                            │
-│diagnostic          │LSP diagnostic (requires built-in LSP)                                                          │-                                                                                       │yes            │               !                │all                            │
-│nearEoL             │from cursor position to end of line, minus one character                                        │-                                                                                       │no             │               n                │all                            │
-│mdlink              │markdown link like [title](url)                                                                 │inner is only the link title (between the [])                                           │yes            │             il, al             │markdown, toml                 │
-│mdFencedCodeBlock   │markdown fenced code (enclosed by three backticks)                                              │outer includes the enclosing backticks                                                  │yes            │             iC, aC             │markdown                       │
-│cssSelector         │class in CSS, like .my-class                                                                    │outer includes trailing comma and space                                                 │yes            │             ic, ac             │css, scss                      │
-│jsRegex             │JavaScript regex pattern                                                                        │outer includes the slashes and any flags                                                │yes            │             i/, a/             │javascript, typescript         │
-│doubleSquareBrackets│text enclosed by [[]]                                                                           │outer includes the four square brackets                                                 │yes            │             iD, aD             │lua, shell, neorg, markdown    │
-│column              │column down until indent or shorter line. Accepts {count} for multiple columns.                 │-                                                                                       │no             │         \| (pipe char)         │all                            │
-│restOfParagraph     │like }, but linewise                                                                            │-                                                                                       │no             │               r                │all                            │
-│subword             │like iw, but treating -, _ or . as word delimiters _and_ only part of camelcase.                │outer includes trailing _ or -                                                          │yes            │             iS, aS             │all                            │
-│entireBuffer        │entire buffer as one text object                                                                │-                                                                                       │-              │               gG               │all                            │
-│url                 │link beginning with "http"                                                                      │-                                                                                       │yes            │               L                │all                            │
-│shellPipe           │command stdout is piped to                                                                      │outer includes the front pipe character                                                 │yes            │             iP/aP              │bash, zsh, fish, sh            │
+  ---------------------------------------------------------------------------------------------------------------
+  textobj                description            inner / outer           forward-seeking    default  filetypes
+                                                                                           keymaps  (for default
+                                                                                                    keymaps)
+  ---------------------- ---------------------- ----------------------- ----------------- --------- -------------
+  indentation            surrounding lines with see overview from       no                 ii, ai,  all
+                         same or higher         vim-indent-object                         (aI, iI)  
+                         indentation                                                                
 
+  restOfIndentation      lines down with same   see overview from       no                    R     all
+                         or higher indentation  vim-indent-object                                   
 
-INSTALLATION                                   *various-textobjs-installation*
+  value                  value of key-value     outer includes trailing yes                iv, av   all
+                         pair, or right side of commas or semicolons                                
+                         a variable assignment                                                      
+                         (inside one line)                                                          
 
->
+  key                    key of key-value pair, outer includes the = or yes                ik, ak   all
+                         or left side of a      :                                                   
+                         variable assignment                                                        
+
+  number                 numbers, similar to    inner: only pure        yes                in, an   all
+                         <C-a>                  digits, outer: number                               
+                                                including minus sign                                
+                                                and decimal point                                   
+
+  diagnostic             LSP diagnostic         -                       yes                   !     all
+                         (requires built-in                                                         
+                         LSP)                                                                       
+
+  nearEoL                from cursor position   -                       no                    n     all
+                         to end of line, minus                                                      
+                         one character                                                              
+
+  mdlink                 markdown link like     inner is only the link  yes                il, al   markdown,
+                         [title](url)           title (between the [])                              toml
+
+  mdFencedCodeBlock      markdown fenced code   outer includes the      yes                iC, aC   markdown
+                         (enclosed by three     enclosing backticks                                 
+                         backticks)                                                                 
+
+  cssSelector            class in CSS, like     outer includes trailing yes                ic, ac   css, scss
+                         .my-class              comma and space                                     
+
+  jsRegex                JavaScript regex       outer includes the      yes                i/, a/   javascript,
+                         pattern                slashes and any flags                               typescript
+
+  doubleSquareBrackets   text enclosed by [[]]  outer includes the four yes                iD, aD   lua, shell,
+                                                square brackets                                     neorg,
+                                                                                                    markdown
+
+  column                 column down until      -                       no                \| (pipe  all
+                         indent or shorter                                                  char)   
+                         line. Accepts {count}                                                      
+                         for multiple columns.                                                      
+
+  restOfParagraph        like }, but linewise   -                       no                    r     all
+
+  subword                like iw, but treating  outer includes trailing yes                iS, aS   all
+                         -, _ or . as word      _ or -                                              
+                         delimiters and only                                                        
+                         part of camelcase.                                                         
+
+  entireBuffer           entire buffer as one   -                       -                    gG     all
+                         text object                                                                
+
+  url                    link beginning with    -                       yes                   L     all
+                         “http”                                                                     
+
+  shellPipe              command stdout is      outer includes the      yes                 iP/aP   bash, zsh,
+                         piped to               front pipe character                                fish, sh
+  ---------------------------------------------------------------------------------------------------------------
+
+INSTALLATION             *various-textobjs-nvim-various-textobjs-installation*
+
+>lua
     -- packer
     use {
         "chrisgrieser/nvim-various-textobjs",
@@ -74,12 +125,12 @@ INSTALLATION                                   *various-textobjs-installation*
 <
 
 
-CONFIGURATION                                 *various-textobjs-configuration*
+CONFIGURATION           *various-textobjs-nvim-various-textobjs-configuration*
 
 The `.setup()` call is optional if you are fine with the defaults below. (Note
 that the default is to not set any keymaps by this plugin.)
 
->
+>lua
     -- default config
     require("various-textobjs").setup {
         lookForwardLines = 5, -- Set to 0 to only look in the current line.
@@ -87,16 +138,14 @@ that the default is to not set any keymaps by this plugin.)
     }
 <
 
-
 ------------------------------------------------------------------------------
-
 If you want to set your own keybindings yourself, you can do so by calling the
 respective function: - The function names correspond to the textobj-names from
 the |various-textobjs-overview-table|. - The text objects that differentiate
 between outer and inner require a boolean parameter, `true` always meaning
 "inner," and `false` meaning "outer."
 
->
+>lua
     -- example: `?` for diagnostic textobj
     vim.keymap.set({"o", "x"}, "?", function () require("various-textobjs").diagnostic() end)
     
@@ -111,7 +160,8 @@ between outer and inner require a boolean parameter, `true` always meaning
 <
 
 
-ADVANCED USAGE                               *various-textobjs-advanced-usage*
+ADVANCED USAGE         *various-textobjs-nvim-various-textobjs-advanced-usage*
+
 
 OPENING A REGEX AT REGEX101 ~
 
@@ -120,7 +170,7 @@ and using `getreg()`. The following example uses the outer regex text object to
 retrieve pattern, flags, and replacement value of the next regex, and opens
 regex101 <https://regex101.com/> prefilled with them:
 
->
+>lua
     vim.keymap.set("n", "gR", function()
         require("various-textobjs").jsRegex(false) -- set visual selection to outer regex
         vim.cmd.normal { '"zy', bang = true } -- retrieve regex with "z as intermediary
@@ -147,7 +197,7 @@ regex101 <https://regex101.com/> prefilled with them:
 <
 
 
-SMART ALTERNATIVE TO `GX` ~
+SMART ALTERNATIVE TO GX ~
 
 Using the URL textobj, you can also write a small snippet for a smarter `gx`.
 The code below retrieves the next URL (within the amount of lines configured in
@@ -158,7 +208,7 @@ within the next few lines, the `:UrlView` command from urlview.nvim
 <https://github.com/axieax/urlview.nvim> is triggered, searching the entire
 buffer for URLs from which you can choose which to open.
 
->
+>lua
     vim.keymap.set("n", "gx", function ()
         require("various-textobjs").url() -- select URL
         local foundURL = fn.mode():find("v") -- only switches to visual mode if found
@@ -168,11 +218,11 @@ buffer for URLs from which you can choose which to open.
             url = fn.getreg("z")
     
             local opener
-            if vim.fn.has("macunix") then
+            if vim.fn.has("macunix") == 1 then
                 opener = "open"
-            elseif vim.fn.has("unix") then
+            elseif vim.fn.has("linux") == 1 then
                 opener = "xdg-open"
-            elseif vim.fn.has("win64") or fn.has("win32") then
+            elseif vim.fn.has("win64") == 1 or fn.has("win32") == 1 then
                 opener = "start"
             end
             os.execute(opener .. "'" .. url .. "'")
@@ -184,7 +234,7 @@ buffer for URLs from which you can choose which to open.
 <
 
 
-OTHER TEXT-OBJECT PLUGINS         *various-textobjs-other-text-object-plugins*
+OTHER TEXT-OBJECT PLUGINS*various-textobjs-nvim-various-textobjs-other-text-object-plugins*
 
 
 - treesitter-textobjects <https://github.com/nvim-treesitter/nvim-treesitter-textobjects>
@@ -194,14 +244,14 @@ OTHER TEXT-OBJECT PLUGINS         *various-textobjs-other-text-object-plugins*
 - targets.vim <https://github.com/wellle/targets.vim>
 
 
-ROADMAP                                             *various-textobjs-roadmap*
+ROADMAP                       *various-textobjs-nvim-various-textobjs-roadmap*
 
 
 - ☐ dot-repeatability. Any pointers or help on making _text objects_ dot-repeatable are welcome. (All plugins/guides I could found implement dot-repeatability for normal mode mappings, and that method doesn’t seem to work for operator-pending mode.) See also this issue. <https://github.com/chrisgrieser/nvim-various-textobjs/issues/7#issue-1514404084>
 - ☐ use treesitter for some textobjs
 
 
-CREDITS                                             *various-textobjs-credits*
+CREDITS                       *various-textobjs-nvim-various-textobjs-credits*
 
 **Thanks** Kudos to the Valuable Dev for their blog post on how to get started
 with creating custom text objects
