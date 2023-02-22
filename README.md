@@ -131,11 +131,11 @@ vim.keymap.set("n", "gx", function ()
 		url = fn.getreg("z")
 
 		local opener
-		if vim.fn.has("macunix") then
+		if vim.fn.has("macunix") == 1 then
 			opener = "open"
-		elseif vim.fn.has("unix") then
+		elseif vim.fn.has("linux") == 1 then
 			opener = "xdg-open"
-		elseif vim.fn.has("win64") or fn.has("win32") then
+		elseif vim.fn.has("win64") == 1 or fn.has("win32") == 1 then
 			opener = "start"
 		end
 		os.execute(opener .. "'" .. url .. "'")
