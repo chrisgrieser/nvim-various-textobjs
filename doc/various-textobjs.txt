@@ -40,8 +40,8 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs-list-of-text-objects
                          same or higher         vim-indent-object                         (aI, iI)  
                          indentation                                                                
 
-  restOfIndentation      lines down with same   see overview from       no                    R     all
-                         or higher indentation  vim-indent-object                                   
+  restOfIndentation      lines down with same   -                       no                    R     all
+                         or higher indentation                                                      
 
   value                  value of key-value     outer includes trailing yes                iv, av   all
                          pair, or right side of commas or semicolons                                
@@ -251,7 +251,6 @@ ROADMAP                       *various-textobjs-nvim-various-textobjs-roadmap*
 
 
 - ☐ dot-repeatability. Any pointers or help on making _text objects_ dot-repeatable are welcome. (All plugins/guides I could found implement dot-repeatability for normal mode mappings, and that method doesn’t seem to work for operator-pending mode.) See also this issue. <https://github.com/chrisgrieser/nvim-various-textobjs/issues/7#issue-1514404084>
-- ☐ use treesitter for some textobjs
 
 
 CREDITS                       *various-textobjs-nvim-various-textobjs-credits*
