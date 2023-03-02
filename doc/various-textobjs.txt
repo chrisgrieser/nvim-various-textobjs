@@ -1,4 +1,4 @@
-*various-textobjs.txt*      For NVIM v0.8.0      Last change: 2023 February 22
+*various-textobjs.txt*        For NVIM v0.8.0       Last change: 2023 March 02
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
@@ -102,6 +102,9 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs-list-of-text-objects
 
   shellPipe              command stdout is      outer includes the      yes                 iP/aP   bash, zsh,
                          piped to               front pipe character                                fish, sh
+
+  toNextClosingBracket   from cursor to next    -                       no                    %     all
+                         closing ], ), or }                                                         
   ---------------------------------------------------------------------------------------------------------------
 
 INSTALLATION             *various-textobjs-nvim-various-textobjs-installation*
