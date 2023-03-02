@@ -35,6 +35,7 @@ Bundle of more than a dozen new text objects for Neovim.
 | entireBuffer         | entire buffer as one text object                                                         | \-                                                                                        | \-              |           `gG`           | all                             |
 | url                  | link beginning with "http"                                                               | \-                                                                                        | yes             |           `L`            | all                             |
 | shellPipe            | command stdout is piped to                                                               | outer includes the front pipe character                                                   | yes             |        `iP`/`aP`         | bash, zsh, fish, sh             |
+| toNextClosingBracket | from cursor to next closing `]`, `)`, or `}`                                             | \-                                                                                        | no              |           `%`            | all                             |
 
 ## Installation
 

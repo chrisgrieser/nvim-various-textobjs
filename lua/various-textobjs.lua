@@ -18,6 +18,7 @@ local function setupKeymaps()
 	}
 	local oneMaps = {
 		nearEoL = "n",
+		toNextClosingBracket = "%", -- since this is basically a more intuitive version of the standard "%" motion-as-textobj
 		restOfParagraph = "r",
 		restOfIndentation = "R",
 		diagnostic = "!",
@@ -206,7 +207,7 @@ end
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 
---Textobject for the entire buffer content
+---Textobject for the entire buffer content
 function M.entireBuffer() setLinewiseSelection(1, fn.line("$")) end
 
 ---Subword
@@ -234,6 +235,20 @@ function M.nearEoL()
 	until not lastChar:find("%s") or lastCol == 1
 
 	normal("h")
+end
+
+---till next closing bracket ] bla } flfs )
+function M.toNextClosingBracket()
+	-- since `searchTextobj` just select the next closing bracket, we save the
+	-- current cursor position and then afterwards move backwards. While this is
+	-- a less straightforward approach, this allows us to re-use `searchTextobj`
+	-- instead of re-implementing the forward-searching algorithm
+	local startingPosition = getCursor(0)
+
+	local pattern = "()[]})]()"
+	searchTextobj(pattern, true)
+
+	setCursor(0, startingPosition)
 end
 
 ---rest of paragraph (linewise)
