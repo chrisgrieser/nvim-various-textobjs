@@ -95,7 +95,14 @@ end
 
 ---runs :normal natively with bang
 ---@param cmdStr any
-local function normal(cmdStr) vim.cmd.normal { cmdStr, bang = true } end
+local function normal(cmdStr)
+	local is08orHigher = vim.version().major > 0 or vim.version().minor > 7
+	if is08orHigher then
+		vim.cmd.normal { cmdStr, bang = true }
+	else
+		vim.cmd("normal! " .. cmdStr)
+	end
+end
 
 ---equivalent to fn.getline(), but using more efficient nvim api
 ---@param lnum integer
