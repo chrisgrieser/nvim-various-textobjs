@@ -18,7 +18,7 @@ Bundle of more than a dozen new text objects for Neovim.
 | textobj              | description                                                                              | inner / outer                                                                             | forward-seeking |     default keymaps      | filetypes (for default keymaps) |
 |:---------------------|:-----------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------|:----------------|:------------------------:|:--------------------------------|
 | indentation          | surrounding lines with same or higher indentation                                        | [see overview from vim-indent-object](https://github.com/michaeljsmith/vim-indent-object) | no              | `ii`, `ai`, (`aI`, `iI`) | all                             |
-| restOfIndentation    | lines down with same or higher indentation                                               | [see overview from vim-indent-object](https://github.com/michaeljsmith/vim-indent-object) | no              |           `R`            | all                             |
+| restOfIndentation    | lines down with same or higher indentation                                               | \-                                                                                        | no              |           `R`            | all                             |
 | value                | value of key-value pair, or right side of a variable assignment (inside one line)        | outer includes trailing commas or semicolons                                              | yes             |        `iv`, `av`        | all                             |
 | key                  | key of key-value pair, or left side of a variable assignment                             | outer includes the `=` or `:`                                                             | yes             |        `ik`, `ak`        | all                             |
 | number               | numbers, similar to `<C-a>`                                                              | inner: only pure digits, outer: number including minus sign and decimal point             | yes             |        `in`, `an`        | all                             |
@@ -145,7 +145,6 @@ vim.keymap.set("n", "gx", function ()
 		cmd.UrlView("buffer")
 	end
 end, {desc = "Smart URL Opener"})
-
 ```
 
 ## Other Text-Object Plugins
@@ -157,7 +156,6 @@ end, {desc = "Smart URL Opener"})
 
 ## Roadmap
 - [ ] dot-repeatability. Any pointers or help on making *text objects* dot-repeatable are welcome. (All plugins/guides I could found implement dot-repeatability for normal mode mappings, and that method doesn't seem to work for operator-pending mode.) [See also this issue.](https://github.com/chrisgrieser/nvim-various-textobjs/issues/7#issue-1514404084)
-- [ ] use treesitter for some textobjs
 
 ## Credits
 __Thanks__  
