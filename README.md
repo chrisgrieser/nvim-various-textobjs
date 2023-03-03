@@ -70,7 +70,7 @@ require("various-textobjs").setup {
 
 ---
 
-If you want to set your own keybindings yourself, you can do so by calling the respective function:
+If you want to set your own keybindings, you can do so by calling the respective functions:
 - The function names correspond to the textobj-names from the [overview table](#list-of-text-objects).
 - The text objects that differentiate between outer and inner require a boolean parameter, `true` always meaning "inner," and `false` meaning "outer."
 
