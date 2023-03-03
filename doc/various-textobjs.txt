@@ -1,4 +1,4 @@
-*various-textobjs.txt*        For NVIM v0.8.0       Last change: 2023 March 02
+*various-textobjs.txt*        For NVIM v0.8.0       Last change: 2023 March 03
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
@@ -32,78 +32,78 @@ Bundle of more than a dozen new text objects for Neovim.
 LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs-list-of-text-objects*
 
   ---------------------------------------------------------------------------------------------------------------
-  textobj                description            inner / outer           forward-seeking    default  filetypes
+  textobj                description             inner / outer          forward-seeking    default  filetypes
                                                                                            keymaps  (for default
                                                                                                     keymaps)
-  ---------------------- ---------------------- ----------------------- ----------------- --------- -------------
-  indentation            surrounding lines with see overview from       no                 ii, ai,  all
-                         same or higher         vim-indent-object                         (aI, iI)  
+  ---------------------- ----------------------- ---------------------- ----------------- --------- -------------
+  indentation            surrounding lines with  see overview from      no                 ii, ai,  all
+                         same or higher          vim-indent-object                        (aI, iI)  
                          indentation                                                                
 
-  restOfIndentation      lines down with same   -                       no                    R     all
-                         or higher indentation                                                      
+  restOfIndentation      lines down with same or -                      no                    R     all
+                         higher indentation                                                         
 
-  value                  value of key-value     outer includes trailing yes                iv, av   all
-                         pair, or right side of commas or semicolons                                
-                         a variable assignment                                                      
+  value                  value of key-value      outer includes         yes                iv, av   all
+                         pair, or right side of  trailing commas or                                 
+                         a variable assignment   semicolons                                         
                          (inside one line)                                                          
 
-  key                    key of key-value pair, outer includes the = or yes                ik, ak   all
-                         or left side of a      :                                                   
+  key                    key of key-value pair,  outer includes the =   yes                ik, ak   all
+                         or left side of a       or :                                               
                          variable assignment                                                        
 
-  number                 numbers, similar to    inner: only pure        yes                in, an   all
-                         <C-a>                  digits, outer: number                               
-                                                including minus sign                                
-                                                and decimal point                                   
+  number                 numbers, similar to     inner: only pure       yes                in, an   all
+                         <C-a>                   digits, outer: number                              
+                                                 including minus sign                               
+                                                 and decimal point                                  
 
-  diagnostic             LSP diagnostic         -                       yes                   !     all
-                         (requires built-in                                                         
-                         LSP)                                                                       
+  diagnostic             LSP diagnostic          -                      yes                   !     all
+                         (requires built-in LSP)                                                    
 
-  nearEoL                from cursor position   -                       no                    n     all
-                         to end of line, minus                                                      
-                         one character                                                              
+  nearEoL                from cursor position to -                      no                    n     all
+                         end of line, minus one                                                     
+                         character                                                                  
 
-  mdlink                 markdown link like     inner is only the link  yes                il, al   markdown,
-                         [title](url)           title (between the [])                              toml
+  mdlink                 markdown link like      inner is only the link yes                il, al   markdown,
+                         [title](url)            title (between the [])                             toml
 
-  mdFencedCodeBlock      markdown fenced code   outer includes the      yes                iC, aC   markdown
-                         (enclosed by three     enclosing backticks                                 
+  mdFencedCodeBlock      markdown fenced code    outer includes the     yes                iC, aC   markdown
+                         (enclosed by three      enclosing backticks                                
                          backticks)                                                                 
 
-  cssSelector            class in CSS, like     outer includes trailing yes                ic, ac   css, scss
-                         .my-class              comma and space                                     
+  cssSelector            class in CSS, like      outer includes         yes                ic, ac   css, scss
+                         .my-class               trailing comma and                                 
+                                                 space                                              
 
-  jsRegex                JavaScript regex       outer includes the      yes                i/, a/   javascript,
-                         pattern                slashes and any flags                               typescript
+  jsRegex                JavaScript regex        outer includes the     yes                i/, a/   javascript,
+                         pattern                 slashes and any flags                              typescript
 
-  doubleSquareBrackets   text enclosed by [[]]  outer includes the four yes                iD, aD   lua, shell,
-                                                square brackets                                     neorg,
+  doubleSquareBrackets   text enclosed by [[]]   outer includes the     yes                iD, aD   lua, shell,
+                                                 four square brackets                               neorg,
                                                                                                     markdown
 
-  column                 column down until      -                       no                \| (pipe  all
-                         indent or shorter                                                  char)   
-                         line. Accepts {count}                                                      
-                         for multiple columns.                                                      
+  column                 column down until       -                      no                \| (pipe  all
+                         indent or shorter line.                                            char)   
+                         Accepts {count} for                                                        
+                         multiple columns.                                                          
 
-  restOfParagraph        like }, but linewise   -                       no                    r     all
+  restOfParagraph        like }, but linewise    -                      no                    r     all
 
-  subword                like iw, but treating  outer includes trailing yes                iS, aS   all
-                         -, _ or . as word      _ or -                                              
+  subword                like iw, but treating   outer includes         yes                iS, aS   all
+                         -, _, and . as word     trailing _ or -                                    
                          delimiters and only                                                        
-                         part of camelcase.                                                         
+                         part of camelCase.                                                         
 
-  entireBuffer           entire buffer as one   -                       -                    gG     all
+  entireBuffer           entire buffer as one    -                      -                    gG     all
                          text object                                                                
 
-  url                    link beginning with    -                       yes                   L     all
+  url                    link beginning with     -                      yes                   L     all
                          “http”                                                                     
 
-  shellPipe              command stdout is      outer includes the      yes                 iP/aP   bash, zsh,
-                         piped to               front pipe character                                fish, sh
+  shellPipe              command stdout is piped outer includes the     yes                 iP/aP   bash, zsh,
+                         to                      front pipe character                               fish, sh
 
-  toNextClosingBracket   from cursor to next    -                       no                    %     all
+  toNextClosingBracket   from cursor to next     -                      no                    %     all
                          closing ], ), or }                                                         
   ---------------------------------------------------------------------------------------------------------------
 
@@ -131,7 +131,7 @@ INSTALLATION             *various-textobjs-nvim-various-textobjs-installation*
 CONFIGURATION           *various-textobjs-nvim-various-textobjs-configuration*
 
 The `.setup()` call is optional if you are fine with the defaults below. (Note
-that the default is to not set any keymaps by this plugin.)
+that the default is to **not** set any keymaps by this plugin.)
 
 >lua
     -- default config
@@ -142,8 +142,8 @@ that the default is to not set any keymaps by this plugin.)
 <
 
 ------------------------------------------------------------------------------
-If you want to set your own keybindings yourself, you can do so by calling the
-respective function: - The function names correspond to the textobj-names from
+If you want to set your own keybindings, you can do so by calling the
+respective functions: - The function names correspond to the textobj-names from
 the |various-textobjs-overview-table|. - The text objects that differentiate
 between outer and inner require a boolean parameter, `true` always meaning
 "inner," and `false` meaning "outer."
