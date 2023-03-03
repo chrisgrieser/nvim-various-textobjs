@@ -58,13 +58,13 @@ use {
 ```
 
 ## Configuration
-The `.setup()` call is optional if you are fine with the defaults below. (Note that the default is to __not__ set any keymaps by this plugin.)
+The `.setup()` call is optional if you are fine with the defaults below. (Note that the default is to __not__ set any keymaps.)
 
 ```lua
 -- default config
 require("various-textobjs").setup {
-	lookForwardLines = 5, -- Set to 0 to only look in the current line.
-	useDefaultKeymaps = false, -- Use suggested keymaps (see README).
+	lookForwardLines = 5, -- set to 0 to only look in the current line
+	useDefaultKeymaps = false, -- use suggested keymaps (see README)
 }
 ```
 
@@ -82,8 +82,9 @@ vim.keymap.set({"o", "x"}, "?", function () require("various-textobjs").diagnost
 vim.keymap.set({"o", "x"}, "an", function () require("various-textobjs").number(false) end)
 vim.keymap.set({"o", "x"}, "in", function () require("various-textobjs").number(true) end)
 
--- exception: indentation textobj requires two parameters, first for exclusion of the 
--- starting border, second for the exclusion of ending border
+-- exception: indentation textobj requires two parameters, the first for 
+-- exclusion of the starting border, the second for the exclusion of ending
+-- border
 vim.keymap.set({"o", "x"}, "ii", function () require("various-textobjs").indentation(true, true) end)
 vim.keymap.set({"o", "x"}, "ai", function () require("various-textobjs").indentation(false, true) end)
 ```
@@ -120,12 +121,12 @@ end, { desc = "Open next js regex in regex101" })
 ```
 
 ### Smart Alternative to `gx`
-Using the URL textobj, you can also write a small snippet for a smarter `gx`. The code below retrieves the next URL (within the amount of lines configured in the `setup` call), and opens it in your browser. While this is already an improvement to vim's built-in `gx`, which requires the cursor to be standing on a URL to work, you can even go one step further. If no URL has been found within the next few lines, the `:UrlView` command from [urlview.nvim](https://github.com/axieax/urlview.nvim) is triggered, searching the entire buffer for URLs from which you can choose which to open.
+Using the URL textobj, you can also write a small snippet to replace netrw's `gx`. The code below retrieves the next URL (within the amount of lines configured in the `setup` call), and opens it in your browser. While this is already an improvement to vim's built-in `gx`, which requires the cursor to be standing on a URL to work, you can even go one step further. If no URL has been found within the next few lines, the `:UrlView` command from [urlview.nvim](https://github.com/axieax/urlview.nvim) is triggered, searching the entire buffer for URLs from which you can choose which to open.
 
 ```lua
 vim.keymap.set("n", "gx", function ()
 	require("various-textobjs").url() -- select URL
-	local foundURL = fn.mode():find("v") -- only switches to visual mode if found
+	local foundURL = vim.fn.mode():find("v") -- only switches to visual mode if found
 	local url
 	if foundURL then
 		vim.cmd.normal { '"zy', bang = true } -- retrieve URL with "z as intermediary
@@ -142,7 +143,7 @@ vim.keymap.set("n", "gx", function ()
 		os.execute(opener .. "'" .. url .. "'")
 	else
 		-- if not found in proximity, search whole buffer via urlview.nvim instead
-		cmd.UrlView("buffer")
+		vim.cmd.UrlView("buffer")
 	end
 end, {desc = "Smart URL Opener"})
 ```
