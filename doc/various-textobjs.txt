@@ -1,4 +1,4 @@
-*various-textobjs.txt*        For NVIM v0.8.0       Last change: 2023 March 03
+*various-textobjs.txt*        For NVIM v0.8.0       Last change: 2023 March 04
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
@@ -8,8 +8,8 @@ Table of Contents                         *various-textobjs-table-of-contents*
   - Installation         |various-textobjs-nvim-various-textobjs-installation|
   - Configuration       |various-textobjs-nvim-various-textobjs-configuration|
   - Advanced Usage     |various-textobjs-nvim-various-textobjs-advanced-usage|
+  - Limitations           |various-textobjs-nvim-various-textobjs-limitations|
   - Other Text-Object Plugins|various-textobjs-nvim-various-textobjs-other-text-object-plugins|
-  - Roadmap                   |various-textobjs-nvim-various-textobjs-roadmap|
   - Credits                   |various-textobjs-nvim-various-textobjs-credits|
 
 ==============================================================================
@@ -24,8 +24,8 @@ Bundle of more than a dozen new text objects for Neovim.
 - |various-textobjs-advanced-usage|
     - |various-textobjs-opening-a-regex-at-regex101|
     - |various-textobjs-smart-alternative-to-`gx`|
+- |various-textobjs-limitations|
 - |various-textobjs-other-text-object-plugins|
-- |various-textobjs-roadmap|
 - |various-textobjs-credits|
 
 
@@ -238,6 +238,14 @@ buffer for URLs from which you can choose which to open.
 <
 
 
+LIMITATIONS               *various-textobjs-nvim-various-textobjs-limitations*
+
+
+- This plugin uses pattern matching, so it can be inaccurate in some edge cases.
+- The value-textobj does not work with multi-line values.
+- There is no reliable dot-repeatability. Any pointers or help on making _text objects_ dot-repeatable are welcome. All plugins/guides I could find implement dot-repeatability only for normal mode mappings and do not work for text objects. <https://github.com/chrisgrieser/nvim-various-textobjs/issues/7#issue-1514404084>
+
+
 OTHER TEXT-OBJECT PLUGINS*various-textobjs-nvim-various-textobjs-other-text-object-plugins*
 
 
@@ -246,12 +254,6 @@ OTHER TEXT-OBJECT PLUGINS*various-textobjs-nvim-various-textobjs-other-text-obje
 - ts-hint-textobject <https://github.com/mfussenegger/nvim-ts-hint-textobject>
 - mini.ai <https://github.com/echasnovski/mini.nvim/blob/main/readmes/mini-ai.md>
 - targets.vim <https://github.com/wellle/targets.vim>
-
-
-ROADMAP                       *various-textobjs-nvim-various-textobjs-roadmap*
-
-
-- ☐ dot-repeatability. Any pointers or help on making _text objects_ dot-repeatable are welcome. (All plugins/guides I could found implement dot-repeatability for normal mode mappings, and that method doesn’t seem to work for operator-pending mode.) See also this issue. <https://github.com/chrisgrieser/nvim-various-textobjs/issues/7#issue-1514404084>
 
 
 CREDITS                       *various-textobjs-nvim-various-textobjs-credits*
