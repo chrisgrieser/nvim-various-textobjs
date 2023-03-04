@@ -8,8 +8,8 @@ Bundle of more than a dozen new text objects for Neovim.
 - [Advanced Usage](#advanced-usage)
 	- [Opening a regex at regex101](#opening-a-regex-at-regex101)
 	- [Smart Alternative to `gx`](#smart-alternative-to-gx)
+- [Limitations](#limitations)
 - [Other Text-Object Plugins](#other-text-object-plugins)
-- [Roadmap](#roadmap)
 - [Credits](#credits)
 <!--toc:end-->
 
@@ -148,15 +148,17 @@ vim.keymap.set("n", "gx", function ()
 end, {desc = "Smart URL Opener"})
 ```
 
+## Limitations
+- This plugin uses pattern matching, so it can be inaccurate in some edge cases. 
+- The value-textobj does not work with multi-line values.
+- There is no reliable dot-repeatability. Any pointers or help on making *text objects* dot-repeatable are welcome. [All plugins/guides I could find implement dot-repeatability only for normal mode mappings and do not work for text objects.](https://github.com/chrisgrieser/nvim-various-textobjs/issues/7#issue-1514404084)
+
 ## Other Text-Object Plugins
 - [treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects)
 - [treesitter-textsubjects](https://github.com/RRethy/nvim-treesitter-textsubjects)
 - [ts-hint-textobject](https://github.com/mfussenegger/nvim-ts-hint-textobject)
 - [mini.ai](https://github.com/echasnovski/mini.nvim/blob/main/readmes/mini-ai.md)
 - [targets.vim](https://github.com/wellle/targets.vim)
-
-## Roadmap
-- [ ] dot-repeatability. Any pointers or help on making *text objects* dot-repeatable are welcome. (All plugins/guides I could found implement dot-repeatability for normal mode mappings, and that method doesn't seem to work for operator-pending mode.) [See also this issue.](https://github.com/chrisgrieser/nvim-various-textobjs/issues/7#issue-1514404084)
 
 ## Credits
 __Thanks__  
