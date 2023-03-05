@@ -213,9 +213,15 @@ function M.entireBuffer() setLinewiseSelection(1, fn.line("$")) end
 ---Subword
 ---@param inner boolean outer includes trailing -_
 function M.subword(inner)
-	-- first character restricted to letter, since in most languages also
+	-- first character restricted to letter (%a), since most languages also
 	-- stipulate that variable names may not start with a digit
-	local pattern = "()%a[%l%d]+([_%-]?)"
+	local pattern = "()%a[%l%d]+([_-]?)"
+
+	-- adjust pattern when word under cursor is all uppercase to handle
+	-- subwords of SCREAMING_SNAKE_CASE variables
+	local upperCaseWord = fn.expand("<cword>") == fn.expand("<cword>"):upper()
+	if upperCaseWord then pattern = "()%u[%u%d]+([_-]?)" end
+
 	searchTextobj(pattern, inner)
 end
 
