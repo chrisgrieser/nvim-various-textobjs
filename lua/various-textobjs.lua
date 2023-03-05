@@ -307,22 +307,21 @@ function M.indentation(noStartBorder, noEndBorder)
 		return lineContent:find("^%s*$") == 1
 	end
 
-	local indentofStart = fn.indent(fn.line("."))
+	local curLnum = fn.line(".")
+	local indentofStart = fn.indent(curLnum)
 	if indentofStart == 0 then
 		vim.notify("Current line is not indented.", vim.log.levels.WARN)
 		return
 	end
 
-	local prevLnum = fn.line(".") - 1
-	local nextLnum = fn.line(".") + 1
+	local prevLnum = curLnum - 1
+	local nextLnum = curLnum + 1
 	local lastLine = fn.line("$")
 
-	while isBlankLine(prevLnum) or fn.indent(prevLnum) >= indentofStart do
-		if prevLnum < 0 then break end
+	while prevLnum > 0 and (isBlankLine(prevLnum) or fn.indent(prevLnum) >= indentofStart) do
 		prevLnum = prevLnum - 1
 	end
-	while isBlankLine(nextLnum) or fn.indent(nextLnum) >= indentofStart do
-		if nextLnum >= lastLine then break end
+	while nextLnum < lastLine and (isBlankLine(nextLnum) or fn.indent(nextLnum) >= indentofStart) do
 		nextLnum = nextLnum + 1
 	end
 
