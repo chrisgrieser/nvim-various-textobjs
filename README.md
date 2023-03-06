@@ -130,7 +130,7 @@ vim.keymap.set("n", "gx", function ()
 	local url
 	if foundURL then
 		vim.cmd.normal { '"zy', bang = true } -- retrieve URL with "z as intermediary
-		url = fn.getreg("z")
+		url = vim.fn.getreg("z")
 
 		local opener
 		if vim.fn.has("macunix") == 1 then
@@ -140,7 +140,7 @@ vim.keymap.set("n", "gx", function ()
 		elseif vim.fn.has("win64") == 1 or fn.has("win32") == 1 then
 			opener = "start"
 		end
-		os.execute(opener .. "'" .. url .. "'")
+		os.execute(opener .. " '" .. url .. "'")
 	else
 		-- if not found in proximity, search whole buffer via urlview.nvim instead
 		vim.cmd.UrlView("buffer")
