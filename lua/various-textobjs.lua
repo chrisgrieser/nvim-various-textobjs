@@ -251,7 +251,7 @@ function M.toNextClosingBracket()
 	-- instead of re-implementing the forward-searching algorithm
 	local startingPosition = getCursor(0)
 
-	local pattern = "()[]})]()"
+	local pattern = "().([]})])"
 	searchTextobj(pattern, true)
 
 	setCursor(0, startingPosition)
