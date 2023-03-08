@@ -36,9 +36,9 @@ Bundle of more than a dozen new text objects for Neovim.
 | url                  | link beginning with "http"                                                                 | \-                                                                                        | yes             |           `L`            | all                             |
 | shellPipe            | command stdout is piped to                                                                 | outer includes the front pipe character                                                   | yes             |        `iP`/`aP`         | bash, zsh, fish, sh             |
 | toNextClosingBracket | from cursor to next closing `]`, `)`, or `}`                                               | \-                                                                                        | no              |           `%`            | all                             |
-
-\* Textobject is deprecated due to [treesitter-textobject](https://github.com/nvim-treesitter/nvim-treesitter-textobjects) introducing a similar
-textobject that is more capable and therefore recommended.
+> __Warning__  
+> \* Textobject is deprecated due to [treesitter-textobject](https://github.com/nvim-treesitter/nvim-treesitter-textobjects) introducing a similar
+textobject that is more capable. 
 
 ## Installation
 
@@ -93,35 +93,6 @@ vim.keymap.set({"o", "x"}, "ai", function () require("various-textobjs").indenta
 ```
 
 ## Advanced Usage
-
-### Opening a regex at regex101
-You can also use the text objects as input for small snippets by yanking them and using `getreg()`. The following example uses the outer regex text object to retrieve pattern, flags, and replacement value of the next regex, and opens [regex101](https://regex101.com/) prefilled with them:
-
-```lua
-vim.keymap.set("n", "gR", function()
-	require("various-textobjs").jsRegex(false) -- set visual selection to outer regex
-	vim.cmd.normal { '"zy', bang = true } -- retrieve regex with "z as intermediary
-	local regex = vim.fn.getreg("z")
-
-	local pattern = regex:match("/(.*)/")
-	local flags = regex:match("/.*/(.*)")
-	local replacement = fn.getline("."):match('replace ?%(/.*/.*, ?"(.-)"')
-
-	-- https://github.com/firasdib/Regex101/wiki/FAQ#how-to-prefill-the-fields-on-the-interface-via-url
-	local url = "https://regex101.com/?regex=" .. pattern .. "&flags=" .. flags
-	if replacement then url = url .. "&subst=" .. replacement end
-
-	local opener
-	if vim.fn.has("macunix") then
-		opener = "open"
-	elseif vim.fn.has("unix") then
-		opener = "xdg-open"
-	elseif vim.fn.has("win64") or fn.has("win32") then
-		opener = "start"
-	end
-	os.execute(opener .. "'" .. url .. "'")
-end, { desc = "Open next js regex in regex101" })
-```
 
 ### Smart Alternative to `gx`
 Using the URL textobj, you can also write a small snippet to replace netrw's `gx`. The code below retrieves the next URL (within the amount of lines configured in the `setup` call), and opens it in your browser. While this is already an improvement to vim's built-in `gx`, which requires the cursor to be standing on a URL to work, you can even go one step further. If no URL has been found within the next few lines, the `:UrlView` command from [urlview.nvim](https://github.com/axieax/urlview.nvim) is triggered, searching the entire buffer for URLs from which you can choose which to open.
