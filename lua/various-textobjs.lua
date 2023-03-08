@@ -440,7 +440,7 @@ function M.mdFencedCodeBlock(inner)
 	setLinewiseSelection(start, ending)
 end
 
----value text object
+---value text object DEPRECATED, use treesitter-textobject instead
 ---@param inner boolean inner value excludes trailing commas or semicolons, outer includes them. Both exclude trailing comments.
 function M.value(inner)
 	-- captures value till the end of the line
@@ -465,9 +465,10 @@ function M.value(inner)
 	if inner and lineContent:find("[,;]$") then valueEndCol = valueEndCol - 1 end
 
 	setCursor(0, { curRow, valueEndCol })
+	vim.notify("value textobj is deprecated, use the treesitter-textobject instead.")
 end
 
----key / left side of variable assignment textobj
+---key / lhs of assignment DEPRECATED, use treesitter-textobject instead
 ---@param inner boolean outer key includes the `:` or `=` after the key
 function M.key(inner)
 	local pattern = "(%s*).-( ?[:=] ?)"
@@ -482,6 +483,7 @@ function M.key(inner)
 		normal("o")
 		setCursor(0, { curRow, leadingWhitespace })
 	end
+	vim.notify("key textobj is deprecated, use the treesitter-textobject instead.")
 end
 
 ---number textobj
@@ -523,12 +525,13 @@ function M.doubleSquareBrackets(inner)
 	searchTextobj(pattern, inner)
 end
 
----JS Regex
+---JS Regex DEPRECATED, use treesitter-textobject instead
 ---@param inner boolean inner regex excludes the slashes (and flags)
 function M.jsRegex(inner)
 	-- [^\] to not match escaped slash in regex, %l* to match flags
 	local pattern = [[(/).-[^\](/%l*)]]
 	searchTextobj(pattern, inner)
+	vim.notify("jsRegex textobj is deprecated, use the treesitter-textobject instead.")
 end
 
 ---CSS Selector Textobj
