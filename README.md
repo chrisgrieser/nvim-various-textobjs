@@ -6,7 +6,6 @@ Bundle of more than a dozen new text objects for Neovim.
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Advanced Usage](#advanced-usage)
-	- [Opening a regex at regex101](#opening-a-regex-at-regex101)
 	- [Smart Alternative to `gx`](#smart-alternative-to-gx)
 - [Limitations](#limitations)
 - [Other Text-Object Plugins](#other-text-object-plugins)
