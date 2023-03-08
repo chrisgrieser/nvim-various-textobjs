@@ -22,7 +22,6 @@ Bundle of more than a dozen new text objects for Neovim.
 - |various-textobjs-installation|
 - |various-textobjs-configuration|
 - |various-textobjs-advanced-usage|
-    - |various-textobjs-opening-a-regex-at-regex101|
     - |various-textobjs-smart-alternative-to-`gx`|
 - |various-textobjs-limitations|
 - |various-textobjs-other-text-object-plugins|
@@ -106,10 +105,10 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs-list-of-text-objects
   toNextClosingBracket   from cursor to next     -                      no                    %     all
                          closing ], ), or }                                                         
   ---------------------------------------------------------------------------------------------------------------
-* Textobject is deprecated due to treesitter-textobject
-<https://github.com/nvim-treesitter/nvim-treesitter-textobjects> introducing a
-similar textobject that is more capable and therefore recommended.
 
+  **Warning** * Textobject is deprecated due to treesitter-textobject
+  <https://github.com/nvim-treesitter/nvim-treesitter-textobjects> introducing a
+  similar textobject that is more capable.
 
 INSTALLATION             *various-textobjs-nvim-various-textobjs-installation*
 
@@ -169,40 +168,6 @@ between outer and inner require a boolean parameter, `true` always meaning
 
 
 ADVANCED USAGE         *various-textobjs-nvim-various-textobjs-advanced-usage*
-
-
-OPENING A REGEX AT REGEX101 ~
-
-You can also use the text objects as input for small snippets by yanking them
-and using `getreg()`. The following example uses the outer regex text object to
-retrieve pattern, flags, and replacement value of the next regex, and opens
-regex101 <https://regex101.com/> prefilled with them:
-
->lua
-    vim.keymap.set("n", "gR", function()
-        require("various-textobjs").jsRegex(false) -- set visual selection to outer regex
-        vim.cmd.normal { '"zy', bang = true } -- retrieve regex with "z as intermediary
-        local regex = vim.fn.getreg("z")
-    
-        local pattern = regex:match("/(.*)/")
-        local flags = regex:match("/.*/(.*)")
-        local replacement = fn.getline("."):match('replace ?%(/.*/.*, ?"(.-)"')
-    
-        -- https://github.com/firasdib/Regex101/wiki/FAQ#how-to-prefill-the-fields-on-the-interface-via-url
-        local url = "https://regex101.com/?regex=" .. pattern .. "&flags=" .. flags
-        if replacement then url = url .. "&subst=" .. replacement end
-    
-        local opener
-        if vim.fn.has("macunix") then
-            opener = "open"
-        elseif vim.fn.has("unix") then
-            opener = "xdg-open"
-        elseif vim.fn.has("win64") or fn.has("win32") then
-            opener = "start"
-        end
-        os.execute(opener .. "'" .. url .. "'")
-    end, { desc = "Open next js regex in regex101" })
-<
 
 
 SMART ALTERNATIVE TO GX ~
