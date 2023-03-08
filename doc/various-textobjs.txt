@@ -1,4 +1,4 @@
-*various-textobjs.txt*        For NVIM v0.8.0       Last change: 2023 March 06
+*various-textobjs.txt*        For NVIM v0.8.0       Last change: 2023 March 08
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
@@ -48,11 +48,11 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs-list-of-text-objects
                          a variable assignment   semicolons                                         
                          (inside one line)                                                          
 
-  key                    key of key-value pair,  outer includes the =   yes                ik, ak   all
+  key*                   key of key-value pair,  outer includes the =   yes                ik, ak   all
                          or left side of a       or :                                               
                          variable assignment                                                        
 
-  number                 numbers, similar to     inner: only pure       yes                in, an   all
+  number*                numbers, similar to     inner: only pure       yes                in, an   all
                          <C-a>                   digits, outer: number                              
                                                  including minus sign                               
                                                  and decimal point                                  
@@ -75,7 +75,7 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs-list-of-text-objects
                          .my-class               trailing comma and                                 
                                                  space                                              
 
-  jsRegex                JavaScript regex        outer includes the     yes                i/, a/   javascript,
+  jsRegex*               JavaScript regex        outer includes the     yes                i/, a/   javascript,
                          pattern                 slashes and any flags                              typescript
 
   doubleSquareBrackets   text enclosed by [[]]   outer includes the     yes                iD, aD   lua, shell,
@@ -106,6 +106,10 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs-list-of-text-objects
   toNextClosingBracket   from cursor to next     -                      no                    %     all
                          closing ], ), or }                                                         
   ---------------------------------------------------------------------------------------------------------------
+* Textobject is deprecated due to treesitter-textobject
+<https://github.com/nvim-treesitter/nvim-treesitter-textobjects> introducing a
+similar textobject that is more capable and therefore recommended.
+
 
 INSTALLATION             *various-textobjs-nvim-various-textobjs-installation*
 
