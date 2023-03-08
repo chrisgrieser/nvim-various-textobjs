@@ -18,7 +18,7 @@ Bundle of more than a dozen new text objects for Neovim.
 |:---------------------|:-------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------|:----------------|:------------------------:|:--------------------------------|
 | indentation          | surrounding lines with same or higher indentation                                          | [see overview from vim-indent-object](https://github.com/michaeljsmith/vim-indent-object) | no              | `ii`, `ai`, (`aI`, `iI`) | all                             |
 | restOfIndentation    | lines down with same or higher indentation                                                 | \-                                                                                        | no              |           `R`            | all                             |
-| value                | value of key-value pair, or right side of a variable assignment (inside one line)          | outer includes trailing commas or semicolons                                              | yes             |        `iv`, `av`        | all                             |
+| value\*              | value of key-value pair, or right side of a variable assignment (inside one line)          | outer includes trailing commas or semicolons                                              | yes             |        `iv`, `av`        | all                             |
 | key\*                | key of key-value pair, or left side of a variable assignment                               | outer includes the `=` or `:`                                                             | yes             |        `ik`, `ak`        | all                             |
 | number\*             | numbers, similar to `<C-a>`                                                                | inner: only pure digits, outer: number including minus sign and decimal point             | yes             |        `in`, `an`        | all                             |
 | diagnostic           | LSP diagnostic (requires built-in LSP)                                                     | \-                                                                                        | yes             |           `!`            | all                             |
@@ -35,8 +35,9 @@ Bundle of more than a dozen new text objects for Neovim.
 | url                  | link beginning with "http"                                                                 | \-                                                                                        | yes             |           `L`            | all                             |
 | shellPipe            | command stdout is piped to                                                                 | outer includes the front pipe character                                                   | yes             |        `iP`/`aP`         | bash, zsh, fish, sh             |
 | toNextClosingBracket | from cursor to next closing `]`, `)`, or `}`                                               | \-                                                                                        | no              |           `%`            | all                             |
+
 > __Warning__  
-> \* Textobject is deprecated due to [treesitter-textobject](https://github.com/nvim-treesitter/nvim-treesitter-textobjects) introducing a similar
+> \* Textobject deprecated due to [treesitter-textobject](https://github.com/nvim-treesitter/nvim-treesitter-textobjects) introducing a similar
 textobject that is more capable. 
 
 ## Installation
@@ -80,9 +81,9 @@ If you want to set your own keybindings, you can do so by calling the respective
 -- example: `?` for diagnostic textobj
 vim.keymap.set({"o", "x"}, "?", function () require("various-textobjs").diagnostic() end)
 
--- example: `an` for outer number, `in` for inner number
-vim.keymap.set({"o", "x"}, "an", function () require("various-textobjs").number(false) end)
-vim.keymap.set({"o", "x"}, "in", function () require("various-textobjs").number(true) end)
+-- example: `an` for outer subword, `in` for inner subword
+vim.keymap.set({"o", "x"}, "aS", function () require("various-textobjs").subword(false) end)
+vim.keymap.set({"o", "x"}, "iS", function () require("various-textobjs").subword(true) end)
 
 -- exception: indentation textobj requires two parameters, the first for 
 -- exclusion of the starting border, the second for the exclusion of ending

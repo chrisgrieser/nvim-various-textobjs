@@ -486,7 +486,7 @@ function M.key(inner)
 	vim.notify("key textobj is deprecated, use the treesitter-textobject instead.")
 end
 
----number textobj
+---number textobj DEPRECATED, use treesitter-textobject instead
 ---@param inner boolean inner number consists purely of digits, outer number factors in decimal points and includes minus sign
 function M.number(inner)
 	-- here two different patterns make more sense, so the inner number can match
@@ -494,6 +494,7 @@ function M.number(inner)
 	-- excludes enumrations.
 	local pattern = inner and "%d+" or "%-?%d*%.?%d+"
 	searchTextobj(pattern, false)
+	vim.notify("number textobj is deprecated, use the treesitter-textobject instead.")
 end
 
 ---URL textobj
