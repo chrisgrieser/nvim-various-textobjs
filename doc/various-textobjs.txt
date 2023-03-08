@@ -42,7 +42,7 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs-list-of-text-objects
   restOfIndentation      lines down with same or -                      no                    R     all
                          higher indentation                                                         
 
-  value                  value of key-value      outer includes         yes                iv, av   all
+  value*                 value of key-value      outer includes         yes                iv, av   all
                          pair, or right side of  trailing commas or                                 
                          a variable assignment   semicolons                                         
                          (inside one line)                                                          
@@ -106,7 +106,7 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs-list-of-text-objects
                          closing ], ), or }                                                         
   ---------------------------------------------------------------------------------------------------------------
 
-  **Warning** * Textobject is deprecated due to treesitter-textobject
+  **Warning** * Textobject deprecated due to treesitter-textobject
   <https://github.com/nvim-treesitter/nvim-treesitter-textobjects> introducing a
   similar textobject that is more capable.
 
@@ -155,9 +155,9 @@ between outer and inner require a boolean parameter, `true` always meaning
     -- example: `?` for diagnostic textobj
     vim.keymap.set({"o", "x"}, "?", function () require("various-textobjs").diagnostic() end)
     
-    -- example: `an` for outer number, `in` for inner number
-    vim.keymap.set({"o", "x"}, "an", function () require("various-textobjs").number(false) end)
-    vim.keymap.set({"o", "x"}, "in", function () require("various-textobjs").number(true) end)
+    -- example: `an` for outer subword, `in` for inner subword
+    vim.keymap.set({"o", "x"}, "aS", function () require("various-textobjs").subword(false) end)
+    vim.keymap.set({"o", "x"}, "iS", function () require("various-textobjs").subword(true) end)
     
     -- exception: indentation textobj requires two parameters, the first for 
     -- exclusion of the starting border, the second for the exclusion of ending
