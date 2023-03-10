@@ -538,7 +538,7 @@ end
 ---CSS Selector Textobj
 ---@param inner boolean outer selector includes trailing comma and whitespace
 function M.cssSelector(inner)
-	local pattern = "()%.[%w-_]+(,? ?)"
+	local pattern = "()[#.][%w-_]+(,? ?)"
 	searchTextobj(pattern, inner)
 end
 
