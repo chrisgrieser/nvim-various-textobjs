@@ -440,7 +440,6 @@ function M.mdFencedCodeBlock(inner)
 	setLinewiseSelection(start, ending)
 end
 
----value text object DEPRECATED, use treesitter-textobject instead
 ---@param inner boolean inner value excludes trailing commas or semicolons, outer includes them. Both exclude trailing comments.
 function M.value(inner)
 	-- captures value till the end of the line
@@ -465,10 +464,8 @@ function M.value(inner)
 	if inner and lineContent:find("[,;]$") then valueEndCol = valueEndCol - 1 end
 
 	setCursor(0, { curRow, valueEndCol })
-	vim.notify("value textobj is deprecated, use the treesitter-textobject instead.")
 end
 
----key / lhs of assignment DEPRECATED, use treesitter-textobject instead
 ---@param inner boolean outer key includes the `:` or `=` after the key
 function M.key(inner)
 	local pattern = "(%s*).-( ?[:=] ?)"
@@ -483,7 +480,6 @@ function M.key(inner)
 		normal("o")
 		setCursor(0, { curRow, leadingWhitespace })
 	end
-	vim.notify("key textobj is deprecated, use the treesitter-textobject instead.")
 end
 
 ---number textobj DEPRECATED, use treesitter-textobject instead
