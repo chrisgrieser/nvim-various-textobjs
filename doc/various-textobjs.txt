@@ -1,4 +1,4 @@
-*various-textobjs.txt*        For NVIM v0.8.0       Last change: 2023 March 10
+*various-textobjs.txt*        For NVIM v0.8.0       Last change: 2023 March 13
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
@@ -42,12 +42,12 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs-list-of-text-objects
   restOfIndentation      lines down with same or -                      no                    R     all
                          higher indentation                                                         
 
-  value (+)              value of key-value      outer includes         yes                iv, av   all
+  value                  value of key-value      outer includes         yes                iv, av   all
                          pair, or right side of  trailing commas or                                 
                          a variable assignment   semicolons                                         
                          (inside one line)                                                          
 
-  key (+)                key of key-value pair,  outer includes the =   yes                ik, ak   all
+  key                    key of key-value pair,  outer includes the =   yes                ik, ak   all
                          or left side of a       or :                                               
                          variable assignment                                                        
 
