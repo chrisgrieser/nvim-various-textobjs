@@ -327,13 +327,17 @@ function M.indentation(noStartBorder, noEndBorder)
 	while prevLnum > 0 and (isBlankLine(prevLnum) or fn.indent(prevLnum) >= indentofStart) do
 		prevLnum = prevLnum - 1
 	end
-	while nextLnum < lastLine and (isBlankLine(nextLnum) or fn.indent(nextLnum) >= indentofStart) do
+	while nextLnum <= lastLine and (isBlankLine(nextLnum) or fn.indent(nextLnum) >= indentofStart) do
 		nextLnum = nextLnum + 1
 	end
 
 	-- differentiate ai and ii
 	if noStartBorder then prevLnum = prevLnum + 1 end
 	if noEndBorder then nextLnum = nextLnum - 1 end
+
+	while isBlankLine(nextLnum) do
+		nextLnum = nextLnum - 1
+	end
 
 	setLinewiseSelection(prevLnum, nextLnum)
 end
@@ -356,7 +360,7 @@ function M.restOfIndentation()
 	local lastLine = fn.line("$")
 
 	while isBlankLine(nextLnum) or fn.indent(nextLnum) >= indentofStart do
-		if nextLnum >= lastLine then break end
+		if nextLnum > lastLine then break end
 		nextLnum = nextLnum + 1
 	end
 
