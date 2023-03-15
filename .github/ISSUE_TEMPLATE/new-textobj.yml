@@ -1,0 +1,33 @@
+name: New Textobject
+description: Suggest a new textobj
+title: "New Textobj: "
+labels: ["new textobj"]
+body:
+  - type: textarea
+    id: textobj-requested
+    attributes:
+      label: Textobj requested
+      description: Describe what the textobject is supposed to do.
+    validations:
+      required: true
+  - type: textarea
+    id: inner-outer
+    attributes:
+      label: Inner/Outer Difference
+      description: If the textobj would differentiate between inner and outer, describe the difference.
+  - type: input
+    id: existing-plugin
+    attributes:
+      label: Vimscript plugin already implementing the textobj
+      description: If there is a plugin that already implements the textobject, please link to it here. 
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: The textobj would be useful to more users than just me.
+          required: true
+        - label: There is no lua plugin already implementing the textobj in an adequate manner.
+          required: true
+        - label: I read the docs and there is no such textobj already.
+          required: true

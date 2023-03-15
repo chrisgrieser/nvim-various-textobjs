@@ -1,0 +1,21 @@
+name: Textobj Change
+description: Suggest a change to an existing textobj
+title: "Change Textobj: "
+labels: ["change to existing textobj"]
+body:
+  - type: textarea
+    id: textobj-change-requested
+    attributes:
+      label: Change requested
+      description: Describe which textobject should change in what way.
+    validations:
+      required: true
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: The change would be useful to more users than just me.
+          required: true
+        - label: This is a feature request to change an existing textobject, not a bug report. (Use the bug report form for those.)
+          required: true
