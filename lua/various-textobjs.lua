@@ -18,6 +18,7 @@ local function setupKeymaps()
 	}
 	local oneMaps = {
 		nearEoL = "n",
+		lineCharacterwise = "_",
 		toNextClosingBracket = "%", -- since this is basically a more intuitive version of the standard "%" motion-as-textobj
 		restOfParagraph = "r",
 		restOfIndentation = "R",
@@ -230,7 +231,7 @@ function M.nearEoL()
 	if not isVisualMode() then normal("v") end
 	normal("$")
 
-	-- loop ensures trailing whitespace is not counted, relevant e.g., for markdown
+	-- loop ensures trailing whitespace is not counted
 	local curRow = fn.line(".")
 	local lineContent = getline(curRow)
 	local lastCol = fn.col("$")
@@ -262,6 +263,12 @@ function M.restOfParagraph()
 	if not isVisualLineMode() then normal("V") end
 	normal("}")
 	if fn.line(".") ~= fn.line("$") then normal("k") end -- one up, except on last line
+end
+
+---current line (but characterwise)
+function M.lineCharacterwise()
+	if not isVisualMode() then normal("v") end
+	normal("g_o^")
 end
 
 ---DIAGNOSTIC TEXT OBJECT
