@@ -234,30 +234,36 @@ already an improvement to vim’s built-in `gx`, which requires the cursor to
 be standing on a URL to work, you can even go one step further. If no URL has
 been found within the next few lines, the `:UrlView` command from urlview.nvim
 <https://github.com/axieax/urlview.nvim> is triggered, searching the entire
-buffer for URLs from which you can choose which to open.
+buffer for URLs from which you can choose one to open.
 
 >lua
     vim.keymap.set("n", "gx", function ()
         require("various-textobjs").url() -- select URL
-        local foundURL = vim.fn.mode():find("v") -- only switches to visual mode if found
-        local url
-        if foundURL then
-            vim.cmd.normal { '"zy', bang = true } -- retrieve URL with "z as intermediary
-            url = vim.fn.getreg("z")
+        -- this works since the plugin switched to visual mode
+        -- if the textobj has been found
+        local foundURL = vim.fn.mode():find("v")
     
-            local opener
-            if vim.fn.has("macunix") == 1 then
-                opener = "open"
-            elseif vim.fn.has("linux") == 1 then
-                opener = "xdg-open"
-            elseif vim.fn.has("win64") == 1 or fn.has("win32") == 1 then
-                opener = "start"
-            end
-            os.execute(opener .. " '" .. url .. "'")
-        else
-            -- if not found in proximity, search whole buffer via urlview.nvim instead
+        -- if not found in proximity, search whole buffer via urlview.nvim instead
+        if not foundURL then
             vim.cmd.UrlView("buffer")
+            return
         end
+        
+        -- retrieve URL with the z-register as intermediary
+        vim.cmd.normal { '"zy', bang = true }
+        local url = vim.fn.getreg("z")
+    
+        -- open with the OS-specific shell command
+        local opener
+        if vim.fn.has("macunix") == 1 then
+            opener = "open"
+        elseif vim.fn.has("linux") == 1 then
+            opener = "xdg-open"
+        elseif vim.fn.has("win64") == 1 or fn.has("win32") == 1 then
+            opener = "start"
+        end
+        local openCommand = string.format ("%s '%s' &>/dev/null", opener, url)
+        os.execute(openCommand)
     end, {desc = "Smart URL Opener"})
 <
 
