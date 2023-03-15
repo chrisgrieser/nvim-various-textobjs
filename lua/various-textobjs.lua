@@ -359,8 +359,8 @@ end
 ---essentially `ii` downwards
 function M.restOfIndentation()
 	local startLnum = fn.line(".")
-	local curLnum = startLnum
 	local lastLine = fn.line("$")
+	local curLnum = startLnum
 	while isBlankLine(curLnum) do -- when on blank line, use next line
 		if lastLine == curLnum then return end
 		curLnum = curLnum + 1
