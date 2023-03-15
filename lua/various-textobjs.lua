@@ -205,6 +205,13 @@ local function searchTextobj(pattern, inner)
 	return true
 end
 
+---@param lineNr number
+---@return boolean whether given line is blank line
+local function isBlankLine(lineNr)
+	local lineContent = getline(lineNr)
+	return lineContent:find("^%s*$") == 1
+end
+
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 
@@ -311,30 +318,30 @@ function M.diagnostic()
 end
 
 -- INDENTATION OBJECT
----indentation textobj, based on https://thevaluable.dev/vim-create-text-objects/
+---indentation textobj
 ---@param noStartBorder boolean exclude the startline
 ---@param noEndBorder boolean exclude the endline
 function M.indentation(noStartBorder, noEndBorder)
-	local function isBlankLine(lineNr)
-		local lineContent = getline(lineNr)
-		return lineContent:find("^%s*$") == 1
+	local curLnum = fn.line(".")
+	local lastLine = fn.line("$")
+	while isBlankLine(curLnum) do -- when on blank line, use next line
+		if lastLine == curLnum then return end
+		curLnum = curLnum + 1
 	end
 
-	local curLnum = fn.line(".")
-	local indentofStart = fn.indent(curLnum)
-	if indentofStart == 0 then
+	local indentOfStart = fn.indent(curLnum)
+	if indentOfStart == 0 then
 		vim.notify("Current line is not indented.", vim.log.levels.WARN)
 		return
 	end
 
 	local prevLnum = curLnum - 1
 	local nextLnum = curLnum + 1
-	local lastLine = fn.line("$")
 
-	while prevLnum > 0 and (isBlankLine(prevLnum) or fn.indent(prevLnum) >= indentofStart) do
+	while prevLnum > 0 and (isBlankLine(prevLnum) or fn.indent(prevLnum) >= indentOfStart) do
 		prevLnum = prevLnum - 1
 	end
-	while nextLnum <= lastLine and (isBlankLine(nextLnum) or fn.indent(nextLnum) >= indentofStart) do
+	while nextLnum <= lastLine and (isBlankLine(nextLnum) or fn.indent(nextLnum) >= indentOfStart) do
 		nextLnum = nextLnum + 1
 	end
 
@@ -349,29 +356,30 @@ function M.indentation(noStartBorder, noEndBorder)
 	setLinewiseSelection(prevLnum, nextLnum)
 end
 
----from cursor position down all lines with same or higher indentation
+---from cursor position down all lines with same or higher indentation;
+---essentially `ii` downwards
 function M.restOfIndentation()
-	local function isBlankLine(lineNr)
-		local lineContent = getline(lineNr)
-		return lineContent:find("^%s*$") == 1
+	local curLnum = fn.line(".")
+	local lastLine = fn.line("$")
+	while isBlankLine(curLnum) do -- when on blank line, use next line
+		if lastLine == curLnum then return end
+		curLnum = curLnum + 1
 	end
 
-	local indentofStart = fn.indent(fn.line("."))
-	if indentofStart == 0 then
+	local indentOfStart = fn.indent(curLnum)
+	if indentOfStart == 0 then
 		vim.notify("Current line is not indented.", vim.log.levels.WARN)
 		return
 	end
 
-	local curLine = fn.line(".")
-	local nextLnum = curLine + 1
-	local lastLine = fn.line("$")
+	local nextLnum = curLnum + 1
 
-	while isBlankLine(nextLnum) or fn.indent(nextLnum) >= indentofStart do
+	while isBlankLine(nextLnum) or fn.indent(nextLnum) >= indentOfStart do
 		if nextLnum > lastLine then break end
 		nextLnum = nextLnum + 1
 	end
 
-	setLinewiseSelection(curLine, nextLnum - 1)
+	setLinewiseSelection(curLnum, nextLnum - 1)
 end
 
 --------------------------------------------------------------------------------
