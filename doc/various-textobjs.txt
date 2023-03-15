@@ -151,7 +151,7 @@ that the default is to **not** set any keymaps.)
 If you want to set your own keybindings, you can do so by calling the
 respective functions: - The function names correspond to the textobj-names from
 the |various-textobjs-overview-table|. - The text objects that differentiate
-between outer and inner require a boolean parameter, `true` always meaning
+between outer and inner require a Boolean parameter, `true` always meaning
 "inner," and `false` meaning "outer."
 
 >lua
