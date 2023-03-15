@@ -317,7 +317,6 @@ function M.diagnostic()
 	setSelection({ target.lnum + 1, target.col }, { target.end_lnum + 1, target.end_col - 1 })
 end
 
--- INDENTATION OBJECT
 ---indentation textobj
 ---@param noStartBorder boolean exclude the startline
 ---@param noEndBorder boolean exclude the endline
@@ -359,7 +358,8 @@ end
 ---from cursor position down all lines with same or higher indentation;
 ---essentially `ii` downwards
 function M.restOfIndentation()
-	local curLnum = fn.line(".")
+	local startLnum = fn.line(".")
+	local curLnum = startLnum
 	local lastLine = fn.line("$")
 	while isBlankLine(curLnum) do -- when on blank line, use next line
 		if lastLine == curLnum then return end
@@ -379,7 +379,7 @@ function M.restOfIndentation()
 		nextLnum = nextLnum + 1
 	end
 
-	setLinewiseSelection(curLnum, nextLnum - 1)
+	setLinewiseSelection(startLnum, nextLnum - 1)
 end
 
 --------------------------------------------------------------------------------
