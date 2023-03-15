@@ -169,6 +169,58 @@ between outer and inner require a boolean parameter, `true` always meaning
     vim.keymap.set({"o", "x"}, "ai", function () require("various-textobjs").indentation(false, true) end)
 <
 
+For your convenience, here the code to create mappings for all text objects. You can copypaste this list and enter your own bindings. ~
+
+>lua
+    local keymap = vim.keymap.set
+    local vt = require("various-textobjs") -- inline this for lazy-loading
+    
+    keymap( { "o", "x" }, "ii" , function() vt.indentation(true, true) end)
+    keymap( { "o", "x" }, "ai" , function() vt.indentation(false, true) end)
+    keymap( { "o", "x" }, "iI" , function() vt.indentation(true, true) end)
+    keymap( { "o", "x" }, "aI" , function() vt.indentation(false, false) end)
+    
+    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.subword(true) end)
+    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.subword(false) end)
+    
+    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.toNextClosingBracket() end)
+    
+    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.restOfParagraph() end)
+    
+    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.entireBuffer() end)
+    
+    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.nearEoL() end)
+    
+    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.lineCharacterwise() end)
+    
+    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.column() end)
+    
+    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.value(true) end)
+    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.value(false) end)
+    
+    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.key(true) end)
+    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.key(false) end)
+    
+    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.url() end)
+    
+    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.diagnostic() end)
+    
+    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.mdlink(true) end)
+    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.mdlink(false) end)
+    
+    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.mdFencedCodeBlock(true) end)
+    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.mdFencedCodeBlock(false) end)
+    
+    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.cssSelector(true) end)
+    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.cssSelector(false) end)
+    
+    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.doubleSquareBrackets(true) end)
+    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.doubleSquareBrackets(false) end)
+    
+    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.shellPipe(true) end)
+    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.shellPipe(false) end)
+<
+
 
 ADVANCED USAGE         *various-textobjs-nvim-various-textobjs-advanced-usage*
 
