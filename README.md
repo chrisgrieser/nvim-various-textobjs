@@ -176,7 +176,7 @@ vim.keymap.set("n", "gx", function ()
 		opener = "open"
 	elseif vim.fn.has("linux") == 1 then
 		opener = "xdg-open"
-	elseif vim.fn.has("win64") == 1 or fn.has("win32") == 1 then
+	elseif vim.fn.has("win64") == 1 or vim.fn.has("win32") == 1 then
 		opener = "start"
 	end
 	local openCommand = string.format ("%s '%s' >/dev/null 2>&1", opener, url)
