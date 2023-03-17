@@ -16,7 +16,7 @@ Bundle of more than a dozen new text objects for Neovim.
 
 | textobj              | description                                                                                | inner / outer                                                                             | forward-seeking |     default keymaps      | filetypes (for default keymaps) |
 |:---------------------|:-------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------|:----------------|:------------------------:|:--------------------------------|
-| indentation          | surrounding lines with same or higher indentation                                          | [see overview from vim-indent-object](https://github.com/michaeljsmith/vim-indent-object) | no              | `ii`, `ai`, (`aI`, `iI`) | all                             |
+| indentation          | surrounding lines with same or higher indentation                                          | [see overview from vim-indent-object](https://github.com/michaeljsmith/vim-indent-object) | no              | `ii`, `ai`, `aI`, (`iI`) | all                             |
 | restOfIndentation    | lines down with same or higher indentation                                                 | \-                                                                                        | no              |           `R`            | all                             |
 | subword              | like `iw`, but treating `-`, `_`, and `.` as word delimiters *and* only part of camelCase  | outer includes trailing `_` or `-`                                                        | yes             |        `iS`, `aS`        | all                             |
 | toNextClosingBracket | from cursor to next closing `]`, `)`, or `}`                                               | \-                                                                                        | no              |           `%`            | all                             |
@@ -28,18 +28,17 @@ Bundle of more than a dozen new text objects for Neovim.
 | value                | value of key-value pair, or right side of a variable assignment (inside one line)          | outer includes trailing commas or semicolons                                              | yes             |        `iv`, `av`        | all                             |
 | key                  | key of key-value pair, or left side of a variable assignment                               | outer includes the `=` or `:`                                                             | yes             |        `ik`, `ak`        | all                             |
 | url                  | link beginning with "http"                                                                 | \-                                                                                        | yes             |           `L`            | all                             |
-| number (+)           | numbers, similar to `<C-a>`                                                                | inner: only pure digits, outer: number including minus sign and decimal point             | yes             |        `in`, `an`        | all                             |
+| number\*             | numbers, similar to `<C-a>`                                                                | inner: only pure digits, outer: number including minus sign and decimal point             | yes             |        `in`, `an`        | all                             |
 | diagnostic           | LSP diagnostic (requires built-in LSP)                                                     | \-                                                                                        | yes             |           `!`            | all                             |
 | mdlink               | markdown link like `[title](url)`                                                          | inner is only the link title (between the `[]`)                                           | yes             |        `il`, `al`        | markdown, toml                  |
 | mdFencedCodeBlock    | markdown fenced code (enclosed by three backticks)                                         | outer includes the enclosing backticks                                                    | yes             |        `iC`, `aC`        | markdown                        |
 | cssSelector          | class in CSS, like `.my-class`                                                             | outer includes trailing comma and space                                                   | yes             |        `ic`, `ac`        | css, scss                       |
-| jsRegex (+)          | JavaScript regex pattern                                                                   | outer includes the slashes and any flags                                                  | yes             |        `i/`, `a/`        | javascript, typescript          |
+| jsRegex\*            | JavaScript regex pattern                                                                   | outer includes the slashes and any flags                                                  | yes             |        `i/`, `a/`        | javascript, typescript          |
 | doubleSquareBrackets | text enclosed by `[[]]`                                                                    | outer includes the four square brackets                                                   | yes             |        `iD`, `aD`        | lua, shell, neorg, markdown     |
 | shellPipe            | command stdout is piped to                                                                 | outer includes the front pipe character                                                   | yes             |        `iP`/`aP`         | bash, zsh, fish, sh             |
 
 > __Warning__  
-> (+) Textobject deprecated due to [treesitter-textobject](https://github.com/nvim-treesitter/nvim-treesitter-textobjects) introducing a similar
-textobject that is more capable. 
+> \* Textobject deprecated due to [treesitter-textobject](https://github.com/nvim-treesitter/nvim-treesitter-textobjects) introducing a similar textobject that is more capable. 
 
 ## Installation
 
@@ -93,8 +92,9 @@ vim.keymap.set({"o", "x"}, "ii", function () require("various-textobjs").indenta
 vim.keymap.set({"o", "x"}, "ai", function () require("various-textobjs").indentation(false, true) end)
 ```
 
+For your convenience, here the code to create mappings for all text objects. You can copypaste this list and enter your own bindings.
 <details>
-<summary>For your convenience, here the code to create mappings for all text objects. You can copypaste this list and enter your own bindings.</summary>
+<summary>Mappings for all text objects</summary>
 
 ```lua
 local keymap = vim.keymap.set
