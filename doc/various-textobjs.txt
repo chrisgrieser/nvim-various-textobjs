@@ -1,4 +1,4 @@
-*various-textobjs.txt*        For NVIM v0.8.0       Last change: 2023 March 16
+*various-textobjs.txt*        For NVIM v0.8.0       Last change: 2023 March 17
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
