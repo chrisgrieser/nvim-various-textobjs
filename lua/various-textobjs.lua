@@ -251,7 +251,7 @@ function M.nearEoL()
 	normal("h")
 end
 
----till next closing bracket ] bla } flfs )
+---till next closing bracket
 function M.toNextClosingBracket()
 	-- since `searchTextobj` just select the next closing bracket, we save the
 	-- current cursor position and then afterwards move backwards. While this is
@@ -398,11 +398,11 @@ function M.column()
 
 	repeat
 		nextLnum = nextLnum + 1
+		if nextLnum > lastLnum then break end -- break here, since after end of file, getline will fail
 		local trueLineLength = #getline(nextLnum):gsub("\t", string.rep(" ", bo.tabstop)) ---@diagnostic disable-line: undefined-field
 		local shorterLine = trueLineLength < cursorCol
 		local hitsIndent = cursorCol < fn.indent(nextLnum)
-		local eof = nextLnum > lastLnum
-	until eof or hitsIndent or shorterLine
+	until hitsIndent or shorterLine
 	nextLnum = nextLnum - 1
 
 	-- start visual block mode
