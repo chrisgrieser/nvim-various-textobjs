@@ -33,9 +33,10 @@ Bundle of more than a dozen new text objects for Neovim.
 | mdlink               | markdown link like `[title](url)`                                                          | inner is only the link title (between the `[]`)                                           | yes             |        `il`, `al`        | markdown, toml                  |
 | mdFencedCodeBlock    | markdown fenced code (enclosed by three backticks)                                         | outer includes the enclosing backticks                                                    | yes             |        `iC`, `aC`        | markdown                        |
 | cssSelector          | class in CSS, like `.my-class`                                                             | outer includes trailing comma and space                                                   | yes             |        `ic`, `ac`        | css, scss                       |
+| htmlAttribute        | attribute in html or xml, like `href="foobar.com"`                                         | inner is only the value inside the quotes trailing comma and space                        | yes             |        `ix`, `ax`        | html, xml, css, scss            |
 | jsRegex\*            | JavaScript regex pattern                                                                   | outer includes the slashes and any flags                                                  | yes             |        `i/`, `a/`        | javascript, typescript          |
 | doubleSquareBrackets | text enclosed by `[[]]`                                                                    | outer includes the four square brackets                                                   | yes             |        `iD`, `aD`        | lua, shell, neorg, markdown     |
-| shellPipe            | command stdout is piped to                                                                 | outer includes the front pipe character                                                   | yes             |        `iP`/`aP`         | bash, zsh, fish, sh             |
+| shellPipe            | command stdout is piped to                                                                 | outer includes the front pipe character                                                   | yes             |        `iP`,`aP`         | bash, zsh, fish, sh             |
 
 > __Warning__  
 > \* Textobject deprecated due to [treesitter-textobject](https://github.com/nvim-treesitter/nvim-treesitter-textobjects) introducing a similar textobject that is more capable. 
@@ -75,7 +76,7 @@ require("various-textobjs").setup {
 
 If you want to set your own keybindings, you can do so by calling the respective functions:
 - The function names correspond to the textobj-names from the [overview table](#list-of-text-objects).
-- The text objects that differentiate between outer and inner require a Boolean parameter, `true` always meaning "inner," and `false` meaning "outer."
+- The text objects that differentiate between outer and inner require a boolean parameter, `true` always meaning "inner," and `false` meaning "outer."
 
 ```lua
 -- example: `?` for diagnostic textobj
@@ -130,20 +131,26 @@ keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.url() end)
 
 keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.diagnostic() end)
 
-keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.mdlink(true) end)
-keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.mdlink(false) end)
+--------------------------------------------------------------------------------------
+-- put these into the ftplugins or autocms for the filetypes you want to use them with
 
-keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.mdFencedCodeBlock(true) end)
-keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.mdFencedCodeBlock(false) end)
+keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.mdlink(true) end, { buffer = true })
+keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.mdlink(false) end, { buffer = true })
 
-keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.cssSelector(true) end)
-keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.cssSelector(false) end)
+keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.mdFencedCodeBlock(true) end, { buffer = true })
+keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.mdFencedCodeBlock(false) end, { buffer = true })
 
-keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.doubleSquareBrackets(true) end)
-keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.doubleSquareBrackets(false) end)
+keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.cssSelector(true) end, { buffer = true })
+keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.cssSelector(false) end, { buffer = true })
 
-keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.shellPipe(true) end)
-keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.shellPipe(false) end)
+keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.htmlAttribute(true) end, { buffer = true })
+keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.htmlAttribute(false) end, { buffer = true })
+
+keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.doubleSquareBrackets(true) end, { buffer = true })
+keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.doubleSquareBrackets(false) end, { buffer = true })
+
+keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.shellPipe(true) end, { buffer = true })
+keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.shellPipe(false) end, { buffer = true })
 ```
 
 </details>

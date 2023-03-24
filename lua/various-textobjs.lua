@@ -52,6 +52,10 @@ local function setupKeymaps()
 			map = { shellPipe = "P" },
 			fts = { "sh", "bash", "zsh", "fish" },
 		},
+		{
+			map = { htmlAttribute = "x" },
+			fts = { "html", "css", "scss", "xml" },
+		},
 	}
 	-----------------------------------------------------------------------------
 	local keymap = vim.keymap.set
@@ -554,6 +558,13 @@ end
 ---@param inner boolean outer selector includes trailing comma and whitespace
 function M.cssSelector(inner)
 	local pattern = "()[#.][%w-_]+(,? ?)"
+	searchTextobj(pattern, inner)
+end
+
+---HTML/XML Attribute Textobj
+---@param inner boolean inner selector is only the value of the attribute inside the quotation marks. 
+function M.htmlAttribute(inner)
+	local pattern = '(%w+=").-(")'
 	searchTextobj(pattern, inner)
 end
 
