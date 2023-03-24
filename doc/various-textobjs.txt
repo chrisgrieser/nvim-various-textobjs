@@ -1,4 +1,4 @@
-*various-textobjs.txt*        For NVIM v0.8.0       Last change: 2023 March 20
+*various-textobjs.txt*        For NVIM v0.8.0       Last change: 2023 March 24
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
@@ -98,6 +98,11 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs-list-of-text-objects
                          .my-class               trailing comma and                                 
                                                  space                                              
 
+  htmlAttribute          attribute in html or    inner is only the      yes                ix, ax   html, xml,
+                         xml, like               value inside the                                   css, scss
+                         href="foobar.com"       quotes trailing comma                              
+                                                 and space                                          
+
   jsRegex*               JavaScript regex        outer includes the     yes                i/, a/   javascript,
                          pattern                 slashes and any flags                              typescript
 
@@ -105,7 +110,7 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs-list-of-text-objects
                                                  four square brackets                               neorg,
                                                                                                     markdown
 
-  shellPipe              command stdout is piped outer includes the     yes                 iP/aP   bash, zsh,
+  shellPipe              command stdout is piped outer includes the     yes                 iP,aP   bash, zsh,
                          to                      front pipe character                               fish, sh
   ---------------------------------------------------------------------------------------------------------------
 
@@ -151,7 +156,7 @@ that the default is to **not** set any keymaps.)
 If you want to set your own keybindings, you can do so by calling the
 respective functions: - The function names correspond to the textobj-names from
 the |various-textobjs-overview-table|. - The text objects that differentiate
-between outer and inner require a Boolean parameter, `true` always meaning
+between outer and inner require a boolean parameter, `true` always meaning
 "inner," and `false` meaning "outer."
 
 >lua
@@ -205,20 +210,26 @@ For your convenience, here the code to create mappings for all text objects. You
     
     keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.diagnostic() end)
     
-    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.mdlink(true) end)
-    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.mdlink(false) end)
+    --------------------------------------------------------------------------------------
+    -- put these into the ftplugins or autocms for the filetypes you want to use them with
     
-    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.mdFencedCodeBlock(true) end)
-    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.mdFencedCodeBlock(false) end)
+    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.mdlink(true) end, { buffer = true })
+    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.mdlink(false) end, { buffer = true })
     
-    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.cssSelector(true) end)
-    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.cssSelector(false) end)
+    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.mdFencedCodeBlock(true) end, { buffer = true })
+    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.mdFencedCodeBlock(false) end, { buffer = true })
     
-    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.doubleSquareBrackets(true) end)
-    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.doubleSquareBrackets(false) end)
+    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.cssSelector(true) end, { buffer = true })
+    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.cssSelector(false) end, { buffer = true })
     
-    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.shellPipe(true) end)
-    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.shellPipe(false) end)
+    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.htmlAttribute(true) end, { buffer = true })
+    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.htmlAttribute(false) end, { buffer = true })
+    
+    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.doubleSquareBrackets(true) end, { buffer = true })
+    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.doubleSquareBrackets(false) end, { buffer = true })
+    
+    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.shellPipe(true) end, { buffer = true })
+    keymap( { "o", "x" }, "YOUR_MAPPING" , function() vt.shellPipe(false) end, { buffer = true })
 <
 
 
