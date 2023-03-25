@@ -1,4 +1,4 @@
-*various-textobjs.txt*        For NVIM v0.8.0       Last change: 2023 March 24
+*various-textobjs.txt*        For NVIM v0.8.0       Last change: 2023 March 25
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
@@ -132,9 +132,7 @@ INSTALLATION             *various-textobjs-nvim-various-textobjs-installation*
     -- lazy.nvim
     {
         "chrisgrieser/nvim-various-textobjs",
-        config = function () 
-            require("various-textobjs").setup({ useDefaultKeymaps = true })
-        end,
+        opts = { useDefaultKeymaps = true },
     },
 <
 
