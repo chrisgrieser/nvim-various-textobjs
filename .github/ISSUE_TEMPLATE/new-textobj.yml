@@ -20,6 +20,13 @@ body:
     attributes:
       label: Vimscript plugin already implementing the textobj
       description: If there is a plugin that already implements the textobject, please link to it here. 
+  - type: textarea
+    id: filetypes
+    attributes:
+      label: Filetypes
+      description: Filetypes the textobject is usually going to be used in. Fill in "all" if the textobject is agnostic to the filetype.
+    validations:
+      required: true
   - type: checkboxes
     id: checklist
     attributes:
