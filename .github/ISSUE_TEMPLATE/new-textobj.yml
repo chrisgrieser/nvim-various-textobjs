@@ -20,7 +20,7 @@ body:
     attributes:
       label: Vimscript plugin already implementing the textobj
       description: If there is a plugin that already implements the textobject, please link to it here. 
-  - type: textarea
+  - type: input
     id: filetypes
     attributes:
       label: Filetypes
