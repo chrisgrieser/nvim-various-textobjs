@@ -505,7 +505,8 @@ function M.key(inner)
 	end
 end
 
----number textobj DEPRECATED, use treesitter-textobject instead
+---number textobj
+---@deprecated use corresponding treesitter-textobject instead
 ---@param inner boolean inner number consists purely of digits, outer number factors in decimal points and includes minus sign
 function M.number(inner)
 	-- here two different patterns make more sense, so the inner number can match
@@ -513,7 +514,7 @@ function M.number(inner)
 	-- excludes enumrations.
 	local pattern = inner and "%d+" or "%-?%d*%.?%d+"
 	searchTextobj(pattern, false)
-	vim.notify("number textobj is deprecated, use the treesitter-textobject instead.")
+	vim.notify("number textobj is deprecated, use the corresponding treesitter-textobject instead.")
 end
 
 ---URL textobj
@@ -545,13 +546,14 @@ function M.doubleSquareBrackets(inner)
 	searchTextobj(pattern, inner)
 end
 
----JS Regex DEPRECATED, use treesitter-textobject instead
+---JS Regex
+---@deprecated use corresponding treesitter-textobject instead
 ---@param inner boolean inner regex excludes the slashes (and flags)
 function M.jsRegex(inner)
 	-- [^\] to not match escaped slash in regex, %l* to match flags
 	local pattern = [[(/).-[^\](/%l*)]]
 	searchTextobj(pattern, inner)
-	vim.notify("jsRegex textobj is deprecated, use the treesitter-textobject instead.")
+	vim.notify("jsRegex textobj is deprecated, use corresponding the treesitter-textobject instead.")
 end
 
 ---CSS Selector Textobj
