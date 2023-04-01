@@ -210,7 +210,7 @@ end, {desc = "Smart URL Opener"})
 ## Credits
 __Thanks__  
 - To the Valuable Dev for [their blog post on how to get started with creating custom text objects](https://thevaluable.dev/vim-create-text-objects/).
-- [To `@vypxl` and `@ii14` figuring out dot repeatability.](https://github.com/chrisgrieser/nvim-spider/pull/4)
+- [To `@vypxl` and `@ii14` for figuring out dot-repeatability.](https://github.com/chrisgrieser/nvim-spider/pull/4)
 
 <!-- vale Google.FirstPerson = NO -->
 __About Me__  
