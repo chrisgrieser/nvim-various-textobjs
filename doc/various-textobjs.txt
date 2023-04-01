@@ -1,4 +1,4 @@
-*various-textobjs.txt*        For NVIM v0.8.0       Last change: 2023 March 31
+*various-textobjs.txt*        For NVIM v0.8.0       Last change: 2023 April 01
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
@@ -20,8 +20,8 @@ Bundle of more than a dozen new text objects for Neovim.
 
   **Note** If you installed the plugin before March 31st and have set your own
   keymaps, you should change your keymappings to call the text objects via
-  Ex-commands `"<cmd>lua require('various-textobjs')." .textobj(true)<CR>",`.
-  This makes the text objects dot-repeatable. See the example in the
+  Ex-commands `"<cmd>lua require('various-textobjs').textobj(bool)<CR>",`. This
+  makes the text objects dot-repeatable. See the example in the
   |various-textobjs-configuration-section|.
 ------------------------------------------------------------------------------
 
