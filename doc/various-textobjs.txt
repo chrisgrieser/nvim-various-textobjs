@@ -308,7 +308,7 @@ CREDITS                       *various-textobjs-nvim-various-textobjs-credits*
 **Thanks** - To the Valuable Dev for their blog post on how to get started with
 creating custom text objects
 <https://thevaluable.dev/vim-create-text-objects/>. - To `@vypxl` and `@ii14`
-figuring out dot repeatability.
+for figuring out dot-repeatability.
 <https://github.com/chrisgrieser/nvim-spider/pull/4>
 
 **About Me** In my day job, I am a sociologist studying the social mechanisms
