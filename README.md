@@ -3,7 +3,7 @@ Bundle of more than a dozen new text objects for Neovim.
 
 > __Note__  
 > If you installed the plugin before March 31st and have set your own keymaps,
-> you should change your keymappings to call the text objects via Ex-commands `"<cmd>lua require('various-textobjs').textobj(bool)<CR>",`. This makes the text objects dot-repeatable. See the example in the [Configuration Section](#configuration).
+> you should change your keymappings to call the text objects via Ex-commands `"<cmd>lua require('various-textobjs').textobj(bool)<CR>"`. This makes the text objects dot-repeatable. See the example in the [Configuration Section](#configuration).
 
 ---
 
