@@ -1,19 +1,19 @@
-*various-textobjs.txt*        For NVIM v0.8.0       Last change: 2023 April 01
+*various-textobjs.txt*        For NVIM v0.8.0       Last change: 2023 April 02
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
 
-1. nvim-various-textobjs              |various-textobjs-nvim-various-textobjs|
-  - List of Text Objects|various-textobjs-nvim-various-textobjs-list-of-text-objects|
-  - Installation         |various-textobjs-nvim-various-textobjs-installation|
-  - Configuration       |various-textobjs-nvim-various-textobjs-configuration|
-  - Advanced Usage     |various-textobjs-nvim-various-textobjs-advanced-usage|
-  - Limitations           |various-textobjs-nvim-various-textobjs-limitations|
-  - Other Text-Object Plugins|various-textobjs-nvim-various-textobjs-other-text-object-plugins|
-  - Credits                   |various-textobjs-nvim-various-textobjs-credits|
+1. nvim-various-textobjs 🟪🔷🟡|various-textobjs-nvim-various-textobjs-🟪🔷🟡|
+  - List of Text Objects|various-textobjs-nvim-various-textobjs-🟪🔷🟡-list-of-text-objects|
+  - Installation|various-textobjs-nvim-various-textobjs-🟪🔷🟡-installation|
+  - Configuration|various-textobjs-nvim-various-textobjs-🟪🔷🟡-configuration|
+  - Advanced Usage|various-textobjs-nvim-various-textobjs-🟪🔷🟡-advanced-usage|
+  - Limitations|various-textobjs-nvim-various-textobjs-🟪🔷🟡-limitations|
+  - Other Text-Object Plugins|various-textobjs-nvim-various-textobjs-🟪🔷🟡-other-text-object-plugins|
+  - Credits      |various-textobjs-nvim-various-textobjs-🟪🔷🟡-credits|
 
 ==============================================================================
-1. nvim-various-textobjs              *various-textobjs-nvim-various-textobjs*
+1. nvim-various-textobjs 🟪🔷🟡*various-textobjs-nvim-various-textobjs-🟪🔷🟡*
 
 Bundle of more than a dozen new text objects for Neovim.
 
@@ -35,7 +35,7 @@ Bundle of more than a dozen new text objects for Neovim.
 - |various-textobjs-credits|
 
 
-LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs-list-of-text-objects*
+LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs-🟪🔷🟡-list-of-text-objects*
 
   ---------------------------------------------------------------------------------------------------------------
   textobj                description             inner / outer          forward-seeking    default  filetypes
@@ -125,7 +125,7 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs-list-of-text-objects
   <https://github.com/nvim-treesitter/nvim-treesitter-textobjects> introducing a
   similar textobject that is more capable.
 
-INSTALLATION             *various-textobjs-nvim-various-textobjs-installation*
+INSTALLATION*various-textobjs-nvim-various-textobjs-🟪🔷🟡-installation*
 
 >lua
     -- packer
@@ -144,7 +144,7 @@ INSTALLATION             *various-textobjs-nvim-various-textobjs-installation*
 <
 
 
-CONFIGURATION           *various-textobjs-nvim-various-textobjs-configuration*
+CONFIGURATION*various-textobjs-nvim-various-textobjs-🟪🔷🟡-configuration*
 
 The `.setup()` call is optional if you are fine with the defaults below. (Note
 that the default is to **not** set any keymaps.)
@@ -240,7 +240,7 @@ For your convenience, here the code to create mappings for all text objects. You
 <
 
 
-ADVANCED USAGE         *various-textobjs-nvim-various-textobjs-advanced-usage*
+ADVANCED USAGE*various-textobjs-nvim-various-textobjs-🟪🔷🟡-advanced-usage*
 
 
 SMART ALTERNATIVE TO GX ~
@@ -286,14 +286,14 @@ buffer for URLs from which you can choose one to open.
 <
 
 
-LIMITATIONS               *various-textobjs-nvim-various-textobjs-limitations*
+LIMITATIONS  *various-textobjs-nvim-various-textobjs-🟪🔷🟡-limitations*
 
 
 - This plugin uses pattern matching, so it can be inaccurate in some edge cases.
 - The value-textobj does not work with multi-line values.
 
 
-OTHER TEXT-OBJECT PLUGINS*various-textobjs-nvim-various-textobjs-other-text-object-plugins*
+OTHER TEXT-OBJECT PLUGINS*various-textobjs-nvim-various-textobjs-🟪🔷🟡-other-text-object-plugins*
 
 
 - treesitter-textobjects <https://github.com/nvim-treesitter/nvim-treesitter-textobjects>
@@ -303,7 +303,7 @@ OTHER TEXT-OBJECT PLUGINS*various-textobjs-nvim-various-textobjs-other-text-obje
 - targets.vim <https://github.com/wellle/targets.vim>
 
 
-CREDITS                       *various-textobjs-nvim-various-textobjs-credits*
+CREDITS          *various-textobjs-nvim-various-textobjs-🟪🔷🟡-credits*
 
 **Thanks** - To the Valuable Dev for their blog post on how to get started with
 creating custom text objects
@@ -316,6 +316,9 @@ underlying the digital economy. For my PhD project, I investigate the
 governance of the app economy and how software ecosystems manage the tension
 between innovation and compatibility. If you are interested in this subject,
 feel free to get in touch.
+
+**Blog** I also occassionally blog about vim: Nano Tips for Vim
+<https://nanotipsforvim.prose.sh>
 
 **Profiles** - Discord <https://discordapp.com/users/462774483044794368/> -
 Academic Website <https://chris-grieser.de/> - GitHub
