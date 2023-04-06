@@ -1,21 +1,21 @@
-*various-textobjs.txt*        For NVIM v0.8.0       Last change: 2023 April 02
+*various-textobjs.txt*        For NVIM v0.8.0       Last change: 2023 April 06
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
 
-1. nvim-various-textobjs 🟪🔷🟡|various-textobjs-nvim-various-textobjs-🟪🔷🟡|
-  - List of Text Objects|various-textobjs-nvim-various-textobjs-🟪🔷🟡-list-of-text-objects|
-  - Installation|various-textobjs-nvim-various-textobjs-🟪🔷🟡-installation|
-  - Configuration|various-textobjs-nvim-various-textobjs-🟪🔷🟡-configuration|
-  - Advanced Usage|various-textobjs-nvim-various-textobjs-🟪🔷🟡-advanced-usage|
-  - Limitations|various-textobjs-nvim-various-textobjs-🟪🔷🟡-limitations|
-  - Other Text-Object Plugins|various-textobjs-nvim-various-textobjs-🟪🔷🟡-other-text-object-plugins|
-  - Credits      |various-textobjs-nvim-various-textobjs-🟪🔷🟡-credits|
+1. nvim-various-textobjs             |various-textobjs-nvim-various-textobjs-|
+  - List of Text Objects|various-textobjs-nvim-various-textobjs--list-of-text-objects|
+  - Installation        |various-textobjs-nvim-various-textobjs--installation|
+  - Configuration      |various-textobjs-nvim-various-textobjs--configuration|
+  - Advanced Usage    |various-textobjs-nvim-various-textobjs--advanced-usage|
+  - Limitations          |various-textobjs-nvim-various-textobjs--limitations|
+  - Other Text-Object Plugins|various-textobjs-nvim-various-textobjs--other-text-object-plugins|
+  - Credits                  |various-textobjs-nvim-various-textobjs--credits|
 
 ==============================================================================
-1. nvim-various-textobjs 🟪🔷🟡*various-textobjs-nvim-various-textobjs-🟪🔷🟡*
+1. nvim-various-textobjs             *various-textobjs-nvim-various-textobjs-*
 
-Bundle of more than a dozen new text objects for Neovim.
+Bundleof more than a dozen new text objects for Neovim.
 
 
   **Note** If you installed the plugin before March 31st and have set your own
@@ -35,7 +35,7 @@ Bundle of more than a dozen new text objects for Neovim.
 - |various-textobjs-credits|
 
 
-LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs-🟪🔷🟡-list-of-text-objects*
+LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs--list-of-text-objects*
 
   ---------------------------------------------------------------------------------------------------------------
   textobj                description             inner / outer          forward-seeking    default  filetypes
@@ -79,14 +79,14 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs-🟪🔷🟡-list-of
                          a variable assignment   semicolons                                         
                          (inside one line)                                                          
 
-  key                    key of key-value pair,  outer includes the =   yes                ik, ak   all
-                         or left side of a       or :                                               
+  key                    key of key-value pair,  outer includes the =   yes                 ik,ak   all
+                         or left side of a       or                                                 
                          variable assignment                                                        
 
   url                    link beginning with     -                      yes                   L     all
                          “http”                                                                     
 
-  number*                numbers, similar to     inner: only pure       yes                in, an   all
+  number                 numbers, similar to     inner: only pure       yes                in, an   all
                          <C-a>                   digits, outer: number                              
                                                  including minus sign                               
                                                  and decimal point                                  
@@ -110,7 +110,7 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs-🟪🔷🟡-list-of
                          href="foobar.com"       quotes trailing comma                              
                                                  and space                                          
 
-  jsRegex*               JavaScript regex        outer includes the     yes                i/, a/   javascript,
+  jsRegex                JavaScript regex        outer includes the     yes                i/, a/   javascript,
                          pattern                 slashes and any flags                              typescript
 
   doubleSquareBrackets   text enclosed by [[]]   outer includes the     yes                iD, aD   lua, shell,
@@ -121,11 +121,11 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs-🟪🔷🟡-list-of
                          to                      front pipe character                               fish, sh
   ---------------------------------------------------------------------------------------------------------------
 
-  **Warning** * Textobject deprecated due to treesitter-textobject
+  **Warning** Textobject deprecated due to treesitter-textobject
   <https://github.com/nvim-treesitter/nvim-treesitter-textobjects> introducing a
   similar textobject that is more capable.
 
-INSTALLATION*various-textobjs-nvim-various-textobjs-🟪🔷🟡-installation*
+INSTALLATION            *various-textobjs-nvim-various-textobjs--installation*
 
 >lua
     -- packer
@@ -144,7 +144,7 @@ INSTALLATION*various-textobjs-nvim-various-textobjs-🟪🔷🟡-installation*
 <
 
 
-CONFIGURATION*various-textobjs-nvim-various-textobjs-🟪🔷🟡-configuration*
+CONFIGURATION          *various-textobjs-nvim-various-textobjs--configuration*
 
 The `.setup()` call is optional if you are fine with the defaults below. (Note
 that the default is to **not** set any keymaps.)
@@ -240,7 +240,7 @@ For your convenience, here the code to create mappings for all text objects. You
 <
 
 
-ADVANCED USAGE*various-textobjs-nvim-various-textobjs-🟪🔷🟡-advanced-usage*
+ADVANCED USAGE        *various-textobjs-nvim-various-textobjs--advanced-usage*
 
 
 SMART ALTERNATIVE TO GX ~
@@ -286,14 +286,14 @@ buffer for URLs from which you can choose one to open.
 <
 
 
-LIMITATIONS  *various-textobjs-nvim-various-textobjs-🟪🔷🟡-limitations*
+LIMITATIONS              *various-textobjs-nvim-various-textobjs--limitations*
 
 
 - This plugin uses pattern matching, so it can be inaccurate in some edge cases.
 - The value-textobj does not work with multi-line values.
 
 
-OTHER TEXT-OBJECT PLUGINS*various-textobjs-nvim-various-textobjs-🟪🔷🟡-other-text-object-plugins*
+OTHER TEXT-OBJECT PLUGINS*various-textobjs-nvim-various-textobjs--other-text-object-plugins*
 
 
 - treesitter-textobjects <https://github.com/nvim-treesitter/nvim-treesitter-textobjects>
@@ -303,7 +303,7 @@ OTHER TEXT-OBJECT PLUGINS*various-textobjs-nvim-various-textobjs-🟪🔷🟡-ot
 - targets.vim <https://github.com/wellle/targets.vim>
 
 
-CREDITS          *various-textobjs-nvim-various-textobjs-🟪🔷🟡-credits*
+CREDITS                      *various-textobjs-nvim-various-textobjs--credits*
 
 **Thanks** - To the Valuable Dev for their blog post on how to get started with
 creating custom text objects
