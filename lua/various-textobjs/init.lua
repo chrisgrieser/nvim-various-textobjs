@@ -36,6 +36,12 @@ function M.indentation(noStartBorder, noEndBorder) linewise.indentation(noStartB
 ---essentially `ii` downwards
 function M.restOfIndentation() linewise.restOfIndentation() end
 
+-- next *closed* fold
+---@param inner boolean outer adds one line after the fold
+function M.closedFold(inner)
+	linewise.closedFold(inner, lookForwL)
+end
+
 ---Md Fenced Code Block Textobj
 ---@param inner boolean inner excludes the backticks
 function M.mdFencedCodeBlock(inner) linewise.mdFencedCodeBlock(inner, lookForwL) end

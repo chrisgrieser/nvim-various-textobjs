@@ -1,11 +1,11 @@
 # nvim-various-textobjs 🟪🔷🟡
 Bundle of more than a dozen new text objects for Neovim.
 
+<!-- vale Google.Units = NO -->
 > __Note__  
 > If you installed the plugin before March 31st and have set your own keymaps,
 > you should change your keymappings to call the text objects via Ex-commands `"<cmd>lua require('various-textobjs').textobj(bool)<CR>"`. This makes the text objects dot-repeatable. See the example in the [Configuration Section](#configuration).
-
----
+<!-- vale Google.Units = YES -->
 
 <!--toc:start-->
 - [List of Text Objects](#list-of-text-objects)
@@ -19,7 +19,7 @@ Bundle of more than a dozen new text objects for Neovim.
 <!--toc:end-->
 
 ## List of Text Objects
-
+<!-- vale off -->
 | textobj              | description                                                                                | inner / outer                                                                             | forward-seeking |     default keymaps      | filetypes (for default keymaps) |
 |:---------------------|:-------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------|:----------------|:------------------------:|:--------------------------------|
 | indentation          | surrounding lines with same or higher indentation                                          | [see overview from vim-indent-object](https://github.com/michaeljsmith/vim-indent-object) | no              | `ii`, `ai`, `aI`, (`iI`) | all                             |
@@ -36,6 +36,7 @@ Bundle of more than a dozen new text objects for Neovim.
 | url                  | link beginning with "http"                                                                 | \-                                                                                        | yes             |           `L`            | all                             |
 | number\*             | numbers, similar to `<C-a>`                                                                | inner: only pure digits, outer: number including minus sign and decimal point             | yes             |        `in`, `an`        | all                             |
 | diagnostic           | LSP diagnostic (requires built-in LSP)                                                     | \-                                                                                        | yes             |           `!`            | all                             |
+| closedFold           | closed fold                                                                                | outer includes one line after the last folded line                                        | yes             |        `iz`, `az`        | all                             |
 | mdlink               | markdown link like `[title](url)`                                                          | inner is only the link title (between the `[]`)                                           | yes             |        `il`, `al`        | markdown, toml                  |
 | mdFencedCodeBlock    | markdown fenced code (enclosed by three backticks)                                         | outer includes the enclosing backticks                                                    | yes             |        `iC`, `aC`        | markdown                        |
 | cssSelector          | class in CSS, like `.my-class`                                                             | outer includes trailing comma and space                                                   | yes             |        `ic`, `ac`        | css, scss                       |
@@ -43,7 +44,7 @@ Bundle of more than a dozen new text objects for Neovim.
 | jsRegex\*            | JavaScript regex pattern                                                                   | outer includes the slashes and any flags                                                  | yes             |        `i/`, `a/`        | javascript, typescript          |
 | doubleSquareBrackets | text enclosed by `[[]]`                                                                    | outer includes the four square brackets                                                   | yes             |        `iD`, `aD`        | lua, shell, neorg, markdown     |
 | shellPipe            | command stdout is piped to                                                                 | outer includes the front pipe character                                                   | yes             |        `iP`,`aP`         | bash, zsh, fish, sh             |
-
+<!-- vale on -->
 > __Warning__  
 > \* Textobject deprecated due to [treesitter-textobject](https://github.com/nvim-treesitter/nvim-treesitter-textobjects) introducing a similar textobject that is more capable. 
 
@@ -82,21 +83,22 @@ If you want to set your own keybindings, you can do so by calling the respective
 - The function names correspond to the textobj-names from the [overview table](#list-of-text-objects).
 - The text objects that differentiate between outer and inner require a boolean parameter, `true` always meaning "inner," and `false` meaning "outer."
 - The keymaps *need* to be called as Ex-command, otherwise they will not be
-  dot-repeatable. `function () require("various-textobjs").diagnostic() end` as third argument for the keymap works in general, but the text objects will not be dot-repeatabile then.
+  dot-repeatable. `function () require("various-textobjs").diagnostic() end` as third argument for the keymap works in general, but the text objects <!-- vale Google.Will = NO --> will not be dot-repeatable then.
+<!-- vale Google.Will = YES -->
 
 ```lua
 -- example: `?` for diagnostic textobj
-vim.keymap.set({"o", "x"}, "?", '<cmd>lua require("various-textobjs").diagnostic()<CR>')
+vim.keymap.set({ "o", "x" }, "?", '<cmd>lua require("various-textobjs").diagnostic()<CR>')
 
 -- example: `an` for outer subword, `in` for inner subword
-vim.keymap.set({"o", "x"}, "aS", '<cmd>lua require("various-textobjs").subword(false)<CR>')
-vim.keymap.set({"o", "x"}, "iS", '<cmd>lua require("various-textobjs").subword(true)<CR>')
+vim.keymap.set({ "o", "x" }, "aS", '<cmd>lua require("various-textobjs").subword(false)<CR>')
+vim.keymap.set({ "o", "x" }, "iS", '<cmd>lua require("various-textobjs").subword(true)<CR>')
 
--- exception: indentation textobj requires two parameters, the first for 
+-- exception: indentation textobj requires two parameters, the first for
 -- exclusion of the starting border, the second for the exclusion of ending
 -- border
-vim.keymap.set({"o", "x"}, "ii", '<cmd>lua require("various-textobjs").indentation(true, true)<CR>')
-vim.keymap.set({"o", "x"}, "ai", '<cmd>lua require("various-textobjs").indentation(false, true)<CR>')
+vim.keymap.set({ "o", "x" }, "ii", '<cmd>lua require("various-textobjs").indentation(true, true)<CR>')
+vim.keymap.set({ "o", "x" }, "ai", '<cmd>lua require("various-textobjs").indentation(false, true)<CR>')
 ```
 
 For your convenience, here the code to create mappings for all text objects. You can copypaste this list and enter your own bindings.
@@ -106,56 +108,119 @@ For your convenience, here the code to create mappings for all text objects. You
 ```lua
 local keymap = vim.keymap.set
 
-keymap( { "o", "x" }, "ii" , "<cmd>lua require('various-textobjs').indentation(true, true)<CR>")
-keymap( { "o", "x" }, "ai" , "<cmd>lua require('various-textobjs').indentation(false, true)<CR>")
-keymap( { "o", "x" }, "iI" , "<cmd>lua require('various-textobjs').indentation(true, true)<CR>")
-keymap( { "o", "x" }, "aI" , "<cmd>lua require('various-textobjs').indentation(false, false)<CR>")
+keymap({ "o", "x" }, "ii", "<cmd>lua require('various-textobjs').indentation(true, true)<CR>")
+keymap({ "o", "x" }, "ai", "<cmd>lua require('various-textobjs').indentation(false, true)<CR>")
+keymap({ "o", "x" }, "iI", "<cmd>lua require('various-textobjs').indentation(true, true)<CR>")
+keymap({ "o", "x" }, "aI", "<cmd>lua require('various-textobjs').indentation(false, false)<CR>")
 
-keymap( { "o", "x" }, "YOUR_MAPPING" , "<cmd>lua require('various-textobjs').subword(true)<CR>")
-keymap( { "o", "x" }, "YOUR_MAPPING" , "<cmd>lua require('various-textobjs').subword(false)<CR>")
+keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').subword(true)<CR>")
+keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').subword(false)<CR>")
 
-keymap( { "o", "x" }, "YOUR_MAPPING" , "<cmd>lua require('various-textobjs').toNextClosingBracket()<CR>")
+keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').toNextClosingBracket()<CR>")
 
-keymap( { "o", "x" }, "YOUR_MAPPING" , "<cmd>lua require('various-textobjs').restOfParagraph()<CR>")
+keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').restOfParagraph()<CR>")
 
-keymap( { "o", "x" }, "YOUR_MAPPING" , "<cmd>lua require('various-textobjs').entireBuffer()<CR>")
+keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').entireBuffer()<CR>")
 
-keymap( { "o", "x" }, "YOUR_MAPPING" , "<cmd>lua require('various-textobjs').nearEoL()<CR>")
+keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').nearEoL()<CR>")
 
-keymap( { "o", "x" }, "YOUR_MAPPING" , "<cmd>lua require('various-textobjs').lineCharacterwise()<CR>")
+keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').lineCharacterwise()<CR>")
 
-keymap( { "o", "x" }, "YOUR_MAPPING" , "<cmd>lua require('various-textobjs').column()<CR>")
+keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').column()<CR>")
 
-keymap( { "o", "x" }, "YOUR_MAPPING" , "<cmd>lua require('various-textobjs').value(true)<CR>")
-keymap( { "o", "x" }, "YOUR_MAPPING" , "<cmd>lua require('various-textobjs').value(false)<CR>")
+keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').value(true)<CR>")
+keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').value(false)<CR>")
 
-keymap( { "o", "x" }, "YOUR_MAPPING" , "<cmd>lua require('various-textobjs').key(true)<CR>")
-keymap( { "o", "x" }, "YOUR_MAPPING" , "<cmd>lua require('various-textobjs').key(false)<CR>")
+keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').key(true)<CR>")
+keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').key(false)<CR>")
 
-keymap( { "o", "x" }, "YOUR_MAPPING" , "<cmd>lua require('various-textobjs').url()<CR>")
+keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').url()<CR>")
 
-keymap( { "o", "x" }, "YOUR_MAPPING" , "<cmd>lua require('various-textobjs').diagnostic()<CR>")
+keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').diagnostic()<CR>")
+
+keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').closedFold(true)<CR>")
+keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').closedFold(false)<CR>")
 
 --------------------------------------------------------------------------------------
 -- put these into the ftplugins or autocms for the filetypes you want to use them with
 
-keymap( { "o", "x" }, "YOUR_MAPPING" , "<cmd>lua require('various-textobjs').mdlink(true)<CR>", { buffer = true })
-keymap( { "o", "x" }, "YOUR_MAPPING" , "<cmd>lua require('various-textobjs').mdlink(false)<CR>", { buffer = true })
+keymap(
+	{ "o", "x" },
+	"YOUR_MAPPING",
+	"<cmd>lua require('various-textobjs').mdlink(true)<CR>",
+	{ buffer = true }
+)
+keymap(
+	{ "o", "x" },
+	"YOUR_MAPPING",
+	"<cmd>lua require('various-textobjs').mdlink(false)<CR>",
+	{ buffer = true }
+)
 
-keymap( { "o", "x" }, "YOUR_MAPPING" , "<cmd>lua require('various-textobjs').mdFencedCodeBlock(true)<CR>", { buffer = true })
-keymap( { "o", "x" }, "YOUR_MAPPING" , "<cmd>lua require('various-textobjs').mdFencedCodeBlock(false)<CR>", { buffer = true })
+keymap(
+	{ "o", "x" },
+	"YOUR_MAPPING",
+	"<cmd>lua require('various-textobjs').mdFencedCodeBlock(true)<CR>",
+	{ buffer = true }
+)
+keymap(
+	{ "o", "x" },
+	"YOUR_MAPPING",
+	"<cmd>lua require('various-textobjs').mdFencedCodeBlock(false)<CR>",
+	{ buffer = true }
+)
 
-keymap( { "o", "x" }, "YOUR_MAPPING" , "<cmd>lua require('various-textobjs').cssSelector(true)<CR>", { buffer = true })
-keymap( { "o", "x" }, "YOUR_MAPPING" , "<cmd>lua require('various-textobjs').cssSelector(false)<CR>", { buffer = true })
+keymap(
+	{ "o", "x" },
+	"YOUR_MAPPING",
+	"<cmd>lua require('various-textobjs').cssSelector(true)<CR>",
+	{ buffer = true }
+)
+keymap(
+	{ "o", "x" },
+	"YOUR_MAPPING",
+	"<cmd>lua require('various-textobjs').cssSelector(false)<CR>",
+	{ buffer = true }
+)
 
-keymap( { "o", "x" }, "YOUR_MAPPING" , "<cmd>lua require('various-textobjs').htmlAttribute(true)<CR>", { buffer = true })
-keymap( { "o", "x" }, "YOUR_MAPPING" , "<cmd>lua require('various-textobjs').htmlAttribute(false)<CR>", { buffer = true })
+keymap(
+	{ "o", "x" },
+	"YOUR_MAPPING",
+	"<cmd>lua require('various-textobjs').htmlAttribute(true)<CR>",
+	{ buffer = true }
+)
+keymap(
+	{ "o", "x" },
+	"YOUR_MAPPING",
+	"<cmd>lua require('various-textobjs').htmlAttribute(false)<CR>",
+	{ buffer = true }
+)
 
-keymap( { "o", "x" }, "YOUR_MAPPING" , "<cmd>lua require('various-textobjs').doubleSquareBrackets(true)<CR>", { buffer = true })
-keymap( { "o", "x" }, "YOUR_MAPPING" , "<cmd>lua require('various-textobjs').doubleSquareBrackets(false)<CR>", { buffer = true })
+keymap(
+	{ "o", "x" },
+	"YOUR_MAPPING",
+	"<cmd>lua require('various-textobjs').doubleSquareBrackets(true)<CR>",
+	{ buffer = true }
+)
+keymap(
+	{ "o", "x" },
+	"YOUR_MAPPING",
+	"<cmd>lua require('various-textobjs').doubleSquareBrackets(false)<CR>",
+	{ buffer = true }
+)
 
-keymap( { "o", "x" }, "YOUR_MAPPING" , "<cmd>lua require('various-textobjs').shellPipe(true)<CR>", { buffer = true })
-keymap( { "o", "x" }, "YOUR_MAPPING" , "<cmd>lua require('various-textobjs').shellPipe(false)<CR>", { buffer = true })
+keymap(
+	{ "o", "x" },
+	"YOUR_MAPPING",
+	"<cmd>lua require('various-textobjs').shellPipe(true)<CR>",
+	{ buffer = true }
+)
+keymap(
+	{ "o", "x" },
+	"YOUR_MAPPING",
+	"<cmd>lua require('various-textobjs').shellPipe(false)<CR>",
+	{ buffer = true }
+)
 ```
 
 </details>
@@ -163,10 +228,10 @@ keymap( { "o", "x" }, "YOUR_MAPPING" , "<cmd>lua require('various-textobjs').she
 ## Advanced Usage
 
 ### Smart Alternative to `gx`
-Using the URL textobj, you can also write a small snippet to replace netrw's `gx`. The code below retrieves the next URL (within the amount of lines configured in the `setup` call), and opens it in your browser. While this is already an improvement to vim's built-in `gx`, which requires the cursor to be standing on a URL to work, you can even go one step further. If no URL has been found within the next few lines, the `:UrlView` command from [urlview.nvim](https://github.com/axieax/urlview.nvim) is triggered, searching the entire buffer for URLs from which you can choose one to open.
+Using the URL textobj, you can also write a small snippet to replace netrw's `gx`. The code below retrieves the next URL (within the amount of lines configured in the `setup` call), and opens it in your browser. While this is already an improvement to vim's built-in `gx`, which requires the cursor to be standing on a URL to work, you can even go one step further. If no URL has been found within the next few lines, the `:UrlView` command from [urlview.nvim](https://github.com/axieax/urlview.nvim) is triggered. This searches the entire buffer for URLs from which you can choose one to open.
 
 ```lua
-vim.keymap.set("n", "gx", function ()
+vim.keymap.set("n", "gx", function()
 	require("various-textobjs").url() -- select URL
 	-- this works since the plugin switched to visual mode
 	-- if the textobj has been found
@@ -177,7 +242,7 @@ vim.keymap.set("n", "gx", function ()
 		vim.cmd.UrlView("buffer")
 		return
 	end
-	
+
 	-- retrieve URL with the z-register as intermediary
 	vim.cmd.normal { '"zy', bang = true }
 	local url = vim.fn.getreg("z")
@@ -191,9 +256,9 @@ vim.keymap.set("n", "gx", function ()
 	elseif vim.fn.has("win64") == 1 or vim.fn.has("win32") == 1 then
 		opener = "start"
 	end
-	local openCommand = string.format ("%s '%s' >/dev/null 2>&1", opener, url)
+	local openCommand = string.format("%s '%s' >/dev/null 2>&1", opener, url)
 	os.execute(openCommand)
-end, {desc = "Smart URL Opener"})
+end, { desc = "Smart URL Opener" })
 ```
 
 ## Limitations
@@ -217,7 +282,7 @@ __About Me__
 In my day job, I am a sociologist studying the social mechanisms underlying the digital economy. For my PhD project, I investigate the governance of the app economy and how software ecosystems manage the tension between innovation and compatibility. If you are interested in this subject, feel free to get in touch.
 
 __Blog__  
-I also occassionally blog about vim: [Nano Tips for Vim](https://nanotipsforvim.prose.sh)
+I also occasionally blog about vim: [Nano Tips for Vim](https://nanotipsforvim.prose.sh)
 
 __Profiles__  
 - [Discord](https://discordapp.com/users/462774483044794368/)

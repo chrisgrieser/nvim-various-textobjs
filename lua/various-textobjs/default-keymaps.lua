@@ -7,6 +7,7 @@ function M.setup()
 		value = "v",
 		key = "k",
 		subword = "S", -- lowercase taken for sentence textobj
+		closedFold = "z", -- z is the common prefix for folds
 	}
 	local oneMaps = {
 		nearEoL = "n",

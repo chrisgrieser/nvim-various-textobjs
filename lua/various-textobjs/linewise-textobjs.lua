@@ -29,6 +29,41 @@ end
 
 --------------------------------------------------------------------------------
 
+-- next *closed* fold
+---@param inner boolean outer adds one line after the fold
+---@param lookForwL integer number of lines to look forward for the textobj
+function M.closedFold(inner, lookForwL)
+	local startLnum = fn.line(".")
+	local lastLine = fn.line("$")
+	local startedOnFold = fn.foldclosed(startLnum) > 0
+	local foldStart, foldEnd
+
+	if startedOnFold then
+		foldStart = fn.foldclosed(startLnum)
+		foldEnd = fn.foldclosedend(startLnum)
+	else
+		foldStart = startLnum
+		repeat
+			if foldStart >= lastLine or foldStart > (lookForwL + startLnum) then
+				u.notFoundMsg(lookForwL)
+				return
+			end
+			foldStart = foldStart + 1
+			local reachedClosedFold = fn.foldclosed(foldStart) > 0
+		until reachedClosedFold
+		foldEnd = fn.foldclosedend(foldStart)
+	end
+	if not inner and (foldEnd + 1 <= lastLine) then foldEnd = foldEnd + 1 end
+
+	-- fold has to be opened for so line can be correctly selected
+	vim.cmd(("%d,%d foldopen"):format(foldStart, foldEnd))
+	setLinewiseSelection(foldStart, foldEnd)
+
+	-- if yanking, close the fold afterwards again.
+	-- (For the other operators, opening the fold does not matter (d) or is desirable (gu).)
+	if vim.v.operator == "y" then vim.cmd(("%d,%d foldclose"):format(foldStart, foldEnd)) end
+end
+
 ---Textobject for the entire buffer content
 function M.entireBuffer() setLinewiseSelection(1, fn.line("$")) end
 
@@ -84,7 +119,7 @@ function M.mdFencedCodeBlock(inner, lookForwL)
 		ending = ending - 1
 	end
 
-	u.setLinewiseSelection(start, ending)
+	setLinewiseSelection(start, ending)
 end
 
 --------------------------------------------------------------------------------
