@@ -132,7 +132,6 @@ function M.lineCharacterwise()
 	u.normal("g_o^")
 end
 
----DIAGNOSTIC TEXT OBJECT
 ---similar to https://github.com/andrewferrier/textobj-diagnostic.nvim
 ---requires builtin LSP
 ---@param lookForwL integer number of lines to look forward for the textobj
@@ -171,8 +170,6 @@ function M.diagnostic(lookForwL)
 	end
 	setSelection({ target.lnum + 1, target.col }, { target.end_lnum + 1, target.end_col - 1 })
 end
-
-
 
 ---@param inner boolean inner value excludes trailing commas or semicolons, outer includes them. Both exclude trailing comments.
 ---@param lookForwL integer number of lines to look forward for the textobj
@@ -239,6 +236,15 @@ function M.url(lookForwL)
 	-- searchTextobj unnecessarily complex for other methods
 	local pattern = "https?://[A-Za-z0-9_%-/.#%%=?&]+"
 	searchTextobj(pattern, false, lookForwL)
+end
+
+---field which a call
+---see also https://github.com/chrisgrieser/nvim-various-textobjs/issues/26
+---@param inner boolean inner excludes the leading dot
+---@param lookForwL integer number of lines to look forward for the textobj
+function M.chainMember(inner, lookForwL)
+	local pattern = "(%.)%w%a*%b()()"
+	searchTextobj(pattern, inner, lookForwL)
 end
 
 --------------------------------------------------------------------------------

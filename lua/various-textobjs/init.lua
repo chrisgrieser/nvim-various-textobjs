@@ -38,9 +38,7 @@ function M.restOfIndentation() linewise.restOfIndentation() end
 
 -- next *closed* fold
 ---@param inner boolean outer adds one line after the fold
-function M.closedFold(inner)
-	linewise.closedFold(inner, lookForwL)
-end
+function M.closedFold(inner) linewise.closedFold(inner, lookForwL) end
 
 ---Md Fenced Code Block Textobj
 ---@param inner boolean inner excludes the backticks
@@ -48,6 +46,11 @@ function M.mdFencedCodeBlock(inner) linewise.mdFencedCodeBlock(inner, lookForwL)
 
 --------------------------------------------------------------------------------
 -- CHARWISE
+
+---field which includes a call
+---see also https://github.com/chrisgrieser/nvim-various-textobjs/issues/26
+---@param inner boolean inner excludes the leading dot
+function M.chainMember(inner) charwise.chainMember(inner, lookForwL) end
 
 ---Subword
 ---@param inner boolean outer includes trailing -_
@@ -57,7 +60,7 @@ function M.subword(inner) charwise.subword(inner, lookForwL) end
 function M.nearEoL() charwise.nearEoL() end
 
 ---till next closing bracket
-function M.toNextClosingBracket() charwise.toNextClosingBracket() end
+function M.toNextClosingBracket() charwise.toNextClosingBracket(lookForwL) end
 
 ---current line (but characterwise)
 function M.lineCharacterwise() charwise.lineCharacterwise() end

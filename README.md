@@ -1,5 +1,5 @@
 # nvim-various-textobjs 🟪🔷🟡
-Bundle of more than a dozen new text objects for Neovim.
+Bundle of two dozen new text objects for Neovim.
 
 <!-- vale Google.Units = NO -->
 > __Note__  
@@ -37,6 +37,7 @@ Bundle of more than a dozen new text objects for Neovim.
 | number\*             | numbers, similar to `<C-a>`                                                                | inner: only pure digits, outer: number including minus sign and decimal point             | yes             |        `in`, `an`        | all                             |
 | diagnostic           | LSP diagnostic (requires built-in LSP)                                                     | \-                                                                                        | yes             |           `!`            | all                             |
 | closedFold           | closed fold                                                                                | outer includes one line after the last folded line                                        | yes             |        `iz`, `az`        | all                             |
+| chainMember          | field with the full call, like `.encode(param)`                                            | outer includes the leading `.` (or `:`)                                                   | yes             |        `im`, `am`        | all                             |
 | mdlink               | markdown link like `[title](url)`                                                          | inner is only the link title (between the `[]`)                                           | yes             |        `il`, `al`        | markdown, toml                  |
 | mdFencedCodeBlock    | markdown fenced code (enclosed by three backticks)                                         | outer includes the enclosing backticks                                                    | yes             |        `iC`, `aC`        | markdown                        |
 | cssSelector          | class in CSS, like `.my-class`                                                             | outer includes trailing comma and space                                                   | yes             |        `ic`, `ac`        | css, scss                       |
@@ -140,6 +141,9 @@ keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').diagn
 
 keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').closedFold(true)<CR>")
 keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').closedFold(false)<CR>")
+
+keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').chainMember(true)<CR>")
+keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').chainMember(false)<CR>")
 
 --------------------------------------------------------------------------------------
 -- put these into the ftplugins or autocms for the filetypes you want to use them with
