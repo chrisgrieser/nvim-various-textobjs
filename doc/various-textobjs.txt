@@ -15,7 +15,7 @@ Table of Contents                         *various-textobjs-table-of-contents*
 ==============================================================================
 1. nvim-various-textobjs             *various-textobjs-nvim-various-textobjs-*
 
-Bundleof more than a dozen new text objects for Neovim.
+Bundleof two dozen new text objects for Neovim.
 
 
   **Note** If you installed the plugin before March 31st and have set your own
@@ -96,6 +96,10 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs--list-of-text-object
   closedFold             closed fold             outer includes one     yes                iz, az   all
                                                  line after the last                                
                                                  folded line                                        
+
+  chainMember            field with the full     outer includes the     yes                 im,am   all
+                         call, like              leading . (or )                                    
+                         .encode(param)                                                             
 
   mdlink                 markdown link like      inner is only the link yes                il, al   markdown,
                          [title](url)            title (between the [])                             toml
@@ -222,6 +226,9 @@ For your convenience, here the code to create mappings for all text objects. You
     
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').closedFold(true)<CR>")
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').closedFold(false)<CR>")
+    
+    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').chainMember(true)<CR>")
+    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').chainMember(false)<CR>")
     
     --------------------------------------------------------------------------------------
     -- put these into the ftplugins or autocms for the filetypes you want to use them with
