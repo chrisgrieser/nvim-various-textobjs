@@ -28,7 +28,7 @@ end
 --------------------------------------------------------------------------------
 
 ---Seek and select characterwise text object based on pattern.
----@param pattern string lua pattern. Requires two capture groups marking the two additions for the outer variant of the textobj. Use an empty capture group when there is no difference between inner and outer on that side. (Essentially, the two capture groups work as lookbehind and lookahead.)
+---@param pattern string lua pattern. REQUIRED two capture groups marking the two additions for the outer variant of the textobj. Use an empty capture group when there is no difference between inner and outer on that side. (Essentially, the two capture groups work as lookbehind and lookahead.)
 ---@param inner boolean true = inner textobj
 ---@param lookForwL integer number of lines to look forward for the textobj
 ---@return boolean whether textobj search was successful
