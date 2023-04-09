@@ -1,8 +1,8 @@
 local M = {}
 
-local linewise = require("various-textobjs.linewise-textobjs")
-local charwise = require("various-textobjs.charwise-textobjs")
 local blockwise = require("various-textobjs.blockwise-textobjs")
+local charwise = require("various-textobjs.charwise-textobjs")
+local linewise = require("various-textobjs.linewise-textobjs")
 local setupDefaultKeymaps = require("various-textobjs.default-keymaps").setup
 
 --------------------------------------------------------------------------------

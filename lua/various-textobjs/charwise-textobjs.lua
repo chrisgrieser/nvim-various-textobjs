@@ -1,7 +1,6 @@
 local M = {}
 local fn = vim.fn
 local bo = vim.bo
-
 local u = require("various-textobjs.utils")
 --------------------------------------------------------------------------------
 
