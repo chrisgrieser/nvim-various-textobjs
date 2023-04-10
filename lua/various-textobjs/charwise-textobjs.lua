@@ -242,7 +242,7 @@ end
 ---@param inner boolean inner excludes the leading dot
 ---@param lookForwL integer number of lines to look forward for the textobj
 function M.chainMember(inner, lookForwL)
-	local pattern = "(%.)%w%a*%b()()"
+	local pattern = "(%.)[%w_][%a_]*%b()()"
 	searchTextobj(pattern, inner, lookForwL)
 end
 
