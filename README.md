@@ -73,8 +73,16 @@ The `.setup()` call is optional if you are fine with the defaults below. (Note t
 ```lua
 -- default config
 require("various-textobjs").setup {
-	lookForwardLines = 5, -- set to 0 to only look in the current line
-	useDefaultKeymaps = false, -- use suggested keymaps (see README)
+	-- lines to seek forwards for "small" textobjs (most characterwise)
+	-- set to 0 to only look in the current line
+	lookForwardSmall = 5, 
+
+	-- lines to seek forwards for "big" textobjs
+	-- (linewise textobjs and the url textobj)
+	lookForwardBig = 15,
+
+	-- use suggested keymaps (see README)
+	useDefaultKeymaps = false, 
 }
 ```
 

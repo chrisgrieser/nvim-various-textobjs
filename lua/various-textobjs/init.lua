@@ -3,19 +3,26 @@ local M = {}
 local blockwise = require("various-textobjs.blockwise-textobjs")
 local charwise = require("various-textobjs.charwise-textobjs")
 local linewise = require("various-textobjs.linewise-textobjs")
-local setupDefaultKeymaps = require("various-textobjs.default-keymaps").setup
+local defaultKeymaps = require("various-textobjs.default-keymaps")
 
 --------------------------------------------------------------------------------
 -- CONFIG
--- default value
-local lookForwL = 5
+-- default values
+local lookForwardSmall = 5
+local lookForwardBig = 15
+
+---@class config
+---@field lookForwardSmall number -- characterwise textobjs
+---@field lookForwardBig number -- linewise textobjs & URL textobj
+---@field useDefaultKeymaps boolean
 
 ---optional setup function
----@param opts table
+---@param opts config
 function M.setup(opts)
 	if not opts then opts = {} end
-	if opts.lookForwardLines then lookForwL = opts.lookForwardLines end
-	if opts.useDefaultKeymaps then setupDefaultKeymaps() end
+	if opts.lookForwardSmall then lookForwardSmall = opts.lookForwardSmall end
+	if opts.lookForwardBig then lookForwardBig = opts.lookForwardBig end
+	if opts.useDefaultKeymaps then defaultKeymaps.setup() end
 end
 
 --------------------------------------------------------------------------------
@@ -38,11 +45,18 @@ function M.restOfIndentation() linewise.restOfIndentation() end
 
 -- next *closed* fold
 ---@param inner boolean outer adds one line after the fold
-function M.closedFold(inner) linewise.closedFold(inner, lookForwL) end
+function M.closedFold(inner) linewise.closedFold(inner, lookForwardBig) end
 
 ---Md Fenced Code Block Textobj
 ---@param inner boolean inner excludes the backticks
-function M.mdFencedCodeBlock(inner) linewise.mdFencedCodeBlock(inner, lookForwL) end
+function M.mdFencedCodeBlock(inner) linewise.mdFencedCodeBlock(inner, lookForwardBig) end
+
+
+--------------------------------------------------------------------------------
+-- BLOCKWISE
+
+---Column Textobj (blockwise down until indent or shorter line)
+function M.column() blockwise.column() end
 
 --------------------------------------------------------------------------------
 -- CHARWISE
@@ -50,70 +64,67 @@ function M.mdFencedCodeBlock(inner) linewise.mdFencedCodeBlock(inner, lookForwL)
 ---field which includes a call
 ---see also https://github.com/chrisgrieser/nvim-various-textobjs/issues/26
 ---@param inner boolean inner excludes the leading dot
-function M.chainMember(inner) charwise.chainMember(inner, lookForwL) end
+function M.chainMember(inner) charwise.chainMember(inner, lookForwardSmall) end
 
 ---Subword
 ---@param inner boolean outer includes trailing -_
-function M.subword(inner) charwise.subword(inner, lookForwL) end
+function M.subword(inner) charwise.subword(inner, lookForwardSmall) end
 
 ---near end of the line, ignoring trailing whitespace (relevant for markdown)
 function M.nearEoL() charwise.nearEoL() end
 
 ---till next closing bracket
-function M.toNextClosingBracket() charwise.toNextClosingBracket(lookForwL) end
+function M.toNextClosingBracket() charwise.toNextClosingBracket(lookForwardSmall) end
 
 ---current line (but characterwise)
 function M.lineCharacterwise() charwise.lineCharacterwise() end
 
----DIAGNOSTIC TEXT OBJECT
+---diagnostic text object
 ---similar to https://github.com/andrewferrier/textobj-diagnostic.nvim
----requires builtin LSP
-function M.diagnostic() charwise.diagnostic(lookForwL) end
-
----Column Textobj (blockwise down until indent or shorter line)
-function M.column() blockwise.column() end
+---requires builtin lsp
+function M.diagnostic() charwise.diagnostic(lookForwardSmall) end
 
 ---@param inner boolean inner value excludes trailing commas or semicolons, outer includes them. Both exclude trailing comments.
-function M.value(inner) charwise.value(inner, lookForwL) end
+function M.value(inner) charwise.value(inner, lookForwardSmall) end
 
 ---@param inner boolean outer key includes the `:` or `=` after the key
-function M.key(inner) charwise.key(inner, lookForwL) end
+function M.key(inner) charwise.key(inner, lookForwardSmall) end
 
 ---number textobj
 ---@deprecated use corresponding treesitter-textobject instead
 ---@param inner boolean inner number consists purely of digits, outer number factors in decimal points and includes minus sign
-function M.number(inner) charwise.number(inner, lookForwL) end
+function M.number(inner) charwise.number(inner, lookForwardSmall) end
 
 ---URL textobj
-function M.url() charwise.url(lookForwL) end
+function M.url() charwise.url(lookForwardBig) end
 
 --------------------------------------------------------------------------------
 -- FILETYPE SPECIFIC TEXTOBJS
 
 ---md links textobj
 ---@param inner boolean inner link only includes the link title, outer link includes link, url, and the four brackets.
-function M.mdlink(inner) charwise.mdlink(inner, lookForwL) end
+function M.mdlink(inner) charwise.mdlink(inner, lookForwardSmall) end
 
 ---double square brackets
 ---@param inner boolean inner double square brackets exclude the brackets themselves
-function M.doubleSquareBrackets(inner) charwise.doubleSquareBrackets(inner, lookForwL) end
+function M.doubleSquareBrackets(inner) charwise.doubleSquareBrackets(inner, lookForwardSmall) end
 
 ---JS Regex
 ---@deprecated use corresponding treesitter-textobject instead
 ---@param inner boolean inner regex excludes the slashes (and flags)
-function M.jsRegex(inner) charwise.jsRegex(inner, lookForwL) end
+function M.jsRegex(inner) charwise.jsRegex(inner, lookForwardSmall) end
 
 ---CSS Selector Textobj
 ---@param inner boolean outer selector includes trailing comma and whitespace
-function M.cssSelector(inner) charwise.cssSelector(inner, lookForwL) end
+function M.cssSelector(inner) charwise.cssSelector(inner, lookForwardSmall) end
 
 ---HTML/XML Attribute Textobj
 ---@param inner boolean inner selector is only the value of the attribute inside the quotation marks.
-function M.htmlAttribute(inner) charwise.htmlAttribute(inner, lookForwL) end
+function M.htmlAttribute(inner) charwise.htmlAttribute(inner, lookForwardSmall) end
 
 ---Shell Pipe Textobj
 ---@param inner boolean outer selector includes the front pipe
-function M.shellPipe(inner) charwise.shellPipe(inner, lookForwL) end
+function M.shellPipe(inner) charwise.shellPipe(inner, lookForwardSmall) end
 
 --------------------------------------------------------------------------------
 return M
