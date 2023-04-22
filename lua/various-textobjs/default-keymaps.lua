@@ -1,62 +1,74 @@
 local M = {}
 --------------------------------------------------------------------------------
 
+local innerOuterMaps = {
+	number = "n",
+	value = "v",
+	key = "k",
+	subword = "S", -- lowercase taken for sentence textobj
+	closedFold = "z", -- z is the common prefix for folds
+	chainMember = "m",
+}
+local oneMaps = {
+	nearEoL = "n",
+	visibleInWindow = "gw",
+	lineCharacterwise = "_",
+	toNextClosingBracket = "%", -- since this is basically a more intuitive version of the standard "%" motion-as-textobj
+	restOfParagraph = "r",
+	restOfIndentation = "R",
+	restOfWindow = "gW",
+	diagnostic = "!",
+	column = "|",
+	entireBuffer = "gG", -- G + gg
+	url = "L", -- gu, gU, and U would conflict with gugu, gUgU, and gUU. u would conflict with gcu (undo comment)
+}
+local ftMaps = {
+	{
+		map = { jsRegex = "/" },
+		fts = { "javascript", "typescript" },
+	},
+	{
+		map = { mdlink = "l" },
+		fts = { "markdown", "toml" },
+	},
+	{
+		map = { mdFencedCodeBlock = "C" },
+		fts = { "markdown" },
+	},
+	{
+		map = { doubleSquareBrackets = "D" },
+		fts = { "lua", "norg", "sh", "fish", "zsh", "bash", "markdown" },
+	},
+	{
+		map = { cssSelector = "c" },
+		fts = { "css", "scss" },
+	},
+	{
+		map = { shellPipe = "P" },
+		fts = { "sh", "bash", "zsh", "fish" },
+	},
+	{
+		map = { htmlAttribute = "x" },
+		fts = { "html", "css", "scss", "xml" },
+	},
+}
+
 function M.setup()
-	local innerOuterMaps = {
-		number = "n",
-		value = "v",
-		key = "k",
-		subword = "S", -- lowercase taken for sentence textobj
-		closedFold = "z", -- z is the common prefix for folds
-		chainMember = "m",
-	}
-	local oneMaps = {
-		nearEoL = "n",
-		lineCharacterwise = "_",
-		toNextClosingBracket = "%", -- since this is basically a more intuitive version of the standard "%" motion-as-textobj
-		restOfParagraph = "r",
-		restOfIndentation = "R",
-		diagnostic = "!",
-		column = "|",
-		entireBuffer = "gG", -- G + gg
-		url = "L", -- gu, gU, and U would conflict with gugu, gUgU, and gUU. u would conflict with gcu (undo comment)
-	}
-	local ftMaps = {
-		{
-			map = { jsRegex = "/" },
-			fts = { "javascript", "typescript" },
-		},
-		{
-			map = { mdlink = "l" },
-			fts = { "markdown", "toml" },
-		},
-		{
-			map = { mdFencedCodeBlock = "C" },
-			fts = { "markdown" },
-		},
-		{
-			map = { doubleSquareBrackets = "D" },
-			fts = { "lua", "norg", "sh", "fish", "zsh", "bash", "markdown" },
-		},
-		{
-			map = { cssSelector = "c" },
-			fts = { "css", "scss" },
-		},
-		{
-			map = { shellPipe = "P" },
-			fts = { "sh", "bash", "zsh", "fish" },
-		},
-		{
-			map = { htmlAttribute = "x" },
-			fts = { "html", "css", "scss", "xml" },
-		},
-	}
-	-----------------------------------------------------------------------------
 	local keymap = vim.keymap.set
 	for objName, map in pairs(innerOuterMaps) do
 		local name = " " .. objName .. " textobj"
-		keymap({ "o", "x" }, "a" .. map, "<cmd>lua require('various-textobjs')." .. objName .. "(true)<CR>", { desc = "outer" .. name })
-		keymap({ "o", "x" }, "i" .. map, "<cmd>lua require('various-textobjs')." .. objName .. "(false)<CR>", { desc = "inner" .. name })
+		keymap(
+			{ "o", "x" },
+			"a" .. map,
+			"<cmd>lua require('various-textobjs')." .. objName .. "(true)<CR>",
+			{ desc = "outer" .. name }
+		)
+		keymap(
+			{ "o", "x" },
+			"i" .. map,
+			"<cmd>lua require('various-textobjs')." .. objName .. "(false)<CR>",
+			{ desc = "inner" .. name }
+		)
 	end
 	for objName, map in pairs(oneMaps) do
 		keymap(

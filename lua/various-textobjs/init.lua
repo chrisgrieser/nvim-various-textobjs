@@ -51,6 +51,11 @@ function M.closedFold(inner) linewise.closedFold(inner, lookForwardBig) end
 ---@param inner boolean inner excludes the backticks
 function M.mdFencedCodeBlock(inner) linewise.mdFencedCodeBlock(inner, lookForwardBig) end
 
+---lines visible in window textobj
+function M.visibleInWindow() linewise.visibleInWindow() end
+
+-- from cursor line to last visible line in window
+function M.restOfWindow() linewise.restOfWindow() end
 
 --------------------------------------------------------------------------------
 -- BLOCKWISE
