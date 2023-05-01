@@ -1,4 +1,4 @@
-*various-textobjs.txt*        For NVIM v0.8.0       Last change: 2023 April 23
+*various-textobjs.txt*         For NVIM v0.8.0        Last change: 2023 May 01
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
@@ -165,12 +165,11 @@ that the default is to **not** set any keymaps.)
 >lua
     -- default config
     require("various-textobjs").setup {
-        -- lines to seek forwards for "small" textobjs (most characterwise)
+        -- lines to seek forwards for "small" textobjs (mostly characterwise textobjs)
         -- set to 0 to only look in the current line
         lookForwardSmall = 5, 
     
-        -- lines to seek forwards for "big" textobjs
-        -- (linewise textobjs & url textobj)
+        -- lines to seek forwards for "big" textobjs (linewise textobjs & url textobj)
         lookForwardBig = 15,
     
         -- use suggested keymaps (see README)
