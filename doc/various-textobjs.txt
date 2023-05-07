@@ -1,4 +1,4 @@
-*various-textobjs.txt*         For NVIM v0.8.0        Last change: 2023 May 01
+*various-textobjs.txt*         For NVIM v0.8.0        Last change: 2023 May 07
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
@@ -67,7 +67,7 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs--list-of-text-object
 
   lineCharacterwise      current line, but       outer includes          no                 i_, a_   all
                          characterwise           indentation and                                     
-                                                 trailing spaces
+                                                 trailing spaces                                     
 
   column                 column down until       -                       no                   \|     all
                          indent or shorter line.                                                     
