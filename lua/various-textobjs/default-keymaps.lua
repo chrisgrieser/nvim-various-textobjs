@@ -60,13 +60,13 @@ function M.setup()
 		keymap(
 			{ "o", "x" },
 			"a" .. map,
-			"<cmd>lua require('various-textobjs')." .. objName .. "(true)<CR>",
+			"<cmd>lua require('various-textobjs')." .. objName .. "(false)<CR>",
 			{ desc = "outer" .. name }
 		)
 		keymap(
 			{ "o", "x" },
 			"i" .. map,
-			"<cmd>lua require('various-textobjs')." .. objName .. "(false)<CR>",
+			"<cmd>lua require('various-textobjs')." .. objName .. "(true)<CR>",
 			{ desc = "inner" .. name }
 		)
 	end
