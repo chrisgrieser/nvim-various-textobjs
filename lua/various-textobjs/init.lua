@@ -82,7 +82,7 @@ function M.nearEoL() charwise.nearEoL() end
 function M.toNextClosingBracket() charwise.toNextClosingBracket(lookForwardSmall) end
 
 ---current line (but characterwise)
-function M.lineCharacterwise() charwise.lineCharacterwise() end
+function M.lineCharacterwise(inner) charwise.lineCharacterwise(inner) end
 
 ---diagnostic text object
 ---similar to https://github.com/andrewferrier/textobj-diagnostic.nvim

@@ -126,9 +126,14 @@ function M.nearEoL()
 end
 
 ---current line (but characterwise)
-function M.lineCharacterwise()
+---@param inner boolean outer includes indentation and trailing spaces
+function M.lineCharacterwise(inner)
 	if not isVisualMode() then u.normal("v") end
-	u.normal("g_o^")
+	if inner then
+		u.normal("g_o^")
+	else
+		u.normal("$o0")
+	end
 end
 
 ---similar to https://github.com/andrewferrier/textobj-diagnostic.nvim

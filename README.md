@@ -31,7 +31,7 @@ Bundle of more than two dozen new text objects for Neovim.
 | restOfParagraph      | like `}`, but linewise                                                                    | \-                                                                                        | no              |           `r`            | all                             |
 | entireBuffer         | entire buffer as one text object                                                          | \-                                                                                        | \-              |           `gG`           | all                             |
 | nearEoL              | from cursor position to end of line, minus one character                                  | \-                                                                                        | no              |           `n`            | all                             |
-| lineCharacterwise    | current line, but characterwise                                                           | \-                                                                                        | no              |           `_`            | all                             |
+| lineCharacterwise    | current line, but characterwise                                                           | outer includes indentation and trailing spaces                                            | no              |        `i_`, `a_`        | all                             |
 | column               | column down until indent or shorter line. Accepts `{count}` for multiple columns.         | \-                                                                                        | no              |           `\|`           | all                             |
 | value                | value of key-value pair, or right side of a variable assignment (inside one line)         | outer includes trailing commas or semicolons                                              | yes             |        `iv`, `av`        | all                             |
 | key                  | key of key-value pair, or left side of a variable assignment                              | outer includes the `=` or `:`                                                             | yes             |        `ik`, `ak`        | all                             |
@@ -140,7 +140,8 @@ keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').entir
 
 keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').nearEoL()<CR>")
 
-keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').lineCharacterwise()<CR>")
+keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').lineCharacterwise(true)<CR>")
+keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').lineCharacterwise(false)<CR>")
 
 keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').column()<CR>")
 
