@@ -8,11 +8,11 @@ local innerOuterMaps = {
 	subword = "S", -- lowercase taken for sentence textobj
 	closedFold = "z", -- z is the common prefix for folds
 	chainMember = "m",
+	lineCharacterwise = "_",
 }
 local oneMaps = {
 	nearEoL = "n",
 	visibleInWindow = "gw",
-	lineCharacterwise = "_",
 	toNextClosingBracket = "%", -- since this is basically a more intuitive version of the standard "%" motion-as-textobj
 	restOfParagraph = "r",
 	restOfIndentation = "R",
@@ -60,13 +60,13 @@ function M.setup()
 		keymap(
 			{ "o", "x" },
 			"a" .. map,
-			"<cmd>lua require('various-textobjs')." .. objName .. "(true)<CR>",
+			"<cmd>lua require('various-textobjs')." .. objName .. "(false)<CR>",
 			{ desc = "outer" .. name }
 		)
 		keymap(
 			{ "o", "x" },
 			"i" .. map,
-			"<cmd>lua require('various-textobjs')." .. objName .. "(false)<CR>",
+			"<cmd>lua require('various-textobjs')." .. objName .. "(true)<CR>",
 			{ desc = "inner" .. name }
 		)
 	end
