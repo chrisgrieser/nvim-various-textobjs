@@ -29,6 +29,7 @@ Bundleof more than two dozen new text objects for Neovim.
 - |various-textobjs-advanced-usage|
     - |various-textobjs-smart-alternative-to-`gx`|
     - |various-textobjs-delete-surrounding-indentation|
+    - |various-textobjs-other-ideas?|
 - |various-textobjs-limitations|
 - |various-textobjs-other-text-object-plugins|
 - |various-textobjs-credits|
@@ -423,6 +424,13 @@ performed on an indentation textobject. (It is also an intuitive mnemonic:
         vim.cmd(tostring(startBorderLn) .. " delete")
     end, { desc = "Delete surrounding indentation" })
 <
+
+
+OTHER IDEAS? ~
+
+If you have some other useful ideas, feel free to share them in this repo’s
+discussion page
+<https://github.com/chrisgrieser/nvim-various-textobjs/discussions>.
 
 
 LIMITATIONS              *various-textobjs-nvim-various-textobjs--limitations*
