@@ -1,4 +1,4 @@
-*various-textobjs.txt*         For NVIM v0.8.0        Last change: 2023 May 07
+*various-textobjs.txt*         For NVIM v0.8.0        Last change: 2023 May 17
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
@@ -23,7 +23,6 @@ Bundleof more than two dozen new text objects for Neovim.
   Ex-commands `"<cmd>lua require('various-textobjs').textobj(bool)<CR>"`. This
   makes the text objects dot-repeatable. See the example in the
   |various-textobjs-configuration-section|.
-
 - |various-textobjs-list-of-text-objects|
 - |various-textobjs-installation|
 - |various-textobjs-configuration|
@@ -379,13 +378,11 @@ buffer for URLs from which you can choose one to open.
 
 LIMITATIONS              *various-textobjs-nvim-various-textobjs--limitations*
 
-
 - This plugin uses pattern matching, so it can be inaccurate in some edge cases.
 - The value-textobj does not work with multi-line values.
 
 
 OTHER TEXT-OBJECT PLUGINS*various-textobjs-nvim-various-textobjs--other-text-object-plugins*
-
 
 - treesitter-textobjects <https://github.com/nvim-treesitter/nvim-treesitter-textobjects>
 - treesitter-textsubjects <https://github.com/RRethy/nvim-treesitter-textsubjects>
