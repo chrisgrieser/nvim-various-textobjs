@@ -14,6 +14,7 @@ Bundle of more than two dozen new text objects for Neovim.
 - [Advanced Usage](#advanced-usage)
 	- [Smart Alternative to `gx`](#smart-alternative-to-gx)
 	- [Delete Surrounding Indentation](#delete-surrounding-indentation)
+	- [Other Ideas?](#other-ideas)
 - [Limitations](#limitations)
 - [Other Text Object Plugins](#other-text-object-plugins)
 - [Credits](#credits)
@@ -323,6 +324,9 @@ vim.keymap.set("n", "dsi", function()
 end, { desc = "Delete surrounding indentation" })
 ```
 
+### Other Ideas?
+If you have some other useful ideas, feel free to [share them in this repo's discussion page](https://github.com/chrisgrieser/nvim-various-textobjs/discussions).
+													
 ## Limitations
 - This plugin uses pattern matching, so it can be inaccurate in some edge cases. 
 - The value-textobj does not work with multi-line values. 
