@@ -13,8 +13,9 @@ Bundle of more than two dozen new text objects for Neovim.
 - [Configuration](#configuration)
 - [Advanced Usage](#advanced-usage)
 	- [Smart Alternative to `gx`](#smart-alternative-to-gx)
+	- [Delete Surrounding Indentation](#delete-surrounding-indentation)
 - [Limitations](#limitations)
-- [Other Text-Object Plugins](#other-text-object-plugins)
+- [Other Text Object Plugins](#other-text-object-plugins)
 - [Credits](#credits)
 <!--toc:end-->
 
@@ -251,16 +252,17 @@ keymap(
 ## Advanced Usage
 
 ### Smart Alternative to `gx`
-Using the URL textobj, you can also write a small snippet to replace netrw's `gx`. The code below retrieves the next URL (within the amount of lines configured in the `setup` call), and opens it in your browser. While this is already an improvement to vim's built-in `gx`, which requires the cursor to be standing on a URL to work, you can even go one step further. If no URL has been found within the next few lines, the `:UrlView` command from [urlview.nvim](https://github.com/axieax/urlview.nvim) is triggered. This searches the entire buffer for URLs from which you can choose one to open.
+Using the URL textobject, you can also write a small snippet to replace netrw's `gx`. The code below retrieves the next URL (within the amount of lines configured in the `setup` call), and opens it in your browser. While this is already an improvement to vim's built-in `gx`, which requires the cursor to be standing on a URL to work, you can even go one step further. If no URL has been found within the next few lines, the `:UrlView` command from [urlview.nvim](https://github.com/axieax/urlview.nvim) is triggered. This searches the entire buffer for URLs from which you can choose one to open.
 
 ```lua
 vim.keymap.set("n", "gx", function()
-	require("various-textobjs").url() -- select URL
-	-- this works since the plugin switched to visual mode
-	-- if the textobj has been found
+	 -- select URL
+	require("various-textobjs").url()
+	
+	-- plugin only switches to visual mode when textobj found
 	local foundURL = vim.fn.mode():find("v")
 
-	-- if not found in proximity, search whole buffer via urlview.nvim instead
+	-- if not found, search whole buffer via urlview.nvim instead
 	if not foundURL then
 		vim.cmd.UrlView("buffer")
 		return
@@ -284,11 +286,48 @@ vim.keymap.set("n", "gx", function()
 end, { desc = "Smart URL Opener" })
 ```
 
+### Delete Surrounding Indentation
+Using the indentation textobject, you can also create custom indentation-related utilities. A common operation is to remove the line before and after an indentation, like in this case where remove the `foo` condition for running the two print commands:
+	
+```lua
+-- before (cursor on `print("bar")`)
+if foo then
+	print("bar")
+	print("baz")
+end
+	
+-- after
+print("bar")
+print("baz")
+```
+	
+The code below achieves this by dedenting the inner indentation textobject (essentially running `<ii`), and deleting the two lines surrounding it. As for the mapping, `dsi` should make sense since this command is somewhat similar to the `ds` operator from [vim-surround](https://github.com/tpope/vim-surround) but performed on an indentation textobject. (It is also an intuitive mnemonic: `d`elete `s`urrounding `i`ndentation.)
+	
+```lua
+vim.keymap.set("n", "dsi", function()
+	-- select inner indentation
+	require("various-textobjs").indentation(true, true)
+	
+	-- plugin only switches to visual mode when textobj found
+	local notOnIndentedLine = vim.fn.mode():find("V") == nil
+	if notOnIndentedLine then return end
+
+	-- dedent indentation
+	vim.cmd.normal { ">" , bang = true }
+
+	-- delete surrounding lines
+	local endBorderLn = vim.api.nvim_buf_get_mark(0, ">")[1] + 1
+	local startBorderLn = vim.api.nvim_buf_get_mark(0, "<")[1] - 1
+	vim.cmd(tostring(endBorderLn) .. " delete") -- delete end first so line index is not shifted
+	vim.cmd(tostring(startBorderLn) .. " delete")
+end, { desc = "Delete surrounding indentation" })
+```
+
 ## Limitations
 - This plugin uses pattern matching, so it can be inaccurate in some edge cases. 
 - The value-textobj does not work with multi-line values. 
 
-## Other Text-Object Plugins
+## Other Text Object Plugins
 - [treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects)
 - [treesitter-textsubjects](https://github.com/RRethy/nvim-treesitter-textsubjects)
 - [ts-hint-textobject](https://github.com/mfussenegger/nvim-ts-hint-textobject)
