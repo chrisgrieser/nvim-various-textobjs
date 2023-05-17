@@ -49,7 +49,7 @@ local ftMaps = {
 	},
 	{
 		map = { htmlAttribute = "x" },
-		fts = { "html", "css", "scss", "xml" },
+		fts = { "html", "css", "scss", "xml", "vue" },
 	},
 }
 
