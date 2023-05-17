@@ -22,7 +22,7 @@ function M.column()
 	local linesDown = nextLnum - 1 - startRow
 
 	-- start visual block mode
-	if not (fn.mode() == "CTRL-V") then vim.cmd.execute([["normal! \<C-v>"]]) end
+	if not (fn.mode() == "") then vim.cmd.execute([["normal! \<C-v>"]]) end
 
 	-- set position
 	-- not using `setCursor`, since its column-positions are messed up by tab indentation
