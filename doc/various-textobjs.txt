@@ -1,4 +1,4 @@
-*various-textobjs.txt*         For NVIM v0.8.0        Last change: 2023 May 17
+*various-textobjs.txt*         For NVIM v0.8.0        Last change: 2023 May 18
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
@@ -121,8 +121,8 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs--list-of-text-object
                          .my-class               comma and space                                     
 
   htmlAttribute          attribute in html/xml   inner is only the value yes                ix, ax   html, xml,
-                         like href="foobar.com"  inside the quotes                                   css, scss
-                                                 trailing comma and                                  
+                         like href="foobar.com"  inside the quotes                                   css, scss,
+                                                 trailing comma and                                  vue
                                                  space                                               
 
   jsRegex                JavaScript regex        outer includes the      yes                i/, a/   javascript,
