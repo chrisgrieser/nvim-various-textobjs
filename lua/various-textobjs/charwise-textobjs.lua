@@ -78,18 +78,16 @@ end
 --------------------------------------------------------------------------------
 ---Subword
 ---@param inner boolean outer includes trailing -_
----@param lookForwL integer number of lines to look forward for the textobj
-function M.subword(inner, lookForwL)
-	-- first character restricted to letter (%a), since most languages also
-	-- stipulate that variable names may not start with a digit
-	local pattern = "()%a[%l%d]+([_-]?)"
+function M.subword(inner)
+	local pattern = "()%w[%l%d]+([_-]?)"
 
 	-- adjust pattern when word under cursor is all uppercase to handle
-	-- subwords of SCREAMING_SNAKE_CASE variables
+	-- subwords of SCREAMING_SNAKE_CASE variables 1111 foo
 	local upperCaseWord = fn.expand("<cword>") == fn.expand("<cword>"):upper()
-	if upperCaseWord then pattern = "()%u[%u%d]+([_-]?)" end
+	if upperCaseWord then pattern = "()[%u%d]+([_-]?)" end
 
-	searchTextobj(pattern, inner, lookForwL)
+	-- forward looking results in unexpected behavior for subword
+	searchTextobj(pattern, inner, 0)
 end
 
 ---till next closing bracket

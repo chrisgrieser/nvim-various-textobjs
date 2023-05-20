@@ -28,7 +28,7 @@ Bundle of more than two dozen new text objects for Neovim.
 |:---------------------|:------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------|:----------------|:------------------------:|:--------------------------------|
 | indentation          | surrounding lines with same or higher indentation                                         | [see overview from vim-indent-object](https://github.com/michaeljsmith/vim-indent-object) | no              | `ii`, `ai`, `aI`, (`iI`) | all                             |
 | restOfIndentation    | lines down with same or higher indentation                                                | \-                                                                                        | no              |           `R`            | all                             |
-| subword              | like `iw`, but treating `-`, `_`, and `.` as word delimiters *and* only part of camelCase | outer includes trailing `_` or `-`                                                        | yes             |        `iS`, `aS`        | all                             |
+| subword              | like `iw`, but treating `-`, `_`, and `.` as word delimiters *and* only part of camelCase | outer includes trailing `_` or `-`                                                        | no              |        `iS`, `aS`        | all                             |
 | toNextClosingBracket | from cursor to next closing `]`, `)`, or `}`                                              | \-                                                                                        | no              |           `%`            | all                             |
 | restOfParagraph      | like `}`, but linewise                                                                    | \-                                                                                        | no              |           `r`            | all                             |
 | entireBuffer         | entire buffer as one text object                                                          | \-                                                                                        | \-              |           `gG`           | all                             |
@@ -99,7 +99,7 @@ require("various-textobjs").setup {
 
 If you want to set your own keybindings, you can do so by calling the respective functions:
 - The function names correspond to the textobj-names from the [overview table](#list-of-text-objects).
-- The text objects that differentiate between outer and inner require a boolean parameter, `true` always meaning "inner," and `false` meaning "outer."
+- The text objects that differentiate between outer and inner require a Boolean parameter, `true` always meaning "inner," and `false` meaning "outer."
 - The keymaps *need* to be called as Ex-command, otherwise they will not be
   dot-repeatable. `function () require("various-textobjs").diagnostic() end` as third argument for the keymap works in general, but the text objects <!-- vale Google.Will = NO --> will not be dot-repeatable then.
 <!-- vale Google.Will = YES -->

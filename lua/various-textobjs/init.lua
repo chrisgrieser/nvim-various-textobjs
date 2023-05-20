@@ -73,7 +73,7 @@ function M.chainMember(inner) charwise.chainMember(inner, lookForwardSmall) end
 
 ---Subword
 ---@param inner boolean outer includes trailing -_
-function M.subword(inner) charwise.subword(inner, lookForwardSmall) end
+function M.subword(inner) charwise.subword(inner) end
 
 ---near end of the line, ignoring trailing whitespace (relevant for markdown)
 function M.nearEoL() charwise.nearEoL() end
