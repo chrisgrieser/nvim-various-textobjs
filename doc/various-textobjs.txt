@@ -1,4 +1,4 @@
-*various-textobjs.txt*         For NVIM v0.8.0        Last change: 2023 May 18
+*various-textobjs.txt*         For NVIM v0.8.0        Last change: 2023 May 20
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
@@ -49,7 +49,7 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs--list-of-text-object
   restOfIndentation      lines down with same or -                       no                    R     all
                          higher indentation                                                          
 
-  subword                like iw, but treating   outer includes trailing yes                iS, aS   all
+  subword                like iw, but treating   outer includes trailing no                 iS, aS   all
                          -, _, and . as word     _ or -                                              
                          delimiters and only                                                         
                          part of camelCase                                                           
@@ -183,7 +183,7 @@ that the default is to **not** set any keymaps.)
 If you want to set your own keybindings, you can do so by calling the
 respective functions: - The function names correspond to the textobj-names from
 the |various-textobjs-overview-table|. - The text objects that differentiate
-between outer and inner require a boolean parameter, `true` always meaning
+between outer and inner require a Boolean parameter, `true` always meaning
 "inner," and `false` meaning "outer." - The keymaps _need_ to be called as
 Ex-command, otherwise they will not be dot-repeatable. `function ()
 require("various-textobjs").diagnostic() end` as third argument for the keymap
