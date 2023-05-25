@@ -21,8 +21,8 @@ Bundle of more than two dozen new text objects for Neovim.
 <!--toc:end-->
 
 ## List of Text Objects
-
 <!-- vale off -->
+<!-- LTeX: enabled=false -->
 
 | textobj              | description                                                                               | inner / outer                                                                             | forward-seeking |     default keymaps      | filetypes (for default keymaps) |
 |:---------------------|:------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------|:----------------|:------------------------:|:--------------------------------|
@@ -53,6 +53,7 @@ Bundle of more than two dozen new text objects for Neovim.
 | shellPipe            | command stdout is piped to                                                                | outer includes the front pipe character                                                   | yes             |        `iP`,`aP`         | bash, zsh, fish, sh             |
 
 <!-- vale on -->
+<!-- LTeX: enabled=true -->
 
 > __Warning__  
 > \* Textobject deprecated due to
@@ -98,10 +99,10 @@ require("various-textobjs").setup {
 ---
 
 If you want to set your own keybindings, you can do so by calling the respective functions:
-- The function names correspond to the textobj-names from the [overview table](#list-of-text-objects).
+- The function names correspond to the textobject names from the [overview table](#list-of-text-objects).
 - The text objects that differentiate between outer and inner require a Boolean parameter, `true` always meaning "inner," and `false` meaning "outer."
 - The keymaps *need* to be called as Ex-command, otherwise they will not be
-  dot-repeatable. `function () require("various-textobjs").diagnostic() end` as third argument for the keymap works in general, but the text objects <!-- vale Google.Will = NO --> will not be dot-repeatable then.
+  dot-repeatable. `function () require("various-textobjs").diagnostic() end` as third argument for the keymap works in general, but the text objects<!-- vale Google.Will = NO --> will not be dot-repeatable then.
 <!-- vale Google.Will = YES -->
 
 ```lua
@@ -253,7 +254,7 @@ keymap(
 ## Advanced Usage
 
 ### Smart Alternative to `gx`
-Using the URL textobject, you can also write a small snippet to replace netrw's `gx`. The code below retrieves the next URL (within the amount of lines configured in the `setup` call), and opens it in your browser. While this is already an improvement to vim's built-in `gx`, which requires the cursor to be standing on a URL to work, you can even go one step further. If no URL has been found within the next few lines, the `:UrlView` command from [urlview.nvim](https://github.com/axieax/urlview.nvim) is triggered. This searches the entire buffer for URLs from which you can choose one to open.
+Using the URL textobject, you can also write a small snippet to replace netrw's `gx`. The code below retrieves the next URL (within the amount of lines configured in the `setup` call), and opens it in your browser. While this is already an improvement to vim's built-in `gx`, which requires the cursor to be standing on a URL to work, you can even go one step further. If no URL has been found within the next few lines, the `:UrlView` command from [urlview.nvim](https://github.com/axieax/urlview.nvim) is triggered. This searches the entire buffer for URLs to choose from.
 
 ```lua
 vim.keymap.set("n", "gx", function()
