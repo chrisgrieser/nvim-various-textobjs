@@ -28,7 +28,7 @@ Bundle of more than two dozen new text objects for Neovim.
 |:---------------------|:------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------|:----------------|:------------------------:|:--------------------------------|
 | indentation          | surrounding lines with same or higher indentation                                         | [see overview from vim-indent-object](https://github.com/michaeljsmith/vim-indent-object) | no              | `ii`, `ai`, `aI`, (`iI`) | all                             |
 | restOfIndentation    | lines down with same or higher indentation                                                | \-                                                                                        | no              |           `R`            | all                             |
-| subword              | like `iw`, but treating `-`, `_`, and `.` as word delimiters *and* only part of camelCase | outer includes trailing `_` or `-`                                                        | no              |        `iS`, `aS`        | all                             |
+| subword              | like `iw`, but treating `-`, `_`, and `.` as word delimiters *and* only part of camelCase | outer includes trailing `_`,`-`, or space                                                 | no              |        `iS`, `aS`        | all                             |
 | toNextClosingBracket | from cursor to next closing `]`, `)`, or `}`                                              | \-                                                                                        | no              |           `%`            | all                             |
 | restOfParagraph      | like `}`, but linewise                                                                    | \-                                                                                        | no              |           `r`            | all                             |
 | entireBuffer         | entire buffer as one text object                                                          | \-                                                                                        | \-              |           `gG`           | all                             |
@@ -259,7 +259,7 @@ Using the URL textobject, you can also write a small snippet to replace netrw's 
 vim.keymap.set("n", "gx", function()
 	 -- select URL
 	require("various-textobjs").url()
-	
+
 	-- plugin only switches to visual mode when textobj found
 	local foundURL = vim.fn.mode():find("v")
 
@@ -289,26 +289,26 @@ end, { desc = "Smart URL Opener" })
 
 ### Delete Surrounding Indentation
 Using the indentation textobject, you can also create custom indentation-related utilities. A common operation is to remove the line before and after an indentation, like in this case where remove the `foo` condition for running the two print commands:
-	
+
 ```lua
 -- before (cursor on `print("bar")`)
 if foo then
 	print("bar")
 	print("baz")
 end
-	
+
 -- after
 print("bar")
 print("baz")
 ```
-	
+
 The code below achieves this by dedenting the inner indentation textobject (essentially running `<ii`), and deleting the two lines surrounding it. As for the mapping, `dsi` should make sense since this command is somewhat similar to the `ds` operator from [vim-surround](https://github.com/tpope/vim-surround) but performed on an indentation textobject. (It is also an intuitive mnemonic: `d`elete `s`urrounding `i`ndentation.)
-	
+
 ```lua
 vim.keymap.set("n", "dsi", function()
 	-- select inner indentation
 	require("various-textobjs").indentation(true, true)
-	
+
 	-- plugin only switches to visual mode when textobj found
 	local notOnIndentedLine = vim.fn.mode():find("V") == nil
 	if notOnIndentedLine then return end
@@ -326,7 +326,7 @@ end, { desc = "Delete surrounding indentation" })
 
 ### Other Ideas?
 If you have some other useful ideas, feel free to [share them in this repo's discussion page](https://github.com/chrisgrieser/nvim-various-textobjs/discussions).
-													
+
 ## Limitations
 - This plugin uses pattern matching, so it can be inaccurate in some edge cases. 
 - The value-textobj does not work with multi-line values. 

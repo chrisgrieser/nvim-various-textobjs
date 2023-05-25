@@ -79,12 +79,12 @@ end
 ---Subword
 ---@param inner boolean outer includes trailing -_
 function M.subword(inner)
-	local pattern = "()%w[%l%d]+([_- ]?)"
+	local pattern = "()%w[%l%d]+([ _-]?)"
 
 	-- adjust pattern when word under cursor is all uppercase to handle
 	-- subwords of SCREAMING_SNAKE_CASE variables
 	local upperCaseWord = fn.expand("<cword>") == fn.expand("<cword>"):upper()
-	if upperCaseWord then pattern = "()[%u%d]+([_-]?)" end
+	if upperCaseWord then pattern = "()[%u%d]+([ _-]?)" end
 
 	-- forward looking results in unexpected behavior for subword
 	searchTextobj(pattern, inner, 0)
@@ -170,7 +170,8 @@ function M.diagnostic(lookForwL)
 		target = prevD
 	elseif nextD and (curRow + lookForwL > nextD.lnum) then
 		target = nextD
-	else
+	end
+	if not target then
 		u.notFoundMsg(lookForwL)
 		return
 	end
