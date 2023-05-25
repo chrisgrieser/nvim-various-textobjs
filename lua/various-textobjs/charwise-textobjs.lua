@@ -79,10 +79,10 @@ end
 ---Subword
 ---@param inner boolean outer includes trailing -_
 function M.subword(inner)
-	local pattern = "()%w[%l%d]+([_-]?)"
+	local pattern = "()%w[%l%d]+([_- ]?)"
 
 	-- adjust pattern when word under cursor is all uppercase to handle
-	-- subwords of SCREAMING_SNAKE_CASE variables 1111 foo
+	-- subwords of SCREAMING_SNAKE_CASE variables
 	local upperCaseWord = fn.expand("<cword>") == fn.expand("<cword>"):upper()
 	if upperCaseWord then pattern = "()[%u%d]+([_-]?)" end
 
