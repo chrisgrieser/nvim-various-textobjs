@@ -50,7 +50,7 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs--list-of-text-object
                          higher indentation                                                          
 
   subword                like iw, but treating   outer includes trailing no                 iS, aS   all
-                         -, _, and . as word     _ or -                                              
+                         -, _, and . as word     _,-, or space                                       
                          delimiters and only                                                         
                          part of camelCase                                                           
 
@@ -350,7 +350,7 @@ searches the entire buffer for URLs from which you can choose one to open.
     vim.keymap.set("n", "gx", function()
          -- select URL
         require("various-textobjs").url()
-        
+    
         -- plugin only switches to visual mode when textobj found
         local foundURL = vim.fn.mode():find("v")
     
@@ -392,7 +392,7 @@ for running the two print commands:
         print("bar")
         print("baz")
     end
-        
+    
     -- after
     print("bar")
     print("baz")
@@ -409,7 +409,7 @@ performed on an indentation textobject. (It is also an intuitive mnemonic:
     vim.keymap.set("n", "dsi", function()
         -- select inner indentation
         require("various-textobjs").indentation(true, true)
-        
+    
         -- plugin only switches to visual mode when textobj found
         local notOnIndentedLine = vim.fn.mode():find("V") == nil
         if notOnIndentedLine then return end
