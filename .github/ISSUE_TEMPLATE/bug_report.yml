@@ -18,13 +18,14 @@ body:
   - type: textarea
     id: reproduction-steps
     attributes:
-      label: To Reproduce
-      description: Steps to reproduce the problem
+      label: Reproduction & Sample Text
+      description: Include sample text and mark clearly how the text looks before and after the operation and what you expected the text to look like.
       placeholder: |
-        For example:
-        1. Go to '...'
-        2. Click on '...'
-        3. Scroll down to '...'
+        before: 
+        after: 
+        expected: 
+    validations:
+      required: true
   - type: textarea
     id: version-info
     attributes:
