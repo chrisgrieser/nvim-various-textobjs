@@ -93,6 +93,9 @@ require("various-textobjs").setup {
 
 	-- use suggested keymaps (see README)
 	useDefaultKeymaps = false, 
+
+	-- disable some default keymaps. E:g { 'ai', 'ii' }
+	disabledKeymaps = {},
 }
 ```
 
