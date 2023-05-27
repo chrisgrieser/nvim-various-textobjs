@@ -1,4 +1,4 @@
-*various-textobjs.txt*         For NVIM v0.8.0        Last change: 2023 May 25
+*various-textobjs.txt*         For NVIM v0.8.0        Last change: 2023 May 27
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
@@ -176,7 +176,7 @@ that the default is to **not** set any keymaps.)
     
         -- use suggested keymaps (see README)
         useDefaultKeymaps = false, 
-
+    
         -- disable some default keymaps. E:g { 'ai', 'ii' }
         disabledKeymaps = {},
     }
