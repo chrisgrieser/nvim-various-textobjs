@@ -53,8 +53,15 @@ local ftMaps = {
 	},
 }
 
-function M.setup()
-	local keymap = vim.keymap.set
+function M.setup(disabled_keymaps)
+	local function keymap(...)
+		local args = { ... }
+		if vim.tbl_contains(disabled_keymaps, args[2]) then
+			return -- Disabled keymap
+		end
+		vim.keymap.set(...)
+	end
+
 	for objName, map in pairs(innerOuterMaps) do
 		local name = " " .. objName .. " textobj"
 		keymap(
