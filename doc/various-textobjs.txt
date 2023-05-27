@@ -176,6 +176,9 @@ that the default is to **not** set any keymaps.)
     
         -- use suggested keymaps (see README)
         useDefaultKeymaps = false, 
+
+        -- disable some default keymaps. E:g { 'ai', 'ii' }
+        disabledKeymaps = {},
     }
 <
 
