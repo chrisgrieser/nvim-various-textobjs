@@ -1,12 +1,6 @@
 # nvim-various-textobjs 🟪🔷🟡
 Bundle of more than two dozen new text objects for Neovim.
 
-<!-- vale Google.Units = NO -->
-> __Note__  
-> If you installed the plugin before March 31st and have set your own keymaps,
-> you should change your keymappings to call the text objects via Ex-commands `"<cmd>lua require('various-textobjs').textobj(bool)<CR>"`. This makes the text objects dot-repeatable. See the example in the [Configuration Section](#configuration).
-<!-- vale Google.Units = YES -->
-
 <!--toc:start-->
 - [List of Text Objects](#list-of-text-objects)
 - [Installation](#installation)
@@ -94,7 +88,7 @@ require("various-textobjs").setup {
 	-- use suggested keymaps (see README)
 	useDefaultKeymaps = false, 
 
-	-- disable some default keymaps. E:g { 'ai', 'ii' }
+	-- disable some default keymaps, e.g. { "ai", "ii" }
 	disabledKeymaps = {},
 }
 ```
