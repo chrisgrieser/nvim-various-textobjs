@@ -286,7 +286,7 @@ end, { desc = "Smart URL Opener" })
 ```
 
 ### Delete Surrounding Indentation
-Using the indentation textobject, you can also create custom indentation-related utilities. A common operation is to remove the line before and after an indentation, like in this case where remove the `foo` condition for running the two print commands:
+Using the indentation textobject, you can also create custom indentation-related utilities. A common operation is to remove the line before and after an indentation. Take for example this case where you are removing the `foo` condition:
 
 ```lua
 -- before (cursor on `print("bar")`)
