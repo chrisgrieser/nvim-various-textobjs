@@ -1,4 +1,4 @@
-*various-textobjs.txt*        For NVIM v0.8.0        Last change: 2023 June 10
+*various-textobjs.txt*        For NVIM v0.8.0        Last change: 2023 June 20
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
@@ -380,8 +380,8 @@ DELETE SURROUNDING INDENTATION ~
 
 Using the indentation textobject, you can also create custom
 indentation-related utilities. A common operation is to remove the line before
-and after an indentation, like in this case where remove the `foo` condition
-for running the two print commands:
+and after an indentation. Take for example this case where you are removing the
+`foo` condition:
 
 >lua
     -- before (cursor on `print("bar")`)
