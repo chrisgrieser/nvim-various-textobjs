@@ -88,7 +88,7 @@ function M.lineCharacterwise(inner) charwise.lineCharacterwise(inner) end
 ---diagnostic text object
 ---similar to https://github.com/andrewferrier/textobj-diagnostic.nvim
 ---requires builtin lsp
-function M.diagnostic() charwise.diagnostic(lookForwardSmall) end
+function M.diagnostic() charwise.diagnostic(lookForwardBig) end
 
 ---@param inner boolean inner value excludes trailing commas or semicolons, outer includes them. Both exclude trailing comments.
 function M.value(inner) charwise.value(inner, lookForwardSmall) end
