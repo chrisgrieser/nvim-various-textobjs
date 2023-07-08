@@ -312,7 +312,7 @@ vim.keymap.set("n", "dsi", function()
 	if notOnIndentedLine then return end
 
 	-- dedent indentation
-	vim.cmd.normal { ">" , bang = true }
+	vim.cmd.normal { "<" , bang = true }
 
 	-- delete surrounding lines
 	local endBorderLn = vim.api.nvim_buf_get_mark(0, ">")[1] + 1
