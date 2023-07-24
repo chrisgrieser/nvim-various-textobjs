@@ -241,7 +241,8 @@ function M.url(lookForwL)
 	-- being able to handle multiple patterns, though, since lua pattern do not
 	-- have optional groups. Think of a way to implement this without making
 	-- searchTextobj unnecessarily complex for other methods
-	local pattern = "https?://[A-Za-z0-9_%-/.#%%=?&]+"
+	-- INFO mastodon URLs contain `@`, neovim docs urls can contain a `'`
+	local pattern = "https?://[A-Za-z0-9_%-/.#%%=?&'@]+"
 	searchTextobj(pattern, false, lookForwL)
 end
 
