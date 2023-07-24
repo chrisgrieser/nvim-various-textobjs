@@ -35,7 +35,7 @@ local function searchTextobj(pattern, inner, lookForwL)
 	local cursorRow, cursorCol = unpack(u.getCursor(0))
 	local lineContent = u.getline(cursorRow)
 	local lastLine = fn.line("$")
-	local beginCol = 0
+	local beginCol = 0 ---@type number|nil
 	local endCol, captureG1, captureG2, noneInStartingLine
 
 	-- first line: check if standing on or in front of textobj
