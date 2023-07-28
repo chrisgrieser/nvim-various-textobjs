@@ -1,4 +1,4 @@
-*various-textobjs.txt*        For NVIM v0.8.0        Last change: 2023 July 24
+*various-textobjs.txt*        For NVIM v0.8.0        Last change: 2023 July 28
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
@@ -31,11 +31,12 @@ Bundleof more than two dozen new text objects for Neovim.
 
 LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs--list-of-text-objects*
 
-  ----------------------------------------------------------------------------------------------------------------
+  --------------------------------------------------------------------------------------------------------------
   textobj                description             inner / outer           forward-seeking    default  filetypes
-                                                                                            keymaps  (for default
+                                                                                            keymaps  (for
+                                                                                                     default
                                                                                                      keymaps)
-  ---------------------- ----------------------- ----------------------- ----------------- --------- -------------
+  ---------------------- ----------------------- ----------------------- ----------------- --------- -----------
   indentation            surrounding lines with  see overview from       -                  ii, ai,  all
                          same or higher          vim-indent-object                         aI, (iI)  
                          indentation                                                                 
@@ -119,20 +120,13 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs--list-of-text-object
                                                  trailing comma and                                  vue
                                                  space                                               
 
-  jsRegex                JavaScript regex        outer includes the      small              i/, a/   javascript,
-                         pattern                 slashes and any flags                               typescript
-
   doubleSquareBrackets   text enclosed by [[]]   outer includes the four small              iD, aD   lua, shell,
                                                  square brackets                                     neorg,
                                                                                                      markdown
 
   shellPipe              command stdout is piped outer includes the      small               iP,aP   bash, zsh,
                          to                      front pipe character                                fish, sh
-  ----------------------------------------------------------------------------------------------------------------
-
-  **Warning** Textobject deprecated due to treesitter-textobject
-  <https://github.com/nvim-treesitter/nvim-treesitter-textobjects> introducing a
-  similar textobject that is more capable.
+  --------------------------------------------------------------------------------------------------------------
 
 INSTALLATION            *various-textobjs-nvim-various-textobjs--installation*
 
