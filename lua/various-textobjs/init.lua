@@ -82,6 +82,9 @@ function M.nearEoL() charwise.nearEoL() end
 ---till next closing bracket
 function M.toNextClosingBracket() charwise.toNextClosingBracket(lookForwardSmall) end
 
+---till next quotation mark (backtick counts as one)
+function M.toNextQuotationMark() charwise.toNextQuotationMark(lookForwardSmall) end
+
 ---current line (but characterwise)
 function M.lineCharacterwise(inner) charwise.lineCharacterwise(inner) end
 

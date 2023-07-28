@@ -14,6 +14,7 @@ local oneMaps = {
 	nearEoL = "n",
 	visibleInWindow = "gw",
 	toNextClosingBracket = "%", -- since this is basically a more intuitive version of the standard "%" motion-as-textobj
+	toNextQuotationMark = "Q",
 	restOfParagraph = "r",
 	restOfIndentation = "R",
 	restOfWindow = "gW",

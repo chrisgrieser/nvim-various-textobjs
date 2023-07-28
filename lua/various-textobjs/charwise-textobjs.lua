@@ -93,16 +93,33 @@ end
 ---till next closing bracket
 ---@param lookForwL integer number of lines to look forward for the textobj
 function M.toNextClosingBracket(lookForwL)
-	-- since `searchTextobj` just select the next closing bracket, we save the
-	-- current cursor position and then afterwards move backwards. While this is
-	-- a less straightforward approach, this allows us to re-use `searchTextobj`
-	-- instead of re-implementing the forward-searching algorithm
+	-- Since `searchTextobj` just selects the next closing bracket, we save the
+	-- current cursor position and then extend the selection backwards to the
+	-- cursor position move backwards. selecting with ".*" would result in
+	-- selecting the whole line, since `searchTextobj` also considers any
+	-- potential the cursor is already standing on.
+	-- While this is a less straightforward approach, this allows us to re-use
+	-- `searchTextobj` instead of re-implementing the forward-searching algorithm
 	local startingPosition = u.getCursor(0)
 
 	local pattern = "().([]})])"
-	searchTextobj(pattern, true, lookForwL)
+	searchTextobj(pattern, true, lookForwL) -- just selects the bracket
 
-	u.setCursor(0, startingPosition)
+	u.setCursor(0, startingPosition) -- extend backwards
+	if isVisualMode() then u.normal("o") end
+end
+
+---till next quotation mark (or backtick)
+---@param lookForwL integer number of lines to look forward for the textobj
+function M.toNextQuotationMark(lookForwL)
+	-- INFO the same reasons as in `toNextClosingBracket` apply here as well
+	local startingPosition = u.getCursor(0)
+
+	local pattern = [[().(["'`])]]
+	searchTextobj(pattern, true, lookForwL) -- just selects the bracket
+
+	u.setCursor(0, startingPosition) -- extend backwards
+	if isVisualMode() then u.normal("o") end
 end
 
 ---near end of the line, ignoring trailing whitespace (relevant for markdown)
