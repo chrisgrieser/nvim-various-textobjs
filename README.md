@@ -1,4 +1,5 @@
 # nvim-various-textobjs 🟪🔷🟡
+<a href="https://dotfyle.com/plugins/chrisgrieser/nvim-various-textobjs"><img src="https://dotfyle.com/plugins/chrisgrieser/nvim-various-textobjs/shield" /></a>
 Bundle of more than two dozen new text objects for Neovim.
 
 <!--toc:start-->
