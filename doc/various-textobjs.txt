@@ -15,6 +15,8 @@ Table of Contents                         *various-textobjs-table-of-contents*
 ==============================================================================
 1. nvim-various-textobjs             *various-textobjs-nvim-various-textobjs-*
 
+
+
 Bundleof more than two dozen new text objects for Neovim.
 
 - |various-textobjs-list-of-text-objects|
