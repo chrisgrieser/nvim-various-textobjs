@@ -115,11 +115,6 @@ function M.mdlink(inner) charwise.mdlink(inner, lookForwardSmall) end
 ---@param inner boolean inner double square brackets exclude the brackets themselves
 function M.doubleSquareBrackets(inner) charwise.doubleSquareBrackets(inner, lookForwardSmall) end
 
----JS Regex
----@deprecated use corresponding treesitter-textobject instead
----@param inner boolean inner regex excludes the slashes (and flags)
-function M.jsRegex(inner) charwise.jsRegex(inner, lookForwardSmall) end
-
 ---CSS Selector Textobj
 ---@param inner boolean outer selector includes trailing comma and whitespace
 function M.cssSelector(inner) charwise.cssSelector(inner, lookForwardSmall) end

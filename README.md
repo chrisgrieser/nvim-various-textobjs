@@ -32,7 +32,7 @@ Bundle of more than two dozen new text objects for Neovim.
 | value                | value of key-value pair, or right side of a variable assignment (inside one line)         | outer includes trailing commas or semicolons                                              | small           |        `iv`, `av`        | all                             |
 | key                  | key of key-value pair, or left side of a variable assignment                              | outer includes the `=` or `:`                                                             | small           |        `ik`, `ak`        | all                             |
 | url                  | link beginning with "http"                                                                | \-                                                                                        | big             |           `L`            | all                             |
-| number\*             | numbers, similar to `<C-a>`                                                               | inner: only pure digits, outer: number including minus sign and decimal point             | small           |        `in`, `an`        | all                             |
+| number               | numbers, similar to `<C-a>`                                                               | inner: only pure digits, outer: number including minus sign and decimal point             | small           |        `in`, `an`        | all                             |
 | diagnostic           | LSP diagnostic (requires built-in LSP)                                                    | \-                                                                                        | big             |           `!`            | all                             |
 | closedFold           | closed fold                                                                               | outer includes one line after the last folded line                                        | big             |        `iz`, `az`        | all                             |
 | chainMember          | field with the full call, like `.encode(param)`                                           | outer includes the leading `.` (or `:`)                                                   | small           |        `im`, `am`        | all                             |
@@ -42,17 +42,11 @@ Bundle of more than two dozen new text objects for Neovim.
 | mdFencedCodeBlock    | markdown fenced code (enclosed by three backticks)                                        | outer includes the enclosing backticks                                                    | big             |        `iC`, `aC`        | markdown                        |
 | cssSelector          | class in CSS like `.my-class`                                                             | outer includes trailing comma and space                                                   | small           |        `ic`, `ac`        | css, scss                       |
 | htmlAttribute        | attribute in html/xml like `href="foobar.com"`                                            | inner is only the value inside the quotes trailing comma and space                        | small           |        `ix`, `ax`        | html, xml, css, scss, vue       |
-| jsRegex\*            | JavaScript regex pattern                                                                  | outer includes the slashes and any flags                                                  | small           |        `i/`, `a/`        | javascript, typescript          |
 | doubleSquareBrackets | text enclosed by `[[]]`                                                                   | outer includes the four square brackets                                                   | small           |        `iD`, `aD`        | lua, shell, neorg, markdown     |
 | shellPipe            | command stdout is piped to                                                                | outer includes the front pipe character                                                   | small           |        `iP`,`aP`         | bash, zsh, fish, sh             |
 
 <!-- vale on -->
 <!-- LTeX: enabled=true -->
-
-> __Warning__  
-> \* Textobject deprecated due to
-> [treesitter-textobject](https://github.com/nvim-treesitter/nvim-treesitter-textobjects)
-> introducing a similar textobject that is more capable.
 
 ## Installation
 

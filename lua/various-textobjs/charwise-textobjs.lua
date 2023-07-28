@@ -231,7 +231,6 @@ function M.number(inner, lookForwL)
 	-- excludes enumrations.
 	local pattern = inner and "%d+" or "%-?%d*%.?%d+"
 	searchTextobj(pattern, false, lookForwL)
-	vim.notify("number textobj is deprecated, use the corresponding treesitter-textobject instead.")
 end
 
 ---URL textobj
@@ -274,16 +273,6 @@ end
 function M.doubleSquareBrackets(inner, lookForwL)
 	local pattern = "(%[%[).-(%]%])"
 	searchTextobj(pattern, inner, lookForwL)
-end
-
----JS Regex
----@param inner boolean inner regex excludes the slashes (and flags)
----@param lookForwL integer number of lines to look forward for the textobj
-function M.jsRegex(inner, lookForwL)
-	-- [^\] to not match escaped slash in regex, %l* to match flags
-	local pattern = [[(/).-[^\](/%l*)]]
-	searchTextobj(pattern, inner, lookForwL)
-	vim.notify("jsRegex textobj is deprecated, use corresponding the treesitter-textobject instead.")
 end
 
 ---CSS Selector Textobj
