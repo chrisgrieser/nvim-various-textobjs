@@ -12,13 +12,13 @@ local lookForwardSmall = 5
 local lookForwardBig = 15
 
 ---@class config
----@field lookForwardSmall number -- characterwise textobjs
----@field lookForwardBig number -- linewise textobjs & URL textobj
----@field useDefaultKeymaps boolean
----@field disabledKeymaps string[]
+---@field lookForwardSmall? number -- characterwise textobjs
+---@field lookForwardBig? number -- linewise textobjs & URL textobj
+---@field useDefaultKeymaps? boolean
+---@field disabledKeymaps? string[]
 
 ---optional setup function
----@param opts config
+---@param opts? config
 function M.setup(opts)
 	if not opts then opts = {} end
 	if opts.lookForwardSmall then lookForwardSmall = opts.lookForwardSmall end
