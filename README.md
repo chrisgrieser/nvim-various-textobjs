@@ -164,7 +164,7 @@ keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').visib
 keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').restOfWindow()<CR>")
 
 --------------------------------------------------------------------------------------
--- put these into the ftplugins or autocms for the filetypes you want to use them with
+-- put these into the ftplugins or autocmds for the filetypes you want to use them with
 
 keymap(
 	{ "o", "x" },
