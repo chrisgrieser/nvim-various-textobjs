@@ -82,7 +82,7 @@ require("various-textobjs").setup {
 	-- lines to seek forwards for "big" textobjs (mostly linewise textobjs)
 	lookForwardBig = 15,
 
-	-- use suggested keymaps (see README)
+	-- use suggested keymaps (see overview tab in README)
 	useDefaultKeymaps = false, 
 
 	-- disable some default keymaps, e.g. { "ai", "ii" }
@@ -96,14 +96,14 @@ If you want to set your own keybindings, you can do so by calling the respective
 - The function names correspond to the textobject names from the [overview table](#list-of-text-objects).
 - The text objects that differentiate between outer and inner require a Boolean parameter, `true` always meaning "inner," and `false` meaning "outer."
 - The keymaps *need* to be called as Ex-command, otherwise they will not be
-  dot-repeatable. `function () require("various-textobjs").diagnostic() end` as third argument for the keymap works in general, but the text objects<!-- vale Google.Will = NO --> will not be dot-repeatable then.
+  dot-repeatable. (`function () require("various-textobjs").diagnostic() end` as third argument for the keymap works in general, but the text objects<!-- vale Google.Will = NO --> will not be dot-repeatable then.)
 <!-- vale Google.Will = YES -->
 
 ```lua
 -- example: `?` for diagnostic textobj
 vim.keymap.set({ "o", "x" }, "?", '<cmd>lua require("various-textobjs").diagnostic()<CR>')
 
--- example: `an` for outer subword, `in` for inner subword
+-- example: `aS` for outer subword, `iS` for inner subword
 vim.keymap.set({ "o", "x" }, "aS", '<cmd>lua require("various-textobjs").subword(false)<CR>')
 vim.keymap.set({ "o", "x" }, "iS", '<cmd>lua require("various-textobjs").subword(true)<CR>')
 
@@ -116,7 +116,7 @@ vim.keymap.set({ "o", "x" }, "ai", '<cmd>lua require("various-textobjs").indenta
 
 For your convenience, here the code to create mappings for all text objects. You can copypaste this list and enter your own bindings.
 <details>
-<summary>Mappings for all text objects</summary>
+<summary>➡️ Mappings for all text objects</summary>
 
 ```lua
 local keymap = vim.keymap.set
@@ -130,6 +130,8 @@ keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').subwo
 keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').subword(false)<CR>")
 
 keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').toNextClosingBracket()<CR>")
+
+keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').toNextQuotationMark()<CR>")
 
 keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').restOfParagraph()<CR>")
 
@@ -304,7 +306,7 @@ vim.keymap.set("n", "dsi", function()
 	-- select inner indentation
 	require("various-textobjs").indentation(true, true)
 
-	-- plugin only switches to visual mode when textobj found
+	-- plugin only switches to visual mode when a textobj has been found
 	local notOnIndentedLine = vim.fn.mode():find("V") == nil
 	if notOnIndentedLine then return end
 
