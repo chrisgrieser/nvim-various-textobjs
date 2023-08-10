@@ -2,7 +2,7 @@
 # nvim-various-textobjs 🟪🔷🟡 <!-- LTeX: enabled=true -->
 <a href="https://dotfyle.com/plugins/chrisgrieser/nvim-various-textobjs"><img src="https://dotfyle.com/plugins/chrisgrieser/nvim-various-textobjs/shield" /></a>
 
-Bundle of more than two dozen new text objects for Neovim.
+Bundle of more than two dozen new textobjects for Neovim.
 
 <!--toc:start-->
 - [List of Text Objects](#list-of-text-objects)
@@ -50,9 +50,23 @@ Bundle of more than two dozen new text objects for Neovim.
 
 <!-- vale on --><!-- LTeX: enabled=true -->
 
+## Philosophy
+[nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects) already does an excellent job when it comes to using treesitter for text objects, like for example function arguments or loops. 
+
+This plugin's goal is therefore to offer textobjects based on pattern matching or the nvim API. It offers textobjects are either not available via treesitter (yet) or that do not need treesitter.
+
 ## Installation
 
+Have `nvim-various-textobjs` set up text objects for you:
+
 ```lua
+-- lazy.nvim
+{
+	"chrisgrieser/nvim-various-textobjs",
+	lazy = false,
+	opts = { useDefaultKeymaps = true },
+},
+
 -- packer
 use {
 	"chrisgrieser/nvim-various-textobjs",
@@ -60,16 +74,28 @@ use {
 		require("various-textobjs").setup({ useDefaultKeymaps = true })
 	end,
 }
+```
 
+When you prefer to set up your own keybindings, use this code and then see the [Configuration](#configuration) section for information on setting your own keymaps.
+
+```lua
 -- lazy.nvim
 {
 	"chrisgrieser/nvim-various-textobjs",
-	opts = { useDefaultKeymaps = true },
+	lazy = true,
 },
+
+-- packer
+use {
+	"chrisgrieser/nvim-various-textobjs",
+}
 ```
 
+> [!NOTE]  
+> Use can also use the `disabledKeymaps` config option to disable only *some* of the default keymaps.
+
 ## Configuration
-The `.setup()` call is optional if you are fine with the defaults below. (Note that the default is to __not__ set any keymaps.)
+The `.setup()` call is optional if you are fine with the defaults below. 
 
 ```lua
 -- default config
@@ -81,7 +107,7 @@ require("various-textobjs").setup {
 	-- lines to seek forwards for "big" textobjs (mostly linewise textobjs)
 	lookForwardBig = 15,
 
-	-- use suggested keymaps (see overview tab in README)
+	-- use suggested keymaps (see overview table in README)
 	useDefaultKeymaps = false, 
 
 	-- disable some default keymaps, e.g. { "ai", "ii" }
