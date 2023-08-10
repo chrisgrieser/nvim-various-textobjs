@@ -109,13 +109,15 @@ function M.toNextClosingBracket(lookForwL)
 	if isVisualMode() then u.normal("o") end
 end
 
----till next quotation mark (or backtick)
----@param lookForwL integer number of lines to look forward for the textobj
 function M.toNextQuotationMark(lookForwL)
 	-- INFO the same reasons as in `toNextClosingBracket` apply here as well
 	local startingPosition = u.getCursor(0)
 
-	local pattern = [[().(["'`])]]
+	-- char before quote must not be escape char. Using `vim.opt.quoteescape` on
+	-- the off-chance that the user has customized this.
+	local quoteEscape = vim.opt_local.quoteescape:get() -- default: \
+	local pattern = ([[()[^%s](["'`])]]):format(quoteEscape)
+
 	searchTextobj(pattern, true, lookForwL) -- just selects the bracket
 
 	u.setCursor(0, startingPosition) -- extend backwards

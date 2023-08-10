@@ -1,4 +1,5 @@
-# nvim-various-textobjs 🟪🔷🟡
+<!-- LTeX: enabled=false -->
+# nvim-various-textobjs 🟪🔷🟡 <!-- LTeX: enabled=true -->
 <a href="https://dotfyle.com/plugins/chrisgrieser/nvim-various-textobjs"><img src="https://dotfyle.com/plugins/chrisgrieser/nvim-various-textobjs/shield" /></a>
 
 Bundle of more than two dozen new text objects for Neovim.
@@ -17,8 +18,7 @@ Bundle of more than two dozen new text objects for Neovim.
 <!--toc:end-->
 
 ## List of Text Objects
-<!-- vale off -->
-<!-- LTeX: enabled=false -->
+<!-- vale off --><!-- LTeX: enabled=false -->
 
 | textobj              | description                                                                               | inner / outer                                                                             | forward-seeking |     default keymaps      | filetypes (for default keymaps) |
 |:---------------------|:------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------|:----------------|:------------------------:|:--------------------------------|
@@ -26,7 +26,7 @@ Bundle of more than two dozen new text objects for Neovim.
 | restOfIndentation    | lines down with same or higher indentation                                                | \-                                                                                        | \-              |           `R`            | all                             |
 | subword              | like `iw`, but treating `-`, `_`, and `.` as word delimiters *and* only part of camelCase | outer includes trailing `_`,`-`, or space                                                 | \-              |        `iS`, `aS`        | all                             |
 | toNextClosingBracket | from cursor to next closing `]`, `)`, or `}`                                              | \-                                                                                        | \-              |           `%`            | all                             |
-| toNextQuotationMark  | from cursor to next `"`, `'`, or ```                                                      | \-                                                                                        | \-              |           `Q`            | all                             |
+| toNextQuotationMark  | from cursor to next unescaped[^1] `"`, `'`, or `` ` ``                                        | \-                                                                                        | \-              |           `Q`            | all                             |
 | restOfParagraph      | like `}`, but linewise                                                                    | \-                                                                                        | \-              |           `r`            | all                             |
 | entireBuffer         | entire buffer as one text object                                                          | \-                                                                                        | \-              |           `gG`           | all                             |
 | nearEoL              | from cursor position to end of line, minus one character                                  | \-                                                                                        | \-              |           `n`            | all                             |
@@ -48,8 +48,7 @@ Bundle of more than two dozen new text objects for Neovim.
 | doubleSquareBrackets | text enclosed by `[[]]`                                                                   | outer includes the four square brackets                                                   | small           |        `iD`, `aD`        | lua, shell, neorg, markdown     |
 | shellPipe            | command stdout is piped to                                                                | outer includes the front pipe character                                                   | small           |        `iP`,`aP`         | bash, zsh, fish, sh             |
 
-<!-- vale on -->
-<!-- LTeX: enabled=true -->
+<!-- vale on --><!-- LTeX: enabled=true -->
 
 ## Installation
 
@@ -250,7 +249,9 @@ keymap(
 ## Advanced Usage
 
 ### Smart Alternative to `gx`
+<!-- LTeX: enabled=false --><!-- vale off -->
 Using the URL textobject, you can also write a small snippet to replace netrw's `gx`. The code below retrieves the next URL (within the amount of lines configured in the `setup` call), and opens it in your browser. While this is already an improvement to vim's built-in `gx`, which requires the cursor to be standing on a URL to work, you can even go one step further. If no URL has been found within the next few lines, the `:UrlView` command from [urlview.nvim](https://github.com/axieax/urlview.nvim) is triggered. This searches the entire buffer for URLs to choose from.
+<!-- LTeX: enabled=true --><!-- vale on -->
 
 ```lua
 vim.keymap.set("n", "gx", function()
@@ -298,8 +299,9 @@ end
 print("bar")
 print("baz")
 ```
-
+<!-- LTeX: enabled=false --><!-- vale off -->
 The code below achieves this by dedenting the inner indentation textobject (essentially running `<ii`), and deleting the two lines surrounding it. As for the mapping, `dsi` should make sense since this command is somewhat similar to the `ds` operator from [vim-surround](https://github.com/tpope/vim-surround) but performed on an indentation textobject. (It is also an intuitive mnemonic: `d`elete `s`urrounding `i`ndentation.)
+<!-- LTeX: enabled=true --><!-- vale on -->
 
 ```lua
 vim.keymap.set("n", "dsi", function()
@@ -326,7 +328,7 @@ If you have some other useful ideas, feel free to [share them in this repo's dis
 
 ## Limitations
 - This plugin uses pattern matching, so it can be inaccurate in some edge cases. 
-- The value-textobj does not work with multi-line values. 
+- The value textobject does not work with multi-line values. 
 
 ## Other Text Object Plugins
 - [treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects)
@@ -358,3 +360,5 @@ __Profiles__
 __Buy Me a Coffee__  
 <br>
 <a href='https://ko-fi.com/Y8Y86SQ91' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://cdn.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+
+[^1]: This respects vim's [quoteescape option](https://neovim.io/doc/user/options.html#'quoteescape').
