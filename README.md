@@ -151,6 +151,8 @@ keymap({ "o", "x" }, "ai", "<cmd>lua require('various-textobjs').indentation(fal
 keymap({ "o", "x" }, "iI", "<cmd>lua require('various-textobjs').indentation(true, true)<CR>")
 keymap({ "o", "x" }, "aI", "<cmd>lua require('various-textobjs').indentation(false, false)<CR>")
 
+keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').restOfIndentation()<CR>")
+
 keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').subword(true)<CR>")
 keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').subword(false)<CR>")
 
