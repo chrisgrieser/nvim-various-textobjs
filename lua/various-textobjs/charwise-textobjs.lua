@@ -121,7 +121,7 @@ function M.toNextQuotationMark(lookForwL)
 	searchTextobj(pattern, true, lookForwL) -- just selects the bracket
 
 	u.setCursor(0, startingPosition) -- extend backwards
-	if isVisualMode() then u.normal("o") end
+	if isVisualMode() then u.normal("o") end -- move anchor to front
 end
 
 ---near end of the line, ignoring trailing whitespace (relevant for markdown)
@@ -145,9 +145,8 @@ end
 ---current line (but characterwise)
 ---@param inner boolean outer includes indentation and trailing spaces
 function M.lineCharacterwise(inner)
-	if fn.col("$") == 1 then -- edge case: empty line
-		return
-	end
+	-- edge case: empty line
+	if fn.col("$") == 1 then return end
 
 	if not isVisualMode() then u.normal("v") end
 	if inner then

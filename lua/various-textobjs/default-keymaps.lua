@@ -11,7 +11,7 @@ local innerOuterMaps = {
 	lineCharacterwise = "_",
 }
 local oneMaps = {
-	nearEoL = "n",
+	nearEoL = "n", -- does override the builtin "to next search match" textobj, but nobody really uses that
 	visibleInWindow = "gw",
 	toNextClosingBracket = "C", -- % has a race condition with vim's builtin matchit plugin
 	toNextQuotationMark = "Q",
@@ -24,10 +24,6 @@ local oneMaps = {
 	url = "L", -- gu, gU, and U would conflict with gugu, gUgU, and gUU. u would conflict with gcu (undo comment)
 }
 local ftMaps = {
-	{
-		map = { jsRegex = "/" },
-		fts = { "javascript", "typescript" },
-	},
 	{
 		map = { mdlink = "l" },
 		fts = { "markdown", "toml" },
@@ -63,6 +59,15 @@ function M.setup(disabled_keymaps)
 		vim.keymap.set(...)
 	end
 
+	for objName, map in pairs(oneMaps) do
+		keymap(
+			{ "o", "x" },
+			map,
+			"<cmd>lua require('various-textobjs')." .. objName .. "()<CR>",
+			{ desc = objName .. " textobj" }
+		)
+	end
+
 	for objName, map in pairs(innerOuterMaps) do
 		local name = " " .. objName .. " textobj"
 		keymap(
@@ -76,14 +81,6 @@ function M.setup(disabled_keymaps)
 			"i" .. map,
 			"<cmd>lua require('various-textobjs')." .. objName .. "(true)<CR>",
 			{ desc = "inner" .. name }
-		)
-	end
-	for objName, map in pairs(oneMaps) do
-		keymap(
-			{ "o", "x" },
-			map,
-			"<cmd>lua require('various-textobjs')." .. objName .. "()<CR>",
-			{ desc = objName .. " textobj" }
 		)
 	end
 	-- stylua: ignore start
