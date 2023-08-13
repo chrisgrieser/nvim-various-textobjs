@@ -1,4 +1,4 @@
-*various-textobjs.txt*       For NVIM v0.8.0       Last change: 2023 August 12
+*various-textobjs.txt*       For NVIM v0.8.0       Last change: 2023 August 13
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
@@ -274,6 +274,9 @@ For your convenience, here the code to create mappings for all text objects. You
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').key(false)<CR>")
     
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').url()<CR>")
+    
+    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').number(true)<CR>")
+    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').number(false)<CR>")
     
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').diagnostic()<CR>")
     
