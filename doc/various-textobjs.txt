@@ -1,4 +1,4 @@
-*various-textobjs.txt*       For NVIM v0.8.0       Last change: 2023 August 13
+*various-textobjs.txt*       For NVIM v0.8.0       Last change: 2023 August 19
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
@@ -35,103 +35,112 @@ Bundle of more than two dozen new textobjects for Neovim.
 LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs--list-of-text-objects*
 
   --------------------------------------------------------------------------------------------------------------
-  textobj                description             inner / outer           forward-seeking    default  filetypes
+  textobj                  description            inner / outer          forward-seeking    default  filetypes
                                                                                             keymaps  (for
                                                                                                      default
                                                                                                      keymaps)
-  ---------------------- ----------------------- ----------------------- ----------------- --------- -----------
-  indentation            surrounding lines with  see overview from       -                  ii, ai,  all
-                         same or higher          vim-indent-object                         aI, (iI)  
-                         indentation                                                                 
+  ------------------------ ---------------------- ---------------------- ----------------- --------- -----------
+  indentation              surrounding lines with see overview from      -                  ii, ai,  all
+                           same or higher         vim-indent-object                        aI, (iI)  
+                           indentation                                                               
 
-  restOfIndentation      lines down with same or -                       -                     R     all
-                         higher indentation                                                          
+  restOfIndentation        lines down with same   -                      -                     R     all
+                           or higher indentation                                                     
 
-  subword                like iw, but treating   outer includes trailing -                  iS, aS   all
-                         -, _, and . as word     _,-, or space                                       
-                         delimiters and only                                                         
-                         part of camelCase                                                           
+  greedyOuterIndentation   outer indentation,     outer includes a       -                   ag/ig   all
+                           expanded to blank      blank, like ap/ip                                  
+                           lines; useful to get                                                      
+                           functions with                                                            
+                           annotations                                                               
 
-  toNextClosingBracket   from cursor to next     -                       -                     C     all
-                         closing ], ), or }                                                          
+  subword                  like iw, but treating  outer includes         -                  iS, aS   all
+                           -, _, and . as word    trailing _,-, or space                             
+                           delimiters and only                                                       
+                           part of camelCase                                                         
 
-  toNextQuotationMark    from cursor to next     -                       -                     Q     all
-                         unescaped[1] ", ', or `                                                     
+  toNextClosingBracket     from cursor to next    -                      -                     C     all
+                           closing ], ), or }                                                        
 
-  restOfParagraph        like }, but linewise    -                       -                     r     all
+  toNextQuotationMark      from cursor to next    -                      -                     Q     all
+                           unescaped[1] ", ', or                                                     
+                           `                                                                         
 
-  entireBuffer           entire buffer as one    -                       -                    gG     all
-                         text object                                                                 
+  restOfParagraph          like }, but linewise   -                      -                     r     all
 
-  nearEoL                from cursor position to -                       -                     n     all
-                         end of line, minus one                                                      
-                         character                                                                   
+  entireBuffer             entire buffer as one   -                      -                    gG     all
+                           text object                                                               
 
-  lineCharacterwise      current line, but       outer includes          -                  i_, a_   all
-                         characterwise           indentation and                                     
-                                                 trailing spaces                                     
+  nearEoL                  from cursor position   -                      -                     n     all
+                           to end of line, minus                                                     
+                           one character                                                             
 
-  column                 column down until       -                       -                    \|     all
-                         indent or shorter line.                                                     
-                         Accepts {count} for                                                         
-                         multiple columns.                                                           
+  lineCharacterwise        current line, but      outer includes         -                  i_, a_   all
+                           characterwise          indentation and                                    
+                                                  trailing spaces                                    
 
-  value                  value of key-value      outer includes trailing small              iv, av   all
-                         pair, or right side of  commas or semicolons                                
-                         a variable assignment                                                       
-                         (inside one line)                                                           
+  column                   column down until      -                      -                    \|     all
+                           indent or shorter                                                         
+                           line. Accepts {count}                                                     
+                           for multiple columns.                                                     
 
-  key                    key of key-value pair,  outer includes the = or small               ik,ak   all
-                         or left side of a                                                           
-                         variable assignment                                                         
+  value                    value of key-value     outer includes         small              iv, av   all
+                           pair, or right side of trailing commas or                                 
+                           a variable assignment  semicolons                                         
+                           (inside one line)                                                         
 
-  url                    link beginning with     -                       big                   L     all
-                         “http”                                                                      
+  key                      key of key-value pair, outer includes the =   small               ik,ak   all
+                           or left side of a      or                                                 
+                           variable assignment                                                       
 
-  number                 numbers, similar to     inner: only pure        small              in, an   all
-                         <C-a>                   digits, outer: number                               
-                                                 including minus sign                                
-                                                 and decimal point                                   
+  url                      link beginning with    -                      big                   L     all
+                           “http”                                                                    
 
-  diagnostic             LSP diagnostic          -                       big                   !     all
-                         (requires built-in LSP)                                                     
+  number                   numbers, similar to    inner: only pure       small              in, an   all
+                           <C-a>                  digits, outer: number                              
+                                                  including minus sign                               
+                                                  and decimal point                                  
 
-  closedFold             closed fold             outer includes one line big                iz, az   all
-                                                 after the last folded                               
-                                                 line                                                
+  diagnostic               LSP diagnostic         -                      big                   !     all
+                           (requires built-in                                                        
+                           LSP)                                                                      
 
-  chainMember            field with the full     outer includes the      small               im,am   all
-                         call, like              leading . (or )                                     
-                         .encode(param)                                                              
+  closedFold               closed fold            outer includes one     big                iz, az   all
+                                                  line after the last                                
+                                                  folded line                                        
 
-  visibleInWindow        all lines visible in                            -                    gw     all
-                         the current window                                                          
+  chainMember              field with the full    outer includes the     small               im,am   all
+                           call, like             leading . (or )                                    
+                           .encode(param)                                                            
 
-  restOfWindow           from the cursorline to                          -                    gW     all
-                         the last line in the                                                        
-                         window                                                                      
+  visibleInWindow          all lines visible in   -                      -                    gw     all
+                           the current window                                                        
 
-  mdlink                 markdown link like      inner is only the link  small              il, al   markdown,
-                         [title](url)            title (between the [])                              toml
+  restOfWindow             from the cursorline to -                      -                    gW     all
+                           the last line in the                                                      
+                           window                                                                    
 
-  mdFencedCodeBlock      markdown fenced code    outer includes the      big                iC, aC   markdown
-                         (enclosed by three      enclosing backticks                                 
-                         backticks)                                                                  
+  mdlink                   markdown link like     inner is only the link small              il, al   markdown,
+                           [title](url)           title (between the [])                             toml
 
-  cssSelector            class in CSS like       outer includes trailing small              ic, ac   css, scss
-                         .my-class               comma and space                                     
+  mdFencedCodeBlock        markdown fenced code   outer includes the     big                iC, aC   markdown
+                           (enclosed by three     enclosing backticks                                
+                           backticks)                                                                
 
-  htmlAttribute          attribute in html/xml   inner is only the value small              ix, ax   html, xml,
-                         like href="foobar.com"  inside the quotes                                   css, scss,
-                                                 trailing comma and                                  vue
-                                                 space                                               
+  cssSelector              class in CSS like      outer includes         small              ic, ac   css, scss
+                           .my-class              trailing comma and                                 
+                                                  space                                              
 
-  doubleSquareBrackets   text enclosed by [[]]   outer includes the four small              iD, aD   lua, shell,
-                                                 square brackets                                     neorg,
+  htmlAttribute            attribute in html/xml  inner is only the      small              ix, ax   html, xml,
+                           like href="foobar.com" value inside the                                   css, scss,
+                                                  quotes trailing comma                              vue
+                                                  and space                                          
+
+  doubleSquareBrackets     text enclosed by [[]]  outer includes the     small              iD, aD   lua, shell,
+                                                  four square brackets                               neorg,
                                                                                                      markdown
 
-  shellPipe              command stdout is piped outer includes the      small               iP,aP   bash, zsh,
-                         to                      front pipe character                                fish, sh
+  shellPipe                command stdout is      outer includes the     small               iP,aP   bash, zsh,
+                           piped to               front pipe character                               fish, sh
   --------------------------------------------------------------------------------------------------------------
 
 [1] This respects vim’s quoteescape option.
@@ -248,6 +257,9 @@ For your convenience, here the code to create mappings for all text objects. You
     keymap({ "o", "x" }, "aI", "<cmd>lua require('various-textobjs').indentation(false, false)<CR>")
     
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').restOfIndentation()<CR>")
+    
+    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').greedyOuterIndentation(true)<CR>")
+    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').greedyOuterIndentation(false)<CR>")
     
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').subword(true)<CR>")
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').subword(false)<CR>")
