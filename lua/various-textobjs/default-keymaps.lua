@@ -9,6 +9,7 @@ local innerOuterMaps = {
 	closedFold = "z", -- z is the common prefix for folds
 	chainMember = "m",
 	lineCharacterwise = "_",
+	greedyOuterIndentation = "g",
 }
 local oneMaps = {
 	nearEoL = "n", -- does override the builtin "to next search match" textobj, but nobody really uses that

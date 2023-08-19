@@ -44,6 +44,10 @@ function M.indentation(noStartBorder, noEndBorder) linewise.indentation(noStartB
 ---essentially `ii` downwards
 function M.restOfIndentation() linewise.restOfIndentation() end
 
+---outer indentation, expanded until the next blank lines in both directions
+---@param inner boolean outer adds a blank, like ip/ap textobjs
+function M.greedyOuterIndentation(inner) linewise.greedyOuterIndentation(inner) end
+
 -- next *closed* fold
 ---@param inner boolean outer adds one line after the fold
 function M.closedFold(inner) linewise.closedFold(inner, lookForwardBig) end

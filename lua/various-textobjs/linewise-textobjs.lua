@@ -152,7 +152,7 @@ function M.indentation(noStartBorder, noEndBorder)
 	local indentOfStart = fn.indent(curLnum)
 	if indentOfStart == 0 then
 		vim.notify("Current line is not indented.", vim.log.levels.WARN)
-		return
+		return false -- return value needed for greedyOuterIndentation textobj
 	end
 
 	local prevLnum = curLnum - 1
@@ -201,6 +201,16 @@ function M.restOfIndentation()
 	end
 
 	setLinewiseSelection(startLnum, nextLnum - 1)
+end
+
+---outer indentation, expanded until the next blank lines in both directions
+function M.greedyOuterIndentation(inner)
+	-- select outer indentation
+	local invalid = M.indentation(false, false) == false
+	if invalid then return end
+	u.normal("o{j") -- to next blank line above
+	u.normal("o}") -- to next blank line down
+	if inner then u.normal("k") end -- exclude blank below if inner
 end
 
 --------------------------------------------------------------------------------
