@@ -1,0 +1,18 @@
+std = "lua51" # LuaJit (used by nvim) is based on Lua 5.1
+
+[lints]
+# disabled since duplication with LSP
+undefined_variable = "allow"
+unused_variable = "allow"
+empty_if = "allow"
+unscoped_variables = "allow"
+multiple_statements = "allow"
+
+# enabled
+high_cyclomatic_complexity = "warn"
+
+# changed severity
+if_same_then_else = "warn"
+
+[config]
+high_cyclomatic_complexity = { maximum_complexity = 20 }
