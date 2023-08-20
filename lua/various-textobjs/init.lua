@@ -2,7 +2,6 @@ local M = {}
 
 local blockwise = require("various-textobjs.blockwise-textobjs")
 local charwise = require("various-textobjs.charwise-textobjs")
-local defaultKeymaps = require("various-textobjs.default-keymaps")
 local linewise = require("various-textobjs.linewise-textobjs")
 
 --------------------------------------------------------------------------------
@@ -17,7 +16,7 @@ local function argConvert(arg)
 	if arg == true then return "inner" end
 	if arg ~= "outer" and arg ~= "inner" then
 		vim.notify(
-			"Invalid argument for textobject; only 'outer' and 'inner' accepted. Falling back to outer textobject.",
+			"Invalid argument for textobject, only 'outer' and 'inner' accepted. Falling back to outer textobject.",
 			vim.log.levels.WARN
 		)
 		return "outer"
@@ -32,18 +31,28 @@ local lookForwardSmall = 5
 local lookForwardBig = 15
 
 ---@class config
----@field lookForwardSmall? number -- characterwise textobjs
----@field lookForwardBig? number -- linewise textobjs & URL textobj
+---@field lookForwardSmall? number
+---@field lookForwardBig? number
 ---@field useDefaultKeymaps? boolean
 ---@field disabledKeymaps? string[]
 
 ---optional setup function
----@param opts? config
-function M.setup(opts)
-	if not opts then opts = {} end
-	if opts.lookForwardSmall then lookForwardSmall = opts.lookForwardSmall end
-	if opts.lookForwardBig then lookForwardBig = opts.lookForwardBig end
-	if opts.useDefaultKeymaps then defaultKeymaps.setup(opts.disabledKeymaps or {}) end
+---@param userConfig config
+function M.setup(userConfig)
+	---@type config
+	local defaultConfig = {
+		lookForwardSmall = 5,
+		lookForwardBig = 15,
+		useDefaultKeymaps = false,
+		disabledKeymaps = {},
+	}
+	local config = vim.tbl_deep_extend("keep", userConfig, defaultConfig)
+
+	lookForwardSmall = config.lookForwardSmall
+	lookForwardBig = config.lookForwardBig
+	if config.useDefaultKeymaps then
+		require("various-textobjs.default-keymaps").setup(config.disabledKeymaps)
+	end
 end
 
 --------------------------------------------------------------------------------
