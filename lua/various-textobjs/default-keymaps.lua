@@ -74,21 +74,21 @@ function M.setup(disabled_keymaps)
 		keymap(
 			{ "o", "x" },
 			"a" .. map,
-			"<cmd>lua require('various-textobjs')." .. objName .. "(false)<CR>",
+			"<cmd>lua require('various-textobjs')." .. objName .. "('outer')<CR>",
 			{ desc = "outer" .. name }
 		)
 		keymap(
 			{ "o", "x" },
 			"i" .. map,
-			"<cmd>lua require('various-textobjs')." .. objName .. "(true)<CR>",
+			"<cmd>lua require('various-textobjs')." .. objName .. "('inner')<CR>",
 			{ desc = "inner" .. name }
 		)
 	end
 	-- stylua: ignore start
-	keymap( { "o", "x" }, "ii" , "<cmd>lua require('various-textobjs').indentation(true, true)<CR>", { desc = "inner-inner indentation textobj" })
-	keymap( { "o", "x" }, "ai" , "<cmd>lua require('various-textobjs').indentation(false, true)<CR>", { desc = "outer-inner indentation textobj" })
-	keymap( { "o", "x" }, "iI" , "<cmd>lua require('various-textobjs').indentation(true, true)<CR>", { desc = "inner-inner indentation textobj" })
-	keymap( { "o", "x" }, "aI" , "<cmd>lua require('various-textobjs').indentation(false, false)<CR>", { desc = "outer-outer indentation textobj" })
+	keymap( { "o", "x" }, "ii" , "<cmd>lua require('various-textobjs').indentation('inner', 'inner')<CR>", { desc = "inner-inner indentation textobj" })
+	keymap( { "o", "x" }, "ai" , "<cmd>lua require('various-textobjs').indentation('outer', 'inner')<CR>", { desc = "outer-inner indentation textobj" })
+	keymap( { "o", "x" }, "iI" , "<cmd>lua require('various-textobjs').indentation('inner', 'inner')<CR>", { desc = "inner-inner indentation textobj" })
+	keymap( { "o", "x" }, "aI" , "<cmd>lua require('various-textobjs').indentation('outer', 'outer')<CR>", { desc = "outer-outer indentation textobj" })
 
 	vim.api.nvim_create_augroup("VariousTextobjs", {})
 	for _, textobj in pairs(ftMaps) do
@@ -98,8 +98,8 @@ function M.setup(disabled_keymaps)
 			callback = function()
 				for objName, map in pairs(textobj.map) do
 					local name = " " .. objName .. " textobj"
-					keymap( { "o", "x" }, "a" .. map, ("<cmd>lua require('various-textobjs').%s(%s)<CR>"):format(objName, "false"), { desc = "outer" .. name, buffer = true })
-					keymap( { "o", "x" }, "i" .. map, ("<cmd>lua require('various-textobjs').%s(%s)<CR>"):format(objName, "true"), { desc = "inner" .. name, buffer = true })
+					keymap( { "o", "x" }, "a" .. map, ("<cmd>lua require('various-textobjs').%s('%s')<CR>"):format(objName, "outer"), { desc = "outer" .. name, buffer = true })
+					keymap( { "o", "x" }, "i" .. map, ("<cmd>lua require('various-textobjs').%s('%s')<CR>"):format(objName, "inner"), { desc = "inner" .. name, buffer = true })
 				end
 			end,
 		})

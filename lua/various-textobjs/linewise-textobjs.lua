@@ -30,9 +30,9 @@ end
 --------------------------------------------------------------------------------
 
 -- next *closed* fold
----@param inner boolean outer adds one line after the fold
+---@param scope "inner"|"outer" outer adds one line after the fold
 ---@param lookForwL integer number of lines to look forward for the textobj
-function M.closedFold(inner, lookForwL)
+function M.closedFold(scope, lookForwL)
 	local startLnum = fn.line(".")
 	local lastLine = fn.line("$")
 	local startedOnFold = fn.foldclosed(startLnum) > 0
@@ -53,7 +53,7 @@ function M.closedFold(inner, lookForwL)
 		until reachedClosedFold
 		foldEnd = fn.foldclosedend(foldStart)
 	end
-	if not inner and (foldEnd + 1 <= lastLine) then foldEnd = foldEnd + 1 end
+	if scope == "outer" and (foldEnd + 1 <= lastLine) then foldEnd = foldEnd + 1 end
 
 	-- fold has to be opened for so line can be correctly selected
 	vim.cmd(("%d,%d foldopen"):format(foldStart, foldEnd))
@@ -75,9 +75,9 @@ function M.restOfParagraph()
 end
 
 ---Md Fenced Code Block Textobj
----@param inner boolean inner excludes the backticks
+---@param scope "inner"|"outer" inner excludes the backticks
 ---@param lookForwL integer number of lines to look forward for the textobj
-function M.mdFencedCodeBlock(inner, lookForwL)
+function M.mdFencedCodeBlock(scope, lookForwL)
 	local cursorLnum = fn.line(".")
 	local codeBlockPattern = "^```%w*$"
 
@@ -114,7 +114,7 @@ function M.mdFencedCodeBlock(inner, lookForwL)
 
 	local start = cbBegin[j]
 	local ending = cbEnd[j]
-	if inner then
+	if scope == "inner" then
 		start = start + 1
 		ending = ending - 1
 	end
@@ -139,9 +139,9 @@ end
 --------------------------------------------------------------------------------
 
 ---indentation textobj
----@param noStartBorder boolean exclude the startline
----@param noEndBorder boolean exclude the endline
-function M.indentation(noStartBorder, noEndBorder)
+---@param startBorder "inner"|"outer"
+---@param endBorder "inner"|"outer"
+function M.indentation(startBorder, endBorder)
 	local curLnum = fn.line(".")
 	local lastLine = fn.line("$")
 	while isBlankLine(curLnum) do -- when on blank line, use next line
@@ -166,8 +166,8 @@ function M.indentation(noStartBorder, noEndBorder)
 	end
 
 	-- differentiate ai and ii
-	if noStartBorder then prevLnum = prevLnum + 1 end
-	if noEndBorder then nextLnum = nextLnum - 1 end
+	if startBorder == "inner" then prevLnum = prevLnum + 1 end
+	if endBorder == "inner" then nextLnum = nextLnum - 1 end
 
 	while isBlankLine(nextLnum) do
 		nextLnum = nextLnum - 1
@@ -204,13 +204,14 @@ function M.restOfIndentation()
 end
 
 ---outer indentation, expanded until the next blank lines in both directions
-function M.greedyOuterIndentation(inner)
+---@param scope "inner"|"outer" outer adds a blank, like ip/ap textobjs
+function M.greedyOuterIndentation(scope)
 	-- select outer indentation
-	local invalid = M.indentation(false, false) == false
+	local invalid = M.indentation("outer", "outer") == false
 	if invalid then return end
 	u.normal("o{j") -- to next blank line above
 	u.normal("o}") -- to next blank line down
-	if inner then u.normal("k") end -- exclude blank below if inner
+	if scope == "inner" then u.normal("k") end -- exclude blank below if inner
 end
 
 --------------------------------------------------------------------------------
