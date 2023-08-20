@@ -1,4 +1,4 @@
-*various-textobjs.txt*       For NVIM v0.8.0       Last change: 2023 August 19
+*various-textobjs.txt*       For NVIM v0.8.0       Last change: 2023 August 20
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
@@ -224,26 +224,28 @@ The `.setup()` call is optional if you are fine with the defaults below.
 ------------------------------------------------------------------------------
 If you want to set your own keybindings, you can do so by calling the
 respective functions: - The function names correspond to the textobject names
-from the |various-textobjs-overview-table|. - The text objects that
-differentiate between outer and inner require a Boolean parameter, `true`
-always meaning "inner," and `false` meaning "outer." - The keymaps _need_ to be
-called as Ex-command, otherwise they will not be dot-repeatable. (`function ()
+from the |various-textobjs-overview-table|. - The keymaps need to be called as
+Ex-command, otherwise they will not be dot-repeatable. (`function ()
 require("various-textobjs").diagnostic() end` as third argument for the keymap
 works in general, but the text objects will not be dot-repeatable then.)
+
+_Previous versions used a boolean parameter, but for verbosity reasons, this
+plugin now uses "outer" and "inner". For backwards-compatibility with existing
+keymaps, boolean parameters are still accepted though._
 
 >lua
     -- example: `?` for diagnostic textobj
     vim.keymap.set({ "o", "x" }, "?", '<cmd>lua require("various-textobjs").diagnostic()<CR>')
     
     -- example: `aS` for outer subword, `iS` for inner subword
-    vim.keymap.set({ "o", "x" }, "aS", '<cmd>lua require("various-textobjs").subword(false)<CR>')
-    vim.keymap.set({ "o", "x" }, "iS", '<cmd>lua require("various-textobjs").subword(true)<CR>')
+    vim.keymap.set({ "o", "x" }, "aS", '<cmd>lua require("various-textobjs").subword("outer")<CR>')
+    vim.keymap.set({ "o", "x" }, "iS", '<cmd>lua require("various-textobjs").subword("inner")<CR>')
     
     -- exception: indentation textobj requires two parameters, the first for
     -- exclusion of the starting border, the second for the exclusion of ending
     -- border
-    vim.keymap.set({ "o", "x" }, "ii", '<cmd>lua require("various-textobjs").indentation(true, true)<CR>')
-    vim.keymap.set({ "o", "x" }, "ai", '<cmd>lua require("various-textobjs").indentation(false, true)<CR>')
+    vim.keymap.set({ "o", "x" }, "ii", '<cmd>lua require("various-textobjs").indentation("inner", "inner")<CR>')
+    vim.keymap.set({ "o", "x" }, "ai", '<cmd>lua require("various-textobjs").indentation("outer", "inner")<CR>')
 <
 
 For your convenience, here the code to create mappings for all text objects. You can copypaste this list and enter your own bindings.Mappings for all text objects ~
@@ -251,18 +253,18 @@ For your convenience, here the code to create mappings for all text objects. You
 >lua
     local keymap = vim.keymap.set
     
-    keymap({ "o", "x" }, "ii", "<cmd>lua require('various-textobjs').indentation(true, true)<CR>")
-    keymap({ "o", "x" }, "ai", "<cmd>lua require('various-textobjs').indentation(false, true)<CR>")
-    keymap({ "o", "x" }, "iI", "<cmd>lua require('various-textobjs').indentation(true, true)<CR>")
-    keymap({ "o", "x" }, "aI", "<cmd>lua require('various-textobjs').indentation(false, false)<CR>")
+    keymap({ "o", "x" }, "ii", "<cmd>lua require('various-textobjs').indentation('inner', 'inner')<CR>")
+    keymap({ "o", "x" }, "ai", "<cmd>lua require('various-textobjs').indentation('outer', 'inner')<CR>")
+    keymap({ "o", "x" }, "iI", "<cmd>lua require('various-textobjs').indentation('inner', 'inner')<CR>")
+    keymap({ "o", "x" }, "aI", "<cmd>lua require('various-textobjs').indentation('outer', 'outer')<CR>")
     
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').restOfIndentation()<CR>")
     
-    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').greedyOuterIndentation(true)<CR>")
-    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').greedyOuterIndentation(false)<CR>")
+    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').greedyOuterIndentation('inner')<CR>")
+    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').greedyOuterIndentation('outer')<CR>")
     
-    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').subword(true)<CR>")
-    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').subword(false)<CR>")
+    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').subword('inner')<CR>")
+    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').subword('outer')<CR>")
     
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').toNextClosingBracket()<CR>")
     
@@ -274,29 +276,29 @@ For your convenience, here the code to create mappings for all text objects. You
     
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').nearEoL()<CR>")
     
-    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').lineCharacterwise(true)<CR>")
-    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').lineCharacterwise(false)<CR>")
+    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').lineCharacterwise('inner')<CR>")
+    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').lineCharacterwise('outer')<CR>")
     
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').column()<CR>")
     
-    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').value(true)<CR>")
-    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').value(false)<CR>")
+    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').value('inner')<CR>")
+    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').value('outer')<CR>")
     
-    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').key(true)<CR>")
-    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').key(false)<CR>")
+    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').key('inner')<CR>")
+    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').key('outer')<CR>")
     
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').url()<CR>")
     
-    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').number(true)<CR>")
-    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').number(false)<CR>")
+    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').number('inner')<CR>")
+    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').number('outer')<CR>")
     
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').diagnostic()<CR>")
     
-    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').closedFold(true)<CR>")
-    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').closedFold(false)<CR>")
+    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').closedFold('inner')<CR>")
+    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').closedFold('outer')<CR>")
     
-    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').chainMember(true)<CR>")
-    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').chainMember(false)<CR>")
+    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').chainMember('inner')<CR>")
+    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').chainMember('outer')<CR>")
     
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').visibleInWindow()<CR>")
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').restOfWindow()<CR>")
@@ -307,78 +309,78 @@ For your convenience, here the code to create mappings for all text objects. You
     keymap(
         { "o", "x" },
         "YOUR_MAPPING",
-        "<cmd>lua require('various-textobjs').mdlink(true)<CR>",
+        "<cmd>lua require('various-textobjs').mdlink('inner')<CR>",
         { buffer = true }
     )
     keymap(
         { "o", "x" },
         "YOUR_MAPPING",
-        "<cmd>lua require('various-textobjs').mdlink(false)<CR>",
-        { buffer = true }
-    )
-    
-    keymap(
-        { "o", "x" },
-        "YOUR_MAPPING",
-        "<cmd>lua require('various-textobjs').mdFencedCodeBlock(true)<CR>",
-        { buffer = true }
-    )
-    keymap(
-        { "o", "x" },
-        "YOUR_MAPPING",
-        "<cmd>lua require('various-textobjs').mdFencedCodeBlock(false)<CR>",
+        "<cmd>lua require('various-textobjs').mdlink('outer')<CR>",
         { buffer = true }
     )
     
     keymap(
         { "o", "x" },
         "YOUR_MAPPING",
-        "<cmd>lua require('various-textobjs').cssSelector(true)<CR>",
+        "<cmd>lua require('various-textobjs').mdFencedCodeBlock('inner')<CR>",
         { buffer = true }
     )
     keymap(
         { "o", "x" },
         "YOUR_MAPPING",
-        "<cmd>lua require('various-textobjs').cssSelector(false)<CR>",
-        { buffer = true }
-    )
-    
-    keymap(
-        { "o", "x" },
-        "YOUR_MAPPING",
-        "<cmd>lua require('various-textobjs').htmlAttribute(true)<CR>",
-        { buffer = true }
-    )
-    keymap(
-        { "o", "x" },
-        "YOUR_MAPPING",
-        "<cmd>lua require('various-textobjs').htmlAttribute(false)<CR>",
+        "<cmd>lua require('various-textobjs').mdFencedCodeBlock('outer')<CR>",
         { buffer = true }
     )
     
     keymap(
         { "o", "x" },
         "YOUR_MAPPING",
-        "<cmd>lua require('various-textobjs').doubleSquareBrackets(true)<CR>",
+        "<cmd>lua require('various-textobjs').cssSelector('inner')<CR>",
         { buffer = true }
     )
     keymap(
         { "o", "x" },
         "YOUR_MAPPING",
-        "<cmd>lua require('various-textobjs').doubleSquareBrackets(false)<CR>",
+        "<cmd>lua require('various-textobjs').cssSelector('outer')<CR>",
         { buffer = true }
     )
     
     keymap(
         { "o", "x" },
         "YOUR_MAPPING",
-        "<cmd>lua require('various-textobjs').shellPipe(true)<CR>",
+        "<cmd>lua require('various-textobjs').htmlAttribute('inner')<CR>",
         { buffer = true }
     )
     keymap(
         { "o", "x" },
         "YOUR_MAPPING",
-        "<cmd>lua require('various-textobjs').shellPipe(false)<CR>",
+        "<cmd>lua require('various-textobjs').htmlAttribute('outer')<CR>",
+        { buffer = true }
+    )
+    
+    keymap(
+        { "o", "x" },
+        "YOUR_MAPPING",
+        "<cmd>lua require('various-textobjs').doubleSquareBrackets('inner')<CR>",
+        { buffer = true }
+    )
+    keymap(
+        { "o", "x" },
+        "YOUR_MAPPING",
+        "<cmd>lua require('various-textobjs').doubleSquareBrackets('outer')<CR>",
+        { buffer = true }
+    )
+    
+    keymap(
+        { "o", "x" },
+        "YOUR_MAPPING",
+        "<cmd>lua require('various-textobjs').shellPipe('inner')<CR>",
+        { buffer = true }
+    )
+    keymap(
+        { "o", "x" },
+        "YOUR_MAPPING",
+        "<cmd>lua require('various-textobjs').shellPipe('outer')<CR>",
         { buffer = true }
     )
 <
