@@ -200,8 +200,9 @@ end
 ---@param lookForwL integer number of lines to look forward for the textobj
 function M.value(scope, lookForwL)
 	-- captures value till the end of the line
-	-- negative sets to not find equality comparators == or css pseudo-elements ::
-	local pattern = "([^=:][=:] ?)[^=:].*()"
+	-- negative sets and frontier pattern ensure that equality comparators ==, !=
+	-- or css pseudo-elements :: are not matched
+	local pattern = "(%s*%f[!<>~=:][=:]%s*)[^=:].*()"
 
 	local valueFound = searchTextobj(pattern, scope, lookForwL)
 	if not valueFound then return end
