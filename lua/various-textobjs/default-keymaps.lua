@@ -87,7 +87,7 @@ function M.setup(disabled_keymaps)
 	-- stylua: ignore start
 	keymap( { "o", "x" }, "ii" , "<cmd>lua require('various-textobjs').indentation('inner', 'inner')<CR>", { desc = "inner-inner indentation textobj" })
 	keymap( { "o", "x" }, "ai" , "<cmd>lua require('various-textobjs').indentation('outer', 'inner')<CR>", { desc = "outer-inner indentation textobj" })
-	keymap( { "o", "x" }, "iI" , "<cmd>lua require('various-textobjs').indentation('inner', 'inner')<CR>", { desc = "inner-inner indentation textobj" })
+	keymap( { "o", "x" }, "iI" , "<cmd>lua require('various-textobjs').indentation('inner', 'outer')<CR>", { desc = "inner-outer indentation textobj" })
 	keymap( { "o", "x" }, "aI" , "<cmd>lua require('various-textobjs').indentation('outer', 'outer')<CR>", { desc = "outer-outer indentation textobj" })
 
 	vim.api.nvim_create_augroup("VariousTextobjs", {})
