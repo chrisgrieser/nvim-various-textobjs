@@ -18,8 +18,14 @@ end
 ---equivalent to fn.getline(), but using more efficient nvim api
 ---@param lnum integer
 ---@return string
-function M.getline(lnum)
-	return vim.api.nvim_buf_get_lines(0, lnum - 1, lnum, true)[1]
+function M.getline(lnum) return vim.api.nvim_buf_get_lines(0, lnum - 1, lnum, true)[1] end
+
+---send notification
+---@param msg string
+---@param level? "info"|"trace"|"debug"|"warn"|"error"
+function M.notify(msg, level)
+	if not level then level = "info" end
+	vim.notify(msg, vim.log.levels[level:upper()], { title = "nvim-various-textobjs" })
 end
 
 ---notification when no textobj could be found
@@ -27,9 +33,8 @@ end
 function M.notFoundMsg(lookForwL)
 	local msg = "Textobject not found within the next " .. tostring(lookForwL) .. " lines."
 	if lookForwL == 1 then msg = msg:gsub("s%.$", ".") end -- remove plural s
-	vim.notify(msg, vim.log.levels.WARN)
+	M.notify(msg, "warn")
 end
-
 
 --------------------------------------------------------------------------------
 return M

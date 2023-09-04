@@ -3,7 +3,7 @@ local M = {}
 local blockwise = require("various-textobjs.blockwise-textobjs")
 local charwise = require("various-textobjs.charwise-textobjs")
 local linewise = require("various-textobjs.linewise-textobjs")
-
+local u = require("various-textobjs.utils")
 --------------------------------------------------------------------------------
 
 ---INFO this function ensures backwards compatibility with earlier versions,
@@ -15,9 +15,9 @@ local function argConvert(arg)
 	if arg == false then return "outer" end
 	if arg == true then return "inner" end
 	if arg ~= "outer" and arg ~= "inner" then
-		vim.notify(
+		 u.notify(
 			"Invalid argument for textobject, only 'outer' and 'inner' accepted. Falling back to outer textobject.",
-			vim.log.levels.WARN
+			"warn"
 		)
 		return "outer"
 	end

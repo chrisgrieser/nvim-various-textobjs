@@ -151,7 +151,7 @@ function M.indentation(startBorder, endBorder)
 
 	local indentOfStart = fn.indent(curLnum)
 	if indentOfStart == 0 then
-		vim.notify("Current line is not indented.", vim.log.levels.WARN)
+		u.notify("Current line is not indented.", "warn")
 		return false -- return value needed for greedyOuterIndentation textobj
 	end
 
@@ -189,7 +189,7 @@ function M.restOfIndentation()
 
 	local indentOfStart = fn.indent(curLnum)
 	if indentOfStart == 0 then
-		vim.notify("Current line is not indented.", vim.log.levels.WARN)
+		u.notify("Current line is not indented.", "warn")
 		return
 	end
 
