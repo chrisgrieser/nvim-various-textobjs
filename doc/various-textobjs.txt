@@ -1,4 +1,4 @@
-*various-textobjs.txt*      For NVIM v0.8.0     Last change: 2023 September 14
+*various-textobjs.txt*      For NVIM v0.8.0     Last change: 2023 September 15
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
@@ -196,7 +196,7 @@ keymaps.
 <
 
 
-  [!NOTE] Use can also use the `disabledKeymaps` config option to disable only
+  [!NOTE] You can also use the `disabledKeymaps` config option to disable only
   _some_ of the default keymaps.
 
 CONFIGURATION          *various-textobjs-nvim-various-textobjs--configuration*
