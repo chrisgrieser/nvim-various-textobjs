@@ -93,7 +93,7 @@ use {
 ```
 
 > [!NOTE]  
-> Use can also use the `disabledKeymaps` config option to disable only *some* of the default keymaps.
+> You can also use the `disabledKeymaps` config option to disable only *some* of the default keymaps.
 
 ## Configuration
 The `.setup()` call is optional if you are fine with the defaults below. 
