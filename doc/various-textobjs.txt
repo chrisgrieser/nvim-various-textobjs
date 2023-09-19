@@ -1,4 +1,4 @@
-*various-textobjs.txt*      For NVIM v0.8.0     Last change: 2023 September 15
+*various-textobjs.txt*      For NVIM v0.8.0     Last change: 2023 September 19
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
@@ -88,8 +88,8 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs--list-of-text-object
                            a variable assignment  semicolons                                         
                            (inside one line)                                                         
 
-  key                      key of key-value pair, outer includes the =   small               ik,ak   all
-                           or left side of a      or                                                 
+  key                      key of key-value pair, outer includes the =   small              ik, ak   all
+                           or left side of a      or :                                               
                            variable assignment                                                       
 
   url                      link beginning with    -                      big                   L     all
@@ -108,8 +108,8 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs--list-of-text-object
                                                   line after the last                                
                                                   folded line                                        
 
-  chainMember              field with the full    outer includes the     small               im,am   all
-                           call, like             leading . (or )                                    
+  chainMember              field with the full    outer includes the     small              im, am   all
+                           call, like             leading . (or :)                                   
                            .encode(param)                                                            
 
   visibleInWindow          all lines visible in   -                      -                    gw     all
@@ -389,16 +389,12 @@ For your convenience, here the code to create mappings for all text objects. You
 ADVANCED USAGE        *various-textobjs-nvim-various-textobjs--advanced-usage*
 
 
-SMART ALTERNATIVE TO GX ~
+FORWARD-SEEKING GX ~
 
-Using the URL textobject, you can also write a small snippet to replace
-netrw’s `gx`. The code below retrieves the next URL (within the amount of
-lines configured in the `setup` call), and opens it in your browser. While this
-is already an improvement to vim’s built-in `gx`, which requires the cursor
-to be standing on a URL to work, you can even go one step further. If no URL
-has been found within the next few lines, the `:UrlView` command from
-urlview.nvim <https://github.com/axieax/urlview.nvim> is triggered. This
-searches the entire buffer for URLs to choose from.
+The code below retrieves the next URL (within the amount of lines configured in
+the `setup` call), and opens it in your browser. As opposed to vim’s builtin
+`gx`, this is forwardseeking, meaning your cursor does not have to stand on the
+URL.
 
 >lua
     vim.keymap.set("n", "gx", function()
@@ -407,12 +403,7 @@ searches the entire buffer for URLs to choose from.
     
         -- plugin only switches to visual mode when textobj found
         local foundURL = vim.fn.mode():find("v")
-    
-        -- if not found, search whole buffer via urlview.nvim instead
-        if not foundURL then
-            vim.cmd.UrlView("buffer")
-            return
-        end
+        if not foundURL then return end
     
         -- retrieve URL with the z-register as intermediary
         vim.cmd.normal { '"zy', bang = true }
@@ -428,8 +419,8 @@ searches the entire buffer for URLs to choose from.
             opener = "start"
         end
         local openCommand = string.format("%s '%s' >/dev/null 2>&1", opener, url)
-        os.execute(openCommand)
-    end, { desc = "Smart URL Opener" })
+        vim.fn.system(openCommand)
+    end, { desc = "URL Opener" })
 <
 
 
