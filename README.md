@@ -284,9 +284,9 @@ keymap(
 
 ## Advanced Usage
 
-### Smart Alternative to `gx`
+### Forward-Seeking `gx`
 <!-- LTeX: enabled=false --><!-- vale off -->
-Using the URL textobject, you can also write a small snippet to replace netrw's `gx`. The code below retrieves the next URL (within the amount of lines configured in the `setup` call), and opens it in your browser. While this is already an improvement to vim's built-in `gx`, which requires the cursor to be standing on a URL to work, you can even go one step further. If no URL has been found within the next few lines, the `:UrlView` command from [urlview.nvim](https://github.com/axieax/urlview.nvim) is triggered. This searches the entire buffer for URLs to choose from.
+The code below retrieves the next URL (within the amount of lines configured in the `setup` call), and opens it in your browser. As opposed to vim's builtin `gx`, this is forwardseeking, meaning your cursor does not have to stand on the URL.
 <!-- LTeX: enabled=true --><!-- vale on -->
 
 ```lua
@@ -296,12 +296,7 @@ vim.keymap.set("n", "gx", function()
 
 	-- plugin only switches to visual mode when textobj found
 	local foundURL = vim.fn.mode():find("v")
-
-	-- if not found, search whole buffer via urlview.nvim instead
-	if not foundURL then
-		vim.cmd.UrlView("buffer")
-		return
-	end
+	if not foundURL then return end
 
 	-- retrieve URL with the z-register as intermediary
 	vim.cmd.normal { '"zy', bang = true }
@@ -317,8 +312,8 @@ vim.keymap.set("n", "gx", function()
 		opener = "start"
 	end
 	local openCommand = string.format("%s '%s' >/dev/null 2>&1", opener, url)
-	os.execute(openCommand)
-end, { desc = "Smart URL Opener" })
+	vim.fn.system(openCommand)
+end, { desc = "URL Opener" })
 ```
 
 ### Delete Surrounding Indentation
