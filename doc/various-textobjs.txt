@@ -1,4 +1,4 @@
-*various-textobjs.txt*      For NVIM v0.8.0     Last change: 2023 September 19
+*various-textobjs.txt*      For NVIM v0.8.0     Last change: 2023 September 26
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
@@ -18,7 +18,7 @@ Table of Contents                         *various-textobjs-table-of-contents*
 
 
 
-Bundle of more than two dozen new textobjects for Neovim.
+Bundleof more than two dozen new textobjects for Neovim.
 
 - |various-textobjs-list-of-text-objects|
 - |various-textobjs-installation|
