@@ -1,5 +1,6 @@
 <!-- LTeX: enabled=false -->
-# nvim-various-textobjs 🟪🔷🟡 <!-- LTeX: enabled=true -->
+# nvim-various-textobjs 🟪🔷🟡 
+<!-- LTeX: enabled=true -->
 <a href="https://dotfyle.com/plugins/chrisgrieser/nvim-various-textobjs"><img src="https://dotfyle.com/plugins/chrisgrieser/nvim-various-textobjs/shield" /></a>
 
 Bundle of more than two dozen new textobjects for Neovim.
