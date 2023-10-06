@@ -5,7 +5,7 @@ Table of Contents                         *various-textobjs-table-of-contents*
 
 1. nvim-various-textobjs             |various-textobjs-nvim-various-textobjs-|
   - List of Text Objects|various-textobjs-nvim-various-textobjs--list-of-text-objects|
-  - Philosophy            |various-textobjs-nvim-various-textobjs--philosophy|
+  - Non-Goals              |various-textobjs-nvim-various-textobjs--non-goals|
   - Installation        |various-textobjs-nvim-various-textobjs--installation|
   - Configuration      |various-textobjs-nvim-various-textobjs--configuration|
   - Advanced Usage    |various-textobjs-nvim-various-textobjs--advanced-usage|
@@ -21,10 +21,11 @@ Table of Contents                         *various-textobjs-table-of-contents*
 Bundleof more than two dozen new textobjects for Neovim.
 
 - |various-textobjs-list-of-text-objects|
+- |various-textobjs-non-goals|
 - |various-textobjs-installation|
 - |various-textobjs-configuration|
 - |various-textobjs-advanced-usage|
-    - |various-textobjs-smart-alternative-to-`gx`|
+    - |various-textobjs-forward-seeking-`gx`|
     - |various-textobjs-delete-surrounding-indentation|
     - |various-textobjs-other-ideas?|
 - |various-textobjs-limitations|
@@ -35,7 +36,7 @@ Bundleof more than two dozen new textobjects for Neovim.
 LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs--list-of-text-objects*
 
   --------------------------------------------------------------------------------------------------------------
-  textobj                  description            inner / outer          forward-seeking    default  filetypes
+  textobject               description            inner / outer          forward-seeking    default  filetypes
                                                                                             keymaps  (for
                                                                                                      default
                                                                                                      keymaps)
@@ -145,16 +146,13 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs--list-of-text-object
 
 [1] This respects vim’s quoteescape option.
 
-PHILOSOPHY                *various-textobjs-nvim-various-textobjs--philosophy*
+NON-GOALS                  *various-textobjs-nvim-various-textobjs--non-goals*
 
 nvim-treesitter-textobjects
 <https://github.com/nvim-treesitter/nvim-treesitter-textobjects> already does
-an excellent job when it comes to using treesitter for text objects, like for
-example function arguments or loops.
-
-This plugin’s goal is therefore to offer textobjects based on pattern
-matching or the nvim API. It offers textobjects are either not available via
-treesitter (yet) or that do not need treesitter.
+an excellent job when it comes to using treesitter for text objects, such as
+function arguments or loops. This plugin’s goal is therefore not to provide
+treesitter-based textobjects.
 
 
 INSTALLATION            *various-textobjs-nvim-various-textobjs--installation*
@@ -178,7 +176,7 @@ Have `nvim-various-textobjs` set up text objects for you:
     }
 <
 
-When you prefer to set up your own keybindings, use this code and then see the
+If you prefer to set up your own keybindings, use this code and then see the
 |various-textobjs-configuration| section for information on setting your own
 keymaps.
 
@@ -197,7 +195,7 @@ keymaps.
 
 
   [!NOTE] You can also use the `disabledKeymaps` config option to disable only
-  _some_ of the default keymaps.
+  _some_ default keymaps.
 
 CONFIGURATION          *various-textobjs-nvim-various-textobjs--configuration*
 
@@ -208,13 +206,13 @@ The `.setup()` call is optional if you are fine with the defaults below.
     require("various-textobjs").setup {
         -- lines to seek forwards for "small" textobjs (mostly characterwise textobjs)
         -- set to 0 to only look in the current line
-        lookForwardSmall = 5, 
+        lookForwardSmall = 5,
     
         -- lines to seek forwards for "big" textobjs (mostly linewise textobjs)
         lookForwardBig = 15,
     
         -- use suggested keymaps (see overview table in README)
-        useDefaultKeymaps = false, 
+        useDefaultKeymaps = false,
     
         -- disable some default keymaps, e.g. { "ai", "ii" }
         disabledKeymaps = {},
@@ -244,8 +242,16 @@ keymaps, boolean parameters are still accepted though._
     -- exception: indentation textobj requires two parameters, the first for
     -- exclusion of the starting border, the second for the exclusion of ending
     -- border
-    vim.keymap.set({ "o", "x" }, "ii", '<cmd>lua require("various-textobjs").indentation("inner", "inner")<CR>')
-    vim.keymap.set({ "o", "x" }, "ai", '<cmd>lua require("various-textobjs").indentation("outer", "inner")<CR>')
+    vim.keymap.set(
+        { "o", "x" },
+        "ii",
+        '<cmd>lua require("various-textobjs").indentation("inner", "inner")<CR>'
+    )
+    vim.keymap.set(
+        { "o", "x" },
+        "ai",
+        '<cmd>lua require("various-textobjs").indentation("outer", "inner")<CR>'
+    )
 <
 
 For your convenience, here the code to create mappings for all text objects. You can copypaste this list and enter your own bindings.Mappings for all text objects ~
@@ -260,8 +266,16 @@ For your convenience, here the code to create mappings for all text objects. You
     
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').restOfIndentation()<CR>")
     
-    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').greedyOuterIndentation('inner')<CR>")
-    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').greedyOuterIndentation('outer')<CR>")
+    keymap(
+        { "o", "x" },
+        "YOUR_MAPPING",
+        "<cmd>lua require('various-textobjs').greedyOuterIndentation('inner')<CR>"
+    )
+    keymap(
+        { "o", "x" },
+        "YOUR_MAPPING",
+        "<cmd>lua require('various-textobjs').greedyOuterIndentation('outer')<CR>"
+    )
     
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').subword('inner')<CR>")
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').subword('outer')<CR>")
@@ -276,8 +290,16 @@ For your convenience, here the code to create mappings for all text objects. You
     
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').nearEoL()<CR>")
     
-    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').lineCharacterwise('inner')<CR>")
-    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').lineCharacterwise('outer')<CR>")
+    keymap(
+        { "o", "x" },
+        "YOUR_MAPPING",
+        "<cmd>lua require('various-textobjs').lineCharacterwise('inner')<CR>"
+    )
+    keymap(
+        { "o", "x" },
+        "YOUR_MAPPING",
+        "<cmd>lua require('various-textobjs').lineCharacterwise('outer')<CR>"
+    )
     
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').column()<CR>")
     
@@ -398,7 +420,7 @@ URL.
 
 >lua
     vim.keymap.set("n", "gx", function()
-         -- select URL
+        -- select URL
         require("various-textobjs").url()
     
         -- plugin only switches to visual mode when textobj found
@@ -460,7 +482,7 @@ performed on an indentation textobject. (It is also an intuitive mnemonic:
         if notOnIndentedLine then return end
     
         -- dedent indentation
-        vim.cmd.normal { "<" , bang = true }
+        vim.cmd.normal { "<", bang = true }
     
         -- delete surrounding lines
         local endBorderLn = vim.api.nvim_buf_get_mark(0, ">")[1] + 1
