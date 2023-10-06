@@ -123,14 +123,14 @@ function M.mdFencedCodeBlock(scope, lookForwL)
 end
 
 ---lines visible in window textobj
-function M.visibleInWindow() 
+function M.visibleInWindow()
 	local start = fn.line("w0")
 	local ending = fn.line("w$")
 	setLinewiseSelection(start, ending)
 end
 
 -- from cursor line to last visible line in window
-function M.restOfWindow() 
+function M.restOfWindow()
 	local start = fn.line(".")
 	local ending = fn.line("w$")
 	setLinewiseSelection(start, ending)
