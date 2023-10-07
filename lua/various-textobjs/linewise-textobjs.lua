@@ -141,7 +141,8 @@ end
 ---indentation textobj
 ---@param startBorder "inner"|"outer"
 ---@param endBorder "inner"|"outer"
-function M.indentation(startBorder, endBorder)
+---@param includeBlankLines? boolean
+function M.indentation(startBorder, endBorder, includeBlankLines)
 	local curLnum = fn.line(".")
 	local lastLine = fn.line("$")
 	while isBlankLine(curLnum) do -- when on blank line, use next line
@@ -158,10 +159,16 @@ function M.indentation(startBorder, endBorder)
 	local prevLnum = curLnum - 1
 	local nextLnum = curLnum + 1
 
-	while prevLnum > 0 and (isBlankLine(prevLnum) or fn.indent(prevLnum) >= indentOfStart) do
+	while
+		prevLnum > 0
+		and ((includeBlankLines and isBlankLine(prevLnum)) or fn.indent(prevLnum) >= indentOfStart)
+	do
 		prevLnum = prevLnum - 1
 	end
-	while nextLnum <= lastLine and (isBlankLine(nextLnum) or fn.indent(nextLnum) >= indentOfStart) do
+	while
+		nextLnum <= lastLine
+		and ((includeBlankLines and isBlankLine(nextLnum)) or fn.indent(nextLnum) >= indentOfStart)
+	do
 		nextLnum = nextLnum + 1
 	end
 

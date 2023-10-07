@@ -150,6 +150,13 @@ vim.keymap.set(
 	"ai",
 	'<cmd>lua require("various-textobjs").indentation("outer", "inner")<CR>'
 )
+
+-- an additional parameter can be passed to control whether blank lines are included
+vim.keymap.set(
+  { "o", "x" },
+  "ai",
+  '<cmd>lua require("various-textobjs").indentation("outer", "inner", "noBlanks")<CR>'
+)
 ```
 
 For your convenience, here the code to create mappings for all text objects. You can copypaste this list and enter your own bindings.
