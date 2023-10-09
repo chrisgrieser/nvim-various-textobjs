@@ -24,7 +24,7 @@ end
 ---@return boolean whether given line is blank line
 local function isBlankLine(lineNr)
 	local lineContent = u.getline(lineNr)
-	return lineContent:find("^%s*$") == 1
+	return lineContent:find("^%s*$") ~= nil
 end
 
 --------------------------------------------------------------------------------
@@ -141,8 +141,10 @@ end
 ---indentation textobj
 ---@param startBorder "inner"|"outer"
 ---@param endBorder "inner"|"outer"
----@param includeBlankLines? boolean
-function M.indentation(startBorder, endBorder, includeBlankLines)
+---@param blankLines? "withBlanks"|"noBlanks"
+function M.indentation(startBorder, endBorder, blankLines)
+	if not blankLines then blankLines = "withBlanks" end
+
 	local curLnum = fn.line(".")
 	local lastLine = fn.line("$")
 	while isBlankLine(curLnum) do -- when on blank line, use next line
@@ -161,13 +163,13 @@ function M.indentation(startBorder, endBorder, includeBlankLines)
 
 	while
 		prevLnum > 0
-		and ((includeBlankLines and isBlankLine(prevLnum)) or fn.indent(prevLnum) >= indentOfStart)
+		and ((blankLines == "withBlanks" and isBlankLine(prevLnum)) or fn.indent(prevLnum) >= indentOfStart)
 	do
 		prevLnum = prevLnum - 1
 	end
 	while
 		nextLnum <= lastLine
-		and ((includeBlankLines and isBlankLine(nextLnum)) or fn.indent(nextLnum) >= indentOfStart)
+		and ((blankLines == "withBlanks" and isBlankLine(nextLnum)) or fn.indent(nextLnum) >= indentOfStart)
 	do
 		nextLnum = nextLnum + 1
 	end

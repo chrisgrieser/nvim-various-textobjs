@@ -69,9 +69,7 @@ function M.entireBuffer() linewise.entireBuffer() end
 ---@param endBorder "inner"|"outer" exclude the endline
 ---@param blankLines? "withBlanks"|"noBlanks"
 function M.indentation(startBorder, endBorder, blankLines)
-	local includeBlankLines = true
-	if blankLines == "noBlanks" then includeBlankLines = false end
-	linewise.indentation(argConvert(startBorder), argConvert(endBorder), includeBlankLines)
+	linewise.indentation(argConvert(startBorder), argConvert(endBorder), blankLines)
 end
 
 ---from cursor position down all lines with same or higher indentation;
