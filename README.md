@@ -53,12 +53,13 @@ Bundle of more than two dozen new textobjects for Neovim.
 | htmlAttribute          | attribute in html/xml like `href="foobar.com"`                                            | inner is only the value inside the quotes trailing comma and space                        | small           |        `ix`, `ax`        | html, xml, css, scss, vue       |
 | doubleSquareBrackets   | text enclosed by `[[]]`                                                                   | outer includes the four square brackets                                                   | small           |        `iD`, `aD`        | lua, shell, neorg, markdown     |
 | shellPipe              | command stdout is piped to                                                                | outer includes the front pipe character                                                   | small           |        `iP`,`aP`         | bash, zsh, fish, sh             |
+| pyDocstring            | docstring in python (regular or f-string)                                                 | inner excludes the `"""`                                                                  | \-              |        `iy`,`ay`         | python                          |
 
 <!-- vale on -->
 <!-- LTeX: enabled=true -->
 
 ## Non-Goals
-[nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects) already does an excellent job when it comes to using treesitter for text objects, such as function arguments or loops. This plugin's goal is therefore not to provide treesitter-based textobjects.
+[nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects) already does an excellent job when it comes to using treesitter for text objects, such as function arguments or loops. This plugin's goal is therefore not to provide textobjects provided by `nvim-treesitter-textobjects`.
 
 ## Installation
 Have `nvim-various-textobjs` set up text objects for you:

@@ -30,6 +30,10 @@ local ftMaps = {
 		fts = { "markdown", "toml" },
 	},
 	{
+		map = { pyDocstring = "y" },
+		fts = { "python" },
+	},
+	{
 		map = { mdFencedCodeBlock = "C" },
 		fts = { "markdown" },
 	},

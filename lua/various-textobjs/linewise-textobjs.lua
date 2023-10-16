@@ -163,13 +163,19 @@ function M.indentation(startBorder, endBorder, blankLines)
 
 	while
 		prevLnum > 0
-		and ((blankLines == "withBlanks" and isBlankLine(prevLnum)) or fn.indent(prevLnum) >= indentOfStart)
+		and (
+			(blankLines == "withBlanks" and isBlankLine(prevLnum))
+			or fn.indent(prevLnum) >= indentOfStart
+		)
 	do
 		prevLnum = prevLnum - 1
 	end
 	while
 		nextLnum <= lastLine
-		and ((blankLines == "withBlanks" and isBlankLine(nextLnum)) or fn.indent(nextLnum) >= indentOfStart)
+		and (
+			(blankLines == "withBlanks" and isBlankLine(nextLnum))
+			or fn.indent(nextLnum) >= indentOfStart
+		)
 	do
 		nextLnum = nextLnum + 1
 	end

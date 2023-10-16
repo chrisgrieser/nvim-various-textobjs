@@ -37,4 +37,21 @@ function M.notFoundMsg(lookForwL)
 end
 
 --------------------------------------------------------------------------------
+-- TREESITTER UTILS
+
+---get node at cursor and validate that the user has at least nvim 0.9
+---@return nil|TSNode nil if no node or nvim version too old
+function M.getNodeAtCursor()
+	if vim.treesitter.get_node == nil then
+		M.notify("This textobj requires least nvim 0.9.", "warn")
+		return nil
+	end
+	return vim.treesitter.get_node()
+end
+
+---@param node TSNode
+---@return string
+function M.getNodeText(node) return vim.treesitter.get_node_text(node, 0) end
+
+--------------------------------------------------------------------------------
 return M

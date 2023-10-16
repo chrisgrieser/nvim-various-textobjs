@@ -98,7 +98,7 @@ function M.toNextClosingBracket(lookForwL)
 	-- cursor position move backwards. selecting with ".*" would result in
 	-- selecting the whole line, since `searchTextobj` also considers any
 	-- potential the cursor is already standing on.
-	-- While this is a less straightforward approach, this allows us to re-use
+	-- While this is a less straightforward approach, this allows us to reuse
 	-- `searchTextobj` instead of re-implementing the forward-searching algorithm
 	local startingPosition = u.getCursor(0)
 
@@ -316,6 +316,57 @@ end
 function M.shellPipe(scope, lookForwL)
 	local pattern = "(| ?)[^|]+()"
 	searchTextobj(pattern, scope, lookForwL)
+end
+
+---@param scope "inner"|"outer" inner excludes `"""`
+function M.pyDocstring(scope)
+	local node = u.getNodeAtCursor()
+	if not node then
+		u.notify("No node found.", "warn")
+		return
+	end
+
+	local strNode
+	if node:type() == "string" then
+		strNode = node
+	elseif node:type():find("^string_") or node:type() == "interpolation" then
+		strNode = node:parent()
+	elseif node:type() == "escape_sequence" or node:parent():type() == "interpolation" then
+		strNode = node:parent():parent()
+	else
+		u.notify("Not on a docstring.", "warn")
+		return
+	end
+
+	local text = u.getNodeText(strNode)
+	local isDocstring = text:find([[^f?""".*"""$]])
+	local isMultiline = text:find("[\r\n]")
+	if not isDocstring then
+		u.notify("Not on a docstring.", "warn")
+		return
+	end
+
+	-- select `string_content` node, which is the inner docstring
+	if scope == "inner" then strNode = strNode:child(1) end
+
+	local startRow, startCol, endRow, endCol = vim.treesitter.get_node_range(strNode)
+
+	-- fix various off-by-ones
+	startRow = startRow + 1 
+	endRow = endRow + 1
+	if scope == "outer" or not isMultiline then
+		endCol = endCol - 1
+	end
+
+	-- multiline-inner: exclude line breaks
+	if scope == "inner" and isMultiline then
+		startCol = 0
+		startRow = startRow + 1
+		endRow = endRow - 1
+		endCol = #vim.api.nvim_buf_get_lines(0, endRow - 1, endRow, false)[1]
+	end
+
+	setSelection({ startRow, startCol }, { endRow, endCol })
 end
 
 --------------------------------------------------------------------------------

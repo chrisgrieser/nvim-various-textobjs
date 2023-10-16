@@ -80,13 +80,14 @@ function M.restOfIndentation() linewise.restOfIndentation() end
 ---@param scope "inner"|"outer" outer adds a blank, like ip/ap textobjs
 function M.greedyOuterIndentation(scope) linewise.greedyOuterIndentation(argConvert(scope)) end
 
--- next *closed* fold
 ---@param scope "inner"|"outer" outer adds one line after the fold
 function M.closedFold(scope) linewise.closedFold(argConvert(scope), lookForwardBig) end
 
----Md Fenced Code Block Textobj
 ---@param scope "inner"|"outer" inner excludes the backticks
 function M.mdFencedCodeBlock(scope) linewise.mdFencedCodeBlock(argConvert(scope), lookForwardBig) end
+
+---@param scope "inner"|"outer" inner excludes the `"""`
+function M.pyDocstring(scope) charwise.pyDocstring(argConvert(scope)) end
 
 ---lines visible in window textobj
 function M.visibleInWindow() linewise.visibleInWindow() end
