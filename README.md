@@ -1,7 +1,7 @@
 <!-- LTeX: enabled=false -->
 # nvim-various-textobjs 🟪🔷🟡
 <!-- LTeX: enabled=true -->
-<a href="https://dotfyle.com/plugins/chrisgrieser/nvim-various-textobjs"><img src="https://dotfyle.com/plugins/chrisgrieser/nvim-various-textobjs/shield" /></a>
+<a href="https://dotfyle.com/plugins/chrisgrieser/nvim-various-textobjs"><img src="https://dotfyle.com/plugins/chrisgrieser/nvim-various-textobjs/shield"/></a>
 
 Bundle of more than two dozen new textobjects for Neovim.
 
@@ -11,7 +11,7 @@ Bundle of more than two dozen new textobjects for Neovim.
 - [Non-Goals](#non-goals)
 - [Installation](#installation)
 - [Configuration](#configuration)
-- [Advanced Usage](#advanced-usage)
+- [Advanced Usage / API](#advanced-usage--api)
 	* [Forward-Seeking `gx`](#forward-seeking-gx)
 	* [Delete Surrounding Indentation](#delete-surrounding-indentation)
 	* [Other Ideas?](#other-ideas)
@@ -59,7 +59,10 @@ Bundle of more than two dozen new textobjects for Neovim.
 <!-- LTeX: enabled=true -->
 
 ## Non-Goals
-[nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects) already does an excellent job when it comes to using treesitter for text objects, such as function arguments or loops. This plugin's goal is therefore not to provide textobjects provided by `nvim-treesitter-textobjects`.
+[nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects)
+already does an excellent job when it comes to using Treesitter for text
+objects, such as function arguments or loops. This plugin's goal is therefore
+not to provide textobjects provided by `nvim-treesitter-textobjects`.
 
 ## Installation
 Have `nvim-various-textobjs` set up text objects for you:
@@ -81,7 +84,9 @@ use {
 }
 ```
 
-If you prefer to set up your own keybindings, use this code and then see the [Configuration](#configuration) section for information on setting your own keymaps.
+If you prefer to set up your own keybindings, use this code and then see the
+[Configuration](#configuration) section for information on setting your own
+keymaps.
 
 ```lua
 -- lazy.nvim
@@ -97,7 +102,8 @@ use {
 ```
 
 > [!NOTE]  
-> You can also use the `disabledKeymaps` config option to disable only *some* default keymaps.
+> You can also use the `disabledKeymaps` config option to disable only *some*
+> default keymaps.
 
 ## Configuration
 The `.setup()` call is optional if you are fine with the defaults below.
@@ -122,13 +128,17 @@ require("various-textobjs").setup {
 
 ---
 
-If you want to set your own keybindings, you can do so by calling the respective functions:
+If you want to set your own keybindings, you can do so by calling the respective
+functions:
 - The function names correspond to the textobject names from the [overview table](#list-of-text-objects).
-- The keymaps need to be called as Ex-command, otherwise they will not be
-  dot-repeatable. (`function () require("various-textobjs").diagnostic() end` as third argument for the keymap works in general, but the text objects<!-- vale Google.Will = NO --> will not be dot-repeatable then.)
-<!-- vale Google.Will = YES -->
+- The keymaps need to be called as Ex-command, otherwise they are
+  dot-repeatable. (`function () require("various-textobjs").diagnostic() end` as
+  third argument for the keymap works in general, but the text objects
+  is not dot-repeatable then.)
 
-*Previous versions used a boolean parameter, but for verbosity reasons, this plugin now uses `"outer"` and `"inner"`. For backwards-compatibility with existing keymaps, boolean parameters are still accepted though.*
+*Previous versions used a boolean parameter, but for verbosity reasons, this
+plugin now uses `"outer"` and `"inner"`. For backwards-compatibility with
+existing keymaps, boolean parameters are still accepted though.*
 
 ```lua
 -- example: `?` for diagnostic textobj
@@ -154,13 +164,14 @@ vim.keymap.set(
 
 -- an additional parameter can be passed to control whether blank lines are included
 vim.keymap.set(
-  { "o", "x" },
-  "ai",
-  '<cmd>lua require("various-textobjs").indentation("outer", "inner", "noBlanks")<CR>'
+	{ "o", "x" },
+	"ai",
+	'<cmd>lua require("various-textobjs").indentation("outer", "inner", "noBlanks")<CR>'
 )
 ```
 
-For your convenience, here the code to create mappings for all text objects. You can copypaste this list and enter your own bindings.
+For your convenience, here the code to create mappings for all text objects. You
+can copypaste this list and enter your own bindings.
 <details>
 <summary>➡️ Mappings for all text objects</summary>
 
@@ -265,6 +276,19 @@ keymap(
 keymap(
 	{ "o", "x" },
 	"YOUR_MAPPING",
+	"<cmd>lua require('various-textobjs').pyDocstring('inner')<CR>",
+	{ buffer = true }
+)
+keymap(
+	{ "o", "x" },
+	"YOUR_MAPPING",
+	"<cmd>lua require('various-textobjs').pyDocstring('outer')<CR>",
+	{ buffer = true }
+)
+
+keymap(
+	{ "o", "x" },
+	"YOUR_MAPPING",
 	"<cmd>lua require('various-textobjs').cssSelector('inner')<CR>",
 	{ buffer = true }
 )
@@ -317,12 +341,15 @@ keymap(
 
 </details>
 
-## Advanced Usage
+## Advanced Usage / API
+All textobjects can also be used as sort of API to create custom commands.
+Here are some examples:
 
 ### Forward-Seeking `gx`
-<!-- LTeX: enabled=false --><!-- vale off -->
-The code below retrieves the next URL (within the amount of lines configured in the `setup` call), and opens it in your browser. As opposed to vim's builtin `gx`, this is forwardseeking, meaning your cursor does not have to stand on the URL.
-<!-- LTeX: enabled=true --><!-- vale on -->
+The code below retrieves the next URL (within the amount of lines configured in
+the `setup` call), and opens it in your browser. As opposed to vim's built-in
+`gx`, this is forward-seeking, meaning your cursor does not have to stand on the
+URL.
 
 ```lua
 vim.keymap.set("n", "gx", function()
@@ -352,7 +379,10 @@ end, { desc = "URL Opener" })
 ```
 
 ### Delete Surrounding Indentation
-Using the indentation textobject, you can also create custom indentation-related utilities. A common operation is to remove the line before and after an indentation. Take for example this case where you are removing the `foo` condition:
+Using the indentation textobject, you can also create custom indentation-related
+utilities. A common operation is to remove the line before and after an
+indentation. Take for example this case where you are removing the `foo`
+condition:
 
 ```lua
 -- before (cursor on `print("bar")`)
@@ -365,9 +395,13 @@ end
 print("bar")
 print("baz")
 ```
-<!-- LTeX: enabled=false --><!-- vale off -->
-The code below achieves this by dedenting the inner indentation textobject (essentially running `<ii`), and deleting the two lines surrounding it. As for the mapping, `dsi` should make sense since this command is somewhat similar to the `ds` operator from [vim-surround](https://github.com/tpope/vim-surround) but performed on an indentation textobject. (It is also an intuitive mnemonic: `d`elete `s`urrounding `i`ndentation.)
-<!-- LTeX: enabled=true --><!-- vale on -->
+
+The code below achieves this by dedenting the inner indentation textobject
+(essentially running `<ii`), and deleting the two lines surrounding it. As for
+the mapping, `dsi` should make sense since this command is somewhat similar to
+the `ds` operator from [vim-surround](https://github.com/tpope/vim-surround) but
+performed on an indentation textobject. (It is also an intuitive mnemonic:
+`d`elete `s`urrounding `i`ndentation.)
 
 ```lua
 vim.keymap.set("n", "dsi", function()
@@ -390,7 +424,9 @@ end, { desc = "Delete surrounding indentation" })
 ```
 
 ### Other Ideas?
-If you have some other useful ideas, feel free to [share them in this repo's discussion page](https://github.com/chrisgrieser/nvim-various-textobjs/discussions).
+If you have some other useful ideas, feel free to [share them in this repo's
+discussion
+page](https://github.com/chrisgrieser/nvim-various-textobjs/discussions).
 
 ## Limitations
 - This plugin uses pattern matching, so it can be inaccurate in some edge cases.
@@ -405,12 +441,16 @@ If you have some other useful ideas, feel free to [share them in this repo's dis
 
 ## Credits
 __Thanks__  
-- To the Valuable Dev for [their blog post on how to get started with creating custom text objects](https://thevaluable.dev/vim-create-text-objects/).
+- To the Valuable Dev for [their blog post on how to get started with creating
+  custom text objects](https://thevaluable.dev/vim-create-text-objects/).
 - [To `@vypxl` and `@ii14` for figuring out dot-repeatability.](https://github.com/chrisgrieser/nvim-spider/pull/4)
 
 <!-- vale Google.FirstPerson = NO -->
 __About Me__  
-In my day job, I am a sociologist studying the social mechanisms underlying the digital economy. For my PhD project, I investigate the governance of the app economy and how software ecosystems manage the tension between innovation and compatibility. If you are interested in this subject, feel free to get in touch.
+In my day job, I am a sociologist studying the social mechanisms underlying the
+digital economy. For my PhD project, I investigate the governance of the app
+economy and how software ecosystems manage the tension between innovation and
+compatibility. If you are interested in this subject, feel free to get in touch.
 
 __Blog__  
 I also occasionally blog about vim: [Nano Tips for Vim](https://nanotipsforvim.prose.sh)
@@ -423,8 +463,12 @@ __Profiles__
 - [ResearchGate](https://www.researchgate.net/profile/Christopher-Grieser)
 - [LinkedIn](https://www.linkedin.com/in/christopher-grieser-ba693b17a/)
 
-__Buy Me a Coffee__  
-<br>
-<a href='https://ko-fi.com/Y8Y86SQ91' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://cdn.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+<a href='https://ko-fi.com/Y8Y86SQ91' target='_blank'><img
+	height='36'
+	style='border:0px;height:36px;'
+	src='https://cdn.ko-fi.com/cdn/kofi1.png?v=3'
+	border='0'
+	alt='Buy Me a Coffee at ko-fi.com'
+/></a>
 
 [^1]: This respects vim's [quoteescape option](https://neovim.io/doc/user/options.html#'quoteescape').
