@@ -143,8 +143,10 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs--list-of-text-object
   shellPipe                command stdout is      outer includes the     small               iP,aP   bash, zsh,
                            piped to               front pipe character                               fish, sh
 
-  pyDocstring              docstring in python    inner excludes the """ -                   iy,ay   python
-                           (regular or f-string)                                                     
+  pyTripleQuotes           python strings         inner excludes the """ -                   iy,ay   python
+                           surrounded by three    or '''                                             
+                           quotes (regular or                                                        
+                           f-string)                                                                 
   --------------------------------------------------------------------------------------------------------------
 
 [1] This respects vim’s quoteescape option.
@@ -368,13 +370,13 @@ can copypaste this list and enter your own bindings.Mappings for all text object
     keymap(
         { "o", "x" },
         "YOUR_MAPPING",
-        "<cmd>lua require('various-textobjs').pyDocstring('inner')<CR>",
+        "<cmd>lua require('various-textobjs').pyTripleQuotes('inner')<CR>",
         { buffer = true }
     )
     keymap(
         { "o", "x" },
         "YOUR_MAPPING",
-        "<cmd>lua require('various-textobjs').pyDocstring('outer')<CR>",
+        "<cmd>lua require('various-textobjs').pyTripleQuotes('outer')<CR>",
         { buffer = true }
     )
     
