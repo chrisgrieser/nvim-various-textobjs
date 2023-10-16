@@ -53,7 +53,7 @@ Bundle of more than two dozen new textobjects for Neovim.
 | htmlAttribute          | attribute in html/xml like `href="foobar.com"`                                            | inner is only the value inside the quotes trailing comma and space                        | small           |        `ix`, `ax`        | html, xml, css, scss, vue       |
 | doubleSquareBrackets   | text enclosed by `[[]]`                                                                   | outer includes the four square brackets                                                   | small           |        `iD`, `aD`        | lua, shell, neorg, markdown     |
 | shellPipe              | command stdout is piped to                                                                | outer includes the front pipe character                                                   | small           |        `iP`,`aP`         | bash, zsh, fish, sh             |
-| pyDocstring            | docstring in python (regular or f-string)                                                 | inner excludes the `"""`                                                                  | \-              |        `iy`,`ay`         | python                          |
+| pyTripleQuotes         | python strings surrounded by three quotes (regular or f-string)                           | inner excludes the `"""` or `'''`                                                         | \-              |        `iy`,`ay`         | python                          |
 
 <!-- vale on -->
 <!-- LTeX: enabled=true -->
@@ -276,13 +276,13 @@ keymap(
 keymap(
 	{ "o", "x" },
 	"YOUR_MAPPING",
-	"<cmd>lua require('various-textobjs').pyDocstring('inner')<CR>",
+	"<cmd>lua require('various-textobjs').pyTripleQuotes('inner')<CR>",
 	{ buffer = true }
 )
 keymap(
 	{ "o", "x" },
 	"YOUR_MAPPING",
-	"<cmd>lua require('various-textobjs').pyDocstring('outer')<CR>",
+	"<cmd>lua require('various-textobjs').pyTripleQuotes('outer')<CR>",
 	{ buffer = true }
 )
 

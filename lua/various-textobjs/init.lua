@@ -87,7 +87,7 @@ function M.closedFold(scope) linewise.closedFold(argConvert(scope), lookForwardB
 function M.mdFencedCodeBlock(scope) linewise.mdFencedCodeBlock(argConvert(scope), lookForwardBig) end
 
 ---@param scope "inner"|"outer" inner excludes the `"""`
-function M.pyDocstring(scope) charwise.pyDocstring(argConvert(scope)) end
+function M.pyTripleQuotes(scope) charwise.pyTripleQuotes(argConvert(scope)) end
 
 ---lines visible in window textobj
 function M.visibleInWindow() linewise.visibleInWindow() end

@@ -319,7 +319,7 @@ function M.shellPipe(scope, lookForwL)
 end
 
 ---@param scope "inner"|"outer" inner excludes `"""`
-function M.pyDocstring(scope)
+function M.pyTripleQuotes(scope)
 	local node = u.getNodeAtCursor()
 	if not node then
 		u.notify("No node found.", "warn")
@@ -334,17 +334,12 @@ function M.pyDocstring(scope)
 	elseif node:type() == "escape_sequence" or node:parent():type() == "interpolation" then
 		strNode = node:parent():parent()
 	else
-		u.notify("Not on a docstring.", "warn")
+		u.notify("Not on a triple quoted string.", "warn")
 		return
 	end
 
 	local text = u.getNodeText(strNode)
-	local isDocstring = text:find([[^f?""".*"""$]])
 	local isMultiline = text:find("[\r\n]")
-	if not isDocstring then
-		u.notify("Not on a docstring.", "warn")
-		return
-	end
 
 	-- select `string_content` node, which is the inner docstring
 	if scope == "inner" then strNode = strNode:child(1) end
