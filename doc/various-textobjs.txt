@@ -1,4 +1,4 @@
-*various-textobjs.txt*       For NVIM v0.8.0      Last change: 2023 October 09
+*various-textobjs.txt*       For NVIM v0.8.0      Last change: 2023 October 16
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
@@ -8,7 +8,7 @@ Table of Contents                         *various-textobjs-table-of-contents*
   - Non-Goals              |various-textobjs-nvim-various-textobjs--non-goals|
   - Installation        |various-textobjs-nvim-various-textobjs--installation|
   - Configuration      |various-textobjs-nvim-various-textobjs--configuration|
-  - Advanced Usage    |various-textobjs-nvim-various-textobjs--advanced-usage|
+  - Advanced Usage / API|various-textobjs-nvim-various-textobjs--advanced-usage-/-api|
   - Limitations          |various-textobjs-nvim-various-textobjs--limitations|
   - Other Text Object Plugins|various-textobjs-nvim-various-textobjs--other-text-object-plugins|
   - Credits                  |various-textobjs-nvim-various-textobjs--credits|
@@ -24,7 +24,7 @@ Bundleof more than two dozen new textobjects for Neovim.
 - |various-textobjs-non-goals|
 - |various-textobjs-installation|
 - |various-textobjs-configuration|
-- |various-textobjs-advanced-usage|
+- |various-textobjs-advanced-usage-/-api|
     - |various-textobjs-forward-seeking-`gx`|
     - |various-textobjs-delete-surrounding-indentation|
     - |various-textobjs-other-ideas?|
@@ -142,6 +142,9 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs--list-of-text-object
 
   shellPipe                command stdout is      outer includes the     small               iP,aP   bash, zsh,
                            piped to               front pipe character                               fish, sh
+
+  pyDocstring              docstring in python    inner excludes the """ -                   iy,ay   python
+                           (regular or f-string)                                                     
   --------------------------------------------------------------------------------------------------------------
 
 [1] This respects vim’s quoteescape option.
@@ -150,9 +153,9 @@ NON-GOALS                  *various-textobjs-nvim-various-textobjs--non-goals*
 
 nvim-treesitter-textobjects
 <https://github.com/nvim-treesitter/nvim-treesitter-textobjects> already does
-an excellent job when it comes to using treesitter for text objects, such as
+an excellent job when it comes to using Treesitter for text objects, such as
 function arguments or loops. This plugin’s goal is therefore not to provide
-treesitter-based textobjects.
+textobjects provided by `nvim-treesitter-textobjects`.
 
 
 INSTALLATION            *various-textobjs-nvim-various-textobjs--installation*
@@ -223,9 +226,9 @@ The `.setup()` call is optional if you are fine with the defaults below.
 If you want to set your own keybindings, you can do so by calling the
 respective functions: - The function names correspond to the textobject names
 from the |various-textobjs-overview-table|. - The keymaps need to be called as
-Ex-command, otherwise they will not be dot-repeatable. (`function ()
+Ex-command, otherwise they are dot-repeatable. (`function ()
 require("various-textobjs").diagnostic() end` as third argument for the keymap
-works in general, but the text objects will not be dot-repeatable then.)
+works in general, but the text objects is not dot-repeatable then.)
 
 _Previous versions used a boolean parameter, but for verbosity reasons, this
 plugin now uses "outer" and "inner". For backwards-compatibility with existing
@@ -255,13 +258,14 @@ keymaps, boolean parameters are still accepted though._
     
     -- an additional parameter can be passed to control whether blank lines are included
     vim.keymap.set(
-      { "o", "x" },
-      "ai",
-      '<cmd>lua require("various-textobjs").indentation("outer", "inner", "noBlanks")<CR>'
+        { "o", "x" },
+        "ai",
+        '<cmd>lua require("various-textobjs").indentation("outer", "inner", "noBlanks")<CR>'
     )
 <
 
-For your convenience, here the code to create mappings for all text objects. You can copypaste this list and enter your own bindings.Mappings for all text objects ~
+For your convenience, here the code to create mappings for all text objects. You
+can copypaste this list and enter your own bindings.Mappings for all text objects ~
 
 >lua
     local keymap = vim.keymap.set
@@ -364,6 +368,19 @@ For your convenience, here the code to create mappings for all text objects. You
     keymap(
         { "o", "x" },
         "YOUR_MAPPING",
+        "<cmd>lua require('various-textobjs').pyDocstring('inner')<CR>",
+        { buffer = true }
+    )
+    keymap(
+        { "o", "x" },
+        "YOUR_MAPPING",
+        "<cmd>lua require('various-textobjs').pyDocstring('outer')<CR>",
+        { buffer = true }
+    )
+    
+    keymap(
+        { "o", "x" },
+        "YOUR_MAPPING",
         "<cmd>lua require('various-textobjs').cssSelector('inner')<CR>",
         { buffer = true }
     )
@@ -415,15 +432,18 @@ For your convenience, here the code to create mappings for all text objects. You
 <
 
 
-ADVANCED USAGE        *various-textobjs-nvim-various-textobjs--advanced-usage*
+ADVANCED USAGE / API*various-textobjs-nvim-various-textobjs--advanced-usage-/-api*
+
+All textobjects can also be used as sort of API to create custom commands. Here
+are some examples:
 
 
 FORWARD-SEEKING GX ~
 
 The code below retrieves the next URL (within the amount of lines configured in
-the `setup` call), and opens it in your browser. As opposed to vim’s builtin
-`gx`, this is forwardseeking, meaning your cursor does not have to stand on the
-URL.
+the `setup` call), and opens it in your browser. As opposed to vim’s built-in
+`gx`, this is forward-seeking, meaning your cursor does not have to stand on
+the URL.
 
 >lua
     vim.keymap.set("n", "gx", function()
@@ -545,7 +565,7 @@ Academic Website <https://chris-grieser.de/> - GitHub
 - ResearchGate <https://www.researchgate.net/profile/Christopher-Grieser> -
 LinkedIn <https://www.linkedin.com/in/christopher-grieser-ba693b17a/>
 
-**Buy Me a Coffee**
+
 
 Generated by panvimdoc <https://github.com/kdheepak/panvimdoc>
 
