@@ -342,7 +342,7 @@ keymap(
 </details>
 
 ## Advanced Usage / API
-All textobjects can also be used as sort of API to create custom commands.
+All textobjects can also be used as an API to create custom commands.
 Here are some examples:
 
 ### Forward-Seeking `gx`
