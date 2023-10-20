@@ -1,4 +1,4 @@
-*various-textobjs.txt*       For NVIM v0.8.0      Last change: 2023 October 16
+*various-textobjs.txt*       For NVIM v0.8.0      Last change: 2023 October 20
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
@@ -436,8 +436,8 @@ can copypaste this list and enter your own bindings.Mappings for all text object
 
 ADVANCED USAGE / API*various-textobjs-nvim-various-textobjs--advanced-usage-/-api*
 
-All textobjects can also be used as sort of API to create custom commands. Here
-are some examples:
+All textobjects can also be used as an API to create custom commands. Here are
+some examples:
 
 
 FORWARD-SEEKING GX ~
