@@ -152,7 +152,10 @@ function M.indentation(startBorder, endBorder, blankLines)
 	local curLnum = a.nvim_win_get_cursor(0)[1]
 	local lastLine = a.nvim_buf_line_count(0)
 	while isBlankLine(curLnum) do -- when on blank line, use next line
-		if lastLine == curLnum then return end
+		if lastLine == curLnum then
+			u.notify("No indented line found.", "warn")
+			return
+		end
 		curLnum = curLnum + 1
 	end
 
