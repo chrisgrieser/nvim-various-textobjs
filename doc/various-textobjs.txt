@@ -1,4 +1,4 @@
-*various-textobjs.txt*       For NVIM v0.8.0      Last change: 2023 October 20
+*various-textobjs.txt*       For NVIM v0.8.0      Last change: 2023 October 22
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
@@ -67,6 +67,9 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs--list-of-text-object
                            `                                                                         
 
   restOfParagraph          like }, but linewise   -                      -                     r     all
+
+  multiCommentedLines      consecutive, fully     -                      big                  gc     all
+                           commented lines                                                           
 
   entireBuffer             entire buffer as one   -                      -                    gG     all
                            text object                                                               
@@ -315,6 +318,8 @@ can copypaste this list and enter your own bindings.Mappings for all text object
     )
     
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').column()<CR>")
+    
+    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').multiCommentedLines()<CR>")
     
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').value('inner')<CR>")
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').value('outer')<CR>")
