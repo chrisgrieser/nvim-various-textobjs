@@ -32,8 +32,9 @@ Bundle of more than two dozen new textobjects for Neovim.
 | greedyOuterIndentation | outer indentation, expanded to blank lines; useful to get functions with annotations      | outer includes a blank, like `ap`/`ip`                                                    | \-              |        `ag`/`ig`         | all                             |
 | subword                | like `iw`, but treating `-`, `_`, and `.` as word delimiters *and* only part of camelCase | outer includes trailing `_`,`-`, or space                                                 | \-              |        `iS`, `aS`        | all                             |
 | toNextClosingBracket   | from cursor to next closing `]`, `)`, or `}`                                              | \-                                                                                        | \-              |           `C`            | all                             |
-| toNextQuotationMark    | from cursor to next unescaped[^1] `"`, `'`, or `` ` ``                                 | \-                                                                                           | \-              |           `Q`            | all                             |
+| toNextQuotationMark    | from cursor to next unescaped[^1] `"`, `'`, or `` ` ``                                    | \-                                                                                        | \-              |           `Q`            | all                             |
 | restOfParagraph        | like `}`, but linewise                                                                    | \-                                                                                        | \-              |           `r`            | all                             |
+| multiCommentedLines    | consecutive, fully commented lines                                                        | \-                                                                                        | big             |           `gc`           | all                             |
 | entireBuffer           | entire buffer as one text object                                                          | \-                                                                                        | \-              |           `gG`           | all                             |
 | nearEoL                | from cursor position to end of line, minus one character                                  | \-                                                                                        | \-              |           `n`            | all                             |
 | lineCharacterwise      | current line, but characterwise                                                           | outer includes indentation and trailing spaces                                            | \-              |        `i_`, `a_`        | all                             |
@@ -221,6 +222,8 @@ keymap(
 )
 
 keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').column()<CR>")
+
+keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').multiCommentedLines()<CR>")
 
 keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').value('inner')<CR>")
 keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').value('outer')<CR>")

@@ -95,6 +95,7 @@ function M.visibleInWindow() linewise.visibleInWindow() end
 -- from cursor line to last visible line in window
 function M.restOfWindow() linewise.restOfWindow() end
 
+function M.multiCommentedLines() linewise.multiCommentedLines(lookForwardBig) end
 --------------------------------------------------------------------------------
 -- BLOCKWISE
 
