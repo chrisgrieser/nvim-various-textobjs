@@ -66,7 +66,10 @@ function M.closedFold(scope, lookForwL)
 end
 
 ---Textobject for the entire buffer content
-function M.entireBuffer() setLinewiseSelection(1, fn.line("$")) end
+function M.entireBuffer()
+	local lastLine = a.nvim_buf_line_count(0)
+	setLinewiseSelection(1, lastLine)
+end
 
 ---rest of paragraph (linewise)
 function M.restOfParagraph()
