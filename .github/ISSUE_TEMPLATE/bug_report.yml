@@ -14,16 +14,19 @@ body:
     id: screenshot
     attributes:
       label: Relevant Screenshot
-      description: If applicable, add screenshots or a screen recording to help explain your problem.
+      description: If useful, add screenshots or a screen recording to help explain your problem.
   - type: textarea
     id: reproduction-steps
     attributes:
       label: Reproduction & Sample Text
-      description: Include sample text and mark clearly how the text looks before and after the operation and what you expected the text to look like.
+      description: > 
+        Include sample text and mark clearly how the text looks before and after the operation 
+        and what you expected the text to look like. Include the cursor positions.
       placeholder: |
         before: 
         after: 
         expected: 
+        *include cursor positions*
     validations:
       required: true
   - type: textarea
