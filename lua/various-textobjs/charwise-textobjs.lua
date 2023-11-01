@@ -260,7 +260,7 @@ function M.url(lookForwL)
 	-- have optional groups. Think of a way to implement this without making
 	-- searchTextobj unnecessarily complex for other methods
 	-- INFO mastodon URLs contain `@`, neovim docs urls can contain a `'`
-	local pattern = "https?://[A-Za-z0-9_%-/.#%%=?&'@]+"
+	local pattern = "https?://[A-Za-z0-9_%-/.#%%=?&'@+]+"
 	searchTextobj(pattern, "outer", lookForwL)
 end
 
