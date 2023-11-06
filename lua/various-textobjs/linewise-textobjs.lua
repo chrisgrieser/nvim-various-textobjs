@@ -74,11 +74,12 @@ end
 ---rest of paragraph (linewise)
 function M.restOfParagraph()
 	if not isVisualLineMode() then u.normal("V") end
+	u.normal("}")
+
+	-- one up, except on last line
 	local curLnum = a.nvim_win_get_cursor(0)[1]
 	local lastLine = a.nvim_buf_line_count(0)
-
-	u.normal("}")
-	if curLnum ~= lastLine then u.normal("k") end -- one up, except on last line
+	if curLnum ~= lastLine then u.normal("k") end 
 end
 
 ---Md Fenced Code Block Textobj
