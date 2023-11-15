@@ -1,4 +1,4 @@
-*various-textobjs.txt*      For NVIM v0.8.0      Last change: 2023 November 06
+*various-textobjs.txt*      For NVIM v0.8.0      Last change: 2023 November 15
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
@@ -150,6 +150,10 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs--list-of-text-object
                            surrounded by three    or '''                                             
                            quotes (regular or                                                        
                            f-string)                                                                 
+
+  notebookCell             cell delimited by      outer includes the     -                   iN,aN   all
+                           double percent         bottom cell border                                 
+                           comment, such as # %%                                                     
   --------------------------------------------------------------------------------------------------------------
 
 [1] This respects vim’s quoteescape option.
@@ -320,6 +324,9 @@ can copypaste this list and enter your own bindings.Mappings for all text object
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').column()<CR>")
     
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').multiCommentedLines()<CR>")
+    
+    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').notebookCell('inner')<CR>")
+    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').notebookCell('outer')<CR>")
     
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').value('inner')<CR>")
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').value('outer')<CR>")
