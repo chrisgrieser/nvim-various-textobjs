@@ -6,6 +6,7 @@ local innerOuterMaps = {
 	value = "v",
 	key = "k",
 	subword = "S", -- lowercase taken for sentence textobj
+	notebookCell = "N",
 	closedFold = "z", -- z is the common prefix for folds
 	chainMember = "m",
 	lineCharacterwise = "_",

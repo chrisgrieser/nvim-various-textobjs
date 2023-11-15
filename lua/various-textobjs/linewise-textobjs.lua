@@ -79,7 +79,7 @@ function M.restOfParagraph()
 	-- one up, except on last line
 	local curLnum = a.nvim_win_get_cursor(0)[1]
 	local lastLine = a.nvim_buf_line_count(0)
-	if curLnum ~= lastLine then u.normal("k") end 
+	if curLnum ~= lastLine then u.normal("k") end
 end
 
 ---Md Fenced Code Block Textobj
@@ -276,6 +276,42 @@ function M.multiCommentedLines(lookForwL)
 	while nextLnum <= lastLine and isCommentedLine(nextLnum) do
 		nextLnum = nextLnum + 1
 	end
+
+	setLinewiseSelection(prevLnum + 1, nextLnum - 1)
+end
+
+--------------------------------------------------------------------------------
+
+---@param lnum number
+---@return boolean
+local function isCellBorder(lnum)
+	local cellMarker = vim.bo.commentstring:format("%%")
+	local line = u.getline(lnum)
+	return vim.startswith(vim.trim(line), cellMarker)
+end
+
+-- for plugins like NotebookNavigator.nvim
+---@param scope "inner"|"outer" outer includes bottom cell border
+function M.notebookCell(scope)
+	if vim.bo.commentstring == "" then
+		u.notify("Buffer has no commentstring set.", "warn")
+		return
+	end
+
+	local curLnum = a.nvim_win_get_cursor(0)[1]
+	local lastLine = a.nvim_buf_line_count(0)
+	local prevLnum = curLnum
+	local nextLnum = isCellBorder(curLnum) and curLnum + 1 or curLnum
+
+	while prevLnum > 0 and not isCellBorder(prevLnum) do
+		prevLnum = prevLnum - 1
+	end
+	while nextLnum <= lastLine and not isCellBorder(nextLnum) do
+		nextLnum = nextLnum + 1
+	end
+
+	-- outer includes bottom cell border
+	if scope == "outer" and nextLnum < lastLine then nextLnum = nextLnum + 1 end
 
 	setLinewiseSelection(prevLnum + 1, nextLnum - 1)
 end

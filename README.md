@@ -55,7 +55,9 @@ Bundle of more than two dozen new textobjects for Neovim.
 | doubleSquareBrackets   | text enclosed by `[[]]`                                                                   | outer includes the four square brackets                                                   | small           |        `iD`, `aD`        | lua, shell, neorg, markdown     |
 | shellPipe              | command stdout is piped to                                                                | outer includes the front pipe character                                                   | small           |        `iP`,`aP`         | bash, zsh, fish, sh             |
 | pyTripleQuotes         | python strings surrounded by three quotes (regular or f-string)                           | inner excludes the `"""` or `'''`                                                         | \-              |        `iy`,`ay`         | python                          |
+| notebookCell           | cell delimited by [double percent comment][jupytext], such as `# %%`                      | outer includes the bottom cell border                                                     | \-              |        `iN`,`aN`         | all                             |
 
+[jupytext]: https://jupytext.readthedocs.io/en/latest/formats-scripts.html#the-percent-format
 <!-- vale on -->
 <!-- LTeX: enabled=true -->
 
@@ -224,6 +226,9 @@ keymap(
 keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').column()<CR>")
 
 keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').multiCommentedLines()<CR>")
+
+keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').notebookCell('inner')<CR>")
+keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').notebookCell('outer')<CR>")
 
 keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').value('inner')<CR>")
 keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').value('outer')<CR>")

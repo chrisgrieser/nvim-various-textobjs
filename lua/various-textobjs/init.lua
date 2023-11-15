@@ -96,6 +96,10 @@ function M.visibleInWindow() linewise.visibleInWindow() end
 function M.restOfWindow() linewise.restOfWindow() end
 
 function M.multiCommentedLines() linewise.multiCommentedLines(lookForwardBig) end
+
+---for plugins like NotebookNavigator.nvim
+---@param scope "inner"|"outer" outer includes bottom cell border
+function M.notebookCell(scope) linewise.notebookCell(argConvert(scope)) end
 --------------------------------------------------------------------------------
 -- BLOCKWISE
 
