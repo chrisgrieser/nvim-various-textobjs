@@ -306,7 +306,7 @@ end
 ---@param scope "inner"|"outer" inner selector is only the value of the attribute inside the quotation marks.
 ---@param lookForwL integer number of lines to look forward for the textobj
 function M.htmlAttribute(scope, lookForwL)
-	local pattern = '(%w+=").-(")'
+	local pattern = [[(%w+=["']).-(["'])]]
 	searchTextobj(pattern, scope, lookForwL)
 end
 
