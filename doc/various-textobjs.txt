@@ -25,6 +25,7 @@ Bundleof more than two dozen new textobjects for Neovim.
 - |various-textobjs-installation|
 - |various-textobjs-configuration|
 - |various-textobjs-advanced-usage-/-api|
+    - |various-textobjs-`ii`-on-unindented-line-should-select-entire-buffer|
     - |various-textobjs-forward-seeking-`gx`|
     - |various-textobjs-delete-surrounding-indentation|
     - |various-textobjs-yank-surrounding-indentation|
@@ -449,8 +450,26 @@ can copypaste this list and enter your own bindings.Mappings for all text object
 
 ADVANCED USAGE / API*various-textobjs-nvim-various-textobjs--advanced-usage-/-api*
 
-All textobjects can also be used as an API to create custom commands. Here are
-some examples:
+All textobjects can also be used as an API to modify their behavior or create
+custom commands. Here are some examples:
+
+
+II ON UNINDENTED LINE SHOULD SELECT ENTIRE BUFFER ~
+
+Using a simple if-else-block, you can create a hybrid of the inner indentation
+text object and the entire-buffer text object, you prefer that kind of
+behavior:
+
+>lua
+    -- when on unindented line, `ii` should select entire buffer
+    vim.keymap.set("o", "ii", function()
+        if vim.fn.indent(".") == 0 then
+            require("various-textobjs").entireBuffer()
+        else
+            require("various-textobjs").indentation("inner", "inner")
+        end
+    end)
+<
 
 
 FORWARD-SEEKING GX ~
