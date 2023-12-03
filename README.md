@@ -12,6 +12,7 @@ Bundle of more than two dozen new textobjects for Neovim.
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Advanced Usage / API](#advanced-usage--api)
+	* [`ii` on unindented line should select entire buffer](#ii-on-unindented-line-should-select-entire-buffer)
 	* [Forward-Seeking `gx`](#forward-seeking-gx)
 	* [Delete Surrounding Indentation](#delete-surrounding-indentation)
 	* [Yank Surrounding Indentation](#yank-surrounding-indentation)
@@ -351,8 +352,23 @@ keymap(
 </details>
 
 ## Advanced Usage / API
-All textobjects can also be used as an API to create custom commands.
-Here are some examples:
+All textobjects can also be used as an API to modify their behavior or create
+custom commands. Here are some examples:
+
+### `ii` on unindented line should select entire buffer
+Using a simple if-else-block, you can create a hybrid of the inner indentation
+text object and the entire-buffer text object, you prefer that kind of behavior:
+
+```lua
+-- when on unindented line, `ii` should select entire buffer
+vim.keymap.set("o", "ii", function()
+	if vim.fn.indent(".") == 0 then
+		require("various-textobjs").entireBuffer()
+	else
+		require("various-textobjs").indentation("inner", "inner")
+	end
+end)
+```
 
 ### Forward-Seeking `gx`
 The code below retrieves the next URL (within the amount of lines configured in
