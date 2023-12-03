@@ -1,4 +1,4 @@
-*various-textobjs.txt*      For NVIM v0.8.0      Last change: 2023 November 22
+*various-textobjs.txt*      For NVIM v0.8.0      Last change: 2023 December 03
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
@@ -27,6 +27,7 @@ Bundleof more than two dozen new textobjects for Neovim.
 - |various-textobjs-advanced-usage-/-api|
     - |various-textobjs-forward-seeking-`gx`|
     - |various-textobjs-delete-surrounding-indentation|
+    - |various-textobjs-yank-surrounding-indentation|
     - |various-textobjs-other-ideas?|
 - |various-textobjs-limitations|
 - |various-textobjs-other-text-object-plugins|
@@ -516,21 +517,58 @@ performed on an indentation textobject. (It is also an intuitive mnemonic:
 >lua
     vim.keymap.set("n", "dsi", function()
         -- select inner indentation
-        require("various-textobjs").indentation(true, true)
+        require("various-textobjs").indentation("outer", "outer")
     
         -- plugin only switches to visual mode when a textobj has been found
-        local notOnIndentedLine = vim.fn.mode():find("V") == nil
-        if notOnIndentedLine then return end
+        local indentationFound = vim.fn.mode():find("V")
+        if indentationFound then return end
     
         -- dedent indentation
         vim.cmd.normal { "<", bang = true }
     
         -- delete surrounding lines
-        local endBorderLn = vim.api.nvim_buf_get_mark(0, ">")[1] + 1
-        local startBorderLn = vim.api.nvim_buf_get_mark(0, "<")[1] - 1
+        local endBorderLn = vim.api.nvim_buf_get_mark(0, ">")[1]
+        local startBorderLn = vim.api.nvim_buf_get_mark(0, "<")[1]
         vim.cmd(tostring(endBorderLn) .. " delete") -- delete end first so line index is not shifted
         vim.cmd(tostring(startBorderLn) .. " delete")
-    end, { desc = "Delete surrounding indentation" })
+    end, { desc = "Delete Surrounding Indentation" })
+<
+
+
+YANK SURROUNDING INDENTATION ~
+
+Similarly, you can also create a `ysi` command to yank the two lines
+surrounding an indentation textobject. Using `nvim_win_[gs]et_cursor()`, you
+make the operation sticky, meaning the cursor is not moved.
+`vim.highlight.range` is used to highlight the yanked text, as if you used
+`vim.highlight.yank`.
+
+>lua
+    vim.keymap.set("n", "ysi", function()
+        local startPos = vim.api.nvim_win_get_cursor(0)
+    
+        -- identify start- and end-border
+        require("various-textobjs").indentation("outer", "outer")
+        local indentationFound = vim.fn.mode():find("V")
+        if not indentationFound then return end
+        u.normal("V") -- leave visual mode so <> marks are set
+    
+        -- copy them into the + register
+        local startLn = vim.api.nvim_buf_get_mark(0, "<")[1] - 1
+        local endLn = vim.api.nvim_buf_get_mark(0, ">")[1] - 1
+        local startLine = vim.api.nvim_buf_get_lines(0, startLn, startLn + 1, false)[1]
+        local endLine = vim.api.nvim_buf_get_lines(0, endLn, endLn + 1, false)[1]
+        vim.fn.setreg("+", startLine .. "\n" .. endLine .. "\n")
+    
+        -- highlight yanked text
+        local ns = vim.api.nvim_create_namespace("ysi")
+        vim.highlight.range(0, ns, "IncSearch", { startLn, 0 }, { startLn, -1 })
+        vim.highlight.range(0, ns, "IncSearch", { endLn, 0 }, { endLn, -1 })
+        vim.defer_fn(function() vim.api.nvim_buf_clear_namespace(0, ns, 0, -1) end, 1000)
+    
+        -- restore cursor position
+        vim.api.nvim_win_set_cursor(0, startPos)
+    end, { desc = "Yank surrounding indentation" })
 <
 
 
