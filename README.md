@@ -14,6 +14,7 @@ Bundle of more than two dozen new textobjects for Neovim.
 - [Advanced Usage / API](#advanced-usage--api)
 	* [Forward-Seeking `gx`](#forward-seeking-gx)
 	* [Delete Surrounding Indentation](#delete-surrounding-indentation)
+	* [Yank Surrounding Indentation](#yank-surrounding-indentation)
 	* [Other Ideas?](#other-ideas)
 - [Limitations](#limitations)
 - [Other Text Object Plugins](#other-text-object-plugins)
@@ -429,6 +430,41 @@ vim.keymap.set("n", "dsi", function()
 	vim.cmd(tostring(endBorderLn) .. " delete") -- delete end first so line index is not shifted
 	vim.cmd(tostring(startBorderLn) .. " delete")
 end, { desc = "Delete Surrounding Indentation" })
+```
+
+### Yank Surrounding Indentation
+
+Similarly, you can also create a `ysi` command to yank the two lines surrounding
+an indentation textobject. Using `nvim_win_[gs]et_cursor()`, you make the
+operation sticky, meaning the cursor is not moved. `vim.highlight.range` is
+used to highlight the yanked text, as if you used `vim.highlight.yank`.
+
+```lua
+vim.keymap.set("n", "ysi", function()
+	local startPos = vim.api.nvim_win_get_cursor(0)
+
+	-- identify start- and end-border
+	require("various-textobjs").indentation("outer", "outer")
+	local indentationFound = vim.fn.mode():find("V")
+	if not indentationFound then return end
+	u.normal("V") -- leave visual mode so <> marks are set
+
+	-- copy them into the + register
+	local startLn = vim.api.nvim_buf_get_mark(0, "<")[1] - 1
+	local endLn = vim.api.nvim_buf_get_mark(0, ">")[1] - 1
+	local startLine = vim.api.nvim_buf_get_lines(0, startLn, startLn + 1, false)[1]
+	local endLine = vim.api.nvim_buf_get_lines(0, endLn, endLn + 1, false)[1]
+	vim.fn.setreg("+", startLine .. "\n" .. endLine .. "\n")
+
+	-- highlight yanked text
+	local ns = vim.api.nvim_create_namespace("ysi")
+	vim.highlight.range(0, ns, "IncSearch", { startLn, 0 }, { startLn, -1 })
+	vim.highlight.range(0, ns, "IncSearch", { endLn, 0 }, { endLn, -1 })
+	vim.defer_fn(function() vim.api.nvim_buf_clear_namespace(0, ns, 0, -1) end, 1000)
+
+	-- restore cursor position
+	vim.api.nvim_win_set_cursor(0, startPos)
+end, { desc = "Yank surrounding indentation" })
 ```
 
 ### Other Ideas?
