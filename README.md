@@ -35,6 +35,7 @@ Bundle of more than two dozen new textobjects for Neovim.
 | subword                | like `iw`, but treating `-`, `_`, and `.` as word delimiters *and* only part of camelCase | outer includes trailing `_`,`-`, or space                                                 | \-              |        `iS`, `aS`        | all                             |
 | toNextClosingBracket   | from cursor to next closing `]`, `)`, or `}`                                              | \-                                                                                        | small           |           `C`            | all                             |
 | toNextQuotationMark    | from cursor to next unescaped[^1] `"`, `'`, or `` ` ``                                    | \-                                                                                        | small           |           `Q`            | all                             |
+| anyQuote               | between any unescaped[^1] `"`, `'`, or `` ` `` *in a line*                                | outer includes the quotatin marks                                                         | small           |           `iq`/`aq`      | all                             |
 | restOfParagraph        | like `}`, but linewise                                                                    | \-                                                                                        | \-              |           `r`            | all                             |
 | multiCommentedLines    | consecutive, fully commented lines                                                        | \-                                                                                        | big             |           `gc`           | all                             |
 | entireBuffer           | entire buffer as one text object                                                          | \-                                                                                        | \-              |           `gG`           | all                             |
@@ -207,6 +208,9 @@ keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').subwo
 keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').toNextClosingBracket()<CR>")
 
 keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').toNextQuotationMark()<CR>")
+
+keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').anyQuote('inner')<CR>")
+keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').anyQuote('outer')<CR>")
 
 keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').restOfParagraph()<CR>")
 

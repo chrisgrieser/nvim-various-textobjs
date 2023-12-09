@@ -127,6 +127,8 @@ function M.toNextClosingBracket() charwise.toNextClosingBracket(lookForwardSmall
 ---till next quotation mark (backtick counts as one)
 function M.toNextQuotationMark() charwise.toNextQuotationMark(lookForwardSmall) end
 
+function M.anyQuote(scope) charwise.anyQuote(argConvert(scope), lookForwardSmall) end
+
 ---current line (but characterwise)
 function M.lineCharacterwise(scope) charwise.lineCharacterwise(argConvert(scope)) end
 

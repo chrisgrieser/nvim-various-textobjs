@@ -127,6 +127,23 @@ function M.toNextQuotationMark(lookForwL)
 	if isVisualMode() then u.normal("o") end -- move anchor to front
 end
 
+---@param scope "inner"|"outer"
+---@param lookForwL integer
+function M.anyQuote(scope, lookForwL)
+	---CAVEAT With this implementation, opening and closing quote are not
+	---necessarily the same.
+	-- INFO char before quote must not be escape char. Using `vim.opt.quoteescape` on
+	-- the off-chance that the user has customized this.
+	local quoteEscape = vim.opt_local.quoteescape:get() -- default: \
+	local pattern = ([[([^%s]["'`]).-[^%s](["'`])]]):format(quoteEscape, quoteEscape)
+
+	searchTextobj(pattern, scope, lookForwL)
+
+	-- pattern includes one extra character to account for an escape character,
+	-- so we need to move to the right to factor that in
+	if scope == "outer" then u.normal("ol") end
+end
+
 ---near end of the line, ignoring trailing whitespace (relevant for markdown)
 function M.nearEoL()
 	if not isVisualMode() then u.normal("v") end
