@@ -1,4 +1,4 @@
-*various-textobjs.txt*      For NVIM v0.8.0      Last change: 2023 December 03
+*various-textobjs.txt*      For NVIM v0.8.0      Last change: 2023 December 09
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
@@ -61,12 +61,16 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs--list-of-text-object
                            delimiters and only                                                       
                            part of camelCase                                                         
 
-  toNextClosingBracket     from cursor to next    -                      -                     C     all
+  toNextClosingBracket     from cursor to next    -                      small                 C     all
                            closing ], ), or }                                                        
 
-  toNextQuotationMark      from cursor to next    -                      -                     Q     all
+  toNextQuotationMark      from cursor to next    -                      small                 Q     all
                            unescaped[1] ", ', or                                                     
                            `                                                                         
+
+  anyQuote                 between any            outer includes the     small               iq/aq   all
+                           unescaped[2] ", ', or  quotatin marks                                     
+                           ` in a line                                                               
 
   restOfParagraph          like }, but linewise   -                      -                     r     all
 
@@ -159,6 +163,8 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs--list-of-text-object
   --------------------------------------------------------------------------------------------------------------
 
 [1] This respects vim’s quoteescape option.
+
+[2] This respects vim’s quoteescape option.
 
 NON-GOALS                  *various-textobjs-nvim-various-textobjs--non-goals*
 
@@ -305,6 +311,9 @@ can copypaste this list and enter your own bindings.Mappings for all text object
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').toNextClosingBracket()<CR>")
     
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').toNextQuotationMark()<CR>")
+    
+    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').anyQuote('inner')<CR>")
+    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').anyQuote('outer')<CR>")
     
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').restOfParagraph()<CR>")
     
