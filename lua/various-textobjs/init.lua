@@ -26,7 +26,7 @@ end
 
 --------------------------------------------------------------------------------
 -- CONFIG
--- default values
+-- default values when not setup function is run
 local lookForwardSmall = 5
 local lookForwardBig = 15
 

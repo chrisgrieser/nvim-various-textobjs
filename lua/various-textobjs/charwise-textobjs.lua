@@ -27,7 +27,10 @@ end
 --------------------------------------------------------------------------------
 
 ---Seek and select characterwise text object based on pattern.
----@param pattern string lua pattern. REQUIRED two capture groups marking the two additions for the outer variant of the textobj. Use an empty capture group when there is no difference between inner and outer on that side. (Essentially, the two capture groups work as lookbehind and lookahead.)
+---@param pattern string lua pattern. REQUIRES two capture groups marking the
+--two additions for the outer variant of the textobj. Use an empty capture group
+--when there is no difference between inner and outer on that side.
+--(Essentially, the two capture groups work as lookbehind and lookahead.)
 ---@param scope "inner"|"outer" true = inner textobj
 ---@param lookForwL integer number of lines to look forward for the textobj
 ---@return boolean whether textobj search was successful
@@ -280,9 +283,7 @@ end
 ---@param scope "inner"|"outer" inner link only includes the link title, outer link includes link, url, and the four brackets.
 ---@param lookForwL integer number of lines to look forward for the textobj
 function M.mdlink(scope, lookForwL)
-	local pattern = "(%[)"
-		.. "[^]]-" -- first character in lua pattern set being `]` escapes it
-		.. "(%]%b())"
+	local pattern = "(%[)[^%]]-(%]%b())"
 	searchTextobj(pattern, scope, lookForwL)
 end
 
@@ -347,7 +348,7 @@ function M.pyTripleQuotes(scope)
 	local startRow, startCol, endRow, endCol = vim.treesitter.get_node_range(strNode)
 
 	-- fix various off-by-ones
-	startRow = startRow + 1 
+	startRow = startRow + 1
 	endRow = endRow + 1
 	if scope == "outer" or not isMultiline then
 		endCol = endCol - 1
