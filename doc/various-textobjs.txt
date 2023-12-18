@@ -1,4 +1,4 @@
-*various-textobjs.txt*      For NVIM v0.8.0      Last change: 2023 December 09
+*various-textobjs.txt*      For NVIM v0.8.0      Last change: 2023 December 18
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
@@ -549,7 +549,7 @@ performed on an indentation textobject. (It is also an intuitive mnemonic:
     
         -- plugin only switches to visual mode when a textobj has been found
         local indentationFound = vim.fn.mode():find("V")
-        if indentationFound then return end
+        if not indentationFound then return end
     
         -- dedent indentation
         vim.cmd.normal { "<", bang = true }
