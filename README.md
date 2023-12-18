@@ -439,7 +439,7 @@ vim.keymap.set("n", "dsi", function()
 
 	-- plugin only switches to visual mode when a textobj has been found
 	local indentationFound = vim.fn.mode():find("V")
-	if indentationFound then return end
+	if not indentationFound then return end
 
 	-- dedent indentation
 	vim.cmd.normal { "<", bang = true }
