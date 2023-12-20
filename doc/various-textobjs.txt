@@ -172,7 +172,7 @@ nvim-treesitter-textobjects
 <https://github.com/nvim-treesitter/nvim-treesitter-textobjects> already does
 an excellent job when it comes to using Treesitter for text objects, such as
 function arguments or loops. This plugin’s goal is therefore not to provide
-textobjects provided by `nvim-treesitter-textobjects`.
+textobjects already offered by `nvim-treesitter-textobjects`.
 
 
 INSTALLATION            *various-textobjs-nvim-various-textobjs--installation*
@@ -208,13 +208,11 @@ keymaps.
     },
     
     -- packer
-    use {
-        "chrisgrieser/nvim-various-textobjs",
-    }
+    use { "chrisgrieser/nvim-various-textobjs" }
 <
 
 
-  [!NOTE] You can also use the `disabledKeymaps` config option to disable only
+  [!TIP] You can also use the `disabledKeymaps` config option to disable only
   _some_ default keymaps.
 
 CONFIGURATION          *various-textobjs-nvim-various-textobjs--configuration*
@@ -234,7 +232,7 @@ The `.setup()` call is optional if you are fine with the defaults below.
         -- use suggested keymaps (see overview table in README)
         useDefaultKeymaps = false,
     
-        -- disable some default keymaps, e.g. { "ai", "ii" }
+        -- disable only some default keymaps, e.g. { "ai", "ii" }
         disabledKeymaps = {},
     }
 <
@@ -242,24 +240,21 @@ The `.setup()` call is optional if you are fine with the defaults below.
 ------------------------------------------------------------------------------
 If you want to set your own keybindings, you can do so by calling the
 respective functions: - The function names correspond to the textobject names
-from the |various-textobjs-overview-table|. - The keymaps need to be called as
-Ex-command, otherwise they are dot-repeatable. (`function ()
-require("various-textobjs").diagnostic() end` as third argument for the keymap
-works in general, but the text objects is not dot-repeatable then.)
+from the |various-textobjs-overview-table|.
 
-_Previous versions used a boolean parameter, but for verbosity reasons, this
-plugin now uses "outer" and "inner". For backwards-compatibility with existing
-keymaps, boolean parameters are still accepted though._
 
+  [!NOTE] For dot-repeat to work, you have to call the motions as Ex-commands.
+  When using `function() require("various-textobjs").diagnostic() end` as third
+  argument of the keymap, dot-repeatability will not work.
 >lua
     -- example: `?` for diagnostic textobj
     vim.keymap.set({ "o", "x" }, "?", '<cmd>lua require("various-textobjs").diagnostic()<CR>')
     
-    -- example: `aS` for outer subword, `iS` for inner subword
-    vim.keymap.set({ "o", "x" }, "aS", '<cmd>lua require("various-textobjs").subword("outer")<CR>')
-    vim.keymap.set({ "o", "x" }, "iS", '<cmd>lua require("various-textobjs").subword("inner")<CR>')
+    -- example: `as` for outer subword, `is` for inner subword
+    vim.keymap.set({ "o", "x" }, "as", '<cmd>lua require("various-textobjs").subword("outer")<CR>')
+    vim.keymap.set({ "o", "x" }, "is", '<cmd>lua require("various-textobjs").subword("inner")<CR>')
     
-    -- exception: indentation textobj requires two parameters, the first for
+    -- exception: the indentation textobj requires two parameters, the first for
     -- exclusion of the starting border, the second for the exclusion of ending
     -- border
     vim.keymap.set(
