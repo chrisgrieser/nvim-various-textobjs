@@ -454,20 +454,21 @@ end, { desc = "Delete Surrounding Indentation" })
 
 ### Yank Surrounding Indentation
 
-Similarly, you can also create a `ysi` command to yank the two lines surrounding
-an indentation textobject. Using `nvim_win_[gs]et_cursor()`, you make the
+Similarly, you can also create a `ysii` command to yank the two lines surrounding
+an indentation textobject. (We are not using `ysi`, since that blocks surround 
+commands like `ysi)`). Using `nvim_win_[gs]et_cursor()`, you make the
 operation sticky, meaning the cursor is not moved. `vim.highlight.range` is
-used to highlight the yanked text, as if you used `vim.highlight.yank`.
+used to highlight the yanked text, to imitate the effect of `vim.highlight.yank`.
 
 ```lua
-vim.keymap.set("n", "ysi", function()
+vim.keymap.set("n", "ysii", function()
 	local startPos = vim.api.nvim_win_get_cursor(0)
 
 	-- identify start- and end-border
 	require("various-textobjs").indentation("outer", "outer")
 	local indentationFound = vim.fn.mode():find("V")
 	if not indentationFound then return end
-	u.normal("V") -- leave visual mode so <> marks are set
+	vim.cmd.normal({ "V", bang = true }) -- leave visual mode so the `'<` `'>` marks are set
 
 	-- copy them into the + register
 	local startLn = vim.api.nvim_buf_get_mark(0, "<")[1] - 1
