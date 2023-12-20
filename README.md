@@ -68,7 +68,7 @@ Bundle of more than two dozen new textobjects for Neovim.
 [nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects)
 already does an excellent job when it comes to using Treesitter for text
 objects, such as function arguments or loops. This plugin's goal is therefore
-not to provide textobjects provided by `nvim-treesitter-textobjects`.
+not to provide textobjects already offered by `nvim-treesitter-textobjects`.
 
 ## Installation
 Have `nvim-various-textobjs` set up text objects for you:
@@ -102,12 +102,10 @@ keymaps.
 },
 
 -- packer
-use {
-	"chrisgrieser/nvim-various-textobjs",
-}
+use { "chrisgrieser/nvim-various-textobjs" }
 ```
 
-> [!NOTE]  
+> [!TIP]  
 > You can also use the `disabledKeymaps` config option to disable only *some*
 > default keymaps.
 
@@ -127,7 +125,7 @@ require("various-textobjs").setup {
 	-- use suggested keymaps (see overview table in README)
 	useDefaultKeymaps = false,
 
-	-- disable some default keymaps, e.g. { "ai", "ii" }
+	-- disable only some default keymaps, e.g. { "ai", "ii" }
 	disabledKeymaps = {},
 }
 ```
@@ -137,24 +135,23 @@ require("various-textobjs").setup {
 If you want to set your own keybindings, you can do so by calling the respective
 functions:
 - The function names correspond to the textobject names from the [overview table](#list-of-text-objects).
-- The keymaps need to be called as Ex-command, otherwise they are
-  dot-repeatable. (`function () require("various-textobjs").diagnostic() end` as
-  third argument for the keymap works in general, but the text objects
-  is not dot-repeatable then.)
 
-*Previous versions used a boolean parameter, but for verbosity reasons, this
-plugin now uses `"outer"` and `"inner"`. For backwards-compatibility with
-existing keymaps, boolean parameters are still accepted though.*
+<!-- vale Google.Will = NO -->
+> [!NOTE]
+> For dot-repeat to work, you have to call the motions as Ex-commands. When
+> using `function() require("various-textobjs").diagnostic() end` as third
+> argument of the keymap, dot-repeatability will not work.
+<!-- vale Google.Will = YES -->
 
 ```lua
 -- example: `?` for diagnostic textobj
 vim.keymap.set({ "o", "x" }, "?", '<cmd>lua require("various-textobjs").diagnostic()<CR>')
 
--- example: `aS` for outer subword, `iS` for inner subword
-vim.keymap.set({ "o", "x" }, "aS", '<cmd>lua require("various-textobjs").subword("outer")<CR>')
-vim.keymap.set({ "o", "x" }, "iS", '<cmd>lua require("various-textobjs").subword("inner")<CR>')
+-- example: `as` for outer subword, `is` for inner subword
+vim.keymap.set({ "o", "x" }, "as", '<cmd>lua require("various-textobjs").subword("outer")<CR>')
+vim.keymap.set({ "o", "x" }, "is", '<cmd>lua require("various-textobjs").subword("inner")<CR>')
 
--- exception: indentation textobj requires two parameters, the first for
+-- exception: the indentation textobj requires two parameters, the first for
 -- exclusion of the starting border, the second for the exclusion of ending
 -- border
 vim.keymap.set(
