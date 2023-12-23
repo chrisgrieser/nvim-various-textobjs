@@ -278,12 +278,8 @@ end
 
 ---@param lookForwL integer number of lines to look forward for the textobj
 function M.url(lookForwL)
-	-- TODO match other urls (file://, ftp://, etc.) as well. Requires selectTextobj()
-	-- being able to handle multiple patterns, though, since lua pattern do not
-	-- have optional groups. Think of a way to implement this without making
-	-- selectTextobj unnecessarily complex for other methods
 	-- INFO mastodon URLs contain `@`, neovim docs urls can contain a `'`
-	local pattern = "https?://[A-Za-z0-9_%-/.#%%=?&'@+]+"
+	local pattern = "%l%l%l-://[A-Za-z0-9_%-/.#%%=?&'@+]+"
 	selectTextobj(pattern, "outer", lookForwL)
 end
 
