@@ -129,6 +129,8 @@ function M.toNextQuotationMark() charwise.toNextQuotationMark(lookForwardSmall) 
 
 function M.anyQuote(scope) charwise.anyQuote(argConvert(scope), lookForwardSmall) end
 
+function M.anyBracket(scope) charwise.anyBracket(argConvert(scope), lookForwardSmall) end
+
 ---current line (but characterwise)
 function M.lineCharacterwise(scope) charwise.lineCharacterwise(argConvert(scope)) end
 

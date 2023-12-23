@@ -12,6 +12,7 @@ local innerOuterMaps = {
 	lineCharacterwise = "_",
 	greedyOuterIndentation = "g",
 	anyQuote = "q",
+	anyBracket = "o",
 }
 local oneMaps = {
 	nearEoL = "n", -- does override the builtin "to next search match" textobj, but nobody really uses that

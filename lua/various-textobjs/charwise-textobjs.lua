@@ -181,9 +181,9 @@ function M.anyQuote(scope, lookForwL)
 	-- the off-chance that the user has customized this.
 	local escape = vim.opt_local.quoteescape:get() -- default: \
 	local patterns = {
-		('([^%s]").-[^%s](")'):format(escape, escape),
-		("([^%s]').-[^%s](')"):format(escape, escape),
-		("([^%s]`).-[^%s](`)"):format(escape, escape),
+		('([^%s]").-[^%s](")'):format(escape, escape), -- "
+		("([^%s]').-[^%s](')"):format(escape, escape), -- '
+		("([^%s]`).-[^%s](`)"):format(escape, escape), -- `
 	}
 
 	selectTextobj(patterns, scope, lookForwL)
@@ -191,6 +191,17 @@ function M.anyQuote(scope, lookForwL)
 	-- pattern includes one extra character to account for an escape character,
 	-- so we need to move to the right to factor that in
 	if scope == "outer" then u.normal("ol") end
+end
+
+---@param scope "inner"|"outer"
+---@param lookForwL integer
+function M.anyBracket(scope, lookForwL)
+	local patterns = {
+		"(%().-(%))", -- ()
+		"(%[).-(%])", -- []
+		"({).-(})", -- {}
+	}
+	selectTextobj(patterns, scope, lookForwL)
 end
 
 ---near end of the line, ignoring trailing whitespace
