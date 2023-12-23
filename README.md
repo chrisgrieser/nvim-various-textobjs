@@ -1,7 +1,8 @@
 <!-- LTeX: enabled=false -->
 # nvim-various-textobjs 🟪🔷🟡
 <!-- LTeX: enabled=true -->
-<a href="https://dotfyle.com/plugins/chrisgrieser/nvim-various-textobjs"><img src="https://dotfyle.com/plugins/chrisgrieser/nvim-various-textobjs/shield"/></a>
+<a href="https://dotfyle.com/plugins/chrisgrieser/nvim-various-textobjs">
+<img alt="badge" src="https://dotfyle.com/plugins/chrisgrieser/nvim-various-textobjs/shield"/></a>
 
 Bundle of more than two dozen new textobjects for Neovim.
 
@@ -452,7 +453,7 @@ end, { desc = "Delete Surrounding Indentation" })
 ### Yank Surrounding Indentation
 
 Similarly, you can also create a `ysii` command to yank the two lines surrounding
-an indentation textobject. (We are not using `ysi`, since that blocks surround 
+an indentation textobject. (Not using `ysi`, since that blocks surround
 commands like `ysi)`). Using `nvim_win_[gs]et_cursor()`, you make the
 operation sticky, meaning the cursor is not moved. `vim.highlight.range` is
 used to highlight the yanked text, to imitate the effect of `vim.highlight.yank`.
@@ -465,7 +466,7 @@ vim.keymap.set("n", "ysii", function()
 	require("various-textobjs").indentation("outer", "outer")
 	local indentationFound = vim.fn.mode():find("V")
 	if not indentationFound then return end
-	vim.cmd.normal({ "V", bang = true }) -- leave visual mode so the `'<` `'>` marks are set
+	vim.cmd.normal { "V", bang = true } -- leave visual mode so the `'<` `'>` marks are set
 
 	-- copy them into the + register
 	local startLn = vim.api.nvim_buf_get_mark(0, "<")[1] - 1

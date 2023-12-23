@@ -283,7 +283,7 @@ function M.url(lookForwL)
 	selectTextobj(pattern, "outer", lookForwL)
 end
 
----see also https://github.com/chrisgrieser/nvim-various-textobjs/issues/26
+---see #26
 ---@param scope "inner"|"outer" inner excludes the leading dot
 ---@param lookForwL integer number of lines to look forward for the textobj
 function M.chainMember(scope, lookForwL)
