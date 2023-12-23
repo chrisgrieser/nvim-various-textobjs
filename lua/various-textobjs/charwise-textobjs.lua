@@ -33,7 +33,7 @@ end
 ---when there is no difference between inner and outer on that side.
 ---(Essentially, the two capture groups work as lookbehind and lookahead.)
 ---@param scope "inner"|"outer" true = inner textobj
----@param lookForwL integer number of lines to look forward for the textobj
+---@param lookForwL integer
 ---@return pos|nil -- nil if not found
 ---@return pos|nil
 ---@nodiscard
@@ -83,7 +83,7 @@ end
 
 ---@param pattern string lua pattern
 ---@param scope "inner"|"outer" true = inner textobj
----@param lookForwL integer number of lines to look forward for the textobj
+---@param lookForwL integer
 ---@return boolean whether textobj search was successful
 local function selectTextobj(pattern, scope, lookForwL)
 	local startpos, endpos = searchTextobj(pattern, scope, lookForwL)
@@ -108,7 +108,7 @@ function M.subword(scope)
 	selectTextobj(pattern, scope, 0)
 end
 
----@param lookForwL integer number of lines to look forward for the textobj
+---@param lookForwL integer
 function M.toNextClosingBracket(lookForwL)
 	local pattern = "().([]})])"
 
@@ -150,12 +150,13 @@ function M.anyQuote(scope, lookForwL)
 	if scope == "outer" then u.normal("ol") end
 end
 
----near end of the line, ignoring trailing whitespace (relevant for markdown)
+---near end of the line, -ignoring trailing whitespace 
+---(relevant for markdown, where you normally add a -space after the `.` ending a sentence.)
 function M.nearEoL()
 	if not isVisualMode() then u.normal("v") end
 	u.normal("$")
 
-	-- loop ensures trailing whitespace is not counted
+	-- loop ensures trailing whitespace is not omitted
 	local lineContent = vim.api.nvim_get_current_line()
 	local lastCol = vim.api.nvim_buf_line_count(0)
 	repeat
@@ -183,7 +184,7 @@ end
 
 ---similar to https://github.com/andrewferrier/textobj-diagnostic.nvim
 ---requires builtin LSP
----@param lookForwL integer number of lines to look forward for the textobj
+---@param lookForwL integer
 function M.diagnostic(lookForwL)
 	-- INFO for whatever reason, diagnostic line numbers and the end column (but
 	-- not the start column) are all off-by-one…
@@ -222,7 +223,7 @@ function M.diagnostic(lookForwL)
 end
 
 ---@param scope "inner"|"outer" inner value excludes trailing commas or semicolons, outer includes them. Both exclude trailing comments.
----@param lookForwL integer number of lines to look forward for the textobj
+---@param lookForwL integer
 function M.value(scope, lookForwL)
 	-- captures value till the end of the line
 	-- negative sets and frontier pattern ensure that equality comparators ==, !=
@@ -250,7 +251,7 @@ function M.value(scope, lookForwL)
 end
 
 ---@param scope "inner"|"outer" outer key includes the `:` or `=` after the key
----@param lookForwL integer number of lines to look forward for the textobj
+---@param lookForwL integer
 function M.key(scope, lookForwL)
 	local pattern = "(%s*).-( ?[:=] ?)"
 
@@ -267,7 +268,7 @@ function M.key(scope, lookForwL)
 end
 
 ---@param scope "inner"|"outer" inner number consists purely of digits, outer number factors in decimal points and includes minus sign
----@param lookForwL integer number of lines to look forward for the textobj
+---@param lookForwL integer
 function M.number(scope, lookForwL)
 	-- here two different patterns make more sense, so the inner number can match
 	-- before and after the decimal dot. enforcing digital after dot so outer
@@ -276,7 +277,7 @@ function M.number(scope, lookForwL)
 	selectTextobj(pattern, "outer", lookForwL)
 end
 
----@param lookForwL integer number of lines to look forward for the textobj
+---@param lookForwL integer
 function M.url(lookForwL)
 	-- INFO mastodon URLs contain `@`, neovim docs urls can contain a `'`
 	local pattern = "%l%l%l-://[A-Za-z0-9_%-/.#%%=?&'@+]+"
@@ -285,7 +286,7 @@ end
 
 ---see #26
 ---@param scope "inner"|"outer" inner excludes the leading dot
----@param lookForwL integer number of lines to look forward for the textobj
+---@param lookForwL integer
 function M.chainMember(scope, lookForwL)
 	local pattern = "(%.)[%w_][%a_]*%b()()"
 	selectTextobj(pattern, scope, lookForwL)
@@ -295,35 +296,35 @@ end
 -- FILETYPE SPECIFIC TEXTOBJS
 
 ---@param scope "inner"|"outer" inner link only includes the link title, outer link includes link, url, and the four brackets.
----@param lookForwL integer number of lines to look forward for the textobj
+---@param lookForwL integer
 function M.mdlink(scope, lookForwL)
 	local pattern = "(%[)[^%]]-(%]%b())"
 	selectTextobj(pattern, scope, lookForwL)
 end
 
 ---@param scope "inner"|"outer" inner double square brackets exclude the brackets themselves
----@param lookForwL integer number of lines to look forward for the textobj
+---@param lookForwL integer
 function M.doubleSquareBrackets(scope, lookForwL)
 	local pattern = "(%[%[).-(%]%])"
 	selectTextobj(pattern, scope, lookForwL)
 end
 
 ---@param scope "inner"|"outer" outer selector includes trailing comma and whitespace
----@param lookForwL integer number of lines to look forward for the textobj
+---@param lookForwL integer
 function M.cssSelector(scope, lookForwL)
 	local pattern = "()[#.][%w-_]+(,? ?)"
 	selectTextobj(pattern, scope, lookForwL)
 end
 
 ---@param scope "inner"|"outer" inner selector is only the value of the attribute inside the quotation marks.
----@param lookForwL integer number of lines to look forward for the textobj
+---@param lookForwL integer
 function M.htmlAttribute(scope, lookForwL)
 	local pattern = [[(%w+=["']).-(["'])]]
 	selectTextobj(pattern, scope, lookForwL)
 end
 
 ---@param scope "inner"|"outer" outer selector includes the front pipe
----@param lookForwL integer number of lines to look forward for the textobj
+---@param lookForwL integer
 function M.shellPipe(scope, lookForwL)
 	local pattern = "(| ?)[^|]+()"
 	selectTextobj(pattern, scope, lookForwL)
