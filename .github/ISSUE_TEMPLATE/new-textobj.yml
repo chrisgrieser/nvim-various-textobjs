@@ -11,6 +11,15 @@ body:
     validations:
       required: true
   - type: textarea
+    id: sample-text
+    attributes:
+      label: Sample Text
+      description:
+        Provide sample text for the textobj, including as many variations as necessary. If relevant, also provide text
+        examples of what should *not* match the textobj.
+    validations:
+      required: true
+  - type: textarea
     id: inner-outer
     attributes:
       label: Inner/Outer Difference
@@ -19,12 +28,14 @@ body:
     id: existing-plugin
     attributes:
       label: Vimscript plugin already implementing the textobj
-      description: If there is a plugin that already implements the textobject, please link to it here. 
+      description: If there is a plugin that already implements the textobject, please link to it here.
   - type: input
     id: filetypes
     attributes:
       label: Filetypes
-      description: Filetypes the textobject is usually going to be used in. Fill in "all" if the textobject is agnostic to the filetype.
+      description:
+        Filetypes the textobject is usually going to be used in. Fill in "all" if the textobject is agnostic to the
+        filetype.
     validations:
       required: true
   - type: checkboxes
@@ -32,9 +43,11 @@ body:
     attributes:
       label: Checklist
       options:
-        - label: The textobj would be useful to more users than just me.
+        - label:
+            The textobj would be useful to more users than just me. ([You can use the API to create custom
+            textobj.](../../README.md#advanced-usage--api))
           required: true
         - label: There is no lua plugin already implementing the textobj in an adequate manner.
           required: true
-        - label: I read the docs and there is no such textobj already.
+        - label: I read the docs and checked that there is no such textobj already.
           required: true

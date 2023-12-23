@@ -10,12 +10,25 @@ body:
       description: Describe which textobject should change in what way.
     validations:
       required: true
+  - type: textarea
+    id: sample-text
+    attributes:
+      label: Sample Text
+      description:
+        Provide sample text for the textobj, including as many variations as necessary. If relevant, also provide text
+        examples of what should *not* match the textobj.
+    validations:
+      required: true
   - type: checkboxes
     id: checklist
     attributes:
       label: Checklist
       options:
-        - label: The change would be useful to more users than just me.
+        - label:
+            The textobj would be useful to more users than just me. ([You can use the API to create custom
+            textobj.](../../README.md#advanced-usage--api))
           required: true
-        - label: This is a feature request to change an existing textobject, not a bug report. (Use the bug report form for those.)
+        - label:
+            This is a feature request to change an existing textobject, not a bug report. (Use the bug report form for
+            those.)
           required: true
