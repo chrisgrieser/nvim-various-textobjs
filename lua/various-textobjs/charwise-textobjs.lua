@@ -92,14 +92,17 @@ local function selectTextobj(patterns, scope, lookForwL)
 		if startPos and endPos then closestObj = { startPos, endPos } end
 	elseif type(patterns) == "table" then
 		local closestRow = math.huge
-		local closestCol = math.huge
+		local shortestDistance = math.huge
 		for _, pattern in ipairs(patterns) do
 			local startPos, endPos = searchTextobj(pattern, scope, lookForwL)
 			if startPos and endPos then
 				local row, col = unpack(startPos)
-				if row <= closestRow and col < closestCol then
+				local cursorRow, cursorCol = unpack(u.getCursor(0))
+				local cursorStandsOnObj = (cursorRow == row and col <= cursorCol)
+				local distance = cursorStandsOnObj and math.abs(col - cursorCol) or col - cursorCol
+				if row <= closestRow and distance < shortestDistance then
 					closestRow = row
-					closestCol = col
+					shortestDistance = distance
 					closestObj = { startPos, endPos }
 				end
 			end
