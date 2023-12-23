@@ -29,9 +29,9 @@ end
 
 ---Seek and select characterwise text object based on pattern.
 ---@param pattern string lua pattern. REQUIRES two capture groups marking the
---two additions for the outer variant of the textobj. Use an empty capture group
---when there is no difference between inner and outer on that side.
---(Essentially, the two capture groups work as lookbehind and lookahead.)
+---two additions for the outer variant of the textobj. Use an empty capture group
+---when there is no difference between inner and outer on that side.
+---(Essentially, the two capture groups work as lookbehind and lookahead.)
 ---@param scope "inner"|"outer" true = inner textobj
 ---@param lookForwL integer number of lines to look forward for the textobj
 ---@return pos|nil -- nil if not found
@@ -90,7 +90,7 @@ local function selectTextobj(...)
 end
 
 --------------------------------------------------------------------------------
----Subword
+
 ---@param scope "inner"|"outer" outer includes trailing -_
 function M.subword(scope)
 	local pattern = "()%w[%l%d]+([ _-]?)"
@@ -104,7 +104,6 @@ function M.subword(scope)
 	selectTextobj(pattern, scope, 0)
 end
 
----till next closing bracket
 ---@param lookForwL integer number of lines to look forward for the textobj
 function M.toNextClosingBracket(lookForwL)
 	-- Since `selectTextobj` just selects the next closing bracket, we save the
@@ -120,9 +119,10 @@ function M.toNextClosingBracket(lookForwL)
 	selectTextobj(pattern, "inner", lookForwL) -- just selects char before the bracket
 
 	u.setCursor(0, startingPosition) -- extend backwards
-	if isVisualMode() then u.normal("o") end
+	if isVisualMode() then u.normal("o") end -- move anchor to front
 end
 
+---@param lookForwL integer
 function M.toNextQuotationMark(lookForwL)
 	-- INFO the same reasons as in `toNextClosingBracket` apply here as well
 	local startingPosition = u.getCursor(0)
@@ -272,7 +272,6 @@ function M.key(scope, lookForwL)
 	end
 end
 
----number textobj
 ---@param scope "inner"|"outer" inner number consists purely of digits, outer number factors in decimal points and includes minus sign
 ---@param lookForwL integer number of lines to look forward for the textobj
 function M.number(scope, lookForwL)
@@ -283,7 +282,6 @@ function M.number(scope, lookForwL)
 	selectTextobj(pattern, "outer", lookForwL)
 end
 
----URL textobj
 ---@param lookForwL integer number of lines to look forward for the textobj
 function M.url(lookForwL)
 	-- TODO match other urls (file://, ftp://, etc.) as well. Requires selectTextobj()
@@ -295,7 +293,6 @@ function M.url(lookForwL)
 	selectTextobj(pattern, "outer", lookForwL)
 end
 
----field which a call
 ---see also https://github.com/chrisgrieser/nvim-various-textobjs/issues/26
 ---@param scope "inner"|"outer" inner excludes the leading dot
 ---@param lookForwL integer number of lines to look forward for the textobj
@@ -307,7 +304,6 @@ end
 --------------------------------------------------------------------------------
 -- FILETYPE SPECIFIC TEXTOBJS
 
----md links textobj
 ---@param scope "inner"|"outer" inner link only includes the link title, outer link includes link, url, and the four brackets.
 ---@param lookForwL integer number of lines to look forward for the textobj
 function M.mdlink(scope, lookForwL)
@@ -315,7 +311,6 @@ function M.mdlink(scope, lookForwL)
 	selectTextobj(pattern, scope, lookForwL)
 end
 
----double square brackets
 ---@param scope "inner"|"outer" inner double square brackets exclude the brackets themselves
 ---@param lookForwL integer number of lines to look forward for the textobj
 function M.doubleSquareBrackets(scope, lookForwL)
@@ -323,7 +318,6 @@ function M.doubleSquareBrackets(scope, lookForwL)
 	selectTextobj(pattern, scope, lookForwL)
 end
 
----CSS Selector Textobj
 ---@param scope "inner"|"outer" outer selector includes trailing comma and whitespace
 ---@param lookForwL integer number of lines to look forward for the textobj
 function M.cssSelector(scope, lookForwL)
@@ -331,7 +325,6 @@ function M.cssSelector(scope, lookForwL)
 	selectTextobj(pattern, scope, lookForwL)
 end
 
----HTML/XML Attribute Textobj
 ---@param scope "inner"|"outer" inner selector is only the value of the attribute inside the quotation marks.
 ---@param lookForwL integer number of lines to look forward for the textobj
 function M.htmlAttribute(scope, lookForwL)
@@ -339,7 +332,6 @@ function M.htmlAttribute(scope, lookForwL)
 	selectTextobj(pattern, scope, lookForwL)
 end
 
----Shell Pipe Textobj
 ---@param scope "inner"|"outer" outer selector includes the front pipe
 ---@param lookForwL integer number of lines to look forward for the textobj
 function M.shellPipe(scope, lookForwL)
@@ -378,9 +370,7 @@ function M.pyTripleQuotes(scope)
 	-- fix various off-by-ones
 	startRow = startRow + 1
 	endRow = endRow + 1
-	if scope == "outer" or not isMultiline then
-		endCol = endCol - 1
-	end
+	if scope == "outer" or not isMultiline then endCol = endCol - 1 end
 
 	-- multiline-inner: exclude line breaks
 	if scope == "inner" and isMultiline then
