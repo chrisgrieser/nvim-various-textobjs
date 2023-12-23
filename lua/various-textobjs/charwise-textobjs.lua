@@ -13,16 +13,16 @@ end
 ---@alias pos {[1]: integer, [2]: integer}
 
 ---sets the selection for the textobj (characterwise)
----@param startpos pos
----@param endpos pos
-local function setSelection(startpos, endpos)
-	u.setCursor(0, startpos)
+---@param startPos pos
+---@param endPos pos
+local function setSelection(startPos, endPos)
+	u.setCursor(0, startPos)
 	if isVisualMode() then
 		u.normal("o")
 	else
 		u.normal("v")
 	end
-	u.setCursor(0, endpos)
+	u.setCursor(0, endPos)
 end
 
 --------------------------------------------------------------------------------
@@ -35,8 +35,8 @@ end
 ---CAVEAT multi-line-objects are not supported
 ---@param scope "inner"|"outer"
 ---@param lookForwL integer
----@return pos? startpos
----@return pos? endpos
+---@return pos? startPos
+---@return pos? endPos
 ---@nodiscard
 local function searchTextobj(pattern, scope, lookForwL)
 	local cursorRow, cursorCol = unpack(u.getCursor(0))
@@ -75,7 +75,9 @@ local function searchTextobj(pattern, scope, lookForwL)
 		endCol = endCol - backOuterLen
 	end
 
-	return { cursorRow + linesSearched, beginCol - 1 }, { cursorRow + linesSearched, endCol - 1 }
+	local startPos = { cursorRow + linesSearched, beginCol - 1 }
+	local endPos = { cursorRow + linesSearched, endCol - 1 }
+	return startPos, endPos
 end
 
 ---searches for the position of one or multiple patterns and selects the closest one
