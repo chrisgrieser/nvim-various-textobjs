@@ -110,36 +110,27 @@ end
 
 ---@param lookForwL integer number of lines to look forward for the textobj
 function M.toNextClosingBracket(lookForwL)
-	-- Since `selectTextobj` just selects the next closing bracket, we save the
-	-- current cursor position and then extend the selection backwards to the
-	-- cursor position move backwards. selecting with ".*" would result in
-	-- selecting the whole line, since `selectTextobj` also considers any
-	-- potential the cursor is already standing on.
-	-- While this is a less straightforward approach, this allows us to reuse
-	-- `selectTextobj` instead of re-implementing the forward-searching algorithm
-	local startingPosition = u.getCursor(0)
-
 	local pattern = "().([]})])"
-	selectTextobj(pattern, "inner", lookForwL) -- just selects char before the bracket
 
-	u.setCursor(0, startingPosition) -- extend backwards
-	if isVisualMode() then u.normal("o") end -- move anchor to front
+	local _, endPos = searchTextobj(pattern, "inner", lookForwL)
+	if not endPos then return end
+	local startPos = u.getCursor(0)
+
+	setSelection(startPos, endPos)
 end
 
 ---@param lookForwL integer
 function M.toNextQuotationMark(lookForwL)
-	-- INFO the same reasons as in `toNextClosingBracket` apply here as well
-	local startingPosition = u.getCursor(0)
-
 	-- char before quote must not be escape char. Using `vim.opt.quoteescape` on
 	-- the off-chance that the user has customized this.
 	local quoteEscape = vim.opt_local.quoteescape:get() -- default: \
 	local pattern = ([[()[^%s](["'`])]]):format(quoteEscape)
 
-	selectTextobj(pattern, "inner", lookForwL) -- just selects char before the quote
+	local _, endPos = searchTextobj(pattern, "inner", lookForwL)
+	if not endPos then return end
+	local startPos = u.getCursor(0)
 
-	u.setCursor(0, startingPosition) -- extend backwards
-	if isVisualMode() then u.normal("o") end -- move anchor to front
+	setSelection(startPos, endPos)
 end
 
 ---@param scope "inner"|"outer"
