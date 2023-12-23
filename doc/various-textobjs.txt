@@ -1,4 +1,4 @@
-*various-textobjs.txt*      For NVIM v0.8.0      Last change: 2023 December 20
+*various-textobjs.txt*      For NVIM v0.8.0      Last change: 2023 December 23
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
@@ -102,8 +102,8 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs--list-of-text-object
                            or left side of a      or :                                               
                            variable assignment                                                       
 
-  url                      link beginning with    -                      big                   L     all
-                           “http”                                                                    
+  url                      works with http[s] or  -                      big                   L     all
+                           any other protocol                                                        
 
   number                   numbers, similar to    inner: only pure       small              in, an   all
                            <C-a>                  digits, outer: number                              
@@ -561,11 +561,11 @@ performed on an indentation textobject. (It is also an intuitive mnemonic:
 YANK SURROUNDING INDENTATION ~
 
 Similarly, you can also create a `ysii` command to yank the two lines
-surrounding an indentation textobject. (We are not using `ysi`, since that
-blocks surround commands like `ysi)`). Using `nvim_win_[gs]et_cursor()`, you
-make the operation sticky, meaning the cursor is not moved.
-`vim.highlight.range` is used to highlight the yanked text, to imitate the
-effect of `vim.highlight.yank`.
+surrounding an indentation textobject. (Not using `ysi`, since that blocks
+surround commands like `ysi)`). Using `nvim_win_[gs]et_cursor()`, you make the
+operation sticky, meaning the cursor is not moved. `vim.highlight.range` is
+used to highlight the yanked text, to imitate the effect of
+`vim.highlight.yank`.
 
 >lua
     vim.keymap.set("n", "ysii", function()
@@ -575,7 +575,7 @@ effect of `vim.highlight.yank`.
         require("various-textobjs").indentation("outer", "outer")
         local indentationFound = vim.fn.mode():find("V")
         if not indentationFound then return end
-        vim.cmd.normal({ "V", bang = true }) -- leave visual mode so the `'<` `'>` marks are set
+        vim.cmd.normal { "V", bang = true } -- leave visual mode so the `'<` `'>` marks are set
     
         -- copy them into the + register
         local startLn = vim.api.nvim_buf_get_mark(0, "<")[1] - 1
