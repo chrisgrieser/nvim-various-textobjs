@@ -35,12 +35,12 @@ end
 ---@param scope "inner"|"outer" true = inner textobj
 ---@param lookForwL integer number of lines to look forward for the textobj
 ---@return pos|nil -- nil if not found
----@return pos?
+---@return pos|nil
 ---@nodiscard
 local function searchTextobj(pattern, scope, lookForwL)
 	local cursorRow, cursorCol = unpack(u.getCursor(0))
 	local lineContent = u.getline(cursorRow)
-	local lastLine = fn.line("$")
+	local lastLine = vim.api.nvim_buf_line_count(0)
 	local beginCol = 0 ---@type number|nil
 	local endCol, captureG1, captureG2, noneInStartingLine
 
@@ -53,15 +53,15 @@ local function searchTextobj(pattern, scope, lookForwL)
 	until standingOnOrInFront or noneInStartingLine
 
 	-- subsequent lines: search full line for first occurrence
-	local i = 0
+	local linesSearched = 0
 	if noneInStartingLine then
 		while true do
-			i = i + 1
-			if i > lookForwL or cursorRow + i > lastLine then
+			linesSearched = linesSearched + 1
+			if linesSearched > lookForwL or cursorRow + linesSearched > lastLine then
 				u.notFoundMsg(lookForwL)
-				return nil
+				return nil, nil
 			end
-			lineContent = u.getline(cursorRow + i)
+			lineContent = u.getline(cursorRow + linesSearched)
 
 			beginCol, endCol, captureG1, captureG2 = lineContent:find(pattern)
 			if beginCol then break end
@@ -77,12 +77,16 @@ local function searchTextobj(pattern, scope, lookForwL)
 		endCol = endCol - backOuterLen
 	end
 
-	return { cursorRow + i, beginCol - 1 }, { cursorRow + i, endCol - 1 }
+	return { cursorRow + linesSearched, beginCol - 1 }, { cursorRow + linesSearched, endCol - 1 }
 end
 
+
+---@param pattern string lua pattern
+---@param scope "inner"|"outer" true = inner textobj
+---@param lookForwL integer number of lines to look forward for the textobj
 ---@return boolean whether textobj search was successful
-local function selectTextobj(...)
-	local startpos, endpos = searchTextobj(...)
+local function selectTextobj(pattern, scope, lookForwL)
+	local startpos, endpos = searchTextobj(pattern, scope, lookForwL)
 	if not startpos or not endpos then return false end -- textobj not found
 
 	setSelection(startpos, endpos)
