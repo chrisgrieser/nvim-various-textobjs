@@ -161,14 +161,16 @@ end
 ---@param scope "inner"|"outer"
 ---@param lookForwL integer
 function M.anyQuote(scope, lookForwL)
-	---CAVEAT With this implementation, opening and closing quote are not
-	---necessarily the same.
 	-- INFO char before quote must not be escape char. Using `vim.opt.quoteescape` on
 	-- the off-chance that the user has customized this.
-	local quoteEscape = vim.opt_local.quoteescape:get() -- default: \
-	local pattern = ([[([^%s]["'`]).-[^%s](["'`])]]):format(quoteEscape, quoteEscape)
+	local escape = vim.opt_local.quoteescape:get() -- default: \
+	local patterns = {
+		('([^%s]").-[^%s](")'):format(escape, escape),
+		("([^%s]').-[^%s](')"):format(escape, escape),
+		("([^%s]`).-[^%s](`)"):format(escape, escape),
+	}
 
-	selectTextobj(pattern, scope, lookForwL)
+	selectTextobj(patterns, scope, lookForwL)
 
 	-- pattern includes one extra character to account for an escape character,
 	-- so we need to move to the right to factor that in
