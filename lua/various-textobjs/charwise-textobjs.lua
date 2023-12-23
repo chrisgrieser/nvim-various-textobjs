@@ -118,14 +118,10 @@ end
 
 ---@param scope "inner"|"outer" outer includes trailing -_
 function M.subword(scope)
-	local pattern = "()%w[%l%d]+([ _-]?)"
-
-	-- adjust pattern when word under cursor is all uppercase to handle
-	-- subwords of SCREAMING_SNAKE_CASE variables
-	local upperCaseWord = fn.expand("<cword>") == fn.expand("<cword>"):upper()
-	if upperCaseWord then pattern = "()[%u%d]+([ _-]?)" end
-
-	-- forward looking results in unexpected behavior for subword
+	local pattern = {
+		"()%w[%l%d]+([_%- ]?)", -- camelCase or lowercase
+		"()[%u%d]+([_%- ]?)", -- UPPER_CASE or digits
+	}
 	selectTextobj(pattern, scope, 0)
 end
 
