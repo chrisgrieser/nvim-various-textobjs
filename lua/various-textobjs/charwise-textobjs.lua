@@ -10,8 +10,9 @@ local function isVisualMode()
 	return modeWithV ~= nil
 end
 
+---@alias pos {[1]: integer, [2]: integer}
+
 ---sets the selection for the textobj (characterwise)
----@class pos number[]
 ---@param startpos pos
 ---@param endpos pos
 local function setSelection(startpos, endpos)
@@ -33,7 +34,9 @@ end
 --(Essentially, the two capture groups work as lookbehind and lookahead.)
 ---@param scope "inner"|"outer" true = inner textobj
 ---@param lookForwL integer number of lines to look forward for the textobj
----@return boolean whether textobj search was successful
+---@return pos|nil -- nil if not found
+---@return pos?
+---@nodiscard
 local function searchTextobj(pattern, scope, lookForwL)
 	local cursorRow, cursorCol = unpack(u.getCursor(0))
 	local lineContent = u.getline(cursorRow)
@@ -56,7 +59,7 @@ local function searchTextobj(pattern, scope, lookForwL)
 			i = i + 1
 			if i > lookForwL or cursorRow + i > lastLine then
 				u.notFoundMsg(lookForwL)
-				return false
+				return nil
 			end
 			lineContent = u.getline(cursorRow + i)
 
@@ -74,7 +77,15 @@ local function searchTextobj(pattern, scope, lookForwL)
 		endCol = endCol - backOuterLen
 	end
 
-	setSelection({ cursorRow + i, beginCol - 1 }, { cursorRow + i, endCol - 1 })
+	return { cursorRow + i, beginCol - 1 }, { cursorRow + i, endCol - 1 }
+end
+
+---@return boolean whether textobj search was successful
+local function selectTextobj(...)
+	local startpos, endpos = searchTextobj(...)
+	if not startpos or not endpos then return false end -- textobj not found
+
+	setSelection(startpos, endpos)
 	return true
 end
 
@@ -90,23 +101,23 @@ function M.subword(scope)
 	if upperCaseWord then pattern = "()[%u%d]+([ _-]?)" end
 
 	-- forward looking results in unexpected behavior for subword
-	searchTextobj(pattern, scope, 0)
+	selectTextobj(pattern, scope, 0)
 end
 
 ---till next closing bracket
 ---@param lookForwL integer number of lines to look forward for the textobj
 function M.toNextClosingBracket(lookForwL)
-	-- Since `searchTextobj` just selects the next closing bracket, we save the
+	-- Since `selectTextobj` just selects the next closing bracket, we save the
 	-- current cursor position and then extend the selection backwards to the
 	-- cursor position move backwards. selecting with ".*" would result in
-	-- selecting the whole line, since `searchTextobj` also considers any
+	-- selecting the whole line, since `selectTextobj` also considers any
 	-- potential the cursor is already standing on.
 	-- While this is a less straightforward approach, this allows us to reuse
-	-- `searchTextobj` instead of re-implementing the forward-searching algorithm
+	-- `selectTextobj` instead of re-implementing the forward-searching algorithm
 	local startingPosition = u.getCursor(0)
 
 	local pattern = "().([]})])"
-	searchTextobj(pattern, "inner", lookForwL) -- just selects the bracket
+	selectTextobj(pattern, "inner", lookForwL) -- just selects char before the bracket
 
 	u.setCursor(0, startingPosition) -- extend backwards
 	if isVisualMode() then u.normal("o") end
@@ -121,7 +132,7 @@ function M.toNextQuotationMark(lookForwL)
 	local quoteEscape = vim.opt_local.quoteescape:get() -- default: \
 	local pattern = ([[()[^%s](["'`])]]):format(quoteEscape)
 
-	searchTextobj(pattern, "inner", lookForwL) -- just selects the bracket
+	selectTextobj(pattern, "inner", lookForwL) -- just selects char before the quote
 
 	u.setCursor(0, startingPosition) -- extend backwards
 	if isVisualMode() then u.normal("o") end -- move anchor to front
@@ -137,7 +148,7 @@ function M.anyQuote(scope, lookForwL)
 	local quoteEscape = vim.opt_local.quoteescape:get() -- default: \
 	local pattern = ([[([^%s]["'`]).-[^%s](["'`])]]):format(quoteEscape, quoteEscape)
 
-	searchTextobj(pattern, scope, lookForwL)
+	selectTextobj(pattern, scope, lookForwL)
 
 	-- pattern includes one extra character to account for an escape character,
 	-- so we need to move to the right to factor that in
@@ -224,7 +235,7 @@ function M.value(scope, lookForwL)
 	-- or css pseudo-elements :: are not matched
 	local pattern = "(%s*%f[!<>~=:][=:]%s*)[^=:].*()"
 
-	local valueFound = searchTextobj(pattern, scope, lookForwL)
+	local valueFound = selectTextobj(pattern, scope, lookForwL)
 	if not valueFound then return end
 
 	-- if value found, remove trailing comment from it
@@ -249,7 +260,7 @@ end
 function M.key(scope, lookForwL)
 	local pattern = "(%s*).-( ?[:=] ?)"
 
-	local valueFound = searchTextobj(pattern, scope, lookForwL)
+	local valueFound = selectTextobj(pattern, scope, lookForwL)
 	if not valueFound then return end
 
 	-- 1st capture is included for the outer obj, but we don't want it
@@ -269,19 +280,19 @@ function M.number(scope, lookForwL)
 	-- before and after the decimal dot. enforcing digital after dot so outer
 	-- excludes enumrations.
 	local pattern = scope == "inner" and "%d+" or "%-?%d*%.?%d+"
-	searchTextobj(pattern, "outer", lookForwL)
+	selectTextobj(pattern, "outer", lookForwL)
 end
 
 ---URL textobj
 ---@param lookForwL integer number of lines to look forward for the textobj
 function M.url(lookForwL)
-	-- TODO match other urls (file://, ftp://, etc.) as well. Requires searchTextobj()
+	-- TODO match other urls (file://, ftp://, etc.) as well. Requires selectTextobj()
 	-- being able to handle multiple patterns, though, since lua pattern do not
 	-- have optional groups. Think of a way to implement this without making
-	-- searchTextobj unnecessarily complex for other methods
+	-- selectTextobj unnecessarily complex for other methods
 	-- INFO mastodon URLs contain `@`, neovim docs urls can contain a `'`
 	local pattern = "https?://[A-Za-z0-9_%-/.#%%=?&'@+]+"
-	searchTextobj(pattern, "outer", lookForwL)
+	selectTextobj(pattern, "outer", lookForwL)
 end
 
 ---field which a call
@@ -290,7 +301,7 @@ end
 ---@param lookForwL integer number of lines to look forward for the textobj
 function M.chainMember(scope, lookForwL)
 	local pattern = "(%.)[%w_][%a_]*%b()()"
-	searchTextobj(pattern, scope, lookForwL)
+	selectTextobj(pattern, scope, lookForwL)
 end
 
 --------------------------------------------------------------------------------
@@ -301,7 +312,7 @@ end
 ---@param lookForwL integer number of lines to look forward for the textobj
 function M.mdlink(scope, lookForwL)
 	local pattern = "(%[)[^%]]-(%]%b())"
-	searchTextobj(pattern, scope, lookForwL)
+	selectTextobj(pattern, scope, lookForwL)
 end
 
 ---double square brackets
@@ -309,7 +320,7 @@ end
 ---@param lookForwL integer number of lines to look forward for the textobj
 function M.doubleSquareBrackets(scope, lookForwL)
 	local pattern = "(%[%[).-(%]%])"
-	searchTextobj(pattern, scope, lookForwL)
+	selectTextobj(pattern, scope, lookForwL)
 end
 
 ---CSS Selector Textobj
@@ -317,7 +328,7 @@ end
 ---@param lookForwL integer number of lines to look forward for the textobj
 function M.cssSelector(scope, lookForwL)
 	local pattern = "()[#.][%w-_]+(,? ?)"
-	searchTextobj(pattern, scope, lookForwL)
+	selectTextobj(pattern, scope, lookForwL)
 end
 
 ---HTML/XML Attribute Textobj
@@ -325,7 +336,7 @@ end
 ---@param lookForwL integer number of lines to look forward for the textobj
 function M.htmlAttribute(scope, lookForwL)
 	local pattern = [[(%w+=["']).-(["'])]]
-	searchTextobj(pattern, scope, lookForwL)
+	selectTextobj(pattern, scope, lookForwL)
 end
 
 ---Shell Pipe Textobj
@@ -333,7 +344,7 @@ end
 ---@param lookForwL integer number of lines to look forward for the textobj
 function M.shellPipe(scope, lookForwL)
 	local pattern = "(| ?)[^|]+()"
-	searchTextobj(pattern, scope, lookForwL)
+	selectTextobj(pattern, scope, lookForwL)
 end
 
 ---@param scope "inner"|"outer" inner excludes `"""`
