@@ -161,9 +161,8 @@ function M.nearEoL()
 	u.normal("$")
 
 	-- loop ensures trailing whitespace is not counted
-	local curRow = fn.line(".")
-	local lineContent = u.getline(curRow)
-	local lastCol = fn.col("$")
+	local lineContent = vim.api.nvim_get_current_line()
+	local lastCol = vim.api.nvim_buf_line_count(0)
 	repeat
 		u.normal("h")
 		lastCol = lastCol - 1
@@ -239,7 +238,7 @@ function M.value(scope, lookForwL)
 	if not valueFound then return end
 
 	-- if value found, remove trailing comment from it
-	local curRow = fn.line(".")
+	local curRow = u.getCursor(0)[1]
 	local lineContent = u.getline(curRow)
 	if bo.commentstring ~= "" then -- JSON has empty commentstring
 		local commentPat = bo.commentstring:gsub(" ?%%s.*", "") -- remove placeholder and backside of commentstring
@@ -265,7 +264,7 @@ function M.key(scope, lookForwL)
 
 	-- 1st capture is included for the outer obj, but we don't want it
 	if scope == "outer" then
-		local curRow = fn.line(".")
+		local curRow = u.getCursor(0)[1]
 		local leadingWhitespace = u.getline(curRow):find("[^%s]") - 1
 		u.normal("o")
 		u.setCursor(0, { curRow, leadingWhitespace })
