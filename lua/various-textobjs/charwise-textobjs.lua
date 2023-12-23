@@ -32,10 +32,11 @@ end
 ---two additions for the outer variant of the textobj. Use an empty capture group
 ---when there is no difference between inner and outer on that side.
 ---(Essentially, the two capture groups work as lookbehind and lookahead.)
----@param scope "inner"|"outer" true = inner textobj
+---CAVEAT multi-line-objects are not supported
+---@param scope "inner"|"outer"
 ---@param lookForwL integer
----@return pos|nil -- nil if not found
----@return pos|nil
+---@return pos? startpos
+---@return pos? endpos
 ---@nodiscard
 local function searchTextobj(pattern, scope, lookForwL)
 	local cursorRow, cursorCol = unpack(u.getCursor(0))
@@ -57,10 +58,7 @@ local function searchTextobj(pattern, scope, lookForwL)
 	if noneInStartingLine then
 		while true do
 			linesSearched = linesSearched + 1
-			if linesSearched > lookForwL or cursorRow + linesSearched > lastLine then
-				u.notFoundMsg(lookForwL)
-				return nil, nil
-			end
+			if linesSearched > lookForwL or cursorRow + linesSearched > lastLine then return end
 			lineContent = u.getline(cursorRow + linesSearched)
 
 			beginCol, endCol, captureG1, captureG2 = lineContent:find(pattern)
@@ -80,17 +78,40 @@ local function searchTextobj(pattern, scope, lookForwL)
 	return { cursorRow + linesSearched, beginCol - 1 }, { cursorRow + linesSearched, endCol - 1 }
 end
 
-
----@param pattern string lua pattern
+---searches for the position of one or multiple patterns and selects the closest one
+---@param patterns string|string[] lua, pattern(s) with the specification from `searchTextobj`
 ---@param scope "inner"|"outer" true = inner textobj
 ---@param lookForwL integer
----@return boolean whether textobj search was successful
-local function selectTextobj(pattern, scope, lookForwL)
-	local startpos, endpos = searchTextobj(pattern, scope, lookForwL)
-	if not startpos or not endpos then return false end -- textobj not found
+---@return boolean -- whether textobj search was successful
+local function selectTextobj(patterns, scope, lookForwL)
+	local closestObj
+	if type(patterns) == "string" then
+		local startPos, endPos = searchTextobj(patterns, scope, lookForwL)
+		if startPos and endPos then closestObj = { startPos, endPos } end
+	elseif type(patterns) == "table" then
+		local closestRow = math.huge
+		local closestCol = math.huge
+		for _, pattern in ipairs(patterns) do
+			local startPos, endPos = searchTextobj(pattern, scope, lookForwL)
+			if startPos and endPos then
+				local row, col = unpack(startPos)
+				if row <= closestRow and col < closestCol then
+					closestRow = row
+					closestCol = col
+					closestObj = { startPos, endPos }
+				end
+			end
+		end
+	end
 
-	setSelection(startpos, endpos)
-	return true
+	if closestObj then
+		local startPos, endPos = unpack(closestObj)
+		setSelection(startPos, endPos)
+		return true
+	else
+		u.notFoundMsg(lookForwL)
+		return false
+	end
 end
 
 --------------------------------------------------------------------------------
@@ -113,7 +134,10 @@ function M.toNextClosingBracket(lookForwL)
 	local pattern = "().([]})])"
 
 	local _, endPos = searchTextobj(pattern, "inner", lookForwL)
-	if not endPos then return end
+	if not endPos then
+		u.notFoundMsg(lookForwL)
+		return
+	end
 	local startPos = u.getCursor(0)
 
 	setSelection(startPos, endPos)
@@ -127,7 +151,10 @@ function M.toNextQuotationMark(lookForwL)
 	local pattern = ([[()[^%s](["'`])]]):format(quoteEscape)
 
 	local _, endPos = searchTextobj(pattern, "inner", lookForwL)
-	if not endPos then return end
+	if not endPos then
+		u.notFoundMsg(lookForwL)
+		return
+	end
 	local startPos = u.getCursor(0)
 
 	setSelection(startPos, endPos)
@@ -150,7 +177,7 @@ function M.anyQuote(scope, lookForwL)
 	if scope == "outer" then u.normal("ol") end
 end
 
----near end of the line, -ignoring trailing whitespace 
+---near end of the line, ignoring trailing whitespace
 ---(relevant for markdown, where you normally add a -space after the `.` ending a sentence.)
 function M.nearEoL()
 	if not isVisualMode() then u.normal("v") end
