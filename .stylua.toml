@@ -1,5 +1,5 @@
 # https://github.com/JohnnyMorganz/StyLua#options
-column_width = 105
+column_width = 100
 indent_type = "Tabs"
 indent_width = 3
 quote_style = "AutoPreferDouble"
