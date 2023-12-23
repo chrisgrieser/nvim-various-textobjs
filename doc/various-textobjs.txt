@@ -18,7 +18,7 @@ Table of Contents                         *various-textobjs-table-of-contents*
 
 
 
-Bundleof more than two dozen new textobjects for Neovim.
+Bundleof more than 30 new textobjects for Neovim.
 
 - |various-textobjs-list-of-text-objects|
 - |various-textobjs-non-goals|
@@ -69,8 +69,11 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs--list-of-text-object
                            `                                                                         
 
   anyQuote                 between any            outer includes the     small               iq/aq   all
-                           unescaped[2] ", ', or  quotatin marks                                     
+                           unescaped[2] ", ', or  quotation marks                                    
                            ` in a line                                                               
+
+  anyBracket               between any (), [], or outer includes the     small               io/ao   all
+                           {} in a line           brackets                                           
 
   restOfParagraph          like }, but linewise   -                      -                     r     all
 
@@ -303,12 +306,23 @@ can copypaste this list and enter your own bindings.Mappings for all text object
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').subword('inner')<CR>")
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').subword('outer')<CR>")
     
-    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').toNextClosingBracket()<CR>")
+    keymap(
+        { "o", "x" },
+        "YOUR_MAPPING",
+        "<cmd>lua require('various-textobjs').toNextClosingBracket()<CR>"
+    )
     
-    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').toNextQuotationMark()<CR>")
+    keymap(
+        { "o", "x" },
+        "YOUR_MAPPING",
+        "<cmd>lua require('various-textobjs').toNextQuotationMark()<CR>"
+    )
     
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').anyQuote('inner')<CR>")
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').anyQuote('outer')<CR>")
+    
+    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').anyBracket('inner')<CR>")
+    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').anyBracket('outer')<CR>")
     
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').restOfParagraph()<CR>")
     
@@ -329,10 +343,22 @@ can copypaste this list and enter your own bindings.Mappings for all text object
     
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').column()<CR>")
     
-    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').multiCommentedLines()<CR>")
+    keymap(
+        { "o", "x" },
+        "YOUR_MAPPING",
+        "<cmd>lua require('various-textobjs').multiCommentedLines()<CR>"
+    )
     
-    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').notebookCell('inner')<CR>")
-    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').notebookCell('outer')<CR>")
+    keymap(
+        { "o", "x" },
+        "YOUR_MAPPING",
+        "<cmd>lua require('various-textobjs').notebookCell('inner')<CR>"
+    )
+    keymap(
+        { "o", "x" },
+        "YOUR_MAPPING",
+        "<cmd>lua require('various-textobjs').notebookCell('outer')<CR>"
+    )
     
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').value('inner')<CR>")
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').value('outer')<CR>")
@@ -350,8 +376,16 @@ can copypaste this list and enter your own bindings.Mappings for all text object
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').closedFold('inner')<CR>")
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').closedFold('outer')<CR>")
     
-    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').chainMember('inner')<CR>")
-    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').chainMember('outer')<CR>")
+    keymap(
+        { "o", "x" },
+        "YOUR_MAPPING",
+        "<cmd>lua require('various-textobjs').chainMember('inner')<CR>"
+    )
+    keymap(
+        { "o", "x" },
+        "YOUR_MAPPING",
+        "<cmd>lua require('various-textobjs').chainMember('outer')<CR>"
+    )
     
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').visibleInWindow()<CR>")
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').restOfWindow()<CR>")
