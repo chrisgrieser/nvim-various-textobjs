@@ -25,12 +25,12 @@ end
 
 --------------------------------------------------------------------------------
 
----Seek and select characterwise text object based on pattern.
+---Seek and select characterwise a text object based on one pattern.
+---CAVEAT multi-line-objects are not supported
 ---@param pattern string lua pattern. REQUIRES two capture groups marking the
 ---two additions for the outer variant of the textobj. Use an empty capture group
 ---when there is no difference between inner and outer on that side.
----(Essentially, the two capture groups work as lookbehind and lookahead.)
----CAVEAT multi-line-objects are not supported
+---Essentially, the two capture groups work as lookbehind and lookahead.
 ---@param scope "inner"|"outer"
 ---@param lookForwL integer
 ---@return pos? startPos
@@ -85,6 +85,7 @@ end
 ---@return boolean -- whether textobj search was successful
 local function selectTextobj(patterns, scope, lookForwL)
 	local closestObj
+
 	if type(patterns) == "string" then
 		local startPos, endPos = searchTextobj(patterns, scope, lookForwL)
 		if startPos and endPos then closestObj = { startPos, endPos } end
@@ -108,11 +109,8 @@ local function selectTextobj(patterns, scope, lookForwL)
 
 				-- this condition for rows suffices since `searchTextobj` does not
 				-- return multi-line-objects
-				if row < closestRow then
+				if (row < closestRow) or (row == closestRow and isCloserInRow) then
 					closestRow = row
-					shortestDist = distance
-					closestObj = { startPos, endPos }
-				elseif row == closestRow and isCloserInRow then
 					shortestDist = distance
 					closestObj = { startPos, endPos }
 				end
