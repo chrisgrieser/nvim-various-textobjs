@@ -1,6 +1,4 @@
 local M = {}
-local fn = vim.fn
-local bo = vim.bo
 local u = require("various-textobjs.utils")
 --------------------------------------------------------------------------------
 
@@ -181,9 +179,9 @@ function M.anyQuote(scope, lookForwL)
 	-- the off-chance that the user has customized this.
 	local escape = vim.opt_local.quoteescape:get() -- default: \
 	local patterns = {
-		('([^%s]").-[^%s](")'):format(escape, escape), -- "
-		("([^%s]').-[^%s](')"):format(escape, escape), -- '
-		("([^%s]`).-[^%s](`)"):format(escape, escape), -- `
+		('([^%s]").-[^%s](")'):format(escape, escape), -- ""
+		("([^%s]').-[^%s](')"):format(escape, escape), -- ''
+		("([^%s]`).-[^%s](`)"):format(escape, escape), -- ``
 	}
 
 	selectTextobj(patterns, scope, lookForwL)
@@ -207,33 +205,20 @@ end
 ---near end of the line, ignoring trailing whitespace
 ---(relevant for markdown, where you normally add a -space after the `.` ending a sentence.)
 function M.nearEoL()
-	if not isVisualMode() then u.normal("v") end
-	u.normal("$")
+	local pattern = "()%S(%S%s*)$"
 
-	-- loop ensures trailing whitespace is not omitted
-	local lineContent = vim.api.nvim_get_current_line()
-	local lastCol = vim.api.nvim_buf_line_count(0)
-	repeat
-		u.normal("h")
-		lastCol = lastCol - 1
-		local lastChar = lineContent:sub(lastCol, lastCol)
-	until not lastChar:find("%s") or lastCol == 1
+	local _, endPos = searchTextobj(pattern, "inner", 0)
+	if not endPos then return end
+	local startPos = u.getCursor(0)
 
-	u.normal("h")
+	setSelection(startPos, endPos)
 end
 
 ---current line (but characterwise)
 ---@param scope "inner"|"outer" outer includes indentation and trailing spaces
 function M.lineCharacterwise(scope)
-	-- edge case: empty line
-	if fn.col("$") == 1 then return end
-
-	if not isVisualMode() then u.normal("v") end
-	if scope == "inner" then
-		u.normal("g_o^")
-	else
-		u.normal("$ho0")
-	end
+	local pattern = "^(%s*).*(%s*)$"
+	selectTextobj(pattern, scope, 0)
 end
 
 ---similar to https://github.com/andrewferrier/textobj-diagnostic.nvim
@@ -284,14 +269,17 @@ function M.value(scope, lookForwL)
 	-- or css pseudo-elements :: are not matched
 	local pattern = "(%s*%f[!<>~=:][=:]%s*)[^=:].*()"
 
-	local valueFound = selectTextobj(pattern, scope, lookForwL)
-	if not valueFound then return end
+	local startPos, endPos = searchTextobj(pattern, scope, lookForwL)
+	if not startPos or not endPos then
+		u.notFoundMsg(lookForwL)
+		return
+	end
 
 	-- if value found, remove trailing comment from it
-	local curRow = u.getCursor(0)[1]
+	local curRow = startPos[1]
 	local lineContent = u.getline(curRow)
-	if bo.commentstring ~= "" then -- JSON has empty commentstring
-		local commentPat = bo.commentstring:gsub(" ?%%s.*", "") -- remove placeholder and backside of commentstring
+	if vim.bo.commentstring ~= "" then -- JSON has empty commentstring
+		local commentPat = vim.bo.commentstring:gsub(" ?%%s.*", "") -- remove placeholder and backside of commentstring
 		commentPat = vim.pesc(commentPat) -- escape lua pattern
 		commentPat = " *" .. commentPat .. ".*" -- to match till end of line
 		lineContent = lineContent:gsub(commentPat, "") -- remove commentstring
@@ -301,30 +289,22 @@ function M.value(scope, lookForwL)
 	-- inner value = exclude trailing comma/semicolon
 	if scope == "inner" and lineContent:find("[,;]$") then valueEndCol = valueEndCol - 1 end
 
-	u.setCursor(0, { curRow, valueEndCol })
+	-- set selection
+	endPos[2] = valueEndCol
+	setSelection(startPos, endPos)
 end
 
 ---@param scope "inner"|"outer" outer key includes the `:` or `=` after the key
 ---@param lookForwL integer
 function M.key(scope, lookForwL)
-	local pattern = "(%s*).-( ?[:=] ?)"
-
-	local valueFound = selectTextobj(pattern, scope, lookForwL)
-	if not valueFound then return end
-
-	-- 1st capture is included for the outer obj, but we don't want it
-	if scope == "outer" then
-		local curRow = u.getCursor(0)[1]
-		local leadingWhitespace = u.getline(curRow):find("[^%s]") - 1
-		u.normal("o")
-		u.setCursor(0, { curRow, leadingWhitespace })
-	end
+	local pattern = "()%S.-( ?[:=] ?)"
+	selectTextobj(pattern, scope, lookForwL)
 end
 
 ---@param scope "inner"|"outer" inner number consists purely of digits, outer number factors in decimal points and includes minus sign
 ---@param lookForwL integer
 function M.number(scope, lookForwL)
-	-- here two different patterns make more sense, so the inner number can match
+	-- Here two different patterns make more sense, so the inner number can match
 	-- before and after the decimal dot. enforcing digital after dot so outer
 	-- excludes enumrations.
 	local pattern = scope == "inner" and "%d+" or "%-?%d*%.?%d+"
@@ -384,6 +364,7 @@ function M.shellPipe(scope, lookForwL)
 	selectTextobj(pattern, scope, lookForwL)
 end
 
+---INFO this textobj requires the python Treesitter parser
 ---@param scope "inner"|"outer" inner excludes `"""`
 function M.pyTripleQuotes(scope)
 	local node = u.getNodeAtCursor()
