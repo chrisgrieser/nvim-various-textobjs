@@ -1,4 +1,4 @@
-*various-textobjs.txt*      For NVIM v0.8.0      Last change: 2023 December 24
+*various-textobjs.txt*      For NVIM v0.8.0      Last change: 2023 December 25
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
@@ -98,12 +98,13 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs--list-of-text-object
 
   value                    value of key-value     outer includes         small              iv, av   all
                            pair, or right side of trailing commas or                                 
-                           a variable assignment  semicolons                                         
-                           (inside one line)                                                         
+                           a assignment, excl.    semicolons                                         
+                           trailing comment (in a                                                    
+                           line)                                                                     
 
   key                      key of key-value pair, outer includes the =   small              ik, ak   all
                            or left side of a      or :                                               
-                           variable assignment                                                       
+                           assignment                                                                
 
   url                      works with http[s] or  -                      big                   L     all
                            any other protocol                                                        
