@@ -153,8 +153,8 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs--list-of-text-object
                                                   four square brackets                               neorg,
                                                                                                      markdown
 
-  shellPipe                command stdout is      outer includes the     small               iP,aP   bash, zsh,
-                           piped to               front pipe character                               fish, sh
+  shellPipe                segment until a pipe   outer includes the     small               iP,aP   bash, zsh,
+                           character (\|)         pipe to the right                                  fish, sh
 
   pyTripleQuotes           python strings         inner excludes the """ -                   iy,ay   python
                            surrounded by three    or '''                                             
