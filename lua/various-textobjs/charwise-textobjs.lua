@@ -358,7 +358,7 @@ end
 ---@param scope "inner"|"outer" outer selector includes the front pipe
 ---@param lookForwL integer
 function M.shellPipe(scope, lookForwL)
-	local pattern = "(| ?)[^|]+()"
+	local pattern = "()[^|%s][^|]-( ?| ?)"
 	selectTextobj(pattern, scope, lookForwL)
 end
 
