@@ -1,4 +1,4 @@
-*various-textobjs.txt*      For NVIM v0.8.0      Last change: 2023 December 26
+*various-textobjs.txt*      For NVIM v0.8.0      Last change: 2023 December 28
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
@@ -133,6 +133,10 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs--list-of-text-object
                            the last line in the                                                      
                            window                                                                    
 
+  lastChange               Last                   -                      -                    g;     all
+                           non-deletion-change,                                                      
+                           yank, or paste.[3]                                                        
+
   mdlink                   markdown link like     inner is only the link small              il, al   markdown,
                            [title](url)           title (between the [])                             toml
 
@@ -169,6 +173,10 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs--list-of-text-object
 [1] This respects vim’s quoteescape option.
 
 [2] This respects vim’s quoteescape option.
+
+[3] The lastChange textobject does not work well with plugins that
+manipulate paste operations such as yanky.nvim or plugins that auto-save
+the buffer.
 
 NON-GOALS                  *various-textobjs-nvim-various-textobjs--non-goals*
 
@@ -330,6 +338,8 @@ can copypaste this list and enter your own bindings.Mappings for all text object
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').entireBuffer()<CR>")
     
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').nearEoL()<CR>")
+    
+    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').lastChange()<CR>")
     
     keymap(
         { "o", "x" },
