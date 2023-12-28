@@ -53,6 +53,7 @@ Bundle of more than 30 new textobjects for Neovim.
 | chainMember            | field with the full call, like `.encode(param)`                                           | outer includes the leading `.` (or `:`)                                                   | small           |        `im`, `am`        | all                             |
 | visibleInWindow        | all lines visible in the current window                                                   | \-                                                                                        | \-              |           `gw`           | all                             |
 | restOfWindow           | from the cursorline to the last line in the window                                        | \-                                                                                        | \-              |           `gW`           | all                             |
+| lastChange             | Last non-deletion-change, yank, or paste.[^2]                                             | \-                                                                                        | \-              |           `g;`           | all                             |
 | mdlink                 | markdown link like `[title](url)`                                                         | inner is only the link title (between the `[]`)                                           | small           |        `il`, `al`        | markdown, toml                  |
 | mdFencedCodeBlock      | markdown fenced code (enclosed by three backticks)                                        | outer includes the enclosing backticks                                                    | big             |        `iC`, `aC`        | markdown                        |
 | cssSelector            | class in CSS like `.my-class`                                                             | outer includes trailing comma and space                                                   | small           |        `ic`, `ac`        | css, scss                       |
@@ -227,6 +228,8 @@ keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').restO
 keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').entireBuffer()<CR>")
 
 keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').nearEoL()<CR>")
+
+keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').lastChange()<CR>")
 
 keymap(
 	{ "o", "x" },
@@ -567,3 +570,8 @@ __Profiles__
 /></a>
 
 [^1]: This respects vim's [quoteescape option](https://neovim.io/doc/user/options.html#'quoteescape').
+
+[^2]: The `lastChange` textobject does not work well with plugins that
+	manipulate paste operations such as
+	[yanky.nvim](https://github.com/gbprod/yanky.nvim) or plugins that auto-save
+	the buffer.

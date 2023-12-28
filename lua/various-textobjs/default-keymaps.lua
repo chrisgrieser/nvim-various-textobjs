@@ -26,7 +26,8 @@ local oneMaps = {
 	column = "|",
 	entireBuffer = "gG", -- G + gg
 	url = "L", -- gu, gU, and U would conflict with gugu, gUgU, and gUU. u would conflict with gcu (undo comment)
-	multiCommentedLines = "gc" -- consistent with usual mapping for commenting lines
+	multiCommentedLines = "gc", -- consistent with usual mapping for commenting lines
+	lastChange = "g;", -- consistent with g; movement
 }
 local ftMaps = {
 	{

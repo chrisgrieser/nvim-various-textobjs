@@ -325,6 +325,18 @@ function M.chainMember(scope, lookForwL)
 	selectTextobj(pattern, scope, lookForwL)
 end
 
+function M.lastChange()
+	local changeStartPos = vim.api.nvim_buf_get_mark(0, "[")
+	local changeEndPos = vim.api.nvim_buf_get_mark(0, "]")
+
+	if changeStartPos[1] == changeEndPos[1] and changeStartPos[2] == changeEndPos[2] then
+		u.notify("Last Change was a deletion operation, aborting.", "warn")
+		return
+	end
+
+	setSelection(changeStartPos, changeEndPos)
+end
+
 --------------------------------------------------------------------------------
 -- FILETYPE SPECIFIC TEXTOBJS
 

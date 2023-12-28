@@ -15,7 +15,6 @@ local function argConvert(arg)
 	if arg == false then return "outer" end
 	if arg == true then return "inner" end
 	if arg == "outer" or arg == "inner" then return arg end
-
 	u.notify(
 		"Invalid argument for textobject, only 'outer' and 'inner' accepted. Falling back to outer textobject.",
 		"warn"
@@ -98,6 +97,7 @@ function M.toNextClosingBracket() charwise.toNextClosingBracket(config.lookForwa
 function M.toNextQuotationMark() charwise.toNextQuotationMark(config.lookForwardSmall) end
 function M.url() charwise.url(config.lookForwardBig) end
 function M.diagnostic() charwise.diagnostic(config.lookForwardBig) end
+function M.lastChange() charwise.lastChange() end
 
 ---@param scope "inner"|"outer"
 function M.anyQuote(scope) charwise.anyQuote(argConvert(scope), config.lookForwardSmall) end
