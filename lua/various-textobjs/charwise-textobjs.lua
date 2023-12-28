@@ -134,7 +134,8 @@ end
 function M.subword(scope)
 	local pattern = {
 		"()%w[%l%d]+([_%- ]?)", -- camelCase or lowercase
-		"()[%u%d]+([_%- ]?)", -- UPPER_CASE or digits
+		"()%u[%u%d]+([_%- ]?)", -- UPPER_CASE
+		"()%d+([_%- ]?)", -- number
 	}
 	selectTextobj(pattern, scope, 0)
 end
