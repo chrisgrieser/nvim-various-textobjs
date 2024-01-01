@@ -1,9 +1,6 @@
 local M = {}
 --------------------------------------------------------------------------------
 
-M.getCursor = vim.api.nvim_win_get_cursor
-M.setCursor = vim.api.nvim_win_set_cursor
-
 ---runs :normal natively with bang
 ---@param cmdStr any
 function M.normal(cmdStr)

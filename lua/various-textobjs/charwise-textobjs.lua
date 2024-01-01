@@ -1,5 +1,6 @@
 local M = {}
 local u = require("various-textobjs.utils")
+local getCursor = vim.api.nvim_win_get_cursor
 --------------------------------------------------------------------------------
 
 ---@return boolean
@@ -14,13 +15,13 @@ end
 ---@param startPos pos
 ---@param endPos pos
 local function setSelection(startPos, endPos)
-	u.setCursor(0, startPos)
+	vim.api.nvim_win_set_cursor(0, startPos)
 	if isVisualMode() then
 		u.normal("o")
 	else
 		u.normal("v")
 	end
-	u.setCursor(0, endPos)
+	vim.api.nvim_win_set_cursor(0, endPos)
 end
 
 --------------------------------------------------------------------------------
@@ -37,7 +38,7 @@ end
 ---@return pos? endPos
 ---@nodiscard
 local function searchTextobj(pattern, scope, lookForwL)
-	local cursorRow, cursorCol = unpack(u.getCursor(0))
+	local cursorRow, cursorCol = unpack(getCursor(0))
 	local lineContent = u.getline(cursorRow)
 	local lastLine = vim.api.nvim_buf_line_count(0)
 	local beginCol = 0 ---@type number|nil
@@ -92,7 +93,7 @@ local function selectTextobj(patterns, scope, lookForwL)
 	elseif type(patterns) == "table" then
 		local closestRow = math.huge
 		local shortestDist = math.huge
-		local cursorCol = u.getCursor(0)[2]
+		local cursorCol = getCursor(0)[2]
 
 		for _, pattern in ipairs(patterns) do
 			local startPos, endPos = searchTextobj(pattern, scope, lookForwL)
@@ -149,7 +150,7 @@ function M.toNextClosingBracket(lookForwL)
 		u.notFoundMsg(lookForwL)
 		return
 	end
-	local startPos = u.getCursor(0)
+	local startPos = getCursor(0)
 
 	setSelection(startPos, endPos)
 end
@@ -166,7 +167,7 @@ function M.toNextQuotationMark(lookForwL)
 		u.notFoundMsg(lookForwL)
 		return
 	end
-	local startPos = u.getCursor(0)
+	local startPos = getCursor(0)
 
 	setSelection(startPos, endPos)
 end
@@ -208,7 +209,7 @@ function M.nearEoL()
 
 	local _, endPos = searchTextobj(pattern, "inner", 0)
 	if not endPos then return end
-	local startPos = u.getCursor(0)
+	local startPos = getCursor(0)
 
 	setSelection(startPos, endPos)
 end
@@ -237,7 +238,7 @@ function M.diagnostic(lookForwL)
 
 	local nextD = vim.diagnostic.get_next { wrap = false }
 	local curStandingOnPrevD = false -- however, if prev diag is covered by or before the cursor has yet to be determined
-	local curRow, curCol = unpack(u.getCursor(0))
+	local curRow, curCol = unpack(getCursor(0))
 
 	if prevD then
 		local curAfterPrevDstart = (curRow == prevD.lnum + 1 and curCol >= prevD.col)

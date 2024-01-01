@@ -1,8 +1,10 @@
+local u = require("various-textobjs.utils")
+
 local M = {}
 local fn = vim.fn
 local a = vim.api
+local getCursor = vim.api.nvim_win_get_cursor
 
-local u = require("various-textobjs.utils")
 --------------------------------------------------------------------------------
 
 ---@return boolean
@@ -15,10 +17,10 @@ end
 ---@param startline integer
 ---@param endline integer
 local function setLinewiseSelection(startline, endline)
-	u.setCursor(0, { startline, 0 })
+	a.nvim_win_set_cursor(0, { startline, 0 })
 	if not isVisualLineMode() then u.normal("V") end
 	u.normal("o")
-	u.setCursor(0, { endline, 0 })
+	a.nvim_win_set_cursor(0, { endline, 0 })
 end
 
 ---@param lineNr number
@@ -34,7 +36,7 @@ end
 ---@param scope "inner"|"outer" outer adds one line after the fold
 ---@param lookForwL integer number of lines to look forward for the textobj
 function M.closedFold(scope, lookForwL)
-	local startLnum = a.nvim_win_get_cursor(0)[1]
+	local startLnum = getCursor(0)[1]
 	local lastLine = a.nvim_buf_line_count(0)
 	local startedOnFold = fn.foldclosed(startLnum) > 0
 	local foldStart, foldEnd
@@ -77,7 +79,7 @@ function M.restOfParagraph()
 	u.normal("}")
 
 	-- one up, except on last line
-	local curLnum = a.nvim_win_get_cursor(0)[1]
+	local curLnum = getCursor(0)[1]
 	local lastLine = a.nvim_buf_line_count(0)
 	if curLnum ~= lastLine then u.normal("k") end
 end
@@ -86,7 +88,7 @@ end
 ---@param scope "inner"|"outer" inner excludes the backticks
 ---@param lookForwL integer number of lines to look forward for the textobj
 function M.mdFencedCodeBlock(scope, lookForwL)
-	local cursorLnum = a.nvim_win_get_cursor(0)[1]
+	local cursorLnum = getCursor(0)[1]
 	local codeBlockPattern = "^```%w*$"
 
 	-- scan buffer for all code blocks, add beginnings & endings to a table each
@@ -153,7 +155,7 @@ end
 function M.indentation(startBorder, endBorder, blankLines)
 	if not blankLines then blankLines = "withBlanks" end
 
-	local curLnum = a.nvim_win_get_cursor(0)[1]
+	local curLnum = getCursor(0)[1]
 	local lastLine = a.nvim_buf_line_count(0)
 	while isBlankLine(curLnum) do -- when on blank line, use next line
 		if lastLine == curLnum then
@@ -205,7 +207,7 @@ end
 ---from cursor position down all lines with same or higher indentation;
 ---essentially `ii` downwards
 function M.restOfIndentation()
-	local startLnum = a.nvim_win_get_cursor(0)[1]
+	local startLnum = getCursor(0)[1]
 	local lastLine = a.nvim_buf_line_count(0)
 	local curLnum = startLnum
 	while isBlankLine(curLnum) do -- when on blank line, use next line
@@ -245,7 +247,9 @@ end
 ---@param lnum number
 ---@return boolean
 local function isCommentedLine(lnum)
-	local commentStringRegex = "^%s*" .. vim.pesc(vim.bo.commentstring):gsub(" ?%%%%s ?", ".*") .. "%s*$"
+	local commentStringRegex = "^%s*"
+		.. vim.pesc(vim.bo.commentstring):gsub(" ?%%%%s ?", ".*")
+		.. "%s*$"
 	return u.getline(lnum):find(commentStringRegex) ~= nil
 end
 
@@ -256,7 +260,7 @@ function M.multiCommentedLines(lookForwL)
 		return
 	end
 
-	local curLnum = a.nvim_win_get_cursor(0)[1]
+	local curLnum = getCursor(0)[1]
 	local startLnum = curLnum
 	local lastLine = a.nvim_buf_line_count(0)
 
@@ -298,7 +302,7 @@ function M.notebookCell(scope)
 		return
 	end
 
-	local curLnum = a.nvim_win_get_cursor(0)[1]
+	local curLnum = getCursor(0)[1]
 	local lastLine = a.nvim_buf_line_count(0)
 	local prevLnum = curLnum
 	local nextLnum = isCellBorder(curLnum) and curLnum + 1 or curLnum

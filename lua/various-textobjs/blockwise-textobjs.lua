@@ -1,13 +1,16 @@
+local u = require("various-textobjs.utils")
+
 local M = {}
 local fn = vim.fn
 local bo = vim.bo
-local u = require("various-textobjs.utils")
+local getCursor = vim.api.nvim_win_get_cursor
+
 --------------------------------------------------------------------------------
 
 ---Column Textobj (blockwise down until indent or shorter line)
 function M.column()
 	local lastLnum = fn.line("$")
-	local startRow = u.getCursor(0)[1]
+	local startRow = getCursor(0)[1]
 	local trueCursorCol = fn.virtcol(".") -- virtcol accurately accounts for tabs as indentation
 	local extraColumns = vim.v.count1 - 1 -- has to be done before running the other :normal commands, since they change v:count
 	local nextLnum = startRow
@@ -22,6 +25,7 @@ function M.column()
 	local linesDown = nextLnum - 1 - startRow
 
 	-- start visual block mode
+	-- INFO requires special character `^V`
 	if not (fn.mode() == "") then vim.cmd.execute([["normal! \<C-v>"]]) end
 
 	-- set position
