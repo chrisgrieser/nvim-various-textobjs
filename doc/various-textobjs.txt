@@ -26,7 +26,7 @@ Bundleof more than 30 new textobjects for Neovim.
 - |various-textobjs-configuration|
 - |various-textobjs-advanced-usage-/-api|
     - |various-textobjs-`ii`-on-unindented-line-should-select-entire-buffer|
-    - |various-textobjs-forward-seeking-`gx`|
+    - |various-textobjs-smarter-`gx`|
     - |various-textobjs-delete-surrounding-indentation|
     - |various-textobjs-yank-surrounding-indentation|
     - |various-textobjs-other-ideas?|
@@ -521,14 +521,27 @@ behavior:
 <
 
 
-FORWARD-SEEKING GX ~
+SMARTER GX ~
 
 The code below retrieves the next URL (within the amount of lines configured in
 the `setup` call), and opens it in your browser. As opposed to vim’s built-in
-`gx`, this is forward-seeking, meaning your cursor does not have to stand on
-the URL.
+`gx`, this is **forward-seeking**, meaning your cursor does not have to stand
+on the URL.
 
 >lua
+    local function openURL()
+        local opener
+        if vim.fn.has("macunix") == 1 then
+            opener = "open"
+        elseif vim.fn.has("linux") == 1 then
+            opener = "xdg-open"
+        elseif vim.fn.has("win64") == 1 or vim.fn.has("win32") == 1 then
+            opener = "start"
+        end
+        local openCommand = string.format("%s '%s' >/dev/null 2>&1", opener, url)
+        vim.fn.system(openCommand)
+    end
+    
     vim.keymap.set("n", "gx", function()
         -- select URL
         require("various-textobjs").url()
@@ -540,18 +553,38 @@ the URL.
         -- retrieve URL with the z-register as intermediary
         vim.cmd.normal { '"zy', bang = true }
         local url = vim.fn.getreg("z")
+        openURL(url)
+    end, { desc = "URL Opener" })
+<
+
+You could go even further: When no URL can be found by `various-textobjs`, you
+could retrieve all URLs in the buffer and select one to open. (The URL-pattern
+used by this plugin is exposed for this purpose.)
+
+>lua
+    vim.keymap.set("n", "gx", function()
+        require("various-textobjs").url()
+        local foundURL = vim.fn.mode():find("v") 
+        if foundURL then
+            u.normal('"zy')
+            local url = vim.fn.getreg("z")
+            openURL(url)
+        else 
+            -- find all URLs in buffer
+            local urlPattern = require("various-textobjs.charwise-textobjs").urlPattern
+            local bufText = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n")
+            local urls = {}
+            for url in bufText:gmatch(urlPattern) do
+                table.insert(urls, url)
+            end
+            if #urls == 0 then return end
     
-        -- open with the OS-specific shell command
-        local opener
-        if vim.fn.has("macunix") == 1 then
-            opener = "open"
-        elseif vim.fn.has("linux") == 1 then
-            opener = "xdg-open"
-        elseif vim.fn.has("win64") == 1 or vim.fn.has("win32") == 1 then
-            opener = "start"
+            -- select one, use a plugin like dressing.nvim for nicer UI for
+            -- `vim.ui.select`
+            vim.ui.select(urls, { prompt = "Select URL:" }, function(choice)
+                if choice then openURL(url) end
+            end)
         end
-        local openCommand = string.format("%s '%s' >/dev/null 2>&1", opener, url)
-        vim.fn.system(openCommand)
     end, { desc = "URL Opener" })
 <
 
@@ -584,7 +617,7 @@ performed on an indentation textobject. (It is also an intuitive mnemonic:
 
 >lua
     vim.keymap.set("n", "dsi", function()
-        -- select inner indentation
+        -- select outer indentation
         require("various-textobjs").indentation("outer", "outer")
     
         -- plugin only switches to visual mode when a textobj has been found
@@ -651,7 +684,8 @@ discussion page
 LIMITATIONS              *various-textobjs-nvim-various-textobjs--limitations*
 
 - This plugin uses pattern matching, so it can be inaccurate in some edge cases.
-- The value textobject does not work with multi-line values.
+- The characterwise textobjects do not match multi-line objects. Most notably,
+    this affects the value textobject.
 
 
 OTHER TEXT OBJECT PLUGINS*various-textobjs-nvim-various-textobjs--other-text-object-plugins*
