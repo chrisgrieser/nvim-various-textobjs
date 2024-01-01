@@ -17,6 +17,7 @@ Bundle of more than 30 new textobjects for Neovim.
 	* [Smarter `gx`](#smarter-gx)
 	* [Delete Surrounding Indentation](#delete-surrounding-indentation)
 	* [Yank Surrounding Indentation](#yank-surrounding-indentation)
+	* [Indent Last Paste](#indent-last-paste)
 	* [Other Ideas?](#other-ideas)
 - [Limitations](#limitations)
 - [Other Text Object Plugins](#other-text-object-plugins)
@@ -551,6 +552,22 @@ vim.keymap.set("n", "ysii", function()
 	-- restore cursor position
 	vim.api.nvim_win_set_cursor(0, startPos)
 end, { desc = "Yank surrounding indentation" })
+```
+
+### Indent Last Paste
+The `lastChange` textobject can be used to indent the last text that was pasted.
+This is useful in languages where indentation is meaningful and thus formatters
+are not able to automatically indent everything for you, such as Python.
+
+If you do not use `P` (upwards paste), "shift [p]aste" serves as a great
+mnemonic.
+
+```lua
+vim.keymap.set("n", "P", function()
+	require("various-textobjs").lastChange()
+	local changeFound = vim.fn.mode():find("v")
+	if changeFound then vim.cmd.normal { ">", bang = true } end
+end,
 ```
 
 ### Other Ideas?
