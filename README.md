@@ -14,7 +14,7 @@ Bundle of more than 30 new textobjects for Neovim.
 - [Configuration](#configuration)
 - [Advanced Usage / API](#advanced-usage--api)
 	* [`ii` on unindented line should select entire buffer](#ii-on-unindented-line-should-select-entire-buffer)
-	* [Forward-Seeking `gx`](#forward-seeking-gx)
+	* [Smarter `gx`](#smarter-gx)
 	* [Delete Surrounding Indentation](#delete-surrounding-indentation)
 	* [Yank Surrounding Indentation](#yank-surrounding-indentation)
 	* [Other Ideas?](#other-ideas)
@@ -500,7 +500,7 @@ performed on an indentation textobject. (It is also an intuitive mnemonic:
 
 ```lua
 vim.keymap.set("n", "dsi", function()
-	-- select inner indentation
+	-- select outer indentation
 	require("various-textobjs").indentation("outer", "outer")
 
 	-- plugin only switches to visual mode when a textobj has been found
@@ -519,7 +519,6 @@ end, { desc = "Delete Surrounding Indentation" })
 ```
 
 ### Yank Surrounding Indentation
-
 Similarly, you can also create a `ysii` command to yank the two lines surrounding
 an indentation textobject. (Not using `ysi`, since that blocks surround
 commands like `ysi)`). Using `nvim_win_[gs]et_cursor()`, you make the
@@ -561,7 +560,8 @@ page](https://github.com/chrisgrieser/nvim-various-textobjs/discussions).
 
 ## Limitations
 - This plugin uses pattern matching, so it can be inaccurate in some edge cases.
-- The value textobject does not work with multi-line values.
+- The characterwise textobjects do not match multi-line objects. Most notably,
+  this affects the value textobject.
 
 ## Other Text Object Plugins
 - [treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects)
@@ -571,22 +571,22 @@ page](https://github.com/chrisgrieser/nvim-various-textobjs/discussions).
 - [targets.vim](https://github.com/wellle/targets.vim)
 
 ## Credits
-__Thanks__  
+**Thanks**  
 - To the Valuable Dev for [their blog post on how to get started with creating
   custom text objects](https://thevaluable.dev/vim-create-text-objects/).
 - [To `@vypxl` and `@ii14` for figuring out dot-repeatability.](https://github.com/chrisgrieser/nvim-spider/pull/4)
 
 <!-- vale Google.FirstPerson = NO -->
-__About Me__  
+**About Me**  
 In my day job, I am a sociologist studying the social mechanisms underlying the
 digital economy. For my PhD project, I investigate the governance of the app
 economy and how software ecosystems manage the tension between innovation and
 compatibility. If you are interested in this subject, feel free to get in touch.
 
-__Blog__  
+**Blog**  
 I also occasionally blog about vim: [Nano Tips for Vim](https://nanotipsforvim.prose.sh)
 
-__Profiles__  
+**Profiles**  
 - [Discord](https://discordapp.com/users/462774483044794368/)
 - [Academic Website](https://chris-grieser.de/)
 - [GitHub](https://github.com/chrisgrieser/)
