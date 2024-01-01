@@ -311,11 +311,14 @@ function M.number(scope, lookForwL)
 	selectTextobj(pattern, "outer", lookForwL)
 end
 
+
+-- make URL pattern available for external use
+M.urlPattern = "%l%l%l-://[A-Za-z0-9_%-/.#%%=?&'@+]+"
+
 ---@param lookForwL integer
 function M.url(lookForwL)
 	-- INFO mastodon URLs contain `@`, neovim docs urls can contain a `'`
-	local pattern = "%l%l%l-://[A-Za-z0-9_%-/.#%%=?&'@+]+"
-	selectTextobj(pattern, "outer", lookForwL)
+	selectTextobj(M.urlPattern, "outer", lookForwL)
 end
 
 ---see #26

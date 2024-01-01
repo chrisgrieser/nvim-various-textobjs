@@ -407,13 +407,26 @@ vim.keymap.set("o", "ii", function()
 end)
 ```
 
-### Forward-Seeking `gx`
+### Smarter `gx`
 The code below retrieves the next URL (within the amount of lines configured in
 the `setup` call), and opens it in your browser. As opposed to vim's built-in
-`gx`, this is forward-seeking, meaning your cursor does not have to stand on the
-URL.
+`gx`, this is **forward-seeking**, meaning your cursor does not have to stand on
+the URL.
 
 ```lua
+local function openURL()
+	local opener
+	if vim.fn.has("macunix") == 1 then
+		opener = "open"
+	elseif vim.fn.has("linux") == 1 then
+		opener = "xdg-open"
+	elseif vim.fn.has("win64") == 1 or vim.fn.has("win32") == 1 then
+		opener = "start"
+	end
+	local openCommand = string.format("%s '%s' >/dev/null 2>&1", opener, url)
+	vim.fn.system(openCommand)
+end
+
 vim.keymap.set("n", "gx", function()
 	-- select URL
 	require("various-textobjs").url()
@@ -425,18 +438,38 @@ vim.keymap.set("n", "gx", function()
 	-- retrieve URL with the z-register as intermediary
 	vim.cmd.normal { '"zy', bang = true }
 	local url = vim.fn.getreg("z")
+	openURL(url)
+end, { desc = "URL Opener" })
+```
 
-	-- open with the OS-specific shell command
-	local opener
-	if vim.fn.has("macunix") == 1 then
-		opener = "open"
-	elseif vim.fn.has("linux") == 1 then
-		opener = "xdg-open"
-	elseif vim.fn.has("win64") == 1 or vim.fn.has("win32") == 1 then
-		opener = "start"
+You could go even further: When no URL can be found by `various-textobjs`, you
+could retrieve all URLs in the buffer and select one to open. (The URL-pattern
+used by this plugin is exposed for this purpose.)
+
+```lua
+vim.keymap.set("n", "gx", function()
+	require("various-textobjs").url()
+	local foundURL = vim.fn.mode():find("v") 
+	if foundURL then
+		u.normal('"zy')
+		local url = vim.fn.getreg("z")
+		openURL(url)
+	else 
+		-- find all URLs in buffer
+		local urlPattern = require("various-textobjs.charwise-textobjs").urlPattern
+		local bufText = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n")
+		local urls = {}
+		for url in bufText:gmatch(urlPattern) do
+			table.insert(urls, url)
+		end
+		if #urls == 0 then return end
+
+		-- select one, use a plugin like dressing.nvim for nicer UI for
+		-- `vim.ui.select`
+		vim.ui.select(urls, { prompt = "Select URL:" }, function(choice)
+			if choice then openURL(url) end
+		end)
 	end
-	local openCommand = string.format("%s '%s' >/dev/null 2>&1", opener, url)
-	vim.fn.system(openCommand)
 end, { desc = "URL Opener" })
 ```
 
