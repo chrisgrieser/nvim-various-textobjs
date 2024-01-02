@@ -35,6 +35,10 @@ local ftMaps = {
 		fts = { "markdown", "toml" },
 	},
 	{
+		map = { mdEmphasis = "e" },
+		fts = { "markdown" },
+	},
+	{
 		map = { pyTripleQuotes = "y" },
 		fts = { "python" },
 	},
