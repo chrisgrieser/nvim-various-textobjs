@@ -205,7 +205,7 @@ end
 ---near end of the line, ignoring trailing whitespace
 ---(relevant for markdown, where you normally add a -space after the `.` ending a sentence.)
 function M.nearEoL()
-	local pattern = "()%S(%S%s*)$"
+	local pattern = "().(%S%s*)$"
 
 	local _, endPos = searchTextobj(pattern, "inner", 0)
 	if not endPos then return end
