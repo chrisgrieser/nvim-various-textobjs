@@ -362,18 +362,24 @@ function M.mdEmphasis(scope, lookForwL)
 		local escLeftTag = vim.pesc(leftTag)
 		local escRightTag = vim.pesc(rightTag)
 		table.insert(patterns, ("^(%s)[^\\_*](%s)"):format(escLeftTag, escRightTag))
-		table.insert(patterns, ("^(%s)[^\\_*].-[^\\_*](%s)"):format(escLeftTag, escRightTag))
+		table.insert(patterns, ("^(%s)\\.(%s)"):format(escLeftTag, escRightTag))
+		table.insert(patterns, ("^(%s)[^_*].-[^\\_*](%s)"):format(escLeftTag, escRightTag))
 		table.insert(patterns, ("([^\\_*]%s)[^\\_*](%s)"):format(escLeftTag, escRightTag))
-		table.insert(patterns, ("([^\\_*]%s)[^\\_*].-[^\\_*](%s)"):format(escLeftTag, escRightTag))
+		table.insert(patterns, ("([^\\_*]%s)\\.(%s)"):format(escLeftTag, escRightTag))
+		table.insert(patterns, ("([^\\_*]%s)[^_*].-[^\\_*](%s)"):format(escLeftTag, escRightTag))
+		table.insert(patterns, ("([^\\_*]%s)[^_*].-\\.(%s)"):format(escLeftTag, escRightTag))
 	end
 
 	for _, tag in ipairs({ "==", "~~" }) do
 		local escTag = vim.pesc(tag)
 		local tagChar = tag:sub(1, 1)
 		table.insert(patterns, ("^(%s)[^\\%s](%s)"):format(escTag, tagChar, escTag))
-		table.insert(patterns, ("^(%s)[^\\%s].-[^\\%s](%s)"):format(escTag, tagChar, tagChar, escTag))
+		table.insert(patterns, ("^(%s)\\.(%s)"):format(escTag, escTag))
+		table.insert(patterns, ("^(%s)[^%s].-[^\\%s](%s)"):format(escTag, tagChar, tagChar, escTag))
 		table.insert(patterns, ("([^\\%s]%s)[^\\%s](%s)"):format(tagChar, escTag, tagChar, escTag))
-		table.insert(patterns, ("([^\\%s]%s)[^\\%s].-[^\\%s](%s)"):format(tagChar, escTag, tagChar, tagChar, escTag))
+		table.insert(patterns, ("([^\\%s]%s)\\.(%s)"):format(tagChar, escTag, escTag))
+		table.insert(patterns, ("([^\\%s]%s)[^%s].-[^\\%s](%s)"):format(tagChar, escTag, tagChar, tagChar, escTag))
+		table.insert(patterns, ("([^\\%s]%s)[^%s].-\\.(%s)"):format(tagChar, escTag, tagChar, escTag))
 	end
 
 	selectTextobj(patterns, scope, lookForwL)
