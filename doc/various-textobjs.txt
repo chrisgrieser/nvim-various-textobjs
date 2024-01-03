@@ -1,4 +1,4 @@
-*various-textobjs.txt*       For NVIM v0.8.0      Last change: 2024 January 02
+*various-textobjs.txt*       For NVIM v0.8.0      Last change: 2024 January 03
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
@@ -138,7 +138,7 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs--list-of-text-object
                            [title](url)             title (between the [])                             toml
 
   mdEmphasis               markdown text enclosed   inner is only the      small              ie, ae   markdown
-                           by *, **, ***, _, __,    emphasis content title                             
+                           by *, **, ***, _, __,    emphasis content                                   
                            ___, __*, _**, **_, *__,                                                    
                            ~~, ==                                                                      
 
