@@ -186,9 +186,13 @@ function M.anyQuote(scope, lookForwL)
 
 	selectTextobj(patterns, scope, lookForwL)
 
-	-- pattern includes one extra character to account for an escape character,
-	-- so we need to move to the right to factor that in
-	if scope == "outer" then u.normal("ol") end
+	local startCol = vim.fn.getpos("v")[3]
+	local endCol = vim.fn.getpos(".")[3]
+	if startCol ~= 1 and startCol ~= endCol then
+		-- pattern includes one extra character to account for an escape character,
+		-- so we need to move to the right to factor that in
+		if scope == "outer" then u.normal("ol") end
+	end
 end
 
 ---@param scope "inner"|"outer"
@@ -385,7 +389,8 @@ function M.mdEmphasis(scope, lookForwL)
 	selectTextobj(patterns, scope, lookForwL)
 
 	local startCol = vim.fn.getpos("v")[3]
-	if startCol ~= 1 then
+	local endCol = vim.fn.getpos(".")[3]
+	if startCol ~= 1 and startCol ~= endCol then
 		-- pattern includes one extra character to account for an escape character,
 		-- so we need to move to the right to factor that in
 		if scope == "outer" then u.normal("ol") end
