@@ -179,6 +179,9 @@ function M.anyQuote(scope, lookForwL)
 	-- the off-chance that the user has customized this.
 	local escape = vim.opt_local.quoteescape:get() -- default: \
 	local patterns = {
+		('^(").-[^%s](")'):format(escape, escape), -- ""
+		("^(').-[^%s](')"):format(escape, escape), -- ''
+		("^(`).-[^%s](`)"):format(escape, escape), -- ``
 		('([^%s]").-[^%s](")'):format(escape, escape), -- ""
 		("([^%s]').-[^%s](')"):format(escape, escape), -- ''
 		("([^%s]`).-[^%s](`)"):format(escape, escape), -- ``
