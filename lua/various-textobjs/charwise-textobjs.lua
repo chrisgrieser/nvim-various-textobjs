@@ -102,6 +102,14 @@ local function selectTextobj(patterns, scope, lookForwL)
 				local distance = startCol - cursorCol
 				local isCloserInRow = distance < shortestDist
 
+				-- INFO Here, we cannot simply use the absolute value of the distance.
+				-- If the cursor is standing on a big textobj A, and there is a
+				-- second textobj B which starts right after the cursor, A has a
+				-- high negative distance, and B has a small positive distance.
+				-- Using simply the absolute value to determine the which obj is the
+				-- closer one would then result in B being selected, even though the
+				-- idiomatic behavior in vim is to always select an obj the cursor
+				-- is standing on before seeking forward for a textobj.
 				local cursorOnCurrentObj = (distance < 0)
 				local cursorOnClosestObj = (shortestDist < 0)
 				if cursorOnCurrentObj and cursorOnClosestObj then
