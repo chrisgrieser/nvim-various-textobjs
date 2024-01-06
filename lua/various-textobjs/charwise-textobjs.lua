@@ -99,14 +99,8 @@ local function selectTextobj(patterns, scope, lookForwL)
 			local startPos, endPos = searchTextobj(pattern, scope, lookForwL)
 			if startPos and endPos then
 				local row, startCol = unpack(startPos)
-				local distance = startCol - cursorCol
+				local distance = vim.fn.abs(startCol - cursorCol)
 				local isCloserInRow = distance < shortestDist
-
-				local cursorOnCurrentObj = (distance < 0)
-				local cursorOnClosestObj = (shortestDist < 0)
-				if cursorOnCurrentObj and cursorOnClosestObj then
-					isCloserInRow = distance > shortestDist
-				end
 
 				-- this condition for rows suffices since `searchTextobj` does not
 				-- return multi-line-objects
