@@ -178,7 +178,10 @@ end
 
 ---@param scope "inner"|"outer" inner selector only includes the content, outer selector includes the type.
 function M.mdEmphasis(scope)
-	require("various-textobjs.charwise-textobjs").mdEmphasis(argConvert(scope), config.lookForwardSmall)
+	require("various-textobjs.charwise-textobjs").mdEmphasis(
+		argConvert(scope),
+		config.lookForwardSmall
+	)
 end
 
 ---@param scope "inner"|"outer" inner double square brackets exclude the brackets themselves

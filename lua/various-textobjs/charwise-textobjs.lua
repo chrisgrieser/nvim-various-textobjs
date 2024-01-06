@@ -315,7 +315,6 @@ function M.number(scope, lookForwL)
 	selectTextobj(pattern, "outer", lookForwL)
 end
 
-
 -- make URL pattern available for external use
 M.urlPattern = "%l%l%l-://[A-Za-z0-9_%-/.#%%=?&'@+]+"
 
@@ -359,9 +358,18 @@ end
 ---@param lookForwL integer
 function M.mdEmphasis(scope, lookForwL)
 	local patterns = {}
-	for _, leftTag in ipairs({
-		"*", "**", "***", "_", "__", "___", "__*", "_**", "**_", "*__"
-	}) do
+	for _, leftTag in ipairs {
+		"*",
+		"**",
+		"***",
+		"_",
+		"__",
+		"___",
+		"__*",
+		"_**",
+		"**_",
+		"*__",
+	} do
 		local rightTag = string.reverse(leftTag)
 		local escLeftTag = vim.pesc(leftTag)
 		local escRightTag = vim.pesc(rightTag)
@@ -370,20 +378,32 @@ function M.mdEmphasis(scope, lookForwL)
 		table.insert(patterns, ("^(%s)[^%%s_*].-[^\\%%s_*](%s)"):format(escLeftTag, escRightTag))
 		table.insert(patterns, ("([^\\_*]%s)[^\\%%s_*](%s)"):format(escLeftTag, escRightTag))
 		table.insert(patterns, ("([^\\_*]%s)\\%%s(%s)"):format(escLeftTag, escRightTag))
-		table.insert(patterns, ("([^\\_*]%s)[^%%s_*].-[^\\%%s_*](%s)"):format(escLeftTag, escRightTag))
+		table.insert(
+			patterns,
+			("([^\\_*]%s)[^%%s_*].-[^\\%%s_*](%s)"):format(escLeftTag, escRightTag)
+		)
 		table.insert(patterns, ("([^\\_*]%s)[^%%s_*].-\\%%s(%s)"):format(escLeftTag, escRightTag))
 	end
 
-	for _, tag in ipairs({ "==", "~~" }) do
+	for _, tag in ipairs { "==", "~~" } do
 		local escTag = vim.pesc(tag)
 		local tagChar = tag:sub(1, 1)
 		table.insert(patterns, ("^(%s)[^\\%%s%s](%s)"):format(escTag, tagChar, escTag))
 		table.insert(patterns, ("^(%s)\\%%s(%s)"):format(escTag, escTag))
-		table.insert(patterns, ("^(%s)[^%%s%s].-[^\\%%s%s](%s)"):format(escTag, tagChar, tagChar, escTag))
+		table.insert(
+			patterns,
+			("^(%s)[^%%s%s].-[^\\%%s%s](%s)"):format(escTag, tagChar, tagChar, escTag)
+		)
 		table.insert(patterns, ("([^\\%s]%s)[^\\%%s%s](%s)"):format(tagChar, escTag, tagChar, escTag))
 		table.insert(patterns, ("([^\\%s]%s)\\%%s(%s)"):format(tagChar, escTag, escTag))
-		table.insert(patterns, ("([^\\%s]%s)[^%%s%s].-[^\\%%s%s](%s)"):format(tagChar, escTag, tagChar, tagChar, escTag))
-		table.insert(patterns, ("([^\\%s]%s)[^%%s%s].-\\%%s(%s)"):format(tagChar, escTag, tagChar, escTag))
+		table.insert(
+			patterns,
+			("([^\\%s]%s)[^%%s%s].-[^\\%%s%s](%s)"):format(tagChar, escTag, tagChar, tagChar, escTag)
+		)
+		table.insert(
+			patterns,
+			("([^\\%s]%s)[^%%s%s].-\\%%s(%s)"):format(tagChar, escTag, tagChar, escTag)
+		)
 	end
 
 	selectTextobj(patterns, scope, lookForwL)
