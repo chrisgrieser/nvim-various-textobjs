@@ -197,13 +197,9 @@ function M.anyQuote(scope, lookForwL)
 
 	selectTextobj(patterns, scope, lookForwL)
 
-	local startCol = vim.fn.getpos("v")[3]
-	local endCol = vim.fn.getpos(".")[3]
-	if startCol ~= 1 and startCol ~= endCol then
-		-- pattern includes one extra character to account for an escape character,
-		-- so we need to move to the right to factor that in
-		if scope == "outer" then u.normal("ol") end
-	end
+	-- pattern accounts for escape char, so move to right to account for that
+	local isAtStart = vim.api.nvim_win_get_cursor(0)[2] == 1
+	if scope == "outer" and not isAtStart then u.normal("ol") end
 end
 
 ---@param scope "inner"|"outer"
@@ -368,64 +364,23 @@ end
 ---@param scope "inner"|"outer" inner selector only includes the content, outer selector includes the type.
 ---@param lookForwL integer
 function M.mdEmphasis(scope, lookForwL)
-	local patterns = {}
-	for _, leftTag in ipairs {
-		"*",
-		"**",
-		"***",
-		"_",
-		"__",
-		"___",
-		"__*",
-		"_**",
-		"**_",
-		"*__",
-	} do
-		local rightTag = string.reverse(leftTag)
-		local escLeftTag = vim.pesc(leftTag)
-		local escRightTag = vim.pesc(rightTag)
-		table.insert(patterns, ("^(%s)[^\\%%s_*](%s)"):format(escLeftTag, escRightTag))
-		table.insert(patterns, ("^(%s)\\%%s(%s)"):format(escLeftTag, escRightTag))
-		table.insert(patterns, ("^(%s)[^%%s_*].-[^\\%%s_*](%s)"):format(escLeftTag, escRightTag))
-		table.insert(patterns, ("([^\\_*]%s)[^\\%%s_*](%s)"):format(escLeftTag, escRightTag))
-		table.insert(patterns, ("([^\\_*]%s)\\%%s(%s)"):format(escLeftTag, escRightTag))
-		table.insert(
-			patterns,
-			("([^\\_*]%s)[^%%s_*].-[^\\%%s_*](%s)"):format(escLeftTag, escRightTag)
-		)
-		table.insert(patterns, ("([^\\_*]%s)[^%%s_*].-\\%%s(%s)"):format(escLeftTag, escRightTag))
-	end
-
-	for _, tag in ipairs { "==", "~~" } do
-		local escTag = vim.pesc(tag)
-		local tagChar = tag:sub(1, 1)
-		table.insert(patterns, ("^(%s)[^\\%%s%s](%s)"):format(escTag, tagChar, escTag))
-		table.insert(patterns, ("^(%s)\\%%s(%s)"):format(escTag, escTag))
-		table.insert(
-			patterns,
-			("^(%s)[^%%s%s].-[^\\%%s%s](%s)"):format(escTag, tagChar, tagChar, escTag)
-		)
-		table.insert(patterns, ("([^\\%s]%s)[^\\%%s%s](%s)"):format(tagChar, escTag, tagChar, escTag))
-		table.insert(patterns, ("([^\\%s]%s)\\%%s(%s)"):format(tagChar, escTag, escTag))
-		table.insert(
-			patterns,
-			("([^\\%s]%s)[^%%s%s].-[^\\%%s%s](%s)"):format(tagChar, escTag, tagChar, tagChar, escTag)
-		)
-		table.insert(
-			patterns,
-			("([^\\%s]%s)[^%%s%s].-\\%%s(%s)"):format(tagChar, escTag, tagChar, escTag)
-		)
-	end
-
+	-- CAVEAT this still has a few edge cases with escaped markup, will need a
+	-- treesitter object to reliably account for that.
+	local patterns = {
+		"([^\\]%*%*?).-[^\\](%*%*?)", -- * or **
+		"([^\\]__?).-[^\\](__?)",     -- _ or __
+		"([^\\]==).-[^\\](==)",       -- ==
+		"([^\\]~~).-[^\\](~~)",       -- ~~
+		"(^%*%*?).-[^\\](%*%*?)",     -- * or **
+		"(^__?).-[^\\](__?)",         -- _ or __
+		"(^==).-[^\\](==)",           -- ==
+		"(^~~).-[^\\](~~)",           -- ~~
+	}
 	selectTextobj(patterns, scope, lookForwL)
 
-	local startCol = vim.fn.getpos("v")[3]
-	local endCol = vim.fn.getpos(".")[3]
-	if startCol ~= 1 and startCol ~= endCol then
-		-- pattern includes one extra character to account for an escape character,
-		-- so we need to move to the right to factor that in
-		if scope == "outer" then u.normal("ol") end
-	end
+	-- pattern accounts for escape char, so move to right to account for that
+	local isAtStart = vim.api.nvim_win_get_cursor(0)[2] == 1
+	if scope == "outer" and not isAtStart then u.normal("ol") end
 end
 
 ---@param scope "inner"|"outer" inner double square brackets exclude the brackets themselves
