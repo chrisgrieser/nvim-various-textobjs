@@ -91,36 +91,33 @@ local function selectTextobj(patterns, scope, lookForwL)
 		local startPos, endPos = searchTextobj(patterns, scope, lookForwL)
 		if startPos and endPos then closestObj = { startPos, endPos } end
 	elseif type(patterns) == "table" then
-		local closestRow = math.huge
-		local shortestDist = math.huge
-		local cursorCol = getCursor(0)[2]
+		local isOnTextObj, distRow, distStartCol, distEndCol = 0, math.huge, math.huge, math.huge
+		local cursorRow, cursorCol = unpack(getCursor(0))
 
 		for _, pattern in ipairs(patterns) do
 			local startPos, endPos = searchTextobj(pattern, scope, lookForwL)
 			if startPos and endPos then
+				-- using `row` suffices since `searchTextobj` does not return
+				-- multi-line-objects
 				local row, startCol = unpack(startPos)
-				local distance = startCol - cursorCol
-				local isCloserInRow = distance < shortestDist
+				local _, endCol = unpack(endPos)
 
-				-- INFO Here, we cannot simply use the absolute value of the distance.
-				-- If the cursor is standing on a big textobj A, and there is a
-				-- second textobj B which starts right after the cursor, A has a
-				-- high negative distance, and B has a small positive distance.
-				-- Using simply the absolute value to determine the which obj is the
-				-- closer one would then result in B being selected, even though the
-				-- idiomatic behavior in vim is to always select an obj the cursor
-				-- is standing on before seeking forward for a textobj.
-				local cursorOnCurrentObj = (distance < 0)
-				local cursorOnClosestObj = (shortestDist < 0)
-				if cursorOnCurrentObj and cursorOnClosestObj then
-					isCloserInRow = distance > shortestDist
+				local curIsOnTextObj = 0
+				if row == cursorRow and startCol <= cursorCol and cursorCol <= endCol then
+					curIsOnTextObj = 1
 				end
+				local curDistRow = vim.fn.abs(row - cursorRow)
+				local curDistStartCol = vim.fn.abs(startCol - cursorCol)
+				local curDistEndCol = vim.fn.abs(endCol - cursorCol)
 
-				-- this condition for rows suffices since `searchTextobj` does not
-				-- return multi-line-objects
-				if (row < closestRow) or (row == closestRow and isCloserInRow) then
-					closestRow = row
-					shortestDist = distance
+				if
+					u.compareTuples(
+						{ curIsOnTextObj, -curDistRow, -curDistStartCol, -curDistEndCol },
+						{ isOnTextObj, -distRow, -distStartCol, -distEndCol }
+					) == 1
+				then
+					isOnTextObj, distRow, distStartCol, distEndCol =
+						curIsOnTextObj, curDistRow, curDistStartCol, curDistEndCol
 					closestObj = { startPos, endPos }
 				end
 			end

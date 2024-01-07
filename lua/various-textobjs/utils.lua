@@ -1,6 +1,22 @@
 local M = {}
 --------------------------------------------------------------------------------
 
+---compares two tuples lexicographically
+---@param xs1 table
+---@param xs2 table
+---@return number
+function M.compareTuples(xs1, xs2)
+	for i, x1 in ipairs(xs1) do
+		local x2 = xs2[i]
+		if x1 > x2 then
+			return 1
+		elseif x1 < x2 then
+			return -1
+		end
+	end
+	return 0
+end
+
 ---runs :normal natively with bang
 ---@param cmdStr any
 function M.normal(cmdStr)
