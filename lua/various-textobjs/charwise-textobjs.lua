@@ -11,8 +11,8 @@ end
 
 ---@alias pos {[1]: integer, [2]: integer}
 
----sets the selection for the textobj (characterwise)
----WARN unstable
+---Sets the selection for the textobj (characterwise)
+---INFO Exposed for creation of custom textobjs, but subject to change without notice.
 ---@param startPos pos
 ---@param endPos pos
 function M.setSelection(startPos, endPos)
@@ -28,12 +28,12 @@ end
 --------------------------------------------------------------------------------
 
 ---Seek and select characterwise a text object based on one pattern.
----CAVEAT multi-line-objects are not supported
+---CAVEAT multi-line-objects are not supported.
+---INFO Exposed for creation of custom textobjs, but subject to change without notice.
 ---@param pattern string lua pattern. REQUIRES two capture groups marking the
 ---two additions for the outer variant of the textobj. Use an empty capture group
 ---when there is no difference between inner and outer on that side.
 ---Essentially, the two capture groups work as lookbehind and lookahead.
----WARN unstable
 ---@param scope "inner"|"outer"
 ---@param lookForwL integer
 ---@return pos? startPos
@@ -82,7 +82,7 @@ function M.searchTextobj(pattern, scope, lookForwL)
 end
 
 ---searches for the position of one or multiple patterns and selects the closest one
----WARN unstable
+---INFO Exposed for creation of custom textobjs, but subject to change without notice.
 ---@param patterns string|string[] lua, pattern(s) with the specification from `searchTextobj`
 ---@param scope "inner"|"outer" true = inner textobj
 ---@param lookForwL integer
