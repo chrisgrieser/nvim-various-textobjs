@@ -12,9 +12,10 @@ end
 ---@alias pos {[1]: integer, [2]: integer}
 
 ---sets the selection for the textobj (characterwise)
+---WARN unstable
 ---@param startPos pos
 ---@param endPos pos
-local function setSelection(startPos, endPos)
+function M.setSelection(startPos, endPos)
 	vim.api.nvim_win_set_cursor(0, startPos)
 	if isVisualMode() then
 		u.normal("o")
@@ -32,12 +33,13 @@ end
 ---two additions for the outer variant of the textobj. Use an empty capture group
 ---when there is no difference between inner and outer on that side.
 ---Essentially, the two capture groups work as lookbehind and lookahead.
+---WARN unstable
 ---@param scope "inner"|"outer"
 ---@param lookForwL integer
 ---@return pos? startPos
 ---@return pos? endPos
 ---@nodiscard
-local function searchTextobj(pattern, scope, lookForwL)
+function M.searchTextobj(pattern, scope, lookForwL)
 	local cursorRow, cursorCol = unpack(getCursor(0))
 	local lineContent = u.getline(cursorRow)
 	local lastLine = vim.api.nvim_buf_line_count(0)
@@ -80,15 +82,16 @@ local function searchTextobj(pattern, scope, lookForwL)
 end
 
 ---searches for the position of one or multiple patterns and selects the closest one
+---WARN unstable
 ---@param patterns string|string[] lua, pattern(s) with the specification from `searchTextobj`
 ---@param scope "inner"|"outer" true = inner textobj
 ---@param lookForwL integer
 ---@return boolean -- whether textobj search was successful
-local function selectTextobj(patterns, scope, lookForwL)
+function M.selectTextobj(patterns, scope, lookForwL)
 	local closestObj
 
 	if type(patterns) == "string" then
-		local startPos, endPos = searchTextobj(patterns, scope, lookForwL)
+		local startPos, endPos = M.searchTextobj(patterns, scope, lookForwL)
 		if startPos and endPos then closestObj = { startPos, endPos } end
 	elseif type(patterns) == "table" then
 		local closestRow = math.huge
@@ -96,7 +99,7 @@ local function selectTextobj(patterns, scope, lookForwL)
 		local cursorCol = getCursor(0)[2]
 
 		for _, pattern in ipairs(patterns) do
-			local startPos, endPos = searchTextobj(pattern, scope, lookForwL)
+			local startPos, endPos = M.searchTextobj(pattern, scope, lookForwL)
 			if startPos and endPos then
 				local row, startCol = unpack(startPos)
 				local distance = startCol - cursorCol
@@ -129,7 +132,7 @@ local function selectTextobj(patterns, scope, lookForwL)
 
 	if closestObj then
 		local startPos, endPos = unpack(closestObj)
-		setSelection(startPos, endPos)
+		M.setSelection(startPos, endPos)
 		return true
 	else
 		u.notFoundMsg(lookForwL)
@@ -146,21 +149,21 @@ function M.subword(scope)
 		"()%u[%u%d]+([_%- ]?)", -- UPPER_CASE
 		"()%d+([_%- ]?)", -- number
 	}
-	selectTextobj(pattern, scope, 0)
+	M.selectTextobj(pattern, scope, 0)
 end
 
 ---@param lookForwL integer
 function M.toNextClosingBracket(lookForwL)
 	local pattern = "().([]})])"
 
-	local _, endPos = searchTextobj(pattern, "inner", lookForwL)
+	local _, endPos = M.searchTextobj(pattern, "inner", lookForwL)
 	if not endPos then
 		u.notFoundMsg(lookForwL)
 		return
 	end
 	local startPos = getCursor(0)
 
-	setSelection(startPos, endPos)
+	M.setSelection(startPos, endPos)
 end
 
 ---@param lookForwL integer
@@ -170,14 +173,14 @@ function M.toNextQuotationMark(lookForwL)
 	local quoteEscape = vim.opt_local.quoteescape:get() -- default: \
 	local pattern = ([[()[^%s](["'`])]]):format(quoteEscape)
 
-	local _, endPos = searchTextobj(pattern, "inner", lookForwL)
+	local _, endPos = M.searchTextobj(pattern, "inner", lookForwL)
 	if not endPos then
 		u.notFoundMsg(lookForwL)
 		return
 	end
 	local startPos = getCursor(0)
 
-	setSelection(startPos, endPos)
+	M.setSelection(startPos, endPos)
 end
 
 ---@param scope "inner"|"outer"
@@ -195,7 +198,7 @@ function M.anyQuote(scope, lookForwL)
 		("([^%s]`).-[^%s](`)"):format(escape, escape), -- ``
 	}
 
-	selectTextobj(patterns, scope, lookForwL)
+	M.selectTextobj(patterns, scope, lookForwL)
 
 	-- pattern accounts for escape char, so move to right to account for that
 	local isAtStart = vim.api.nvim_win_get_cursor(0)[2] == 1
@@ -210,7 +213,7 @@ function M.anyBracket(scope, lookForwL)
 		"(%[).-(%])", -- []
 		"({).-(})", -- {}
 	}
-	selectTextobj(patterns, scope, lookForwL)
+	M.selectTextobj(patterns, scope, lookForwL)
 end
 
 ---near end of the line, ignoring trailing whitespace
@@ -218,18 +221,18 @@ end
 function M.nearEoL()
 	local pattern = "().(%S%s*)$"
 
-	local _, endPos = searchTextobj(pattern, "inner", 0)
+	local _, endPos = M.searchTextobj(pattern, "inner", 0)
 	if not endPos then return end
 	local startPos = getCursor(0)
 
-	setSelection(startPos, endPos)
+	M.setSelection(startPos, endPos)
 end
 
 ---current line (but characterwise)
 ---@param scope "inner"|"outer" outer includes indentation and trailing spaces
 function M.lineCharacterwise(scope)
 	local pattern = "^(%s*).*(%s*)$"
-	selectTextobj(pattern, scope, 0)
+	M.selectTextobj(pattern, scope, 0)
 end
 
 ---similar to https://github.com/andrewferrier/textobj-diagnostic.nvim
@@ -269,7 +272,7 @@ function M.diagnostic(lookForwL)
 		u.notFoundMsg(lookForwL)
 		return
 	end
-	setSelection({ target.lnum + 1, target.col }, { target.end_lnum + 1, target.end_col - 1 })
+	M.setSelection({ target.lnum + 1, target.col }, { target.end_lnum + 1, target.end_col - 1 })
 end
 
 ---@param scope "inner"|"outer" inner value excludes trailing commas or semicolons, outer includes them. Both exclude trailing comments.
@@ -280,7 +283,7 @@ function M.value(scope, lookForwL)
 	-- or css pseudo-elements :: are not matched
 	local pattern = "(%s*%f[!<>~=:][=:]%s*)[^=:].*()"
 
-	local startPos, endPos = searchTextobj(pattern, scope, lookForwL)
+	local startPos, endPos = M.searchTextobj(pattern, scope, lookForwL)
 	if not startPos or not endPos then
 		u.notFoundMsg(lookForwL)
 		return
@@ -302,14 +305,14 @@ function M.value(scope, lookForwL)
 
 	-- set selection
 	endPos[2] = valueEndCol
-	setSelection(startPos, endPos)
+	M.setSelection(startPos, endPos)
 end
 
 ---@param scope "inner"|"outer" outer key includes the `:` or `=` after the key
 ---@param lookForwL integer
 function M.key(scope, lookForwL)
 	local pattern = "()%S.-( ?[:=] ?)"
-	selectTextobj(pattern, scope, lookForwL)
+	M.selectTextobj(pattern, scope, lookForwL)
 end
 
 ---@param scope "inner"|"outer" inner number consists purely of digits, outer number factors in decimal points and includes minus sign
@@ -319,7 +322,7 @@ function M.number(scope, lookForwL)
 	-- before and after the decimal dot. enforcing digital after dot so outer
 	-- excludes enumrations.
 	local pattern = scope == "inner" and "%d+" or "%-?%d*%.?%d+"
-	selectTextobj(pattern, "outer", lookForwL)
+	M.selectTextobj(pattern, "outer", lookForwL)
 end
 
 -- make URL pattern available for external use
@@ -328,7 +331,7 @@ M.urlPattern = "%l%l%l-://[A-Za-z0-9_%-/.#%%=?&'@+]+"
 ---@param lookForwL integer
 function M.url(lookForwL)
 	-- INFO mastodon URLs contain `@`, neovim docs urls can contain a `'`
-	selectTextobj(M.urlPattern, "outer", lookForwL)
+	M.selectTextobj(M.urlPattern, "outer", lookForwL)
 end
 
 ---see #26
@@ -336,7 +339,7 @@ end
 ---@param lookForwL integer
 function M.chainMember(scope, lookForwL)
 	local pattern = "(%.)[%w_][%a_]*%b()()"
-	selectTextobj(pattern, scope, lookForwL)
+	M.selectTextobj(pattern, scope, lookForwL)
 end
 
 function M.lastChange()
@@ -348,7 +351,7 @@ function M.lastChange()
 		return
 	end
 
-	setSelection(changeStartPos, changeEndPos)
+	M.setSelection(changeStartPos, changeEndPos)
 end
 
 --------------------------------------------------------------------------------
@@ -358,7 +361,7 @@ end
 ---@param lookForwL integer
 function M.mdlink(scope, lookForwL)
 	local pattern = "(%[)[^%]]-(%]%b())"
-	selectTextobj(pattern, scope, lookForwL)
+	M.selectTextobj(pattern, scope, lookForwL)
 end
 
 ---@param scope "inner"|"outer" inner selector only includes the content, outer selector includes the type.
@@ -368,15 +371,15 @@ function M.mdEmphasis(scope, lookForwL)
 	-- treesitter object to reliably account for that.
 	local patterns = {
 		"([^\\]%*%*?).-[^\\](%*%*?)", -- * or **
-		"([^\\]__?).-[^\\](__?)",     -- _ or __
-		"([^\\]==).-[^\\](==)",       -- ==
-		"([^\\]~~).-[^\\](~~)",       -- ~~
-		"(^%*%*?).-[^\\](%*%*?)",     -- * or **
-		"(^__?).-[^\\](__?)",         -- _ or __
-		"(^==).-[^\\](==)",           -- ==
-		"(^~~).-[^\\](~~)",           -- ~~
+		"([^\\]__?).-[^\\](__?)", -- _ or __
+		"([^\\]==).-[^\\](==)", -- ==
+		"([^\\]~~).-[^\\](~~)", -- ~~
+		"(^%*%*?).-[^\\](%*%*?)", -- * or **
+		"(^__?).-[^\\](__?)", -- _ or __
+		"(^==).-[^\\](==)", -- ==
+		"(^~~).-[^\\](~~)", -- ~~
 	}
-	selectTextobj(patterns, scope, lookForwL)
+	M.selectTextobj(patterns, scope, lookForwL)
 
 	-- pattern accounts for escape char, so move to right to account for that
 	local isAtStart = vim.api.nvim_win_get_cursor(0)[2] == 1
@@ -387,28 +390,28 @@ end
 ---@param lookForwL integer
 function M.doubleSquareBrackets(scope, lookForwL)
 	local pattern = "(%[%[).-(%]%])"
-	selectTextobj(pattern, scope, lookForwL)
+	M.selectTextobj(pattern, scope, lookForwL)
 end
 
 ---@param scope "inner"|"outer" outer selector includes trailing comma and whitespace
 ---@param lookForwL integer
 function M.cssSelector(scope, lookForwL)
 	local pattern = "()[#.][%w-_]+(,? ?)"
-	selectTextobj(pattern, scope, lookForwL)
+	M.selectTextobj(pattern, scope, lookForwL)
 end
 
 ---@param scope "inner"|"outer" inner selector is only the value of the attribute inside the quotation marks.
 ---@param lookForwL integer
 function M.htmlAttribute(scope, lookForwL)
 	local pattern = [[(%w+=["']).-(["'])]]
-	selectTextobj(pattern, scope, lookForwL)
+	M.selectTextobj(pattern, scope, lookForwL)
 end
 
 ---@param scope "inner"|"outer" outer selector includes the front pipe
 ---@param lookForwL integer
 function M.shellPipe(scope, lookForwL)
 	local pattern = "()[^|%s][^|]-( ?| ?)"
-	selectTextobj(pattern, scope, lookForwL)
+	M.selectTextobj(pattern, scope, lookForwL)
 end
 
 ---INFO this textobj requires the python Treesitter parser
@@ -453,7 +456,7 @@ function M.pyTripleQuotes(scope)
 		endCol = #vim.api.nvim_buf_get_lines(0, endRow - 1, endRow, false)[1]
 	end
 
-	setSelection({ startRow, startCol }, { endRow, endCol })
+	M.setSelection({ startRow, startCol }, { endRow, endCol })
 end
 
 --------------------------------------------------------------------------------
