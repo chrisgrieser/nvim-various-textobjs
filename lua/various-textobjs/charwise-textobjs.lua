@@ -3,6 +3,145 @@ local u = require("various-textobjs.utils")
 local getCursor = vim.api.nvim_win_get_cursor
 --------------------------------------------------------------------------------
 
+---@return boolean
+local function isVisualMode()
+	local modeWithV = vim.fn.mode():find("v")
+	return modeWithV ~= nil
+end
+
+---@alias pos {[1]: integer, [2]: integer}
+
+---sets the selection for the textobj (characterwise)
+---WARN unstable
+---@param startPos pos
+---@param endPos pos
+function M.setSelection(startPos, endPos)
+	vim.api.nvim_win_set_cursor(0, startPos)
+	if isVisualMode() then
+		u.normal("o")
+	else
+		u.normal("v")
+	end
+	vim.api.nvim_win_set_cursor(0, endPos)
+end
+
+--------------------------------------------------------------------------------
+
+---Seek and select characterwise a text object based on one pattern.
+---CAVEAT multi-line-objects are not supported
+---@param pattern string lua pattern. REQUIRES two capture groups marking the
+---two additions for the outer variant of the textobj. Use an empty capture group
+---when there is no difference between inner and outer on that side.
+---Essentially, the two capture groups work as lookbehind and lookahead.
+---WARN unstable
+---@param scope "inner"|"outer"
+---@param lookForwL integer
+---@return pos? startPos
+---@return pos? endPos
+---@nodiscard
+function M.searchTextobj(pattern, scope, lookForwL)
+	local cursorRow, cursorCol = unpack(getCursor(0))
+	local lineContent = u.getline(cursorRow)
+	local lastLine = vim.api.nvim_buf_line_count(0)
+	local beginCol = 0 ---@type number|nil
+	local endCol, captureG1, captureG2, noneInStartingLine
+
+	-- first line: check if standing on or in front of textobj
+	repeat
+		beginCol = beginCol + 1
+		beginCol, endCol, captureG1, captureG2 = lineContent:find(pattern, beginCol)
+		noneInStartingLine = not beginCol
+		local standingOnOrInFront = endCol and endCol > cursorCol
+	until standingOnOrInFront or noneInStartingLine
+
+	-- subsequent lines: search full line for first occurrence
+	local linesSearched = 0
+	if noneInStartingLine then
+		while true do
+			linesSearched = linesSearched + 1
+			if linesSearched > lookForwL or cursorRow + linesSearched > lastLine then return end
+			lineContent = u.getline(cursorRow + linesSearched)
+
+			beginCol, endCol, captureG1, captureG2 = lineContent:find(pattern)
+			if beginCol then break end
+		end
+	end
+
+	-- capture groups determine the inner/outer difference
+	-- INFO :find() returns integers of the position if the capture group is empty
+	if scope == "inner" then
+		local frontOuterLen = type(captureG1) ~= "number" and #captureG1 or 0
+		local backOuterLen = type(captureG2) ~= "number" and #captureG2 or 0
+		beginCol = beginCol + frontOuterLen
+		endCol = endCol - backOuterLen
+	end
+
+	local startPos = { cursorRow + linesSearched, beginCol - 1 }
+	local endPos = { cursorRow + linesSearched, endCol - 1 }
+	return startPos, endPos
+end
+
+---searches for the position of one or multiple patterns and selects the closest one
+---WARN unstable
+---@param patterns string|string[] lua, pattern(s) with the specification from `searchTextobj`
+---@param scope "inner"|"outer" true = inner textobj
+---@param lookForwL integer
+---@return boolean -- whether textobj search was successful
+function M.selectTextobj(patterns, scope, lookForwL)
+	local closestObj
+
+	if type(patterns) == "string" then
+		local startPos, endPos = M.searchTextobj(patterns, scope, lookForwL)
+		if startPos and endPos then closestObj = { startPos, endPos } end
+	elseif type(patterns) == "table" then
+		local closestRow = math.huge
+		local shortestDist = math.huge
+		local cursorCol = getCursor(0)[2]
+
+		for _, pattern in ipairs(patterns) do
+			local startPos, endPos = M.searchTextobj(pattern, scope, lookForwL)
+			if startPos and endPos then
+				local row, startCol = unpack(startPos)
+				local distance = startCol - cursorCol
+				local isCloserInRow = distance < shortestDist
+
+				-- INFO Here, we cannot simply use the absolute value of the distance.
+				-- If the cursor is standing on a big textobj A, and there is a
+				-- second textobj B which starts right after the cursor, A has a
+				-- high negative distance, and B has a small positive distance.
+				-- Using simply the absolute value to determine the which obj is the
+				-- closer one would then result in B being selected, even though the
+				-- idiomatic behavior in vim is to always select an obj the cursor
+				-- is standing on before seeking forward for a textobj.
+				local cursorOnCurrentObj = (distance < 0)
+				local cursorOnClosestObj = (shortestDist < 0)
+				if cursorOnCurrentObj and cursorOnClosestObj then
+					isCloserInRow = distance > shortestDist
+				end
+
+				-- this condition for rows suffices since `searchTextobj` does not
+				-- return multi-line-objects
+				if (row < closestRow) or (row == closestRow and isCloserInRow) then
+					closestRow = row
+					shortestDist = distance
+					closestObj = { startPos, endPos }
+				end
+			end
+		end
+	end
+
+	if closestObj then
+		local startPos, endPos = unpack(closestObj)
+		M.setSelection(startPos, endPos)
+		return true
+	else
+		u.notFoundMsg(lookForwL)
+		return false
+	end
+end
+
+--------------------------------------------------------------------------------
+
 ---@param scope "inner"|"outer" outer includes trailing -_
 function M.subword(scope)
 	local pattern = {
@@ -10,21 +149,21 @@ function M.subword(scope)
 		"()%u[%u%d]+([_%- ]?)", -- UPPER_CASE
 		"()%d+([_%- ]?)", -- number
 	}
-	u.selectTextobj(pattern, scope, 0)
+	M.selectTextobj(pattern, scope, 0)
 end
 
 ---@param lookForwL integer
 function M.toNextClosingBracket(lookForwL)
 	local pattern = "().([]})])"
 
-	local _, endPos = u.searchTextobj(pattern, "inner", lookForwL)
+	local _, endPos = M.searchTextobj(pattern, "inner", lookForwL)
 	if not endPos then
 		u.notFoundMsg(lookForwL)
 		return
 	end
 	local startPos = getCursor(0)
 
-	u.setSelection(startPos, endPos)
+	M.setSelection(startPos, endPos)
 end
 
 ---@param lookForwL integer
@@ -34,14 +173,14 @@ function M.toNextQuotationMark(lookForwL)
 	local quoteEscape = vim.opt_local.quoteescape:get() -- default: \
 	local pattern = ([[()[^%s](["'`])]]):format(quoteEscape)
 
-	local _, endPos = u.searchTextobj(pattern, "inner", lookForwL)
+	local _, endPos = M.searchTextobj(pattern, "inner", lookForwL)
 	if not endPos then
 		u.notFoundMsg(lookForwL)
 		return
 	end
 	local startPos = getCursor(0)
 
-	u.setSelection(startPos, endPos)
+	M.setSelection(startPos, endPos)
 end
 
 ---@param scope "inner"|"outer"
@@ -59,7 +198,7 @@ function M.anyQuote(scope, lookForwL)
 		("([^%s]`).-[^%s](`)"):format(escape, escape), -- ``
 	}
 
-	u.selectTextobj(patterns, scope, lookForwL)
+	M.selectTextobj(patterns, scope, lookForwL)
 
 	-- pattern accounts for escape char, so move to right to account for that
 	local isAtStart = vim.api.nvim_win_get_cursor(0)[2] == 1
@@ -74,7 +213,7 @@ function M.anyBracket(scope, lookForwL)
 		"(%[).-(%])", -- []
 		"({).-(})", -- {}
 	}
-	u.selectTextobj(patterns, scope, lookForwL)
+	M.selectTextobj(patterns, scope, lookForwL)
 end
 
 ---near end of the line, ignoring trailing whitespace
@@ -82,18 +221,18 @@ end
 function M.nearEoL()
 	local pattern = "().(%S%s*)$"
 
-	local _, endPos = u.searchTextobj(pattern, "inner", 0)
+	local _, endPos = M.searchTextobj(pattern, "inner", 0)
 	if not endPos then return end
 	local startPos = getCursor(0)
 
-	u.setSelection(startPos, endPos)
+	M.setSelection(startPos, endPos)
 end
 
 ---current line (but characterwise)
 ---@param scope "inner"|"outer" outer includes indentation and trailing spaces
 function M.lineCharacterwise(scope)
 	local pattern = "^(%s*).*(%s*)$"
-	u.selectTextobj(pattern, scope, 0)
+	M.selectTextobj(pattern, scope, 0)
 end
 
 ---similar to https://github.com/andrewferrier/textobj-diagnostic.nvim
@@ -133,7 +272,7 @@ function M.diagnostic(lookForwL)
 		u.notFoundMsg(lookForwL)
 		return
 	end
-	u.setSelection({ target.lnum + 1, target.col }, { target.end_lnum + 1, target.end_col - 1 })
+	M.setSelection({ target.lnum + 1, target.col }, { target.end_lnum + 1, target.end_col - 1 })
 end
 
 ---@param scope "inner"|"outer" inner value excludes trailing commas or semicolons, outer includes them. Both exclude trailing comments.
@@ -144,7 +283,7 @@ function M.value(scope, lookForwL)
 	-- or css pseudo-elements :: are not matched
 	local pattern = "(%s*%f[!<>~=:][=:]%s*)[^=:].*()"
 
-	local startPos, endPos = u.searchTextobj(pattern, scope, lookForwL)
+	local startPos, endPos = M.searchTextobj(pattern, scope, lookForwL)
 	if not startPos or not endPos then
 		u.notFoundMsg(lookForwL)
 		return
@@ -166,14 +305,14 @@ function M.value(scope, lookForwL)
 
 	-- set selection
 	endPos[2] = valueEndCol
-	u.setSelection(startPos, endPos)
+	M.setSelection(startPos, endPos)
 end
 
 ---@param scope "inner"|"outer" outer key includes the `:` or `=` after the key
 ---@param lookForwL integer
 function M.key(scope, lookForwL)
 	local pattern = "()%S.-( ?[:=] ?)"
-	u.selectTextobj(pattern, scope, lookForwL)
+	M.selectTextobj(pattern, scope, lookForwL)
 end
 
 ---@param scope "inner"|"outer" inner number consists purely of digits, outer number factors in decimal points and includes minus sign
@@ -183,7 +322,7 @@ function M.number(scope, lookForwL)
 	-- before and after the decimal dot. enforcing digital after dot so outer
 	-- excludes enumrations.
 	local pattern = scope == "inner" and "%d+" or "%-?%d*%.?%d+"
-	u.selectTextobj(pattern, "outer", lookForwL)
+	M.selectTextobj(pattern, "outer", lookForwL)
 end
 
 -- make URL pattern available for external use
@@ -192,7 +331,7 @@ M.urlPattern = "%l%l%l-://[A-Za-z0-9_%-/.#%%=?&'@+]+"
 ---@param lookForwL integer
 function M.url(lookForwL)
 	-- INFO mastodon URLs contain `@`, neovim docs urls can contain a `'`
-	u.selectTextobj(M.urlPattern, "outer", lookForwL)
+	M.selectTextobj(M.urlPattern, "outer", lookForwL)
 end
 
 ---see #26
@@ -200,7 +339,7 @@ end
 ---@param lookForwL integer
 function M.chainMember(scope, lookForwL)
 	local pattern = "(%.)[%w_][%a_]*%b()()"
-	u.selectTextobj(pattern, scope, lookForwL)
+	M.selectTextobj(pattern, scope, lookForwL)
 end
 
 function M.lastChange()
@@ -212,7 +351,7 @@ function M.lastChange()
 		return
 	end
 
-	u.setSelection(changeStartPos, changeEndPos)
+	M.setSelection(changeStartPos, changeEndPos)
 end
 
 --------------------------------------------------------------------------------
@@ -222,7 +361,7 @@ end
 ---@param lookForwL integer
 function M.mdlink(scope, lookForwL)
 	local pattern = "(%[)[^%]]-(%]%b())"
-	u.selectTextobj(pattern, scope, lookForwL)
+	M.selectTextobj(pattern, scope, lookForwL)
 end
 
 ---@param scope "inner"|"outer" inner selector only includes the content, outer selector includes the type.
@@ -232,15 +371,15 @@ function M.mdEmphasis(scope, lookForwL)
 	-- treesitter object to reliably account for that.
 	local patterns = {
 		"([^\\]%*%*?).-[^\\](%*%*?)", -- * or **
-		"([^\\]__?).-[^\\](__?)",     -- _ or __
-		"([^\\]==).-[^\\](==)",       -- ==
-		"([^\\]~~).-[^\\](~~)",       -- ~~
-		"(^%*%*?).-[^\\](%*%*?)",     -- * or **
-		"(^__?).-[^\\](__?)",         -- _ or __
-		"(^==).-[^\\](==)",           -- ==
-		"(^~~).-[^\\](~~)",           -- ~~
+		"([^\\]__?).-[^\\](__?)", -- _ or __
+		"([^\\]==).-[^\\](==)",   -- ==
+		"([^\\]~~).-[^\\](~~)",   -- ~~
+		"(^%*%*?).-[^\\](%*%*?)", -- * or **
+		"(^__?).-[^\\](__?)",     -- _ or __
+		"(^==).-[^\\](==)",       -- ==
+		"(^~~).-[^\\](~~)",       -- ~~
 	}
-	u.selectTextobj(patterns, scope, lookForwL)
+	M.selectTextobj(patterns, scope, lookForwL)
 
 	-- pattern accounts for escape char, so move to right to account for that
 	local isAtStart = vim.api.nvim_win_get_cursor(0)[2] == 1
@@ -251,28 +390,28 @@ end
 ---@param lookForwL integer
 function M.doubleSquareBrackets(scope, lookForwL)
 	local pattern = "(%[%[).-(%]%])"
-	u.selectTextobj(pattern, scope, lookForwL)
+	M.selectTextobj(pattern, scope, lookForwL)
 end
 
 ---@param scope "inner"|"outer" outer selector includes trailing comma and whitespace
 ---@param lookForwL integer
 function M.cssSelector(scope, lookForwL)
 	local pattern = "()[#.][%w-_]+(,? ?)"
-	u.selectTextobj(pattern, scope, lookForwL)
+	M.selectTextobj(pattern, scope, lookForwL)
 end
 
 ---@param scope "inner"|"outer" inner selector is only the value of the attribute inside the quotation marks.
 ---@param lookForwL integer
 function M.htmlAttribute(scope, lookForwL)
 	local pattern = [[(%w+=["']).-(["'])]]
-	u.selectTextobj(pattern, scope, lookForwL)
+	M.selectTextobj(pattern, scope, lookForwL)
 end
 
 ---@param scope "inner"|"outer" outer selector includes the front pipe
 ---@param lookForwL integer
 function M.shellPipe(scope, lookForwL)
 	local pattern = "()[^|%s][^|]-( ?| ?)"
-	u.selectTextobj(pattern, scope, lookForwL)
+	M.selectTextobj(pattern, scope, lookForwL)
 end
 
 ---INFO this textobj requires the python Treesitter parser
@@ -317,7 +456,7 @@ function M.pyTripleQuotes(scope)
 		endCol = #vim.api.nvim_buf_get_lines(0, endRow - 1, endRow, false)[1]
 	end
 
-	u.setSelection({ startRow, startCol }, { endRow, endCol })
+	M.setSelection({ startRow, startCol }, { endRow, endCol })
 end
 
 --------------------------------------------------------------------------------
