@@ -1,4 +1,4 @@
-*various-textobjs.txt*       For NVIM v0.8.0      Last change: 2024 January 14
+*various-textobjs.txt*      For NVIM v0.8.0      Last change: 2024 February 03
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
@@ -150,6 +150,9 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs--list-of-text-object
   cssSelector              class in CSS like       outer includes         small               ic/ac   css, scss
                            .my-class               trailing comma and                                 
                                                    space                                              
+
+  cssColor                 color in CSS (hex, rgb, inner includes only    small               i#/a#   css, scss
+                           or hsl)                 the color value                                    
 
   htmlAttribute            attribute in html/xml   inner is only the      small               ix/ax   html, xml,
                            like href="foobar.com"  value inside the                                   css, scss,
