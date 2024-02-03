@@ -414,6 +414,18 @@ function M.shellPipe(scope, lookForwL)
 	M.selectTextobj(pattern, scope, lookForwL)
 end
 
+---@param scope "inner"|"outer" inner only affects the color value
+---@param lookForwL integer
+function M.cssColor(scope, lookForwL)
+	local pattern = {
+		"(#)" .. ("%x"):rep(6) .. "()", -- #123456
+		"(#)" .. ("%x"):rep(3) .. "()", -- #123
+		"(hsl%()[%%%d,./deg ]-(%))", -- hsl(123, 23, 23) or hsl(123deg, 123%, 123% / 100)
+		"(rgb%()[%d,./ ]-(%))", -- rgb(123, 123, 123) or rgb(50%, 50%, 50%)
+	}
+	M.selectTextobj(pattern, scope, lookForwL)
+end
+
 ---INFO this textobj requires the python Treesitter parser
 ---@param scope "inner"|"outer" inner excludes `"""`
 function M.pyTripleQuotes(scope)

@@ -55,6 +55,10 @@ local ftMaps = {
 		fts = { "css", "scss" },
 	},
 	{
+		map = { cssColor = "#" },
+		fts = { "css", "scss" },
+	},
+	{
 		map = { shellPipe = "P" },
 		fts = { "sh", "bash", "zsh", "fish" },
 	},

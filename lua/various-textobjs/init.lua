@@ -200,6 +200,14 @@ function M.cssSelector(scope)
 	)
 end
 
+---@param scope "inner"|"outer"
+function M.cssColor(scope)
+	require("various-textobjs.charwise-textobjs").cssColor(
+		argConvert(scope),
+		config.lookForwardSmall
+	)
+end
+
 ---@param scope "inner"|"outer" inner selector is only the value of the attribute inside the quotation marks.
 function M.htmlAttribute(scope)
 	require("various-textobjs.charwise-textobjs").htmlAttribute(
