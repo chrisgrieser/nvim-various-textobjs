@@ -26,7 +26,7 @@ body:
       options:
         - label:
             The textobj would be useful to more users than just me. ([You can use the API to create custom
-            textobj.](../../README.md#advanced-usage--api))
+            textobj.](../README.md#advanced-usage--api))
           required: true
         - label:
             This is a feature request to change an existing textobject, not a bug report. (Use the bug report form for
