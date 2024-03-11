@@ -24,8 +24,10 @@ local function setLinewiseSelection(startline, endline)
 end
 
 ---@param lineNr number
----@return boolean whether given line is blank line
+---@return boolean|nil whether given line is blank line
 local function isBlankLine(lineNr)
+	local lastLine = a.nvim_buf_line_count(0)
+	if lineNr > lastLine or lineNr < 1 then return nil end
 	local lineContent = u.getline(lineNr)
 	return lineContent:find("^%s*$") ~= nil
 end
