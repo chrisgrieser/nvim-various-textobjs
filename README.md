@@ -468,7 +468,7 @@ vim.keymap.set("n", "gx", function()
 	require("various-textobjs").url()
 	local foundURL = vim.fn.mode():find("v") 
 	if foundURL then
-		u.normal('"zy')
+		vim.cmd.normal('"zy')
 		local url = vim.fn.getreg("z")
 		openURL(url)
 	else 
@@ -484,7 +484,7 @@ vim.keymap.set("n", "gx", function()
 		-- select one, use a plugin like dressing.nvim for nicer UI for
 		-- `vim.ui.select`
 		vim.ui.select(urls, { prompt = "Select URL:" }, function(choice)
-			if choice then openURL(url) end
+			if choice then openURL(choice) end
 		end)
 	end
 end, { desc = "URL Opener" })
