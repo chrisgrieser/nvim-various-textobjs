@@ -423,19 +423,6 @@ the `setup` call), and opens it in your browser. As opposed to vim's built-in
 the URL.
 
 ```lua
-local function openURL()
-	local opener
-	if vim.fn.has("macunix") == 1 then
-		opener = "open"
-	elseif vim.fn.has("linux") == 1 then
-		opener = "xdg-open"
-	elseif vim.fn.has("win64") == 1 or vim.fn.has("win32") == 1 then
-		opener = "start"
-	end
-	local openCommand = string.format("%s '%s' >/dev/null 2>&1", opener, url)
-	vim.fn.system(openCommand)
-end
-
 vim.keymap.set("n", "gx", function()
 	-- select URL
 	require("various-textobjs").url()
@@ -447,7 +434,7 @@ vim.keymap.set("n", "gx", function()
 	-- retrieve URL with the z-register as intermediary
 	vim.cmd.normal { '"zy', bang = true }
 	local url = vim.fn.getreg("z")
-	openURL(url)
+	vim.ui.open(url)
 end, { desc = "URL Opener" })
 ```
 
@@ -462,7 +449,7 @@ vim.keymap.set("n", "gx", function()
 	if foundURL then
 		vim.cmd.normal('"zy')
 		local url = vim.fn.getreg("z")
-		openURL(url)
+		vim.ui.open(url)
 	else
 		-- find all URLs in buffer
 		local urlPattern = require("various-textobjs.charwise-textobjs").urlPattern
@@ -476,7 +463,7 @@ vim.keymap.set("n", "gx", function()
 		-- select one, use a plugin like dressing.nvim for nicer UI for
 		-- `vim.ui.select`
 		vim.ui.select(urls, { prompt = "Select URL:" }, function(choice)
-			if choice then openURL(choice) end
+			if choice then vim.ui.open(choice) end
 		end)
 	end
 end, { desc = "URL Opener" })
