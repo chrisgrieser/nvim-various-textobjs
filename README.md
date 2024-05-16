@@ -29,7 +29,6 @@ Bundle of more than 30 new textobjects for Neovim.
 <!-- vale off -->
 <!-- LTeX: enabled=false -->
 
-
 | textobject             | description                                                                                | inner / outer                                                                             | forward-seeking |     default keymaps      | filetypes (for default keymaps) |
 |:-----------------------|:-------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------|:----------------|:------------------------:|:--------------------------------|
 | indentation            | surrounding lines with same or higher indentation                                          | [see overview from vim-indent-object](https://github.com/michaeljsmith/vim-indent-object) | \-              | `ii`, `ai`, `aI`, (`iI`) | all                             |
@@ -459,12 +458,12 @@ used by this plugin is exposed for this purpose.)
 ```lua
 vim.keymap.set("n", "gx", function()
 	require("various-textobjs").url()
-	local foundURL = vim.fn.mode():find("v") 
+	local foundURL = vim.fn.mode():find("v")
 	if foundURL then
 		vim.cmd.normal('"zy')
 		local url = vim.fn.getreg("z")
 		openURL(url)
-	else 
+	else
 		-- find all URLs in buffer
 		local urlPattern = require("various-textobjs.charwise-textobjs").urlPattern
 		local bufText = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n")
