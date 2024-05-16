@@ -41,7 +41,6 @@ Bundle of more than 30 new textobjects for Neovim.
 | anyQuote               | between any unescaped[^1] `"`, `'`, or `` ` `` *in a line*                                 | outer includes the quotation marks                                                        | small           |           `iq`/`aq`      | all                             |
 | anyBracket             | between any `()`, `[]`, or `{}` *in a line*                                                | outer includes the brackets                                                               | small           |           `io`/`ao`      | all                             |
 | restOfParagraph        | like `}`, but linewise                                                                     | \-                                                                                        | \-              |           `r`            | all                             |
-| multiCommentedLines    | consecutive, fully commented lines                                                         | \-                                                                                        | big             |           `gc`           | all                             |
 | entireBuffer           | entire buffer as one text object                                                           | \-                                                                                        | \-              |           `gG`           | all                             |
 | nearEoL                | from cursor position to end of line, minus one character                                   | \-                                                                                        | \-              |           `n`            | all                             |
 | lineCharacterwise      | current line, but characterwise                                                            | outer includes indentation and trailing spaces                                            | \-              |        `i_`/`a_`         | all                             |
@@ -247,12 +246,6 @@ keymap(
 )
 
 keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').column()<CR>")
-
-keymap(
-	{ "o", "x" },
-	"YOUR_MAPPING",
-	"<cmd>lua require('various-textobjs').multiCommentedLines()<CR>"
-)
 
 keymap(
 	{ "o", "x" },

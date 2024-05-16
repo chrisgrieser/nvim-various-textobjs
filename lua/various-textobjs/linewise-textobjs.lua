@@ -253,48 +253,6 @@ end
 
 ---@param lnum number
 ---@return boolean
-local function isCommentedLine(lnum)
-	local commentStringRegex = "^%s*"
-		.. vim.pesc(vim.bo.commentstring):gsub(" ?%%%%s ?", ".*")
-		.. "%s*$"
-	return u.getline(lnum):find(commentStringRegex) ~= nil
-end
-
----@param lookForwL integer number of lines to look forward for the textobj
-function M.multiCommentedLines(lookForwL)
-	if vim.bo.commentstring == "" then
-		u.notify("Buffer has no commentstring set.", "warn")
-		return
-	end
-
-	local curLnum = getCursor(0)[1]
-	local startLnum = curLnum
-	local lastLine = a.nvim_buf_line_count(0)
-
-	while not isCommentedLine(curLnum) do -- when on blank line, use next line
-		if curLnum == lastLine or curLnum > startLnum + lookForwL then
-			u.notFoundMsg(lookForwL)
-			return
-		end
-		curLnum = curLnum + 1
-	end
-
-	local prevLnum = curLnum
-	local nextLnum = curLnum
-	while prevLnum > 0 and isCommentedLine(prevLnum) do
-		prevLnum = prevLnum - 1
-	end
-	while nextLnum <= lastLine and isCommentedLine(nextLnum) do
-		nextLnum = nextLnum + 1
-	end
-
-	setLinewiseSelection(prevLnum + 1, nextLnum - 1)
-end
-
---------------------------------------------------------------------------------
-
----@param lnum number
----@return boolean
 local function isCellBorder(lnum)
 	local cellMarker = vim.bo.commentstring:format("%%")
 	local line = u.getline(lnum)
