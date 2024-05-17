@@ -149,16 +149,20 @@ functions:
 <!-- vale Google.Will = YES -->
 
 ```lua
--- example: `?` for diagnostic textobj
-vim.keymap.set({ "o", "x" }, "?", '<cmd>lua require("various-textobjs").diagnostic()<CR>')
+-- example: `U` for url textobj
+vim.keymap.set({ "o", "x" }, "U", '<cmd>lua require("various-textobjs").url()<CR>')
 
 -- example: `as` for outer subword, `is` for inner subword
 vim.keymap.set({ "o", "x" }, "as", '<cmd>lua require("various-textobjs").subword("outer")<CR>')
 vim.keymap.set({ "o", "x" }, "is", '<cmd>lua require("various-textobjs").subword("inner")<CR>')
+```
 
--- exception: the indentation textobj requires two parameters, the first for
--- exclusion of the starting border, the second for the exclusion of ending
--- border
+For most text objects, there is only one parameter which accepts `"inner"` or
+`"outer"`. There are two exceptions for that:
+
+```lua
+-- 1. THE INDENTATION TEXTOBJ requires two parameters, the first for
+-- exclusion of the starting border, the second for the exclusion of ending border
 vim.keymap.set(
 	{ "o", "x" },
 	"ii",
@@ -175,6 +179,13 @@ vim.keymap.set(
 	{ "o", "x" },
 	"ai",
 	'<cmd>lua require("various-textobjs").indentation("outer", "inner", "noBlanks")<CR>'
+)
+
+-- 2. DIAGNOSTIC TEXTOBJ accepts `"wrap"` or `"nowrap"`
+vim.keymap.set(
+	{ "o", "x" },
+	"!",
+	'<cmd>lua require("various-textobjs").diagnostic("wrap")<CR>'
 )
 ```
 
@@ -268,7 +279,7 @@ keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').url()
 keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').number('inner')<CR>")
 keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').number('outer')<CR>")
 
-keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').diagnostic()<CR>")
+keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').diagnostic('wrap')<CR>")
 
 keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').closedFold('inner')<CR>")
 keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').closedFold('outer')<CR>")

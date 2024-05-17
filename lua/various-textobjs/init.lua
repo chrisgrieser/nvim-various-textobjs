@@ -117,9 +117,9 @@ function M.toNextQuotationMark()
 	require("various-textobjs.charwise-textobjs").toNextQuotationMark(config.lookForwardSmall)
 end
 function M.url() require("various-textobjs.charwise-textobjs").url(config.lookForwardBig) end
-function M.diagnostic()
-	require("various-textobjs.charwise-textobjs").diagnostic(math.huge)
-end
+
+---@param wrap "wrap"|"nowrap"
+function M.diagnostic(wrap) require("various-textobjs.charwise-textobjs").diagnostic(wrap) end
 function M.lastChange() require("various-textobjs.charwise-textobjs").lastChange() end
 
 ---@param scope "inner"|"outer"

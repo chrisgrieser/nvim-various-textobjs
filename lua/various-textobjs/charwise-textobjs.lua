@@ -237,8 +237,8 @@ end
 
 ---similar to https://github.com/andrewferrier/textobj-diagnostic.nvim
 ---requires builtin LSP
----@param lookForwL integer
-function M.diagnostic(lookForwL)
+---@param wrap "wrap"|"nowrap"
+function M.diagnostic(wrap)
 	-- INFO for whatever reason, diagnostic line numbers and the end column (but
 	-- not the start column) are all off-by-one…
 
@@ -250,7 +250,7 @@ function M.diagnostic(lookForwL)
 	local prevD = vim.diagnostic.get_prev { wrap = false }
 	u.normal("h")
 
-	local nextD = vim.diagnostic.get_next { wrap = false }
+	local nextD = vim.diagnostic.get_next { wrap = (wrap == "wrap") }
 	local curStandingOnPrevD = false -- however, if prev diag is covered by or before the cursor has yet to be determined
 	local curRow, curCol = unpack(getCursor(0))
 
@@ -262,17 +262,12 @@ function M.diagnostic(lookForwL)
 		curStandingOnPrevD = curAfterPrevDstart and curBeforePrevDend
 	end
 
-	local target
-	if curStandingOnPrevD then
-		target = prevD
-	elseif nextD and (curRow + lookForwL > nextD.lnum) then
-		target = nextD
+	local target = curStandingOnPrevD and prevD or nextD
+	if target then
+		M.setSelection({ target.lnum + 1, target.col }, { target.end_lnum + 1, target.end_col - 1 })
+	else
+		u.notify("No diagnostic found.", "warn")
 	end
-	if not target then
-		u.notFoundMsg(lookForwL)
-		return
-	end
-	M.setSelection({ target.lnum + 1, target.col }, { target.end_lnum + 1, target.end_col - 1 })
 end
 
 ---@param scope "inner"|"outer" inner value excludes trailing commas or semicolons, outer includes them. Both exclude trailing comments.
