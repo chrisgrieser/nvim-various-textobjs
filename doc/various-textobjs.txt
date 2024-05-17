@@ -1,4 +1,4 @@
-*various-textobjs.txt*         For NVIM v0.8.0        Last change: 2024 May 16
+*various-textobjs.txt*         For NVIM v0.8.0        Last change: 2024 May 17
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
@@ -111,7 +111,7 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs--list-of-text-object
                                                    including minus sign                               
                                                    and decimal point                                  
 
-  diagnostic               LSP diagnostic          -                      big                   !     all
+  diagnostic               LSP diagnostic          -                      ∞                     !     all
                            (requires built-in LSP)                                                    
 
   closedFold               closed fold             outer includes one     big                 iz/az   all
@@ -232,16 +232,16 @@ keymaps.
 
 CONFIGURATION          *various-textobjs-nvim-various-textobjs--configuration*
 
+
+OPTIONS ~
+
 The `.setup()` call is optional if you are fine with the defaults below.
 
 >lua
     -- default config
     require("various-textobjs").setup {
-        -- lines to seek forwards for "small" textobjs (mostly characterwise textobjs)
         -- set to 0 to only look in the current line
         lookForwardSmall = 5,
-    
-        -- lines to seek forwards for "big" textobjs (mostly linewise textobjs)
         lookForwardBig = 15,
     
         -- use suggested keymaps (see overview table in README)
@@ -252,26 +252,32 @@ The `.setup()` call is optional if you are fine with the defaults below.
     }
 <
 
-------------------------------------------------------------------------------
+
+USE YOUR OWN KEYBINDINGS ~
+
 If you want to set your own keybindings, you can do so by calling the
-respective functions: - The function names correspond to the textobject names
+respective functions. The function names correspond to the textobject names
 from the |various-textobjs-overview-table|.
 
 
   [!NOTE] For dot-repeat to work, you have to call the motions as Ex-commands.
   When using `function() require("various-textobjs").diagnostic() end` as third
-  argument of the keymap, dot-repeatability will not work.
+  argument of the keymap, dot-repeatability is not going to work.
 >lua
-    -- example: `?` for diagnostic textobj
-    vim.keymap.set({ "o", "x" }, "?", '<cmd>lua require("various-textobjs").diagnostic()<CR>')
+    -- example: `U` for url textobj
+    vim.keymap.set({ "o", "x" }, "U", '<cmd>lua require("various-textobjs").url()<CR>')
     
     -- example: `as` for outer subword, `is` for inner subword
     vim.keymap.set({ "o", "x" }, "as", '<cmd>lua require("various-textobjs").subword("outer")<CR>')
     vim.keymap.set({ "o", "x" }, "is", '<cmd>lua require("various-textobjs").subword("inner")<CR>')
-    
-    -- exception: the indentation textobj requires two parameters, the first for
-    -- exclusion of the starting border, the second for the exclusion of ending
-    -- border
+<
+
+For most text objects, there is only one parameter which accepts `"inner"` or
+`"outer"`. There are two exceptions for that:
+
+>lua
+    -- 1. THE INDENTATION TEXTOBJ requires two parameters, the first for
+    -- exclusion of the starting border, the second for the exclusion of ending border
     vim.keymap.set(
         { "o", "x" },
         "ii",
@@ -288,6 +294,13 @@ from the |various-textobjs-overview-table|.
         { "o", "x" },
         "ai",
         '<cmd>lua require("various-textobjs").indentation("outer", "inner", "noBlanks")<CR>'
+    )
+    
+    -- 2. DIAGNOSTIC TEXTOBJ accepts `"wrap"` or `"nowrap"`
+    vim.keymap.set(
+        { "o", "x" },
+        "!",
+        '<cmd>lua require("various-textobjs").diagnostic("wrap")<CR>'
     )
 <
 
@@ -379,7 +392,7 @@ can copypaste this list and enter your own bindings.Mappings for all text object
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').number('inner')<CR>")
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').number('outer')<CR>")
     
-    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').diagnostic()<CR>")
+    keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').diagnostic('wrap')<CR>")
     
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').closedFold('inner')<CR>")
     keymap({ "o", "x" }, "YOUR_MAPPING", "<cmd>lua require('various-textobjs').closedFold('outer')<CR>")
@@ -550,7 +563,7 @@ on the URL.
         -- retrieve URL with the z-register as intermediary
         vim.cmd.normal { '"zy', bang = true }
         local url = vim.fn.getreg("z")
-        vim.ui.open(url)
+        vim.ui.open(url) -- requires nvim 0.10
     end, { desc = "URL Opener" })
 <
 
