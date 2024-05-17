@@ -321,11 +321,11 @@ function M.number(scope, lookForwL)
 end
 
 -- make URL pattern available for external use
+-- INFO mastodon URLs contain `@`, neovim docs urls can contain a `'`
 M.urlPattern = "%l%l%l-://[A-Za-z0-9_%-/.#%%=?&'@+]+"
 
 ---@param lookForwL integer
 function M.url(lookForwL)
-	-- INFO mastodon URLs contain `@`, neovim docs urls can contain a `'`
 	M.selectTextobj(M.urlPattern, "outer", lookForwL)
 end
 
