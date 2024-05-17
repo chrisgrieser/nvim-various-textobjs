@@ -447,12 +447,14 @@ function M.pyTripleQuotes(scope)
 		return
 	end
 
+	---@cast strNode TSNode
 	local text = u.getNodeText(strNode)
 	local isMultiline = text:find("[\r\n]")
 
 	-- select `string_content` node, which is the inner docstring
 	if scope == "inner" then strNode = strNode:child(1) end
 
+	---@cast strNode TSNode
 	local startRow, startCol, endRow, endCol = vim.treesitter.get_node_range(strNode)
 
 	-- fix various off-by-ones
