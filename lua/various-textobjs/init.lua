@@ -96,9 +96,6 @@ end
 function M.restOfParagraph() require("various-textobjs.linewise-textobjs").restOfParagraph() end
 function M.visibleInWindow() require("various-textobjs.linewise-textobjs").visibleInWindow() end
 function M.restOfWindow() require("various-textobjs.linewise-textobjs").restOfWindow() end
-function M.multiCommentedLines()
-	require("various-textobjs.linewise-textobjs").multiCommentedLines(config.lookForwardBig)
-end
 function M.entireBuffer() require("various-textobjs.linewise-textobjs").entireBuffer() end
 
 --------------------------------------------------------------------------------
@@ -121,7 +118,7 @@ function M.toNextQuotationMark()
 end
 function M.url() require("various-textobjs.charwise-textobjs").url(config.lookForwardBig) end
 function M.diagnostic()
-	require("various-textobjs.charwise-textobjs").diagnostic(config.lookForwardBig)
+	require("various-textobjs.charwise-textobjs").diagnostic(math.huge)
 end
 function M.lastChange() require("various-textobjs.charwise-textobjs").lastChange() end
 
