@@ -48,7 +48,7 @@ Bundle of more than 30 new textobjects for Neovim.
 | key                    | key of key-value pair, or left side of a assignment                                        | outer includes the `=` or `:`                                                             | small           |        `ik`/`ak`         | all                             |
 | url                    | works with `http[s]` or any other protocol                                                 | \-                                                                                        | big             |           `L`            | all                             |
 | number                 | numbers, similar to `<C-a>`                                                                | inner: only pure digits, outer: number including minus sign and decimal point             | small           |        `in`/`an`         | all                             |
-| diagnostic             | LSP diagnostic (requires built-in LSP)                                                     | \-                                                                                        | big             |           `!`            | all                             |
+| diagnostic             | LSP diagnostic (requires built-in LSP)                                                     | \-                                                                                        | ∞               |           `!`            | all                             |
 | closedFold             | closed fold                                                                                | outer includes one line after the last folded line                                        | big             |        `iz`/`az`         | all                             |
 | chainMember            | field with the full call, like `.encode(param)`                                            | outer includes the leading `.` (or `:`)                                                   | small           |        `im`/`am`         | all                             |
 | visibleInWindow        | all lines visible in the current window                                                    | \-                                                                                        | \-              |           `gw`           | all                             |
@@ -115,16 +115,15 @@ use { "chrisgrieser/nvim-various-textobjs" }
 > default keymaps.
 
 ## Configuration
+
+### Options
 The `.setup()` call is optional if you are fine with the defaults below.
 
 ```lua
 -- default config
 require("various-textobjs").setup {
-	-- lines to seek forwards for "small" textobjs (mostly characterwise textobjs)
 	-- set to 0 to only look in the current line
 	lookForwardSmall = 5,
-
-	-- lines to seek forwards for "big" textobjs (mostly linewise textobjs)
 	lookForwardBig = 15,
 
 	-- use suggested keymaps (see overview table in README)
@@ -135,18 +134,15 @@ require("various-textobjs").setup {
 }
 ```
 
----
-
+### Use your own keybindings
 If you want to set your own keybindings, you can do so by calling the respective
-functions:
-- The function names correspond to the textobject names from the [overview table](#list-of-text-objects).
+functions. The function names correspond to the textobject names from the
+[overview table](#list-of-text-objects).
 
-<!-- vale Google.Will = NO -->
 > [!NOTE]
 > For dot-repeat to work, you have to call the motions as Ex-commands. When
 > using `function() require("various-textobjs").diagnostic() end` as third
-> argument of the keymap, dot-repeatability will not work.
-<!-- vale Google.Will = YES -->
+> argument of the keymap, dot-repeatability is not going to work.
 
 ```lua
 -- example: `U` for url textobj
@@ -445,7 +441,7 @@ vim.keymap.set("n", "gx", function()
 	-- retrieve URL with the z-register as intermediary
 	vim.cmd.normal { '"zy', bang = true }
 	local url = vim.fn.getreg("z")
-	vim.ui.open(url)
+	vim.ui.open(url) -- requires nvim 0.10
 end, { desc = "URL Opener" })
 ```
 
