@@ -19,10 +19,7 @@ M.config = defaultConfig
 
 ---optional setup function
 ---@param userConfig? config
-function M.setup(userConfig)
-	M.config = vim.tbl_deep_extend("force", M.config, userConfig or {})
-	return M.config
-end
+function M.setup(userConfig) M.config = vim.tbl_deep_extend("force", M.config, userConfig or {}) end
 
 --------------------------------------------------------------------------------
 return M

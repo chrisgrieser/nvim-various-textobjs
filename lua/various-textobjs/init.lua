@@ -25,7 +25,8 @@ end
 ---optional setup function
 ---@param userConfig? config
 function M.setup(userConfig)
-	local config = require("various-textobjs.config").setup(userConfig)
+	require("various-textobjs.config").setup(userConfig)
+	local config = require("various-textobjs.config").config
 
 	if config.useDefaultKeymaps then
 		require("various-textobjs.default-keymaps").setup(config.disabledKeymaps)
