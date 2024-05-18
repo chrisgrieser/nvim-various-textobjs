@@ -1,6 +1,8 @@
 local M = {}
 local u = require("various-textobjs.utils")
 local getCursor = vim.api.nvim_win_get_cursor
+local config = require("various-textobjs.config").config
+
 --------------------------------------------------------------------------------
 
 ---@return boolean
@@ -152,13 +154,12 @@ function M.subword(scope)
 	M.selectTextobj(pattern, scope, 0)
 end
 
----@param lookForwL integer
-function M.toNextClosingBracket(lookForwL)
+function M.toNextClosingBracket()
 	local pattern = "().([]})])"
 
-	local _, endPos = M.searchTextobj(pattern, "inner", lookForwL)
+	local _, endPos = M.searchTextobj(pattern, "inner", config.lookForwardSmall)
 	if not endPos then
-		u.notFoundMsg(lookForwL)
+		u.notFoundMsg(config.lookForwardSmall)
 		return
 	end
 	local startPos = getCursor(0)
@@ -166,16 +167,15 @@ function M.toNextClosingBracket(lookForwL)
 	M.setSelection(startPos, endPos)
 end
 
----@param lookForwL integer
-function M.toNextQuotationMark(lookForwL)
+function M.toNextQuotationMark()
 	-- char before quote must not be escape char. Using `vim.opt.quoteescape` on
 	-- the off-chance that the user has customized this.
 	local quoteEscape = vim.opt_local.quoteescape:get() -- default: \
 	local pattern = ([[()[^%s](["'`])]]):format(quoteEscape)
 
-	local _, endPos = M.searchTextobj(pattern, "inner", lookForwL)
+	local _, endPos = M.searchTextobj(pattern, "inner", config.lookForwardSmall)
 	if not endPos then
-		u.notFoundMsg(lookForwL)
+		u.notFoundMsg(config.lookForwardSmall)
 		return
 	end
 	local startPos = getCursor(0)
@@ -184,8 +184,7 @@ function M.toNextQuotationMark(lookForwL)
 end
 
 ---@param scope "inner"|"outer"
----@param lookForwL integer
-function M.anyQuote(scope, lookForwL)
+function M.anyQuote(scope)
 	-- INFO char before quote must not be escape char. Using `vim.opt.quoteescape` on
 	-- the off-chance that the user has customized this.
 	local escape = vim.opt_local.quoteescape:get() -- default: \
@@ -198,7 +197,7 @@ function M.anyQuote(scope, lookForwL)
 		("([^%s]`).-[^%s](`)"):format(escape, escape), -- ``
 	}
 
-	M.selectTextobj(patterns, scope, lookForwL)
+	M.selectTextobj(patterns, scope, config.lookForwardSmall)
 
 	-- pattern accounts for escape char, so move to right to account for that
 	local isAtStart = vim.api.nvim_win_get_cursor(0)[2] == 1
@@ -206,14 +205,13 @@ function M.anyQuote(scope, lookForwL)
 end
 
 ---@param scope "inner"|"outer"
----@param lookForwL integer
-function M.anyBracket(scope, lookForwL)
+function M.anyBracket(scope)
 	local patterns = {
 		"(%().-(%))", -- ()
 		"(%[).-(%])", -- []
 		"({).-(})", -- {}
 	}
-	M.selectTextobj(patterns, scope, lookForwL)
+	M.selectTextobj(patterns, scope, config.lookForwardSmall)
 end
 
 ---near end of the line, ignoring trailing whitespace
@@ -271,16 +269,15 @@ function M.diagnostic(wrap)
 end
 
 ---@param scope "inner"|"outer" inner value excludes trailing commas or semicolons, outer includes them. Both exclude trailing comments.
----@param lookForwL integer
-function M.value(scope, lookForwL)
+function M.value(scope)
 	-- captures value till the end of the line
 	-- negative sets and frontier pattern ensure that equality comparators ==, !=
 	-- or css pseudo-elements :: are not matched
 	local pattern = "(%s*%f[!<>~=:][=:]%s*)[^=:].*()"
 
-	local startPos, endPos = M.searchTextobj(pattern, scope, lookForwL)
+	local startPos, endPos = M.searchTextobj(pattern, scope, config.lookForwardSmall)
 	if not startPos or not endPos then
-		u.notFoundMsg(lookForwL)
+		u.notFoundMsg(config.lookForwardSmall)
 		return
 	end
 
@@ -304,37 +301,31 @@ function M.value(scope, lookForwL)
 end
 
 ---@param scope "inner"|"outer" outer key includes the `:` or `=` after the key
----@param lookForwL integer
-function M.key(scope, lookForwL)
+function M.key(scope)
 	local pattern = "()%S.-( ?[:=] ?)"
-	M.selectTextobj(pattern, scope, lookForwL)
+	M.selectTextobj(pattern, scope, config.lookForwardSmall)
 end
 
 ---@param scope "inner"|"outer" inner number consists purely of digits, outer number factors in decimal points and includes minus sign
----@param lookForwL integer
-function M.number(scope, lookForwL)
+function M.number(scope)
 	-- Here two different patterns make more sense, so the inner number can match
 	-- before and after the decimal dot. enforcing digital after dot so outer
 	-- excludes enumrations.
 	local pattern = scope == "inner" and "%d+" or "%-?%d*%.?%d+"
-	M.selectTextobj(pattern, "outer", lookForwL)
+	M.selectTextobj(pattern, "outer", config.lookForwardSmall)
 end
 
 -- make URL pattern available for external use
 -- INFO mastodon URLs contain `@`, neovim docs urls can contain a `'`
 M.urlPattern = "%l%l%l-://[A-Za-z0-9_%-/.#%%=?&'@+]+"
 
----@param lookForwL integer
-function M.url(lookForwL)
-	M.selectTextobj(M.urlPattern, "outer", lookForwL)
-end
+function M.url() M.selectTextobj(M.urlPattern, "outer", config.lookForwardBig) end
 
 ---see #26
 ---@param scope "inner"|"outer" inner excludes the leading dot
----@param lookForwL integer
-function M.chainMember(scope, lookForwL)
+function M.chainMember(scope)
 	local pattern = "(%.)[%w_][%a_]*%b()()"
-	M.selectTextobj(pattern, scope, lookForwL)
+	M.selectTextobj(pattern, scope, config.lookForwardSmall)
 end
 
 function M.lastChange()
@@ -353,15 +344,13 @@ end
 -- FILETYPE SPECIFIC TEXTOBJS
 
 ---@param scope "inner"|"outer" inner link only includes the link title, outer link includes link, url, and the four brackets.
----@param lookForwL integer
-function M.mdlink(scope, lookForwL)
+function M.mdlink(scope)
 	local pattern = "(%[)[^%]]-(%]%b())"
-	M.selectTextobj(pattern, scope, lookForwL)
+	M.selectTextobj(pattern, scope, config.lookForwardSmall)
 end
 
 ---@param scope "inner"|"outer" inner selector only includes the content, outer selector includes the type.
----@param lookForwL integer
-function M.mdEmphasis(scope, lookForwL)
+function M.mdEmphasis(scope)
 	-- CAVEAT this still has a few edge cases with escaped markup, will need a
 	-- treesitter object to reliably account for that.
 	local patterns = {
@@ -374,7 +363,7 @@ function M.mdEmphasis(scope, lookForwL)
 		"(^==).-[^\\](==)", -- ==
 		"(^~~).-[^\\](~~)", -- ~~
 	}
-	M.selectTextobj(patterns, scope, lookForwL)
+	M.selectTextobj(patterns, scope, config.lookForwardSmall)
 
 	-- pattern accounts for escape char, so move to right to account for that
 	local isAtStart = vim.api.nvim_win_get_cursor(0)[2] == 1
@@ -382,43 +371,38 @@ function M.mdEmphasis(scope, lookForwL)
 end
 
 ---@param scope "inner"|"outer" inner double square brackets exclude the brackets themselves
----@param lookForwL integer
-function M.doubleSquareBrackets(scope, lookForwL)
+function M.doubleSquareBrackets(scope)
 	local pattern = "(%[%[).-(%]%])"
-	M.selectTextobj(pattern, scope, lookForwL)
+	M.selectTextobj(pattern, scope, config.lookForwardSmall)
 end
 
 ---@param scope "inner"|"outer" outer selector includes trailing comma and whitespace
----@param lookForwL integer
-function M.cssSelector(scope, lookForwL)
+function M.cssSelector(scope)
 	local pattern = "()[#.][%w-_]+(,? ?)"
-	M.selectTextobj(pattern, scope, lookForwL)
+	M.selectTextobj(pattern, scope, config.lookForwardSmall)
 end
 
 ---@param scope "inner"|"outer" inner selector is only the value of the attribute inside the quotation marks.
----@param lookForwL integer
-function M.htmlAttribute(scope, lookForwL)
+function M.htmlAttribute(scope)
 	local pattern = [[(%w+=["']).-(["'])]]
-	M.selectTextobj(pattern, scope, lookForwL)
+	M.selectTextobj(pattern, scope, config.lookForwardSmall)
 end
 
 ---@param scope "inner"|"outer" outer selector includes the front pipe
----@param lookForwL integer
-function M.shellPipe(scope, lookForwL)
+function M.shellPipe(scope)
 	local pattern = "()[^|%s][^|]-( ?| ?)"
-	M.selectTextobj(pattern, scope, lookForwL)
+	M.selectTextobj(pattern, scope, config.lookForwardSmall)
 end
 
 ---@param scope "inner"|"outer" inner only affects the color value
----@param lookForwL integer
-function M.cssColor(scope, lookForwL)
+function M.cssColor(scope)
 	local pattern = {
 		"(#)" .. ("%x"):rep(6) .. "()", -- #123456
 		"(#)" .. ("%x"):rep(3) .. "()", -- #123
 		"(hsl%()[%%%d,./deg ]-(%))", -- hsl(123, 23, 23) or hsl(123deg, 123%, 123% / 100)
 		"(rgb%()[%d,./ ]-(%))", -- rgb(123, 123, 123) or rgb(50%, 50%, 50%)
 	}
-	M.selectTextobj(pattern, scope, lookForwL)
+	M.selectTextobj(pattern, scope, config.lookForwardSmall)
 end
 
 ---INFO this textobj requires the python Treesitter parser

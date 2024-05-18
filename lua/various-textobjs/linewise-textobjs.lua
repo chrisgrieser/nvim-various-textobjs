@@ -4,6 +4,7 @@ local M = {}
 local fn = vim.fn
 local a = vim.api
 local getCursor = vim.api.nvim_win_get_cursor
+local config = require("various-textobjs.config").config
 
 --------------------------------------------------------------------------------
 
@@ -36,8 +37,7 @@ end
 
 -- next *closed* fold
 ---@param scope "inner"|"outer" outer adds one line after the fold
----@param lookForwL integer number of lines to look forward for the textobj
-function M.closedFold(scope, lookForwL)
+function M.closedFold(scope)
 	local startLnum = getCursor(0)[1]
 	local lastLine = a.nvim_buf_line_count(0)
 	local startedOnFold = fn.foldclosed(startLnum) > 0
@@ -49,8 +49,8 @@ function M.closedFold(scope, lookForwL)
 	else
 		foldStart = startLnum
 		repeat
-			if foldStart >= lastLine or foldStart > (lookForwL + startLnum) then
-				u.notFoundMsg(lookForwL)
+			if foldStart >= lastLine or foldStart > (config.lookForwardBig + startLnum) then
+				u.notFoundMsg(config.lookForwardBig)
 				return
 			end
 			foldStart = foldStart + 1
@@ -93,8 +93,7 @@ end
 
 ---Md Fenced Code Block Textobj
 ---@param scope "inner"|"outer" inner excludes the backticks
----@param lookForwL integer number of lines to look forward for the textobj
-function M.mdFencedCodeBlock(scope, lookForwL)
+function M.mdFencedCodeBlock(scope)
 	local cursorLnum = getCursor(0)[1]
 	local codeBlockPattern = "^```%w*$"
 
@@ -121,12 +120,13 @@ function M.mdFencedCodeBlock(scope, lookForwL)
 	repeat
 		j = j + 1
 		if j > #cbBegin then
-			u.notFoundMsg(lookForwL)
+			u.notFoundMsg(config.lookForwardBig)
 			return
 		end
 		local cursorInBetween = (cbBegin[j] <= cursorLnum) and (cbEnd[j] >= cursorLnum)
 		-- seek forward for a codeblock
-		local cursorInFront = (cbBegin[j] > cursorLnum) and (cbBegin[j] <= cursorLnum + lookForwL)
+		local cursorInFront = (cbBegin[j] > cursorLnum)
+			and (cbBegin[j] <= cursorLnum + config.lookForwardBig)
 	until cursorInBetween or cursorInFront
 
 	local start = cbBegin[j]

@@ -131,6 +131,9 @@ require("various-textobjs").setup {
 
 	-- disable only some default keymaps, e.g. { "ai", "ii" }
 	disabledKeymaps = {},
+
+	-- display notifications if a text object is not found
+	notifyNotFound = true,
 }
 ```
 

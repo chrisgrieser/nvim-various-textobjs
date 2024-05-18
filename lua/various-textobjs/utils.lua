@@ -28,6 +28,7 @@ end
 ---notification when no textobj could be found
 ---@param lookForwL integer number of lines the plugin tried to look forward
 function M.notFoundMsg(lookForwL)
+	if not require("various-textobjs.config").config.notifyNotFound then return end
 	local msg = "Textobject not found within the next " .. tostring(lookForwL) .. " lines."
 	if lookForwL == 1 then msg = msg:gsub("s%.$", ".") end -- remove plural s
 	M.notify(msg, "warn")

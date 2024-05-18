@@ -21,25 +21,12 @@ local function argConvert(arg)
 end
 
 --------------------------------------------------------------------------------
----@type config
-local defaultConfig = {
-	lookForwardSmall = 5,
-	lookForwardBig = 15,
-	useDefaultKeymaps = false,
-	disabledKeymaps = {},
-}
-local config = defaultConfig
-
----@class config
----@field lookForwardSmall? number
----@field lookForwardBig? number
----@field useDefaultKeymaps? boolean
----@field disabledKeymaps? string[]
 
 ---optional setup function
 ---@param userConfig? config
 function M.setup(userConfig)
-	config = vim.tbl_deep_extend("force", defaultConfig, userConfig or {})
+	require("various-textobjs.config").setup(userConfig)
+	local config = require("various-textobjs.config").config
 
 	if config.useDefaultKeymaps then
 		require("various-textobjs.default-keymaps").setup(config.disabledKeymaps)
@@ -69,18 +56,12 @@ end
 
 ---@param scope "inner"|"outer" outer adds one line after the fold
 function M.closedFold(scope)
-	require("various-textobjs.linewise-textobjs").closedFold(
-		argConvert(scope),
-		config.lookForwardBig
-	)
+	require("various-textobjs.linewise-textobjs").closedFold(argConvert(scope))
 end
 
 ---@param scope "inner"|"outer" inner excludes the backticks
 function M.mdFencedCodeBlock(scope)
-	require("various-textobjs.linewise-textobjs").mdFencedCodeBlock(
-		argConvert(scope),
-		config.lookForwardBig
-	)
+	require("various-textobjs.linewise-textobjs").mdFencedCodeBlock(argConvert(scope))
 end
 
 ---@param scope "inner"|"outer" inner excludes the `"""`
@@ -111,47 +92,31 @@ function M.lineCharacterwise(scope)
 	require("various-textobjs.charwise-textobjs").lineCharacterwise(argConvert(scope))
 end
 function M.toNextClosingBracket()
-	require("various-textobjs.charwise-textobjs").toNextClosingBracket(config.lookForwardSmall)
+	require("various-textobjs.charwise-textobjs").toNextClosingBracket()
 end
-function M.toNextQuotationMark()
-	require("various-textobjs.charwise-textobjs").toNextQuotationMark(config.lookForwardSmall)
-end
-function M.url() require("various-textobjs.charwise-textobjs").url(config.lookForwardBig) end
+function M.toNextQuotationMark() require("various-textobjs.charwise-textobjs").toNextQuotationMark() end
+function M.url() require("various-textobjs.charwise-textobjs").url() end
 
 ---@param wrap "wrap"|"nowrap"
 function M.diagnostic(wrap) require("various-textobjs.charwise-textobjs").diagnostic(wrap) end
 function M.lastChange() require("various-textobjs.charwise-textobjs").lastChange() end
 
 ---@param scope "inner"|"outer"
-function M.anyQuote(scope)
-	require("various-textobjs.charwise-textobjs").anyQuote(
-		argConvert(scope),
-		config.lookForwardSmall
-	)
-end
+function M.anyQuote(scope) require("various-textobjs.charwise-textobjs").anyQuote(argConvert(scope)) end
 
 ---@param scope "inner"|"outer"
 function M.anyBracket(scope)
-	require("various-textobjs.charwise-textobjs").anyBracket(
-		argConvert(scope),
-		config.lookForwardSmall
-	)
+	require("various-textobjs.charwise-textobjs").anyBracket(argConvert(scope))
 end
 
 ---@param scope "inner"|"outer" inner value excludes trailing commas or semicolons, outer includes them. Both exclude trailing comments.
-function M.value(scope)
-	require("various-textobjs.charwise-textobjs").value(argConvert(scope), config.lookForwardSmall)
-end
+function M.value(scope) require("various-textobjs.charwise-textobjs").value(argConvert(scope)) end
 
 ---@param scope "inner"|"outer" outer key includes the `:` or `=` after the key
-function M.key(scope)
-	require("various-textobjs.charwise-textobjs").key(argConvert(scope), config.lookForwardSmall)
-end
+function M.key(scope) require("various-textobjs.charwise-textobjs").key(argConvert(scope)) end
 
 ---@param scope "inner"|"outer" inner number consists purely of digits, outer number factors in decimal points and includes minus sign
-function M.number(scope)
-	require("various-textobjs.charwise-textobjs").number(argConvert(scope), config.lookForwardSmall)
-end
+function M.number(scope) require("various-textobjs.charwise-textobjs").number(argConvert(scope)) end
 
 ---@param scope "inner"|"outer" outer includes trailing -_
 function M.subword(scope) require("various-textobjs.charwise-textobjs").subword(argConvert(scope)) end
@@ -159,66 +124,41 @@ function M.subword(scope) require("various-textobjs.charwise-textobjs").subword(
 ---see #26
 ---@param scope "inner"|"outer" inner excludes the leading dot
 function M.chainMember(scope)
-	require("various-textobjs.charwise-textobjs").chainMember(
-		argConvert(scope),
-		config.lookForwardSmall
-	)
+	require("various-textobjs.charwise-textobjs").chainMember(argConvert(scope))
 end
 
 --------------------------------------------------------------------------------
 -- FILETYPE SPECIFIC TEXTOBJS
 
 ---@param scope "inner"|"outer" inner link only includes the link title, outer link includes link, url, and the four brackets.
-function M.mdlink(scope)
-	require("various-textobjs.charwise-textobjs").mdlink(argConvert(scope), config.lookForwardSmall)
-end
+function M.mdlink(scope) require("various-textobjs.charwise-textobjs").mdlink(argConvert(scope)) end
 
 ---@param scope "inner"|"outer" inner selector only includes the content, outer selector includes the type.
 function M.mdEmphasis(scope)
-	require("various-textobjs.charwise-textobjs").mdEmphasis(
-		argConvert(scope),
-		config.lookForwardSmall
-	)
+	require("various-textobjs.charwise-textobjs").mdEmphasis(argConvert(scope))
 end
 
 ---@param scope "inner"|"outer" inner double square brackets exclude the brackets themselves
 function M.doubleSquareBrackets(scope)
-	require("various-textobjs.charwise-textobjs").doubleSquareBrackets(
-		argConvert(scope),
-		config.lookForwardSmall
-	)
+	require("various-textobjs.charwise-textobjs").doubleSquareBrackets(argConvert(scope))
 end
 
 ---@param scope "inner"|"outer" outer selector includes trailing comma and whitespace
 function M.cssSelector(scope)
-	require("various-textobjs.charwise-textobjs").cssSelector(
-		argConvert(scope),
-		config.lookForwardSmall
-	)
+	require("various-textobjs.charwise-textobjs").cssSelector(argConvert(scope))
 end
 
 ---@param scope "inner"|"outer"
-function M.cssColor(scope)
-	require("various-textobjs.charwise-textobjs").cssColor(
-		argConvert(scope),
-		config.lookForwardSmall
-	)
-end
+function M.cssColor(scope) require("various-textobjs.charwise-textobjs").cssColor(argConvert(scope)) end
 
 ---@param scope "inner"|"outer" inner selector is only the value of the attribute inside the quotation marks.
 function M.htmlAttribute(scope)
-	require("various-textobjs.charwise-textobjs").htmlAttribute(
-		argConvert(scope),
-		config.lookForwardSmall
-	)
+	require("various-textobjs.charwise-textobjs").htmlAttribute(argConvert(scope))
 end
 
 ---@param scope "inner"|"outer" outer selector includes the front pipe
 function M.shellPipe(scope)
-	require("various-textobjs.charwise-textobjs").shellPipe(
-		argConvert(scope),
-		config.lookForwardSmall
-	)
+	require("various-textobjs.charwise-textobjs").shellPipe(argConvert(scope))
 end
 
 --------------------------------------------------------------------------------
