@@ -319,7 +319,7 @@ end
 -- INFO mastodon URLs contain `@`, neovim docs urls can contain a `'`
 M.urlPattern = "%l%l%l-://[A-Za-z0-9_%-/.#%%=?&'@+]+"
 
-function M.url() M.selectTextobj(M.urlPattern, "outer", config.lookForwardSmall) end
+function M.url() M.selectTextobj(M.urlPattern, "outer", config.lookForwardBig) end
 
 ---see #26
 ---@param scope "inner"|"outer" inner excludes the leading dot
