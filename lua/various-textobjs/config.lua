@@ -5,6 +5,7 @@ local M = {}
 ---@field lookForwardBig? number
 ---@field useDefaultKeymaps? boolean
 ---@field disabledKeymaps? string[]
+---@field notifyNotFound? boolean
 
 ---@type config
 local defaultConfig = {
@@ -12,6 +13,7 @@ local defaultConfig = {
 	lookForwardBig = 15,
 	useDefaultKeymaps = false,
 	disabledKeymaps = {},
+	notifyNotFound = true,
 }
 M.config = defaultConfig
 
