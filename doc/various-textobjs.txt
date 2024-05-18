@@ -1,4 +1,4 @@
-*various-textobjs.txt*         For NVIM v0.8.0        Last change: 2024 May 17
+*various-textobjs.txt*         For NVIM v0.8.0        Last change: 2024 May 18
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
@@ -249,6 +249,9 @@ The `.setup()` call is optional if you are fine with the defaults below.
     
         -- disable only some default keymaps, e.g. { "ai", "ii" }
         disabledKeymaps = {},
+    
+        -- display notifications if a text object is not found
+        notifyNotFound = true,
     }
 <
 
