@@ -18,6 +18,8 @@ end
 ---@param startline integer
 ---@param endline integer
 local function setLinewiseSelection(startline, endline)
+	-- save last position in jumplist (see #86)
+	u.normal("m`")
 	a.nvim_win_set_cursor(0, { startline, 0 })
 	if not isVisualLineMode() then u.normal("V") end
 	u.normal("o")
