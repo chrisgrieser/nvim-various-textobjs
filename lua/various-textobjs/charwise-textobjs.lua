@@ -18,6 +18,8 @@ end
 ---@param startPos pos
 ---@param endPos pos
 function M.setSelection(startPos, endPos)
+	-- save last position in jumplist
+	u.normal("m`")
 	vim.api.nvim_win_set_cursor(0, startPos)
 	if isVisualMode() then
 		u.normal("o")
