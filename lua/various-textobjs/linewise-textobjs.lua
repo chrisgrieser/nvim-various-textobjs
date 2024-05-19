@@ -113,7 +113,7 @@ function M.mdFencedCodeBlock(scope)
 		i = i + 1
 	end
 
-	if #cbBegin > #cbEnd then table.remove(cbEnd) end -- incomplete codeblock
+	if #cbBegin > #cbEnd then table.remove(cbBegin) end -- incomplete codeblock
 
 	-- determine cursor location in a codeblock
 	local j = 0
