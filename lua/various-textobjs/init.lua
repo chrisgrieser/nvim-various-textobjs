@@ -17,7 +17,7 @@ local function argConvert(arg)
 	local u = require("various-textobjs.utils")
 	if not notifiedOnce and (arg == false or arg == true) then
 		local msg = "`true` and `false` are deprecated as textobject arguments. "
-			+ 'Use `"inner"` or `"outer"` instead.'
+			.. 'Use `"inner"` or `"outer"` instead.'
 		u.notify(msg, "warn")
 		notifiedOnce = true
 	end
