@@ -322,8 +322,8 @@ function M.url() M.selectTextobj(M.urlPattern, "outer", config.lookForwardBig) e
 ---@param scope "inner"|"outer" inner excludes the leading dot
 function M.chainMember(scope)
 	local patterns = {
-		"(%.)[%w_][%a_]*%b()()",
-		"(%.)[%w_][%a_]*(%.?)",
+		"([:.])[%w_][%a_]-%b()()", -- with call
+		"([:.])[%w_][%a_]*()", -- without call
 	}
 	M.selectTextobj(patterns, scope, config.lookForwardSmall)
 end
