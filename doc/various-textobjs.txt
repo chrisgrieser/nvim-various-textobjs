@@ -118,9 +118,9 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs--list-of-text-object
                                                    line after the last                                
                                                    folded line                                        
 
-  chainMember              field with the full     outer includes the     small               im/am   all
-                           call, like              leading . (or :)                                   
-                           .encode(param)                                                             
+  chainMember              field with optional     outer includes the     small               im/am   all
+                           call, like .foo(param)  leading . (or :)                                   
+                           or .bar                                                                    
 
   visibleInWindow          all lines visible in    -                      -                    gw     all
                            the current window                                                         
@@ -160,8 +160,8 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs--list-of-text-object
                                                    four square brackets                               neorg,
                                                                                                       markdown
 
-  shellPipe                segment until a pipe    outer includes the     small               iP/aP   bash, zsh,
-                           character (\|)          pipe to the right                                  fish, sh
+  shellPipe                segment until/after a   outer includes the     small               iP/aP   bash, zsh,
+                           pipe character (\|)     pipe to the                                        fish, sh
 
   pyTripleQuotes           python strings          inner excludes the """ -                   iy/ay   python
                            surrounded by three     or '''                                             
