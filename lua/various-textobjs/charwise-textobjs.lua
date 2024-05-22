@@ -388,10 +388,13 @@ function M.htmlAttribute(scope)
 	M.selectTextobj(pattern, scope, config.lookForwardSmall)
 end
 
----@param scope "inner"|"outer" outer selector includes the front pipe
+---@param scope "inner"|"outer" outer selector includes the pipe
 function M.shellPipe(scope)
-	local pattern = "()[^|%s][^|]-( ?| ?)"
-	M.selectTextobj(pattern, scope, config.lookForwardSmall)
+	local patterns = {
+		"()[^|%s][^|]-( ?| ?)", -- trailing pipe, 1st char non-space to exclude indentation
+		"( ?| ?)[^|]*()", -- leading pipe
+	}
+	M.selectTextobj(patterns, scope, config.lookForwardSmall)
 end
 
 ---@param scope "inner"|"outer" inner only affects the color value
