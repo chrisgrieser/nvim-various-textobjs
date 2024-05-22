@@ -4,20 +4,26 @@ local M = {}
 -- on initialization instead of lazy-loading them when needed.
 --------------------------------------------------------------------------------
 
+local notifiedOnce = false -- only notify once
+
 ---INFO this function ensures backwards compatibility with earlier versions,
 ---where the input arg for selecting the inner or outer textobj was a boolean.
 ---For verbosity reasons, this is now a string.
 ---@param arg any
----@return "outer"|"inner"
+---@return "outer"|"inner"|nil
 local function argConvert(arg)
+	if arg == "outer" or arg == "inner" then return arg end
+
+	local u = require("various-textobjs.utils")
+	if not notifiedOnce and (arg == false or arg == true) then
+		local msg = "`true` and `false` are deprecated as textobject arguments. "
+			+ 'Use `"inner"` or `"outer"` instead.'
+		u.notify(msg, "warn")
+		notifiedOnce = true
+	end
 	if arg == false then return "outer" end
 	if arg == true then return "inner" end
-	if arg == "outer" or arg == "inner" then return arg end
-	require("various-textobjs.utils").notify(
-		"Invalid argument for textobject, only 'outer' and 'inner' accepted. Falling back to outer textobject.",
-		"warn"
-	)
-	return "outer"
+	return nil
 end
 
 --------------------------------------------------------------------------------

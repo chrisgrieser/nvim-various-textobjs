@@ -6,10 +6,7 @@ local config = require("various-textobjs.config").config
 --------------------------------------------------------------------------------
 
 ---@return boolean
-local function isVisualMode()
-	local modeWithV = vim.fn.mode():find("v")
-	return modeWithV ~= nil
-end
+local function isVisualMode() return vim.fn.mode():find("v") ~= nil end
 
 ---@alias pos {[1]: integer, [2]: integer}
 
@@ -18,8 +15,7 @@ end
 ---@param startPos pos
 ---@param endPos pos
 function M.setSelection(startPos, endPos)
-	-- save last position in jumplist
-	u.normal("m`")
+	u.normal("m`") -- save last position in jumplist
 	vim.api.nvim_win_set_cursor(0, startPos)
 	if isVisualMode() then
 		u.normal("o")
@@ -320,7 +316,6 @@ end
 -- make URL pattern available for external use
 -- INFO mastodon URLs contain `@`, neovim docs urls can contain a `'`
 M.urlPattern = "%l%l%l-://[A-Za-z0-9_%-/.#%%=?&'@+]+"
-
 function M.url() M.selectTextobj(M.urlPattern, "outer", config.lookForwardBig) end
 
 ---see #26
