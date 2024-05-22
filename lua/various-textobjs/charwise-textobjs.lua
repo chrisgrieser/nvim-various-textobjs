@@ -33,7 +33,8 @@ end
 ---@param pattern string lua pattern. REQUIRES two capture groups marking the
 ---two additions for the outer variant of the textobj. Use an empty capture group
 ---when there is no difference between inner and outer on that side.
----Essentially, the two capture groups work as lookbehind and lookahead.
+---Basically, the two capture groups work similar to lookbehind/lookahead for the
+---inner selector.
 ---@param scope "inner"|"outer"
 ---@param lookForwL integer
 ---@return pos? startPos
@@ -84,7 +85,7 @@ end
 ---searches for the position of one or multiple patterns and selects the closest one
 ---INFO Exposed for creation of custom textobjs, but subject to change without notice.
 ---@param patterns string|string[] lua, pattern(s) with the specification from `searchTextobj`
----@param scope "inner"|"outer" true = inner textobj
+---@param scope "inner"|"outer"
 ---@param lookForwL integer
 ---@return boolean -- whether textobj search was successful
 function M.selectTextobj(patterns, scope, lookForwL)
@@ -370,7 +371,7 @@ function M.mdEmphasis(scope)
 	if scope == "outer" and not isAtStart then u.normal("ol") end
 end
 
----@param scope "inner"|"outer" inner double square brackets exclude the brackets themselves
+---@param scope "inner"|"outer" inner selector excludes the brackets themselves
 function M.doubleSquareBrackets(scope)
 	local pattern = "(%[%[).-(%]%])"
 	M.selectTextobj(pattern, scope, config.lookForwardSmall)
@@ -397,7 +398,7 @@ function M.shellPipe(scope)
 	M.selectTextobj(patterns, scope, config.lookForwardSmall)
 end
 
----@param scope "inner"|"outer" inner only affects the color value
+---@param scope "inner"|"outer" inner selector only affects the color value
 function M.cssColor(scope)
 	local pattern = {
 		"(#)" .. ("%x"):rep(6) .. "()", -- #123456
@@ -409,7 +410,7 @@ function M.cssColor(scope)
 end
 
 ---INFO this textobj requires the python Treesitter parser
----@param scope "inner"|"outer" inner excludes `"""`
+---@param scope "inner"|"outer" inner selector excludes the `"""`
 function M.pyTripleQuotes(scope)
 	local node = u.getNodeAtCursor()
 	if not node then
