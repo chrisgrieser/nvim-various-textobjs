@@ -8,10 +8,26 @@ permissions:
   pull-requests: read
 
 jobs:
-  main:
+  semantic-pull-request:
     name: Validate PR title
     runs-on: ubuntu-latest
     steps:
       - uses: amannn/action-semantic-pull-request@v5
+        # add `improv` to the list of allowed types
+        with:
+          types: |
+            improv
+            fix
+            feat
+            refactor
+            build
+            ci
+            style
+            test
+            chore
+            perf
+            docs
+            break
+            revert
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
