@@ -11,7 +11,7 @@ local notifiedOnce = false -- only notify once
 ---For verbosity reasons, this is now a string.
 ---@param arg any
 ---@return "outer"|"inner"|nil
-local function argConvert(arg)
+							local function argConvert(arg)
 	if arg == "outer" or arg == "inner" then return arg end
 
 	local u = require("various-textobjs.utils")
@@ -25,14 +25,6 @@ local function argConvert(arg)
 	if arg == true then return "inner" end
 	return nil
 end
-
---------------------------------------------------------------------------------
-
----optional setup function
----@param userConfig? config
-function M.setup(userConfig)
-	require("various-textobjs.config").setup(userConfig)
-	local config = require("various-textobjs.config").config
 
 	if config.useDefaultKeymaps then
 		require("various-textobjs.default-keymaps").setup(config.disabledKeymaps)
