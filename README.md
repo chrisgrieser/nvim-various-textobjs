@@ -550,8 +550,8 @@ vim.keymap.set("n", "ysii", function()
 
 	-- highlight yanked text
 	local ns = vim.api.nvim_create_namespace("ysi")
-	vim.highlight.range(0, ns, "IncSearch", { startLn, 0 }, { startLn, -1 })
-	vim.highlight.range(0, ns, "IncSearch", { endLn, 0 }, { endLn, -1 })
+	vim.highlight.range(0, ns, "IncSearch", { startLn, 0 }, { startLn + 1, 0 })
+	vim.highlight.range(0, ns, "IncSearch", { endLn, 0 }, { endLn + 1, 0 })
 	vim.defer_fn(function() vim.api.nvim_buf_clear_namespace(0, ns, 0, -1) end, 1000)
 
 	-- restore cursor position
@@ -561,10 +561,10 @@ end, { desc = "Yank surrounding indentation" })
 
 ### Indent Last Paste
 The `lastChange` textobject can be used to indent the last text that was pasted.
-This is useful in languages where indentation is meaningful and thus formatters
-are not able to automatically indent everything for you, such as Python.
+This is useful in languages such as Python where indentation is meaningful and 
+thus formatters are not able to automatically indent everything for you.
 
-If you do not use `P` (upwards paste), "shift [p]aste" serves as a great
+If you do not use `P` for upwards paste, "shift [p]aste" serves as a great
 mnemonic.
 
 ```lua
@@ -609,10 +609,8 @@ compatibility. If you are interested in this subject, feel free to get in touch.
 I also occasionally blog about vim: [Nano Tips for Vim](https://nanotipsforvim.prose.sh)
 
 **Profiles**  
-- [Discord](https://discordapp.com/users/462774483044794368/)
 - [Academic Website](https://chris-grieser.de/)
-- [GitHub](https://github.com/chrisgrieser/)
-- [Twitter](https://twitter.com/pseudo_meta)
+- [Mastodon](https://pkm.social/@pseudometa)
 - [ResearchGate](https://www.researchgate.net/profile/Christopher-Grieser)
 - [LinkedIn](https://www.linkedin.com/in/christopher-grieser-ba693b17a/)
 
