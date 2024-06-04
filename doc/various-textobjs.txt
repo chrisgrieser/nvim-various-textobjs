@@ -1,4 +1,4 @@
-*various-textobjs.txt*        For NVIM v0.8.0        Last change: 2024 June 01
+*various-textobjs.txt*Auto-generated from the README.md. Do not make PRs to this file.
 
 ==============================================================================
 Table of Contents                         *various-textobjs-table-of-contents*
@@ -677,8 +677,8 @@ used to highlight the yanked text, to imitate the effect of
     
         -- highlight yanked text
         local ns = vim.api.nvim_create_namespace("ysi")
-        vim.highlight.range(0, ns, "IncSearch", { startLn, 0 }, { startLn, -1 })
-        vim.highlight.range(0, ns, "IncSearch", { endLn, 0 }, { endLn, -1 })
+        vim.api.nvim_buf_add_highlight(0, ns, "IncSearch", startLn, 0, -1)
+        vim.api.nvim_buf_add_highlight(0, ns, "IncSearch", endLn, 0, -1)
         vim.defer_fn(function() vim.api.nvim_buf_clear_namespace(0, ns, 0, -1) end, 1000)
     
         -- restore cursor position
@@ -690,11 +690,11 @@ used to highlight the yanked text, to imitate the effect of
 INDENT LAST PASTE ~
 
 The `lastChange` textobject can be used to indent the last text that was
-pasted. This is useful in languages where indentation is meaningful and thus
-formatters are not able to automatically indent everything for you, such as
-Python.
+pasted. This is useful in languages such as Python where indentation is
+meaningful and thus formatters are not able to automatically indent everything
+for you.
 
-If you do not use `P` (upwards paste), "shift [p]aste" serves as a great
+If you do not use `P` for upwards paste, "shift [p]aste" serves as a great
 mnemonic.
 
 >lua
@@ -737,20 +737,19 @@ creating custom text objects
 for figuring out dot-repeatability.
 <https://github.com/chrisgrieser/nvim-spider/pull/4>
 
-**About Me** In my day job, I am a sociologist studying the social mechanisms
-underlying the digital economy. For my PhD project, I investigate the
-governance of the app economy and how software ecosystems manage the tension
-between innovation and compatibility. If you are interested in this subject,
-feel free to get in touch.
+In my day job, I am a sociologist studying the social mechanisms underlying the
+digital economy. For my PhD project, I investigate the governance of the app
+economy and how software ecosystems manage the tension between innovation and
+compatibility. If you are interested in this subject, feel free to get in
+touch.
 
-**Blog** I also occasionally blog about vim: Nano Tips for Vim
+I also occasionally blog about vim: Nano Tips for Vim
 <https://nanotipsforvim.prose.sh>
 
-**Profiles** - Discord <https://discordapp.com/users/462774483044794368/> -
-Academic Website <https://chris-grieser.de/> - GitHub
-<https://github.com/chrisgrieser/> - Twitter <https://twitter.com/pseudo_meta>
-- ResearchGate <https://www.researchgate.net/profile/Christopher-Grieser> -
-LinkedIn <https://www.linkedin.com/in/christopher-grieser-ba693b17a/>
+- Academic Website <https://chris-grieser.de/>
+- Mastodon <https://pkm.social/@pseudometa>
+- ResearchGate <https://www.researchgate.net/profile/Christopher-Grieser>
+- LinkedIn <https://www.linkedin.com/in/christopher-grieser-ba693b17a/>
 
 
 
