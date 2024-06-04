@@ -550,8 +550,8 @@ vim.keymap.set("n", "ysii", function()
 
 	-- highlight yanked text
 	local ns = vim.api.nvim_create_namespace("ysi")
-	vim.highlight.range(0, ns, "IncSearch", { startLn, 0 }, { startLn + 1, 0 })
-	vim.highlight.range(0, ns, "IncSearch", { endLn, 0 }, { endLn + 1, 0 })
+	vim.api.nvim_buf_add_highlight(0, ns, "IncSearch", startLn, 0, -1)
+	vim.api.nvim_buf_add_highlight(0, ns, "IncSearch", endLn, 0, -1)
 	vim.defer_fn(function() vim.api.nvim_buf_clear_namespace(0, ns, 0, -1) end, 1000)
 
 	-- restore cursor position
@@ -592,23 +592,20 @@ page](https://github.com/chrisgrieser/nvim-various-textobjs/discussions).
 - [mini.ai](https://github.com/echasnovski/mini.nvim/blob/main/readmes/mini-ai.md)
 - [targets.vim](https://github.com/wellle/targets.vim)
 
+<!-- vale Google.FirstPerson = NO -->
 ## Credits
 **Thanks**  
 - To the Valuable Dev for [their blog post on how to get started with creating
   custom text objects](https://thevaluable.dev/vim-create-text-objects/).
 - [To `@vypxl` and `@ii14` for figuring out dot-repeatability.](https://github.com/chrisgrieser/nvim-spider/pull/4)
 
-<!-- vale Google.FirstPerson = NO -->
-**About Me**  
 In my day job, I am a sociologist studying the social mechanisms underlying the
 digital economy. For my PhD project, I investigate the governance of the app
 economy and how software ecosystems manage the tension between innovation and
 compatibility. If you are interested in this subject, feel free to get in touch.
 
-**Blog**  
 I also occasionally blog about vim: [Nano Tips for Vim](https://nanotipsforvim.prose.sh)
 
-**Profiles**  
 - [Academic Website](https://chris-grieser.de/)
 - [Mastodon](https://pkm.social/@pseudometa)
 - [ResearchGate](https://www.researchgate.net/profile/Christopher-Grieser)
