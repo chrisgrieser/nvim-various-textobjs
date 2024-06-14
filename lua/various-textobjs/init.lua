@@ -10,7 +10,7 @@ local notifiedOnce = false -- only notify once
 ---where the input arg for selecting the inner or outer textobj was a boolean.
 ---For verbosity reasons, this is now a string.
 ---@param arg any
----@return "outer"|"inner"|nil
+---@return "outer"|"inner"
 local function argConvert(arg)
 	if arg == "outer" or arg == "inner" then return arg end
 
@@ -21,9 +21,8 @@ local function argConvert(arg)
 		u.notify(msg, "warn")
 		notifiedOnce = true
 	end
-	if arg == false then return "outer" end
 	if arg == true then return "inner" end
-	return nil
+	return "outer"
 end
 
 --------------------------------------------------------------------------------
