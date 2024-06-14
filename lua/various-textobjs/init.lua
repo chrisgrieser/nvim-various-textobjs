@@ -1,4 +1,5 @@
 local M = {}
+
 -- PERF do not import submodules here, since it results in them all being loaded
 -- on initialization instead of lazy-loading them when needed.
 --------------------------------------------------------------------------------
@@ -42,14 +43,7 @@ end
 
 ---optional setup function
 ---@param userConfig? config
-function M.setup(userConfig)
-	require("various-textobjs.config").setup(userConfig)
-	local config = require("various-textobjs.config").config
-
-	if config.useDefaultKeymaps then
-		require("various-textobjs.default-keymaps").setup(config.disabledKeymaps)
-	end
-end
+function M.setup(userConfig) require("various-textobjs.config").setup(userConfig) end
 
 --------------------------------------------------------------------------------
 

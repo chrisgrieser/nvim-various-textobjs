@@ -19,7 +19,13 @@ M.config = defaultConfig
 
 ---optional setup function
 ---@param userConfig? config
-function M.setup(userConfig) M.config = vim.tbl_deep_extend("force", M.config, userConfig or {}) end
+function M.setup(userConfig)
+	M.config = vim.tbl_deep_extend("force", M.config, userConfig or {})
+
+	if M.config.useDefaultKeymaps then
+		require("various-textobjs.default-keymaps").setup(M.config.disabledKeymaps)
+	end
+end
 
 --------------------------------------------------------------------------------
 return M

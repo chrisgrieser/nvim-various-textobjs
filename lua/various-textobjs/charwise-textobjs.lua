@@ -1,8 +1,7 @@
 local M = {}
-local u = require("various-textobjs.utils")
-local getCursor = vim.api.nvim_win_get_cursor
-local config = require("various-textobjs.config").config
 
+local u = require("various-textobjs.utils")
+local config = require("various-textobjs.config").config
 --------------------------------------------------------------------------------
 
 ---@return boolean
@@ -41,7 +40,7 @@ end
 ---@return pos? endPos
 ---@nodiscard
 function M.searchTextobj(pattern, scope, lookForwL)
-	local cursorRow, cursorCol = unpack(getCursor(0))
+	local cursorRow, cursorCol = unpack(vim.api.nvim_win_get_cursor(0))
 	local lineContent = u.getline(cursorRow)
 	local lastLine = vim.api.nvim_buf_line_count(0)
 	local beginCol = 0 ---@type number|nil
@@ -97,7 +96,7 @@ function M.selectTextobj(patterns, scope, lookForwL)
 	elseif type(patterns) == "table" then
 		local closestRow = math.huge
 		local shortestDist = math.huge
-		local cursorCol = getCursor(0)[2]
+		local cursorCol = vim.api.nvim_win_get_cursor(0)[2]
 
 		for _, pattern in ipairs(patterns) do
 			local startPos, endPos = M.searchTextobj(pattern, scope, lookForwL)
@@ -161,7 +160,7 @@ function M.toNextClosingBracket()
 		u.notFoundMsg(config.lookForwardSmall)
 		return
 	end
-	local startPos = getCursor(0)
+	local startPos = vim.api.nvim_win_get_cursor(0)
 
 	M.setSelection(startPos, endPos)
 end
@@ -177,7 +176,7 @@ function M.toNextQuotationMark()
 		u.notFoundMsg(config.lookForwardSmall)
 		return
 	end
-	local startPos = getCursor(0)
+	local startPos = vim.api.nvim_win_get_cursor(0)
 
 	M.setSelection(startPos, endPos)
 end
@@ -220,7 +219,7 @@ function M.nearEoL()
 
 	local _, endPos = M.searchTextobj(pattern, "inner", 0)
 	if not endPos then return end
-	local startPos = getCursor(0)
+	local startPos = vim.api.nvim_win_get_cursor(0)
 
 	M.setSelection(startPos, endPos)
 end
@@ -249,7 +248,7 @@ function M.diagnostic(wrap)
 
 	local nextD = vim.diagnostic.get_next { wrap = (wrap == "wrap") }
 	local curStandingOnPrevD = false -- however, if prev diag is covered by or before the cursor has yet to be determined
-	local curRow, curCol = unpack(getCursor(0))
+	local curRow, curCol = unpack(vim.api.nvim_win_get_cursor(0))
 
 	if prevD then
 		local curAfterPrevDstart = (curRow == prevD.lnum + 1 and curCol >= prevD.col)

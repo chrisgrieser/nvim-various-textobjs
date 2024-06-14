@@ -105,22 +105,23 @@ function M.setup(disabled_keymaps)
 	keymap( { "o", "x" }, "ai" , "<cmd>lua require('various-textobjs').indentation('outer', 'inner')<CR>", { desc = "outer-inner indentation textobj" })
 	keymap( { "o", "x" }, "iI" , "<cmd>lua require('various-textobjs').indentation('inner', 'inner')<CR>", { desc = "inner-inner indentation textobj" })
 	keymap( { "o", "x" }, "aI" , "<cmd>lua require('various-textobjs').indentation('outer', 'outer')<CR>", { desc = "outer-outer indentation textobj" })
+	-- stylua: ignore end
 
-	vim.api.nvim_create_augroup("VariousTextobjs", {})
 	for _, textobj in pairs(ftMaps) do
 		vim.api.nvim_create_autocmd("FileType", {
-			group = "VariousTextobjs",
+			group = vim.api.nvim_create_augroup("VariousTextobjs", {}),
 			pattern = textobj.fts,
 			callback = function()
 				for objName, map in pairs(textobj.map) do
 					local name = " " .. objName .. " textobj"
+					-- stylua: ignore start
 					keymap( { "o", "x" }, "a" .. map, ("<cmd>lua require('various-textobjs').%s('%s')<CR>"):format(objName, "outer"), { desc = "outer" .. name, buffer = true })
 					keymap( { "o", "x" }, "i" .. map, ("<cmd>lua require('various-textobjs').%s('%s')<CR>"):format(objName, "inner"), { desc = "inner" .. name, buffer = true })
+					-- stylua: ignore end
 				end
 			end,
 		})
 	end
-	-- stylua: ignore end
 end
 
 --------------------------------------------------------------------------------
