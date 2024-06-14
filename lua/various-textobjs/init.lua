@@ -1,5 +1,4 @@
 local M = {}
-
 -- PERF do not import submodules here, since it results in them all being loaded
 -- on initialization instead of lazy-loading them when needed.
 --------------------------------------------------------------------------------
@@ -25,6 +24,20 @@ local function argConvert(arg)
 	return "outer"
 end
 
+---TODO This is the only function that takes more than one argument, thus
+---prevent the simple use of `__index`. When `argConvert` is removed, `__index`
+---can use `...` to pass all arguments, making this function unnecessary.
+---@param startBorder "inner"|"outer" exclude the startline
+---@param endBorder "inner"|"outer" exclude the endline
+---@param blankLines? "withBlanks"|"noBlanks"
+function M.indentation(startBorder, endBorder, blankLines)
+	require("various-textobjs.linewise-textobjs").indentation(
+		argConvert(startBorder),
+		argConvert(endBorder),
+		blankLines
+	)
+end
+
 --------------------------------------------------------------------------------
 
 ---optional setup function
@@ -39,132 +52,21 @@ function M.setup(userConfig)
 end
 
 --------------------------------------------------------------------------------
--- LINEWISE
 
----@param startBorder "inner"|"outer" exclude the startline
----@param endBorder "inner"|"outer" exclude the endline
----@param blankLines? "withBlanks"|"noBlanks"
-function M.indentation(startBorder, endBorder, blankLines)
-	require("various-textobjs.linewise-textobjs").indentation(
-		argConvert(startBorder),
-		argConvert(endBorder),
-		blankLines
-	)
-end
+-- redirect calls to this module to the charwise-textobjs submodule
+setmetatable(M, {
+	__index = function(_, key)
+		return function(scope)
+			local _scope = argConvert(scope)
+			local linewiseObjs = vim.tbl_keys(require("various-textobjs.linewise-textobjs"))
 
-function M.restOfIndentation() require("various-textobjs.linewise-textobjs").restOfIndentation() end
-
----@param scope "inner"|"outer" outer adds a blank, like ip/ap textobjs
-function M.greedyOuterIndentation(scope)
-	require("various-textobjs.linewise-textobjs").greedyOuterIndentation(argConvert(scope))
-end
-
----@param scope "inner"|"outer" outer adds one line after the fold
-function M.closedFold(scope)
-	require("various-textobjs.linewise-textobjs").closedFold(argConvert(scope))
-end
-
----@param scope "inner"|"outer" inner excludes the backticks
-function M.mdFencedCodeBlock(scope)
-	require("various-textobjs.linewise-textobjs").mdFencedCodeBlock(argConvert(scope))
-end
-
----@param scope "inner"|"outer" inner excludes the `"""`
-function M.pyTripleQuotes(scope)
-	require("various-textobjs.charwise-textobjs").pyTripleQuotes(argConvert(scope))
-end
-
----@param scope "inner"|"outer" outer includes bottom cell border
-function M.notebookCell(scope)
-	require("various-textobjs.linewise-textobjs").notebookCell(argConvert(scope))
-end
-
-function M.restOfParagraph() require("various-textobjs.linewise-textobjs").restOfParagraph() end
-function M.visibleInWindow() require("various-textobjs.linewise-textobjs").visibleInWindow() end
-function M.restOfWindow() require("various-textobjs.linewise-textobjs").restOfWindow() end
-function M.entireBuffer() require("various-textobjs.linewise-textobjs").entireBuffer() end
-
---------------------------------------------------------------------------------
--- BLOCKWISE
-
-function M.column() require("various-textobjs.blockwise-textobjs").column() end
-
---------------------------------------------------------------------------------
--- CHARWISE
-
-function M.nearEoL() require("various-textobjs.charwise-textobjs").nearEoL() end
-function M.lineCharacterwise(scope)
-	require("various-textobjs.charwise-textobjs").lineCharacterwise(argConvert(scope))
-end
-function M.toNextClosingBracket()
-	require("various-textobjs.charwise-textobjs").toNextClosingBracket()
-end
-function M.toNextQuotationMark() require("various-textobjs.charwise-textobjs").toNextQuotationMark() end
-function M.url() require("various-textobjs.charwise-textobjs").url() end
-
----@param wrap "wrap"|"nowrap"
-function M.diagnostic(wrap) require("various-textobjs.charwise-textobjs").diagnostic(wrap) end
-function M.lastChange() require("various-textobjs.charwise-textobjs").lastChange() end
-
----@param scope "inner"|"outer"
-function M.anyQuote(scope) require("various-textobjs.charwise-textobjs").anyQuote(argConvert(scope)) end
-
----@param scope "inner"|"outer"
-function M.anyBracket(scope)
-	require("various-textobjs.charwise-textobjs").anyBracket(argConvert(scope))
-end
-
----@param scope "inner"|"outer" inner value excludes trailing commas or semicolons, outer includes them. Both exclude trailing comments.
-function M.value(scope) require("various-textobjs.charwise-textobjs").value(argConvert(scope)) end
-
----@param scope "inner"|"outer" outer key includes the `:` or `=` after the key
-function M.key(scope) require("various-textobjs.charwise-textobjs").key(argConvert(scope)) end
-
----@param scope "inner"|"outer" inner number consists purely of digits, outer number factors in decimal points and includes minus sign
-function M.number(scope) require("various-textobjs.charwise-textobjs").number(argConvert(scope)) end
-
----@param scope "inner"|"outer" outer includes trailing -_
-function M.subword(scope) require("various-textobjs.charwise-textobjs").subword(argConvert(scope)) end
-
----see #26
----@param scope "inner"|"outer" inner excludes the leading dot
-function M.chainMember(scope)
-	require("various-textobjs.charwise-textobjs").chainMember(argConvert(scope))
-end
-
---------------------------------------------------------------------------------
--- FILETYPE SPECIFIC TEXTOBJS
-
----@param scope "inner"|"outer" inner link only includes the link title, outer link includes link, url, and the four brackets.
-function M.mdlink(scope) require("various-textobjs.charwise-textobjs").mdlink(argConvert(scope)) end
-
----@param scope "inner"|"outer" inner selector only includes the content, outer selector includes the type.
-function M.mdEmphasis(scope)
-	require("various-textobjs.charwise-textobjs").mdEmphasis(argConvert(scope))
-end
-
----@param scope "inner"|"outer" inner double square brackets exclude the brackets themselves
-function M.doubleSquareBrackets(scope)
-	require("various-textobjs.charwise-textobjs").doubleSquareBrackets(argConvert(scope))
-end
-
----@param scope "inner"|"outer" outer selector includes trailing comma and whitespace
-function M.cssSelector(scope)
-	require("various-textobjs.charwise-textobjs").cssSelector(argConvert(scope))
-end
-
----@param scope "inner"|"outer"
-function M.cssColor(scope) require("various-textobjs.charwise-textobjs").cssColor(argConvert(scope)) end
-
----@param scope "inner"|"outer" inner selector is only the value of the attribute inside the quotation marks.
-function M.htmlAttribute(scope)
-	require("various-textobjs.charwise-textobjs").htmlAttribute(argConvert(scope))
-end
-
----@param scope "inner"|"outer" outer selector includes the front pipe
-function M.shellPipe(scope)
-	require("various-textobjs.charwise-textobjs").shellPipe(argConvert(scope))
-end
+			local module = "charwise-textobjs"
+			if vim.tbl_contains(linewiseObjs, key) then module = "linewise-textobjs" end
+			if key == "column" then module = "blockwise-textobjs" end
+			require("various-textobjs." .. module)[key](_scope)
+		end
+	end,
+})
 
 --------------------------------------------------------------------------------
 return M
