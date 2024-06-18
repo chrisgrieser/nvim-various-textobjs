@@ -107,9 +107,10 @@ function M.setup(disabled_keymaps)
 	keymap( { "o", "x" }, "aI" , "<cmd>lua require('various-textobjs').indentation('outer', 'outer')<CR>", { desc = "outer-outer indentation textobj" })
 	-- stylua: ignore end
 
+	vim.api.nvim_create_augroup("VariousTextobjs", {})
 	for _, textobj in pairs(ftMaps) do
 		vim.api.nvim_create_autocmd("FileType", {
-			group = vim.api.nvim_create_augroup("VariousTextobjs", {}),
+			group = "VariousTextobjs",
 			pattern = textobj.fts,
 			callback = function()
 				for objName, map in pairs(textobj.map) do
