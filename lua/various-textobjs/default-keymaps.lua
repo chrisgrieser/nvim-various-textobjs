@@ -29,50 +29,24 @@ local oneMaps = {
 	lastChange = "g;", -- consistent with g; movement
 }
 local ftMaps = {
-	{
-		map = { mdlink = "l" },
-		fts = { "markdown", "toml" },
-	},
-	{
-		map = { mdEmphasis = "e" },
-		fts = { "markdown" },
-	},
-	{
-		map = { pyTripleQuotes = "y" },
-		fts = { "python" },
-	},
-	{
-		map = { mdFencedCodeBlock = "C" },
-		fts = { "markdown" },
-	},
-	{
-		map = { doubleSquareBrackets = "D" },
-		fts = { "lua", "norg", "sh", "fish", "zsh", "bash", "markdown" },
-	},
-	{
-		map = { cssSelector = "c" },
-		fts = { "css", "scss" },
-	},
-	{
-		map = { cssColor = "#" },
-		fts = { "css", "scss" },
-	},
-	{
-		map = { shellPipe = "P" },
-		fts = { "sh", "bash", "zsh", "fish" },
-	},
-	{
-		map = { htmlAttribute = "x" },
-		fts = { "html", "css", "scss", "xml", "vue" },
-	},
+	{ map = { mdlink = "l" }, fts = { "markdown", "toml" } },
+	{ map = { mdEmphasis = "e" }, fts = { "markdown" } },
+	{ map = { pyTripleQuotes = "y" }, fts = { "python" } },
+	{ map = { mdFencedCodeBlock = "C" }, fts = { "markdown" } },
+	-- stylua: ignore
+	{ map = { doubleSquareBrackets = "D" }, fts = { "lua", "norg", "sh", "fish", "zsh", "bash", "markdown" } },
+	{ map = { cssSelector = "c" }, fts = { "css", "scss" } },
+	{ map = { cssColor = "#" }, fts = { "css", "scss" } },
+	{ map = { shellPipe = "P" }, fts = { "sh", "bash", "zsh", "fish" } },
+	{ map = { htmlAttribute = "x" }, fts = { "html", "css", "scss", "xml", "vue" } },
 }
 
-function M.setup(disabled_keymaps)
+--------------------------------------------------------------------------------
+
+function M.setup(disabledKeymaps)
 	local function keymap(...)
 		local args = { ... }
-		if vim.tbl_contains(disabled_keymaps, args[2]) then
-			return -- Disabled keymap
-		end
+		if vim.tbl_contains(disabledKeymaps, args[2]) then return end
 		vim.keymap.set(...)
 	end
 
@@ -107,10 +81,10 @@ function M.setup(disabled_keymaps)
 	keymap( { "o", "x" }, "aI" , "<cmd>lua require('various-textobjs').indentation('outer', 'outer')<CR>", { desc = "outer-outer indentation textobj" })
 	-- stylua: ignore end
 
-	vim.api.nvim_create_augroup("VariousTextobjs", {})
+	local group = vim.api.nvim_create_augroup("VariousTextobjs", {})
 	for _, textobj in pairs(ftMaps) do
 		vim.api.nvim_create_autocmd("FileType", {
-			group = "VariousTextobjs",
+			group = group,
 			pattern = textobj.fts,
 			callback = function()
 				for objName, map in pairs(textobj.map) do
