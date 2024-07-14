@@ -316,7 +316,7 @@ end
 -- make URL pattern available for external use
 -- INFO mastodon URLs contain `@`, neovim docs urls can contain a `'`, special
 -- urls like https://docs.rs/regex/1.*/regex/#syntax can have a `*`
-M.urlPattern = "%l%l%l-://[A-Za-z0-9_%-/.#%%=?&'@+*]+"
+M.urlPattern = "%l%l%l-://[A-Za-z0-9_%-/.#%%=?&'@+*:]+"
 function M.url() M.selectTextobj(M.urlPattern, "outer", config.lookForwardBig) end
 
 ---see #26
