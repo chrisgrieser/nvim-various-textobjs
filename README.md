@@ -63,7 +63,7 @@ Bundle of more than 30 new textobjects for Neovim.
 | cssColor               | color in CSS (hex, rgb, or hsl)                                                            | inner includes only the color value                                                       | small           |        `i#`/`a#`         | css, scss                       |
 | htmlAttribute          | attribute in html/xml like `href="foobar.com"`                                             | inner is only the value inside the quotes trailing comma and space                        | small           |        `ix`/`ax`         | html, xml, css, scss, vue       |
 | doubleSquareBrackets   | text enclosed by `[[]]`                                                                    | outer includes the four square brackets                                                   | small           |        `iD`/`aD`         | lua, shell, neorg, markdown     |
-| shellPipe              | segment until/after a pipe character (`\|`)                                                | outer includes the pipe to the                                                            | small           |        `iP`/`aP`         | bash, zsh, fish, sh             |
+| shellPipe              | segment until/after a pipe character (`\|`)                                                | outer includes the pipe                                                                   | small           |        `iP`/`aP`         | bash, zsh, fish, sh             |
 | pyTripleQuotes         | python strings surrounded by three quotes (regular or f-string)                            | inner excludes the `"""` or `'''`                                                         | \-              |        `iy`/`ay`         | python                          |
 | notebookCell           | cell delimited by [double percent comment][jupytext], such as `# %%`                       | outer includes the bottom cell border                                                     | \-              |        `iN`/`aN`         | all                             |
 
@@ -112,7 +112,7 @@ keymaps.
 use { "chrisgrieser/nvim-various-textobjs" }
 ```
 
-> [!TIP]  
+> [!TIP]
 > You can also use the `disabledKeymaps` config option to disable only *some*
 > default keymaps.
 
@@ -192,7 +192,7 @@ custom commands. Here are some examples:
 
 ### `ii` on unindented line should select entire buffer
 Using a simple if-else-block, you can create a hybrid of the inner indentation
-text object and the entire-buffer text object, you prefer that kind of behavior:
+text object and the entire-buffer text object, if you prefer that kind of behavior:
 
 ```lua
 -- when on unindented line, `ii` should select entire buffer
@@ -216,7 +216,7 @@ vim.keymap.set("n", "gx", function()
 	-- select URL
 	require("various-textobjs").url()
 
-	-- plugin only switches to visual mode when textobj found
+	-- plugin only switches to visual mode when textobj is found
 	local foundURL = vim.fn.mode():find("v")
 	if not foundURL then return end
 
@@ -265,9 +265,9 @@ indentation. Take for example this case where you are removing the `foo`
 condition:
 
 ```lua
--- before (cursor on `print("bar")`)
+-- before
 if foo then
-	print("bar")
+	print("bar") -- <- cursor on this line
 	print("baz")
 end
 
@@ -278,8 +278,8 @@ print("baz")
 
 The code below achieves this by dedenting the inner indentation textobject
 (essentially running `<ii`), and deleting the two lines surrounding it. As for
-the mapping, `dsi` should make sense since this command is somewhat similar to
-the `ds` operator from [vim-surround](https://github.com/tpope/vim-surround) but
+the mapping, `dsi` should make sense since this command is similar to the `ds`
+operator from [vim-surround](https://github.com/tpope/vim-surround) but
 performed on an indentation textobject. (It is also an intuitive mnemonic:
 `d`elete `s`urrounding `i`ndentation.)
 
@@ -318,7 +318,7 @@ vim.keymap.set("n", "ysii", function()
 	require("various-textobjs").indentation("outer", "outer")
 	local indentationFound = vim.fn.mode():find("V")
 	if not indentationFound then return end
-	vim.cmd.normal { "V", bang = true } -- leave visual mode so the `'<` `'>` marks are set
+	vim.cmd.normal { "V", bang = true } -- leave visual mode so the '< '> marks are set
 
 	-- copy them into the + register
 	local startLn = vim.api.nvim_buf_get_mark(0, "<")[1] - 1
@@ -343,7 +343,7 @@ The `lastChange` textobject can be used to indent the last text that was pasted.
 This is useful in languages such as Python where indentation is meaningful and
 thus formatters are not able to automatically indent everything for you.
 
-If you do not use `P` for upwards paste, "shift [p]aste" serves as a great
+If you do not use `P` for upwards paste, "shift `p`aste" serves as a great
 mnemonic.
 
 ```lua
@@ -351,7 +351,7 @@ vim.keymap.set("n", "P", function()
 	require("various-textobjs").lastChange()
 	local changeFound = vim.fn.mode():find("v")
 	if changeFound then vim.cmd.normal { ">", bang = true } end
-end,
+end
 ```
 
 ### Other Ideas?
