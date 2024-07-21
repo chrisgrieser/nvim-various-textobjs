@@ -163,7 +163,7 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs--list-of-text-object
                                                                                                       markdown
 
   shellPipe                segment until/after a   outer includes the     small               iP/aP   bash, zsh,
-                           pipe character (\|)     pipe to the                                        fish, sh
+                           pipe character (\|)     pipe                                               fish, sh
 
   pyTripleQuotes           python strings          inner excludes the """ -                   iy/ay   python
                            surrounded by three     or '''                                             
@@ -315,7 +315,7 @@ custom commands. Here are some examples:
 II ON UNINDENTED LINE SHOULD SELECT ENTIRE BUFFER ~
 
 Using a simple if-else-block, you can create a hybrid of the inner indentation
-text object and the entire-buffer text object, you prefer that kind of
+text object and the entire-buffer text object, if you prefer that kind of
 behavior:
 
 >lua
@@ -342,7 +342,7 @@ on the URL.
         -- select URL
         require("various-textobjs").url()
     
-        -- plugin only switches to visual mode when textobj found
+        -- plugin only switches to visual mode when textobj is found
         local foundURL = vim.fn.mode():find("v")
         if not foundURL then return end
     
@@ -393,9 +393,9 @@ and after an indentation. Take for example this case where you are removing the
 `foo` condition:
 
 >lua
-    -- before (cursor on `print("bar")`)
+    -- before
     if foo then
-        print("bar")
+        print("bar") -- <- cursor on this line
         print("baz")
     end
     
@@ -406,8 +406,8 @@ and after an indentation. Take for example this case where you are removing the
 
 The code below achieves this by dedenting the inner indentation textobject
 (essentially running `<ii`), and deleting the two lines surrounding it. As for
-the mapping, `dsi` should make sense since this command is somewhat similar to
-the `ds` operator from vim-surround <https://github.com/tpope/vim-surround> but
+the mapping, `dsi` should make sense since this command is similar to the `ds`
+operator from vim-surround <https://github.com/tpope/vim-surround> but
 performed on an indentation textobject. (It is also an intuitive mnemonic:
 `d`elete `s`urrounding `i`ndentation.)
 
@@ -449,7 +449,7 @@ used to highlight the yanked text, to imitate the effect of
         require("various-textobjs").indentation("outer", "outer")
         local indentationFound = vim.fn.mode():find("V")
         if not indentationFound then return end
-        vim.cmd.normal { "V", bang = true } -- leave visual mode so the `'<` `'>` marks are set
+        vim.cmd.normal { "V", bang = true } -- leave visual mode so the '< '> marks are set
     
         -- copy them into the + register
         local startLn = vim.api.nvim_buf_get_mark(0, "<")[1] - 1
@@ -477,7 +477,7 @@ pasted. This is useful in languages such as Python where indentation is
 meaningful and thus formatters are not able to automatically indent everything
 for you.
 
-If you do not use `P` for upwards paste, "shift [p]aste" serves as a great
+If you do not use `P` for upwards paste, "shift `p`aste" serves as a great
 mnemonic.
 
 >lua
@@ -485,7 +485,7 @@ mnemonic.
         require("various-textobjs").lastChange()
         local changeFound = vim.fn.mode():find("v")
         if changeFound then vim.cmd.normal { ">", bang = true } end
-    end,
+    end
 <
 
 
