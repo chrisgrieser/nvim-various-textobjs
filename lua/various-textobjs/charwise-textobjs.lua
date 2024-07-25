@@ -434,11 +434,15 @@ function M.pyTripleQuotes(scope)
 	local text = u.getNodeText(strNode)
 	local isMultiline = text:find("[\r\n]")
 
-	-- select `string_content` node, which is the inner docstring
-	if scope == "inner" then strNode = strNode:child(1) end
-
 	---@cast strNode TSNode
 	local startRow, startCol, endRow, endCol = vim.treesitter.get_node_range(strNode)
+
+	if scope == "inner" then
+		local startNode = strNode:child(1) or strNode
+		local endNode = strNode:child(strNode:child_count() - 2) or strNode
+		startRow, startCol, _, _ = vim.treesitter.get_node_range(startNode)
+		_, _, endRow, endCol = vim.treesitter.get_node_range(endNode)
+	end
 
 	-- fix various off-by-ones
 	startRow = startRow + 1
