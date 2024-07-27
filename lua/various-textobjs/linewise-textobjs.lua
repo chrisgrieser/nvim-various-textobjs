@@ -164,7 +164,7 @@ function M.indentation(startBorder, endBorder, blankLines)
 	local lastLine = vim.api.nvim_buf_line_count(0)
 	while isBlankLine(curLnum) do -- when on blank line, use next line
 		if lastLine == curLnum then
-			u.notify("No indented line found.", "warn")
+			u.notify("No indented line found.", "notfound")
 			return
 		end
 		curLnum = curLnum + 1
@@ -172,7 +172,7 @@ function M.indentation(startBorder, endBorder, blankLines)
 
 	local indentOfStart = vim.fn.indent(curLnum)
 	if indentOfStart == 0 then
-		u.notify("Current line is not indented.", "warn")
+		u.notify("Current line is not indented.", "notfound")
 		return false -- return value needed for greedyOuterIndentation textobj
 	end
 
@@ -222,7 +222,7 @@ function M.restOfIndentation()
 
 	local indentOfStart = vim.fn.indent(curLnum)
 	if indentOfStart == 0 then
-		u.notify("Current line is not indented.", "warn")
+		u.notify("Current line is not indented.", "notfound")
 		return
 	end
 

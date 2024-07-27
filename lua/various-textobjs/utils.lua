@@ -19,19 +19,23 @@ function M.getline(lnum) return vim.api.nvim_buf_get_lines(0, lnum - 1, lnum, tr
 
 ---send notification
 ---@param msg string
----@param level? "info"|"trace"|"debug"|"warn"|"error"
+---@param level? "info"|"trace"|"debug"|"warn"|"error"|"notfound"
 function M.notify(msg, level)
 	if not level then level = "info" end
+	if level == "notfound" then
+		if not require("various-textobjs.config").config.notifyNotFound then return end
+		level = "warn"
+	end
 	vim.notify(msg, vim.log.levels[level:upper()], { title = "nvim-various-textobjs" })
 end
 
 ---notification when no textobj could be found
 ---@param lookForwL integer number of lines the plugin tried to look forward
 function M.notFoundMsg(lookForwL)
-	if not require("various-textobjs.config").config.notifyNotFound then return end
-	local msg = "Textobject not found within the next " .. tostring(lookForwL) .. " lines."
+	local msg = ("Textobject not found within the next %d lines."):format(lookForwL)
 	if lookForwL == 1 then msg = msg:gsub("s%.$", ".") end -- remove plural s
-	M.notify(msg, "warn")
+	if lookForwL == 0 then msg = "Textobject not found within the line." end
+	M.notify(msg, "notfound")
 end
 
 --------------------------------------------------------------------------------
