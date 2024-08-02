@@ -6,10 +6,11 @@
 
 Bundle of more than 30 new textobjects for Neovim.
 
+## Table of Contents
+
 <!-- toc -->
 
 - [List of Text Objects](#list-of-text-objects)
-- [Non-Goals](#non-goals)
 - [Installation](#installation)
 - [Configuration](#configuration)
 	* [Options](#options)
@@ -21,7 +22,7 @@ Bundle of more than 30 new textobjects for Neovim.
 	* [Yank Surrounding Indentation](#yank-surrounding-indentation)
 	* [Indent Last Paste](#indent-last-paste)
 	* [Other Ideas?](#other-ideas)
-- [Limitations](#limitations)
+- [Limitations & Non-Goals](#limitations--non-goals)
 - [Other Text Object Plugins](#other-text-object-plugins)
 - [Credits](#credits)
 
@@ -71,20 +72,15 @@ Bundle of more than 30 new textobjects for Neovim.
 <!-- vale on -->
 <!-- LTeX: enabled=true -->
 
-## Non-Goals
-[nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects)
-already does an excellent job when it comes to using Treesitter for text
-objects, such as function arguments or loops. This plugin's goal is therefore
-not to provide textobjects already offered by `nvim-treesitter-textobjects`.
-
 ## Installation
-Have `nvim-various-textobjs` set up text objects for you:
+**Variant 1:** Have `nvim-various-textobjs` set up all the keybindings from the
+table above for you.
 
 ```lua
 -- lazy.nvim
 {
 	"chrisgrieser/nvim-various-textobjs",
-	lazy = false,
+	event = "UIEnter"
 	opts = { useDefaultKeymaps = true },
 },
 
@@ -97,15 +93,17 @@ use {
 }
 ```
 
-If you prefer to set up your own keybindings, use this code and then see the
-[Configuration](#configuration) section for information on setting your own
-keymaps.
+**Variant 2:** Use your own keybindings. See the [Configuration](#configuration)
+section for information on setting your own keymaps.
 
 ```lua
 -- lazy.nvim
 {
 	"chrisgrieser/nvim-various-textobjs",
 	lazy = true,
+	keys = {
+		-- ...
+	},
 },
 
 -- packer
@@ -134,7 +132,7 @@ require("various-textobjs").setup {
 	-- disable only some default keymaps, e.g. { "ai", "ii" }
 	disabledKeymaps = {},
 
-	-- display notifications if a text object is not found
+	-- display notification if a text object is not found
 	notifyNotFound = true,
 }
 ```
@@ -182,7 +180,7 @@ vim.keymap.set(
 	'<cmd>lua require("various-textobjs").indentation("outer", "inner", "noBlanks")<CR>'
 )
 
--- 2. DIAGNOSTIC TEXTOBJ accepts `"wrap"` or `"nowrap"`
+-- 2. THE DIAGNOSTIC TEXTOBJ accepts `"wrap"` or `"nowrap"`
 vim.keymap.set({ "o", "x" }, "!", '<cmd>lua require("various-textobjs").diagnostic("wrap")<CR>')
 ```
 
@@ -192,7 +190,8 @@ custom commands. Here are some examples:
 
 ### `ii` on unindented line should select entire buffer
 Using a simple if-else-block, you can create a hybrid of the inner indentation
-text object and the entire-buffer text object, if you prefer that kind of behavior:
+text object and the entire-buffer text object, if you prefer that kind of
+behavior:
 
 ```lua
 -- when on unindented line, `ii` should select entire buffer
@@ -267,7 +266,7 @@ condition:
 ```lua
 -- before
 if foo then
-	print("bar") -- <- cursor on this line
+	print("bar") -- <- cursor is on this line
 	print("baz")
 end
 
@@ -359,10 +358,14 @@ If you have some other useful ideas, feel free to [share them in this repo's
 discussion
 page](https://github.com/chrisgrieser/nvim-various-textobjs/discussions).
 
-## Limitations
+## Limitations & Non-Goals
 - This plugin uses pattern matching, so it can be inaccurate in some edge cases.
 - The characterwise textobjects do not match multi-line objects. Most notably,
   this affects the value textobject.
+- [nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects)
+  already does an excellent job when it comes to using Treesitter for text
+  objects, such as function arguments or loops. This plugin's goal is therefore
+  not to provide textobjects already offered by `nvim-treesitter-textobjects`.
 
 ## Other Text Object Plugins
 - [treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects)
