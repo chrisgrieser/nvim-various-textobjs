@@ -4,12 +4,12 @@
 Table of Contents                         *various-textobjs-table-of-contents*
 
 1. nvim-various-textobjs             |various-textobjs-nvim-various-textobjs-|
+  - Table of Contents|various-textobjs-nvim-various-textobjs--table-of-contents|
   - List of Text Objects|various-textobjs-nvim-various-textobjs--list-of-text-objects|
-  - Non-Goals              |various-textobjs-nvim-various-textobjs--non-goals|
   - Installation        |various-textobjs-nvim-various-textobjs--installation|
   - Configuration      |various-textobjs-nvim-various-textobjs--configuration|
   - Advanced Usage / API|various-textobjs-nvim-various-textobjs--advanced-usage-/-api|
-  - Limitations          |various-textobjs-nvim-various-textobjs--limitations|
+  - Limitations & Non-Goals|various-textobjs-nvim-various-textobjs--limitations-&-non-goals|
   - Other Text Object Plugins|various-textobjs-nvim-various-textobjs--other-text-object-plugins|
   - Credits                  |various-textobjs-nvim-various-textobjs--credits|
 
@@ -20,8 +20,10 @@ Table of Contents                         *various-textobjs-table-of-contents*
 
 Bundleof more than 30 new textobjects for Neovim.
 
+
+TABLE OF CONTENTS  *various-textobjs-nvim-various-textobjs--table-of-contents*
+
 - |various-textobjs-list-of-text-objects|
-- |various-textobjs-non-goals|
 - |various-textobjs-installation|
 - |various-textobjs-configuration|
     - |various-textobjs-options|
@@ -33,7 +35,7 @@ Bundleof more than 30 new textobjects for Neovim.
     - |various-textobjs-yank-surrounding-indentation|
     - |various-textobjs-indent-last-paste|
     - |various-textobjs-other-ideas?|
-- |various-textobjs-limitations|
+- |various-textobjs-limitations-&-non-goals|
 - |various-textobjs-other-text-object-plugins|
 - |various-textobjs-credits|
 
@@ -183,24 +185,16 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs--list-of-text-object
 manipulate paste operations such as yanky.nvim or plugins that auto-save
 the buffer.
 
-NON-GOALS                  *various-textobjs-nvim-various-textobjs--non-goals*
-
-nvim-treesitter-textobjects
-<https://github.com/nvim-treesitter/nvim-treesitter-textobjects> already does
-an excellent job when it comes to using Treesitter for text objects, such as
-function arguments or loops. This plugin’s goal is therefore not to provide
-textobjects already offered by `nvim-treesitter-textobjects`.
-
-
 INSTALLATION            *various-textobjs-nvim-various-textobjs--installation*
 
-Have `nvim-various-textobjs` set up text objects for you:
+**Variant 1:** Have `nvim-various-textobjs` set up all the keybindings from the
+table above for you.
 
 >lua
     -- lazy.nvim
     {
         "chrisgrieser/nvim-various-textobjs",
-        lazy = false,
+        event = "UIEnter"
         opts = { useDefaultKeymaps = true },
     },
     
@@ -213,7 +207,7 @@ Have `nvim-various-textobjs` set up text objects for you:
     }
 <
 
-If you prefer to set up your own keybindings, use this code and then see the
+**Variant 2:** Use your own keybindings. See the
 |various-textobjs-configuration| section for information on setting your own
 keymaps.
 
@@ -222,6 +216,9 @@ keymaps.
     {
         "chrisgrieser/nvim-various-textobjs",
         lazy = true,
+        keys = {
+            -- ...
+        },
     },
     
     -- packer
@@ -252,7 +249,7 @@ The `.setup()` call is optional if you are fine with the defaults below.
         -- disable only some default keymaps, e.g. { "ai", "ii" }
         disabledKeymaps = {},
     
-        -- display notifications if a text object is not found
+        -- display notification if a text object is not found
         notifyNotFound = true,
     }
 <
@@ -301,7 +298,7 @@ For most text objects, there is only one parameter which accepts `"inner"` or
         '<cmd>lua require("various-textobjs").indentation("outer", "inner", "noBlanks")<CR>'
     )
     
-    -- 2. DIAGNOSTIC TEXTOBJ accepts `"wrap"` or `"nowrap"`
+    -- 2. THE DIAGNOSTIC TEXTOBJ accepts `"wrap"` or `"nowrap"`
     vim.keymap.set({ "o", "x" }, "!", '<cmd>lua require("various-textobjs").diagnostic("wrap")<CR>')
 <
 
@@ -395,7 +392,7 @@ and after an indentation. Take for example this case where you are removing the
 >lua
     -- before
     if foo then
-        print("bar") -- <- cursor on this line
+        print("bar") -- <- cursor is on this line
         print("baz")
     end
     
@@ -496,11 +493,15 @@ discussion page
 <https://github.com/chrisgrieser/nvim-various-textobjs/discussions>.
 
 
-LIMITATIONS              *various-textobjs-nvim-various-textobjs--limitations*
+LIMITATIONS & NON-GOALS*various-textobjs-nvim-various-textobjs--limitations-&-non-goals*
 
 - This plugin uses pattern matching, so it can be inaccurate in some edge cases.
 - The characterwise textobjects do not match multi-line objects. Most notably,
     this affects the value textobject.
+- nvim-treesitter-textobjects <https://github.com/nvim-treesitter/nvim-treesitter-textobjects>
+    already does an excellent job when it comes to using Treesitter for text
+    objects, such as function arguments or loops. This plugin’s goal is therefore
+    not to provide textobjects already offered by `nvim-treesitter-textobjects`.
 
 
 OTHER TEXT OBJECT PLUGINS*various-textobjs-nvim-various-textobjs--other-text-object-plugins*
