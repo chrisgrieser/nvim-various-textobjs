@@ -80,7 +80,7 @@ table above for you.
 -- lazy.nvim
 {
 	"chrisgrieser/nvim-various-textobjs",
-	event = "UIEnter"
+	event = "UIEnter",
 	opts = { useDefaultKeymaps = true },
 },
 
