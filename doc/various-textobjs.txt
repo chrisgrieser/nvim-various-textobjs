@@ -61,8 +61,8 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs--list-of-text-object
                            functions with                                                             
                            annotations                                                                
 
-  subword                  like iw, but treating   outer includes         -                   iS/aS   all
-                           -, _, and . as word     trailing _,-, or space                             
+  subword                  like iw, but treating - outer includes         -                   iS/aS   all
+                           and _ as word           trailing _,-, or space                             
                            delimiters and only                                                        
                            part of camelCase                                                          
 
@@ -157,8 +157,7 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs--list-of-text-object
 
   htmlAttribute            attribute in html/xml   inner is only the      small               ix/ax   html, xml,
                            like href="foobar.com"  value inside the                                   css, scss,
-                                                   quotes trailing comma                              vue
-                                                   and space                                          
+                                                   quotes                                             vue
 
   doubleSquareBrackets     text enclosed by [[]]   outer includes the     small               iD/aD   lua, shell,
                                                    four square brackets                               neorg,
