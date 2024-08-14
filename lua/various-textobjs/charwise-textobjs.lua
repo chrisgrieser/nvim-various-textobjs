@@ -385,7 +385,10 @@ end
 
 ---@param scope "inner"|"outer" inner selector is only the value of the attribute inside the quotation marks.
 function M.htmlAttribute(scope)
-	local pattern = [[(%w+=["']).-(["'])]]
+	local pattern = {
+		'([%w-]+=").-(")',
+		"([%w-]+=').-(')",
+	}
 	M.selectTextobj(pattern, scope, config.lookForwardSmall)
 end
 
