@@ -403,8 +403,8 @@ function M.cssColor(scope)
 	local pattern = {
 		"(#)" .. ("%x"):rep(6) .. "()", -- #123456
 		"(#)" .. ("%x"):rep(3) .. "()", -- #123
-		"(hsl%()[%%%d,./deg ]-(%))", -- hsl(123, 23, 23) or hsl(123deg, 123%, 123% / 100)
-		"(rgb%()[%d,./ ]-(%))", -- rgb(123, 123, 123) or rgb(50%, 50%, 50%)
+		"(hsla?%()[%%%d,./deg ]-(%))", -- hsl(123, 23, 23) or hsl(123deg, 123%, 123% / 100)
+		"(rgba?%()[%d,./ ]-(%))", -- rgb(123, 123, 123) or rgb(50%, 50%, 50%)
 	}
 	M.selectTextobj(pattern, scope, config.lookForwardSmall)
 end
