@@ -55,5 +55,32 @@ end
 ---@return string
 function M.getNodeText(node) return vim.treesitter.get_node_text(node, 0) end
 
+---@return boolean
+function M.isVisualLineMode()
+	local modeWithV = vim.fn.mode():find("V")
+	return modeWithV ~= nil
+end
+
+---sets the selection for the textobj (linewise)
+---@param startline integer
+---@param endline integer
+function M.setLinewiseSelection(startline, endline)
+	-- save last position in jumplist (see #86)
+	M.normal("m`")
+	vim.api.nvim_win_set_cursor(0, { startline, 0 })
+	if not M.isVisualLineMode() then M.normal("V") end
+	M.normal("o")
+	vim.api.nvim_win_set_cursor(0, { endline, 0 })
+end
+
+---@param lineNr number
+---@return boolean|nil whether given line is blank line
+function M.isBlankLine(lineNr)
+	local lastLine = vim.api.nvim_buf_line_count(0)
+	if lineNr > lastLine or lineNr < 1 then return nil end
+	local lineContent = M.getline(lineNr)
+	return lineContent:find("^%s*$") ~= nil
+end
+
 --------------------------------------------------------------------------------
 return M

@@ -4,35 +4,6 @@ local u = require("various-textobjs.utils")
 local config = require("various-textobjs.config").config
 --------------------------------------------------------------------------------
 
----@return boolean
-local function isVisualLineMode()
-	local modeWithV = vim.fn.mode():find("V")
-	return modeWithV ~= nil
-end
-
----sets the selection for the textobj (linewise)
----@param startline integer
----@param endline integer
-local function setLinewiseSelection(startline, endline)
-	-- save last position in jumplist (see #86)
-	u.normal("m`")
-	vim.api.nvim_win_set_cursor(0, { startline, 0 })
-	if not isVisualLineMode() then u.normal("V") end
-	u.normal("o")
-	vim.api.nvim_win_set_cursor(0, { endline, 0 })
-end
-
----@param lineNr number
----@return boolean|nil whether given line is blank line
-local function isBlankLine(lineNr)
-	local lastLine = vim.api.nvim_buf_line_count(0)
-	if lineNr > lastLine or lineNr < 1 then return nil end
-	local lineContent = u.getline(lineNr)
-	return lineContent:find("^%s*$") ~= nil
-end
-
---------------------------------------------------------------------------------
-
 -- next *closed* fold
 ---@param scope "inner"|"outer" outer adds one line after the fold
 function M.closedFold(scope)
@@ -60,7 +31,7 @@ function M.closedFold(scope)
 
 	-- fold has to be opened for so line can be correctly selected
 	vim.cmd(("%d,%d foldopen"):format(foldStart, foldEnd))
-	setLinewiseSelection(foldStart, foldEnd)
+	u.setLinewiseSelection(foldStart, foldEnd)
 
 	-- if yanking, close the fold afterwards again.
 	-- (For the other operators, opening the fold does not matter (d) or is desirable (gu).)
@@ -73,14 +44,14 @@ function M.entireBuffer()
 	vim.opt_local.foldenable = false
 
 	local lastLine = vim.api.nvim_buf_line_count(0)
-	setLinewiseSelection(1, lastLine)
+	u.setLinewiseSelection(1, lastLine)
 
 	vim.opt_local.foldenable = true
 end
 
 ---rest of paragraph (linewise)
 function M.restOfParagraph()
-	if not isVisualLineMode() then u.normal("V") end
+	if not u.isVisualLineMode() then u.normal("V") end
 	u.normal("}")
 
 	-- one up, except on last line
@@ -134,21 +105,21 @@ function M.mdFencedCodeBlock(scope)
 		ending = ending - 1
 	end
 
-	setLinewiseSelection(start, ending)
+	u.setLinewiseSelection(start, ending)
 end
 
 ---lines visible in window textobj
 function M.visibleInWindow()
 	local start = vim.fn.line("w0")
 	local ending = vim.fn.line("w$")
-	setLinewiseSelection(start, ending)
+	u.setLinewiseSelection(start, ending)
 end
 
 -- from cursor line to last visible line in window
 function M.restOfWindow()
 	local start = vim.fn.line(".")
 	local ending = vim.fn.line("w$")
-	setLinewiseSelection(start, ending)
+	u.setLinewiseSelection(start, ending)
 end
 
 --------------------------------------------------------------------------------
@@ -162,7 +133,7 @@ function M.indentation(startBorder, endBorder, blankLines)
 
 	local curLnum = vim.api.nvim_win_get_cursor(0)[1]
 	local lastLine = vim.api.nvim_buf_line_count(0)
-	while isBlankLine(curLnum) do -- when on blank line, use next line
+	while u.isBlankLine(curLnum) do -- when on blank line, use next line
 		if lastLine == curLnum then
 			u.notify("No indented line found.", "notfound")
 			return
@@ -182,7 +153,7 @@ function M.indentation(startBorder, endBorder, blankLines)
 	while
 		prevLnum > 0
 		and (
-			(blankLines == "withBlanks" and isBlankLine(prevLnum))
+			(blankLines == "withBlanks" and u.isBlankLine(prevLnum))
 			or vim.fn.indent(prevLnum) >= indentOfStart
 		)
 	do
@@ -191,7 +162,7 @@ function M.indentation(startBorder, endBorder, blankLines)
 	while
 		nextLnum <= lastLine
 		and (
-			(blankLines == "withBlanks" and isBlankLine(nextLnum))
+			(blankLines == "withBlanks" and u.isBlankLine(nextLnum))
 			or vim.fn.indent(nextLnum) >= indentOfStart
 		)
 	do
@@ -202,11 +173,11 @@ function M.indentation(startBorder, endBorder, blankLines)
 	if startBorder == "inner" then prevLnum = prevLnum + 1 end
 	if endBorder == "inner" then nextLnum = nextLnum - 1 end
 
-	while isBlankLine(nextLnum) do
+	while u.isBlankLine(nextLnum) do
 		nextLnum = nextLnum - 1
 	end
 
-	setLinewiseSelection(prevLnum, nextLnum)
+	u.setLinewiseSelection(prevLnum, nextLnum)
 end
 
 ---from cursor position down all lines with same or higher indentation;
@@ -215,7 +186,7 @@ function M.restOfIndentation()
 	local startLnum = vim.api.nvim_win_get_cursor(0)[1]
 	local lastLine = vim.api.nvim_buf_line_count(0)
 	local curLnum = startLnum
-	while isBlankLine(curLnum) do -- when on blank line, use next line
+	while u.isBlankLine(curLnum) do -- when on blank line, use next line
 		if lastLine == curLnum then return end
 		curLnum = curLnum + 1
 	end
@@ -228,12 +199,12 @@ function M.restOfIndentation()
 
 	local nextLnum = curLnum + 1
 
-	while isBlankLine(nextLnum) or vim.fn.indent(nextLnum) >= indentOfStart do
+	while u.isBlankLine(nextLnum) or vim.fn.indent(nextLnum) >= indentOfStart do
 		if nextLnum > lastLine then break end
 		nextLnum = nextLnum + 1
 	end
 
-	setLinewiseSelection(startLnum, nextLnum - 1)
+	u.setLinewiseSelection(startLnum, nextLnum - 1)
 end
 
 ---outer indentation, expanded until the next blank lines in both directions
@@ -280,7 +251,7 @@ function M.notebookCell(scope)
 	-- outer includes bottom cell border
 	if scope == "outer" and nextLnum < lastLine then nextLnum = nextLnum + 1 end
 
-	setLinewiseSelection(prevLnum + 1, nextLnum - 1)
+	u.setLinewiseSelection(prevLnum + 1, nextLnum - 1)
 end
 
 --------------------------------------------------------------------------------

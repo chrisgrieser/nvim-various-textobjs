@@ -87,7 +87,7 @@ table above for you.
 -- packer
 use {
 	"chrisgrieser/nvim-various-textobjs",
-	config = function () 
+	config = function ()
 		require("various-textobjs").setup({ useDefaultKeymaps = true })
 	end,
 }
@@ -353,6 +353,35 @@ vim.keymap.set("n", "P", function()
 end
 ```
 
+### Add indentation movements
+
+```lua
+vim.keymap.set(
+	{ "n", "x" },
+	"K",
+	'<cmd>lua require("various-textobjs.movements").go_to_indentation("top", "inner", "inner", "withBlanks")<CR>',
+	{ desc = "go to top of indentation" }
+)
+vim.keymap.set(
+	{ "n", "x" },
+	"J",
+	'<cmd>lua require("various-textobjs.movements").go_to_indentation("bottom", "inner", "inner", "withBlanks")<CR>',
+	{ desc = "go to bottom of indentation" }
+)
+vim.keymap.set(
+	{ "n", "x" },
+	"<C-M-k>",
+	'<cmd>lua require("various-textobjs.movements").go_to_indentation("top", "inner", "inner", "noBlanks")<CR>',
+	{ desc = "go to top of indentation (stop on blank line)" }
+)
+vim.keymap.set(
+	{ "n", "x" },
+	"<C-M-j>",
+	'<cmd>lua require("various-textobjs.movements").go_to_indentation("bottom", "inner", "inner", "noBlanks")<CR>',
+	{ desc = "go to bottom of indentation (stop on blank line)" }
+)
+```
+
 ### Other Ideas?
 If you have some other useful ideas, feel free to [share them in this repo's
 discussion
@@ -376,7 +405,7 @@ page](https://github.com/chrisgrieser/nvim-various-textobjs/discussions).
 
 <!-- vale Google.FirstPerson = NO -->
 ## Credits
-**Thanks**  
+**Thanks**
 - To the Valuable Dev for [their blog post on how to get started with creating
   custom text objects](https://thevaluable.dev/vim-create-text-objects/).
 - [To `@vypxl` and `@ii14` for figuring out dot-repeatability.](https://github.com/chrisgrieser/nvim-spider/pull/4)
