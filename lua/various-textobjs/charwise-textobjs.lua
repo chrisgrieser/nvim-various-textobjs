@@ -227,7 +227,7 @@ end
 ---current line (but characterwise)
 ---@param scope "inner"|"outer" outer includes indentation and trailing spaces
 function M.lineCharacterwise(scope)
-	local pattern = "^(%s*).*(%s*)$"
+	local pattern = "^(%s*).-(%s*)$"
 	M.selectTextobj(pattern, scope, 0)
 end
 
