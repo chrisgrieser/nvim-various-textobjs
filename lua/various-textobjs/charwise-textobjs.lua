@@ -227,6 +227,12 @@ end
 ---current line (but characterwise)
 ---@param scope "inner"|"outer" outer includes indentation and trailing spaces
 function M.lineCharacterwise(scope)
+	-- FIX being on line break in visual mode, see #108
+	-- (Not sure why this only happens for `lineCharacterwise` though…)
+	-- `col()` results in "true" char, as it factors in Tabs
+	local isOnLineBreak = #vim.api.nvim_get_current_line() < vim.fn.col(".")
+	if isOnLineBreak and vim.fn.mode():find("[Vv]") and scope == "outer" then u.normal("h") end
+
 	local pattern = "^(%s*).-(%s*)$"
 	M.selectTextobj(pattern, scope, 0)
 end
