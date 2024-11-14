@@ -13,15 +13,15 @@ Bundle of more than 30 new textobjects for Neovim.
 - [List of Text Objects](#list-of-text-objects)
 - [Installation](#installation)
 - [Configuration](#configuration)
-	* [Options](#options)
-	* [Use your own keybindings](#use-your-own-keybindings)
+  * [Options](#options)
+  * [Use your own keybindings](#use-your-own-keybindings)
 - [Advanced Usage / API](#advanced-usage--api)
-	* [`ii` on unindented line should select entire buffer](#ii-on-unindented-line-should-select-entire-buffer)
-	* [Smarter `gx`](#smarter-gx)
-	* [Delete Surrounding Indentation](#delete-surrounding-indentation)
-	* [Yank Surrounding Indentation](#yank-surrounding-indentation)
-	* [Indent Last Paste](#indent-last-paste)
-	* [Other Ideas?](#other-ideas)
+  * [`ii` on unindented line should select entire buffer](#ii-on-unindented-line-should-select-entire-buffer)
+  * [Smarter `gx`](#smarter-gx)
+  * [Delete Surrounding Indentation](#delete-surrounding-indentation)
+  * [Yank Surrounding Indentation](#yank-surrounding-indentation)
+  * [Indent Last Paste](#indent-last-paste)
+  * [Other Ideas?](#other-ideas)
 - [Limitations & Non-Goals](#limitations--non-goals)
 - [Other Text Object Plugins](#other-text-object-plugins)
 - [Credits](#credits)
@@ -29,47 +29,45 @@ Bundle of more than 30 new textobjects for Neovim.
 <!-- tocstop -->
 
 ## List of Text Objects
-<!-- vale off -->
 <!-- LTeX: enabled=false -->
 
-| textobject             | description                                                                                | inner / outer                                                                             | forward-seeking |     default keymaps      | filetypes (for default keymaps) |
-|:-----------------------|:-------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------|:----------------|:------------------------:|:--------------------------------|
-| indentation            | surrounding lines with same or higher indentation                                          | [see overview from vim-indent-object](https://github.com/michaeljsmith/vim-indent-object) | \-              | `ii`, `ai`, `aI`, (`iI`) | all                             |
-| restOfIndentation      | lines down with same or higher indentation                                                 | \-                                                                                        | \-              |           `R`            | all                             |
-| greedyOuterIndentation | outer indentation, expanded to blank lines; useful to get functions with annotations       | outer includes a blank, like `ap`/`ip`                                                    | \-              |        `ag`/`ig`         | all                             |
-| subword                | like `iw`, but treating `-` and `_` as word delimiters *and* only part of camelCase        | outer includes trailing `_`,`-`, or space                                                 | \-              |        `iS`/`aS`         | all                             |
-| toNextClosingBracket   | from cursor to next closing `]`, `)`, or `}`                                               | \-                                                                                        | small           |           `C`            | all                             |
-| toNextQuotationMark    | from cursor to next unescaped[^1] `"`, `'`, or `` ` ``                                     | \-                                                                                        | small           |           `Q`            | all                             |
-| anyQuote               | between any unescaped[^1] `"`, `'`, or `` ` `` *in a line*                                 | outer includes the quotation marks                                                        | small           |           `iq`/`aq`      | all                             |
-| anyBracket             | between any `()`, `[]`, or `{}` *in a line*                                                | outer includes the brackets                                                               | small           |           `io`/`ao`      | all                             |
-| restOfParagraph        | like `}`, but linewise                                                                     | \-                                                                                        | \-              |           `r`            | all                             |
-| entireBuffer           | entire buffer as one text object                                                           | \-                                                                                        | \-              |           `gG`           | all                             |
-| nearEoL                | from cursor position to end of line, minus one character                                   | \-                                                                                        | \-              |           `n`            | all                             |
-| lineCharacterwise      | current line, but characterwise                                                            | outer includes indentation and trailing spaces                                            | \-              |        `i_`/`a_`         | all                             |
-| column                 | column down until indent or shorter line. Accepts `{count}` for multiple columns.          | \-                                                                                        | \-              |           `\|`           | all                             |
-| value                  | value of key-value pair, or right side of a assignment, excl. trailing comment (in a line) | outer includes trailing commas or semicolons                                              | small           |        `iv`/`av`         | all                             |
-| key                    | key of key-value pair, or left side of a assignment                                        | outer includes the `=` or `:`                                                             | small           |        `ik`/`ak`         | all                             |
-| url                    | works with `http[s]` or any other protocol                                                 | \-                                                                                        | big             |           `L`            | all                             |
-| number                 | numbers, similar to `<C-a>`                                                                | inner: only pure digits, outer: number including minus sign and decimal point             | small           |        `in`/`an`         | all                             |
-| diagnostic             | LSP diagnostic (requires built-in LSP)                                                     | \-                                                                                        | ∞               |           `!`            | all                             |
-| closedFold             | closed fold                                                                                | outer includes one line after the last folded line                                        | big             |        `iz`/`az`         | all                             |
-| chainMember            | field with optional call, like `.foo(param)` or `.bar`                                     | outer includes the leading `.` (or `:`)                                                   | small           |        `im`/`am`         | all                             |
-| visibleInWindow        | all lines visible in the current window                                                    | \-                                                                                        | \-              |           `gw`           | all                             |
-| restOfWindow           | from the cursorline to the last line in the window                                         | \-                                                                                        | \-              |           `gW`           | all                             |
-| lastChange             | Last non-deletion-change, yank, or paste.[^2]                                              | \-                                                                                        | \-              |           `g;`           | all                             |
-| mdlink                 | markdown link like `[title](url)`                                                          | inner is only the link title (between the `[]`)                                           | small           |        `il`/`al`         | markdown, toml                  |
-| mdEmphasis             | markdown text enclosed by `*`, `**`, `_`, `__`, `~~`, or `==`                              | inner is only the emphasis content                                                        | small           |        `ie`/`ae`         | markdown                        |
-| mdFencedCodeBlock      | markdown fenced code (enclosed by three backticks)                                         | outer includes the enclosing backticks                                                    | big             |        `iC`/`aC`         | markdown                        |
-| cssSelector            | class in CSS like `.my-class`                                                              | outer includes trailing comma and space                                                   | small           |        `ic`/`ac`         | css, scss                       |
-| cssColor               | color in CSS (hex, rgb, or hsl)                                                            | inner includes only the color value                                                       | small           |        `i#`/`a#`         | css, scss                       |
-| htmlAttribute          | attribute in html/xml like `href="foobar.com"`                                             | inner is only the value inside the quotes                                                 | small           |        `ix`/`ax`         | html, xml, css, scss, vue       |
-| doubleSquareBrackets   | text enclosed by `[[]]`                                                                    | outer includes the four square brackets                                                   | small           |        `iD`/`aD`         | lua, shell, neorg, markdown     |
-| shellPipe              | segment until/after a pipe character (`\|`)                                                | outer includes the pipe                                                                   | small           |        `iP`/`aP`         | bash, zsh, fish, sh             |
-| pyTripleQuotes         | python strings surrounded by three quotes (regular or f-string)                            | inner excludes the `"""` or `'''`                                                         | \-              |        `iy`/`ay`         | python                          |
-| notebookCell           | cell delimited by [double percent comment][jupytext], such as `# %%`                       | outer includes the bottom cell border                                                     | \-              |        `iN`/`aN`         | all                             |
+| textobject               | description                                                                                | inner / outer                                                                             | forward-seeking |     default keymaps      | filetypes (for default keymaps) |
+|:-----------------------  |:-------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------|:----------------|:------------------------:|:--------------------------------|
+| `indentation`            | surrounding lines with same or higher indentation                                          | [see overview from vim-indent-object](https://github.com/michaeljsmith/vim-indent-object) | \-              | `ii`, `ai`, `aI`, (`iI`) | all                             |
+| `restOfIndentation`      | lines down with same or higher indentation                                                 | \-                                                                                        | \-              |           `R`            | all                             |
+| `greedyOuterIndentation` | outer indentation, expanded to blank lines; useful to get functions with annotations       | outer includes a blank, like `ap`/`ip`                                                    | \-              |        `ag`/`ig`         | all                             |
+| `subword`                | like `iw`, but treating `-` and `_` as word delimiters *and* only part of camelCase        | outer includes trailing `_`,`-`, or space                                                 | \-              |        `iS`/`aS`         | all                             |
+| `toNextClosingBracket`   | from cursor to next closing `]`, `)`, or `}`                                               | \-                                                                                        | small           |           `C`            | all                             |
+| `toNextQuotationMark`    | from cursor to next unescaped[^1] `"`, `'`, or `` ` ``                                     | \-                                                                                        | small           |           `Q`            | all                             |
+| `anyQuote`               | between any unescaped[^1] `"`, `'`, or `` ` `` *in a line*                                 | outer includes the quotation marks                                                        | small           |           `iq`/`aq`      | all                             |
+| `anyBracket`             | between any `()`, `[]`, or `{}` *in a line*                                                | outer includes the brackets                                                               | small           |           `io`/`ao`      | all                             |
+| `restOfParagraph`        | like `}`, but linewise                                                                     | \-                                                                                        | \-              |           `r`            | all                             |
+| `entireBuffer`           | entire buffer as one text object                                                           | \-                                                                                        | \-              |           `gG`           | all                             |
+| `nearEoL`                | from cursor position to end of line, minus one character                                   | \-                                                                                        | \-              |           `n`            | all                             |
+| `lineCharacterwise`      | current line, but characterwise                                                            | outer includes indentation and trailing spaces                                            | \-              |        `i_`/`a_`         | all                             |
+| `column`                 | column down until indent or shorter line. Accepts `{count}` for multiple columns.          | \-                                                                                        | \-              |           `\|`           | all                             |
+| `value`                  | value of key-value pair, or right side of assignment, excl. trailing comment (in a line)   | outer includes trailing commas or semicolons                                              | small           |        `iv`/`av`         | all                             |
+| `key`                    | key of key-value pair, or left side of an assignment                                       | outer includes the `=` or `:`                                                             | small           |        `ik`/`ak`         | all                             |
+| `url`                    | works with `http[s]` or any other protocol                                                 | \-                                                                                        | big             |           `L`            | all                             |
+| `number`                 | numbers, similar to `<C-a>`                                                                | inner: only pure digits, outer: number including minus sign and decimal point             | small           |        `in`/`an`         | all                             |
+| `diagnostic`             | LSP diagnostic (requires built-in LSP)                                                     | \-                                                                                        | ∞               |           `!`            | all                             |
+| `closedFold`             | closed fold                                                                                | outer includes one line after the last folded line                                        | big             |        `iz`/`az`         | all                             |
+| `chainMember`            | field with optional call, like `.foo(param)` or `.bar`                                     | outer includes the leading `.` (or `:`)                                                   | small           |        `im`/`am`         | all                             |
+| `visibleInWindow`        | all lines visible in the current window                                                    | \-                                                                                        | \-              |           `gw`           | all                             |
+| `restOfWindow`           | from the cursorline to the last line in the window                                         | \-                                                                                        | \-              |           `gW`           | all                             |
+| `lastChange`             | Last non-deletion-change, yank, or paste.[^2]                                              | \-                                                                                        | \-              |           `g;`           | all                             |
+| `mdlink`                 | markdown link like `[title](url)`                                                          | inner is only the link title (between the `[]`)                                           | small           |        `il`/`al`         | markdown, toml                  |
+| `mdEmphasis`             | markdown text enclosed by `*`, `**`, `_`, `__`, `~~`, or `==`                              | inner is only the emphasis content                                                        | small           |        `ie`/`ae`         | markdown                        |
+| `mdFencedCodeBlock`      | markdown fenced code (enclosed by three backticks)                                         | outer includes the enclosing backticks                                                    | big             |        `iC`/`aC`         | markdown                        |
+| `cssSelector`            | class in CSS like `.my-class`                                                              | outer includes trailing comma and space                                                   | small           |        `ic`/`ac`         | css, scss                       |
+| `cssColor`               | color in CSS (hex, rgb, or hsl)                                                            | inner includes only the color value                                                       | small           |        `i#`/`a#`         | css, scss                       |
+| `htmlAttribute`          | attribute in html/xml like `href="foobar.com"`                                             | inner is only the value inside the quotes                                                 | small           |        `ix`/`ax`         | html, xml, css, scss, vue       |
+| `doubleSquareBrackets`   | text enclosed by `[[]]`                                                                    | outer includes the four square brackets                                                   | small           |        `iD`/`aD`         | lua, shell, neorg, markdown     |
+| `shellPipe`              | segment until/after a pipe character (`\|`)                                                | outer includes the pipe                                                                   | small           |        `iP`/`aP`         | bash, zsh, fish, sh             |
+| `pyTripleQuotes`         | python strings surrounded by three quotes (regular or f-string)                            | inner excludes the `"""` or `'''`                                                         | \-              |        `iy`/`ay`         | python                          |
+| `notebookCell`           | cell delimited by [double percent comment][jupytext], such as `# %%`                       | outer includes the bottom cell border                                                     | \-              |        `iN`/`aN`         | all                             |
 
 [jupytext]: https://jupytext.readthedocs.io/en/latest/formats-scripts.html#the-percent-format
-<!-- vale on -->
 <!-- LTeX: enabled=true -->
 
 ## Installation
@@ -80,7 +78,7 @@ table above for you.
 -- lazy.nvim
 {
 	"chrisgrieser/nvim-various-textobjs",
-	event = "UIEnter",
+	event = "VeryLazy",
 	opts = { useDefaultKeymaps = true },
 },
 
@@ -280,7 +278,7 @@ The code below achieves this by dedenting the inner indentation textobject
 the mapping, `dsi` should make sense since this command is similar to the `ds`
 operator from [vim-surround](https://github.com/tpope/vim-surround) but
 performed on an indentation textobject. (It is also an intuitive mnemonic:
-`d`elete `s`urrounding `i`ndentation.)
+Delete Surrounding Indentation.)
 
 ```lua
 vim.keymap.set("n", "dsi", function()
@@ -342,7 +340,7 @@ The `lastChange` textobject can be used to indent the last text that was pasted.
 This is useful in languages such as Python where indentation is meaningful and
 thus formatters are not able to automatically indent everything for you.
 
-If you do not use `P` for upwards paste, "shift `p`aste" serves as a great
+If you do not use `P` for upwards paste, "shift paste" serves as a great
 mnemonic.
 
 ```lua
@@ -377,7 +375,7 @@ page](https://github.com/chrisgrieser/nvim-various-textobjs/discussions).
 <!-- vale Google.FirstPerson = NO -->
 ## Credits
 **Thanks**  
-- To the Valuable Dev for [their blog post on how to get started with creating
+- To the `Valuable Dev` for [their blog post on how to get started with creating
   custom text objects](https://thevaluable.dev/vim-create-text-objects/).
 - [To `@vypxl` and `@ii14` for figuring out dot-repeatability.](https://github.com/chrisgrieser/nvim-spider/pull/4)
 
@@ -401,7 +399,7 @@ I also occasionally blog about vim: [Nano Tips for Vim](https://nanotipsforvim.p
 	alt='Buy Me a Coffee at ko-fi.com'
 /></a>
 
-[^1]: This respects vim's [quoteescape option](https://neovim.io/doc/user/options.html#'quoteescape').
+[^1]: This respects vim's [`quoteescape` option](https://neovim.io/doc/user/options.html#'quoteescape').
 
 [^2]: The `lastChange` textobject does not work well with plugins that
 	manipulate paste operations such as
