@@ -99,12 +99,12 @@ LIST OF TEXT OBJECTS*various-textobjs-nvim-various-textobjs--list-of-text-object
 
   value                    value of key-value      outer includes         small               iv/av   all
                            pair, or right side of  trailing commas or                                 
-                           a assignment, excl.     semicolons                                         
+                           assignment, excl.       semicolons                                         
                            trailing comment (in a                                                     
                            line)                                                                      
 
   key                      key of key-value pair,  outer includes the =   small               ik/ak   all
-                           or left side of a       or :                                               
+                           or left side of an      or :                                               
                            assignment                                                                 
 
   url                      works with http[s] or   -                      big                   L     all
@@ -193,7 +193,7 @@ table above for you.
     -- lazy.nvim
     {
         "chrisgrieser/nvim-various-textobjs",
-        event = "UIEnter",
+        event = "VeryLazy",
         opts = { useDefaultKeymaps = true },
     },
     
@@ -405,7 +405,7 @@ The code below achieves this by dedenting the inner indentation textobject
 the mapping, `dsi` should make sense since this command is similar to the `ds`
 operator from vim-surround <https://github.com/tpope/vim-surround> but
 performed on an indentation textobject. (It is also an intuitive mnemonic:
-`d`elete `s`urrounding `i`ndentation.)
+Delete Surrounding Indentation.)
 
 >lua
     vim.keymap.set("n", "dsi", function()
@@ -473,7 +473,7 @@ pasted. This is useful in languages such as Python where indentation is
 meaningful and thus formatters are not able to automatically indent everything
 for you.
 
-If you do not use `P` for upwards paste, "shift `p`aste" serves as a great
+If you do not use `P` for upwards paste, "shift paste" serves as a great
 mnemonic.
 
 >lua
@@ -514,8 +514,8 @@ OTHER TEXT OBJECT PLUGINS*various-textobjs-nvim-various-textobjs--other-text-obj
 
 CREDITS                      *various-textobjs-nvim-various-textobjs--credits*
 
-**Thanks** - To the Valuable Dev for their blog post on how to get started with
-creating custom text objects
+**Thanks** - To the `Valuable Dev` for their blog post on how to get started
+with creating custom text objects
 <https://thevaluable.dev/vim-create-text-objects/>. - To `@vypxl` and `@ii14`
 for figuring out dot-repeatability.
 <https://github.com/chrisgrieser/nvim-spider/pull/4>
