@@ -10,7 +10,6 @@ local function isVisualMode() return vim.fn.mode():find("v") ~= nil end
 ---@alias pos {[1]: integer, [2]: integer}
 
 ---Sets the selection for the textobj (characterwise)
----INFO Exposed for creation of custom textobjs, but subject to change without notice.
 ---@param startPos pos
 ---@param endPos pos
 function M.setSelection(startPos, endPos)
@@ -416,57 +415,6 @@ function M.cssColor(scope)
 		"(rgba?%()[%d,./ ]-(%))", -- rgb(123, 123, 123) or rgb(50%, 50%, 50%)
 	}
 	M.selectTextobj(pattern, scope, config.lookForwardSmall)
-end
-
----INFO this textobj requires the python Treesitter parser
----@param scope "inner"|"outer" inner selector excludes the `"""`
-function M.pyTripleQuotes(scope)
-	local node = u.getNodeAtCursor()
-	if not node then
-		u.notify("No node found.", "notfound")
-		return
-	end
-
-	local strNode
-	if node:type() == "string" then
-		strNode = node
-	elseif node:type():find("^string_") or node:type() == "interpolation" then
-		strNode = node:parent()
-	elseif
-		node:type() == "escape_sequence"
-		or (node:parent() and node:parent():type() == "interpolation")
-	then
-		strNode = node:parent():parent()
-	else
-		u.notify("Not on a triple quoted string.", "warn")
-		return
-	end
-
-	---@cast strNode TSNode
-	local text = u.getNodeText(strNode)
-	local isMultiline = text:find("[\r\n]")
-
-	---@cast strNode TSNode
-	local startRow, startCol, endRow, endCol = vim.treesitter.get_node_range(strNode)
-
-	if scope == "inner" then
-		local startNode = strNode:child(1) or strNode
-		local endNode = strNode:child(strNode:child_count() - 2) or strNode
-		startRow, startCol, _, _ = vim.treesitter.get_node_range(startNode)
-		_, _, endRow, endCol = vim.treesitter.get_node_range(endNode)
-	end
-
-	-- fix various off-by-ones
-	startRow = startRow + 1
-	endRow = endRow + 1
-	if scope == "inner" and isMultiline then
-		endRow = endRow - 1
-		endCol = #vim.api.nvim_buf_get_lines(0, endRow - 1, endRow, false)[1]
-	else
-		endCol = endCol - 1
-	end
-
-	M.setSelection({ startRow, startCol }, { endRow, endCol })
 end
 
 --------------------------------------------------------------------------------
