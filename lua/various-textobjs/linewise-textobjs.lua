@@ -70,12 +70,13 @@ end
 ---Textobject for the entire buffer content
 function M.entireBuffer()
 	-- FIX folds at the first or last line cause lines being left out
-	vim.opt_local.foldenable = false
+	local foldWasEnabled = vim.opt_local.foldenable:get() ---@diagnostic disable-line: undefined-field
+	if foldWasEnabled then vim.opt_local.foldenable = false end
 
 	local lastLine = vim.api.nvim_buf_line_count(0)
 	setLinewiseSelection(1, lastLine)
 
-	vim.opt_local.foldenable = true
+	if foldWasEnabled then vim.opt_local.foldenable = true end
 end
 
 ---rest of paragraph (linewise)
