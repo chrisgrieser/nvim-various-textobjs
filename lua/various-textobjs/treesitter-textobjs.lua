@@ -1,6 +1,6 @@
 local M = {}
-local u = require("various-textobjs.utils")
 local charwise = require("various-textobjs.charwise-textobjs")
+local u = require("various-textobjs.utils")
 --------------------------------------------------------------------------------
 
 ---INFO this textobj requires the python Treesitter parser
