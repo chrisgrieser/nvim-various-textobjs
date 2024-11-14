@@ -432,7 +432,10 @@ function M.pyTripleQuotes(scope)
 		strNode = node
 	elseif node:type():find("^string_") or node:type() == "interpolation" then
 		strNode = node:parent()
-	elseif node:type() == "escape_sequence" or node:parent():type() == "interpolation" then
+	elseif
+		node:type() == "escape_sequence"
+		or (node:parent() and node:parent():type() == "interpolation")
+	then
 		strNode = node:parent():parent()
 	else
 		u.notify("Not on a triple quoted string.", "warn")
@@ -456,14 +459,11 @@ function M.pyTripleQuotes(scope)
 	-- fix various off-by-ones
 	startRow = startRow + 1
 	endRow = endRow + 1
-	if scope == "outer" or not isMultiline then endCol = endCol - 1 end
-
-	-- multiline-inner: exclude line breaks
 	if scope == "inner" and isMultiline then
-		startCol = 0
-		startRow = startRow + 1
 		endRow = endRow - 1
 		endCol = #vim.api.nvim_buf_get_lines(0, endRow - 1, endRow, false)[1]
+	else
+		endCol = endCol - 1
 	end
 
 	M.setSelection({ startRow, startCol }, { endRow, endCol })
