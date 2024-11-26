@@ -1,6 +1,19 @@
 *nvim-various-textobjs.txt*      For Neovim      Last change: 2024 November 26
 
 ==============================================================================
+Table of Contents                    *nvim-various-textobjs-table-of-contents*
+
+1. nvim-various-textobjs        |nvim-various-textobjs-nvim-various-textobjs-|
+  - Table of Contents|nvim-various-textobjs-nvim-various-textobjs--table-of-contents|
+  - List of Text Objects|nvim-various-textobjs-nvim-various-textobjs--list-of-text-objects|
+  - Installation   |nvim-various-textobjs-nvim-various-textobjs--installation|
+  - Configuration |nvim-various-textobjs-nvim-various-textobjs--configuration|
+  - Advanced Usage / API|nvim-various-textobjs-nvim-various-textobjs--advanced-usage-/-api|
+  - Limitations & Non-Goals|nvim-various-textobjs-nvim-various-textobjs--limitations-&-non-goals|
+  - Other Text Object Plugins|nvim-various-textobjs-nvim-various-textobjs--other-text-object-plugins|
+  - Credits             |nvim-various-textobjs-nvim-various-textobjs--credits|
+
+==============================================================================
 1. nvim-various-textobjs        *nvim-various-textobjs-nvim-various-textobjs-*
 
 
