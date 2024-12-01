@@ -1,4 +1,4 @@
-*nvim-various-textobjs.txt*      For Neovim      Last change: 2024 November 26
+*nvim-various-textobjs.txt*      For Neovim      Last change: 2024 December 01
 
 ==============================================================================
 Table of Contents                    *nvim-various-textobjs-table-of-contents*
@@ -122,9 +122,10 @@ LIST OF TEXT OBJECTS*nvim-various-textobjs-nvim-various-textobjs--list-of-text-o
                                                    line after the last                                
                                                    folded line                                        
 
-  chainMember              field with optional     outer includes the     small               im/am   all
-                           call, like .foo(param)  leading . (or :)                                   
-                           or .bar                                                                    
+  chainMember              section of a chain      outer includes the     small               im/am   all
+                           connected with . like   leading . (or :)                                   
+                           foo.bar or                                                                 
+                           foo.baz(para)                                                              
 
   visibleInWindow          all lines visible in    -                      -                    gw     all
                            the current window                                                         
