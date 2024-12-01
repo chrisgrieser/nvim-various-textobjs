@@ -6,29 +6,29 @@
 
 Bundle of more than 30 new textobjects for Neovim.
 
-## Table of Contents
+## Table of contents
 
 <!-- toc -->
 
-- [List of Text Objects](#list-of-text-objects)
+- [List of text objects](#list-of-text-objects)
 - [Installation](#installation)
 - [Configuration](#configuration)
-  * [Options](#options)
-  * [Use your own keybindings](#use-your-own-keybindings)
-- [Advanced Usage / API](#advanced-usage--api)
-  * [`ii` on unindented line should select entire buffer](#ii-on-unindented-line-should-select-entire-buffer)
-  * [Smarter `gx`](#smarter-gx)
-  * [Delete Surrounding Indentation](#delete-surrounding-indentation)
-  * [Yank Surrounding Indentation](#yank-surrounding-indentation)
-  * [Indent Last Paste](#indent-last-paste)
-  * [Other Ideas?](#other-ideas)
-- [Limitations & Non-Goals](#limitations--non-goals)
-- [Other Text Object Plugins](#other-text-object-plugins)
+	* [Options](#options)
+	* [Use your own keybindings](#use-your-own-keybindings)
+- [Advanced usage / API](#advanced-usage--api)
+	* [`ii` on unindented line should select entire buffer](#ii-on-unindented-line-should-select-entire-buffer)
+	* [Smarter `gx`](#smarter-gx)
+	* [Delete surrounding indentation](#delete-surrounding-indentation)
+	* [Yank surrounding indentation](#yank-surrounding-indentation)
+	* [Indent last paste](#indent-last-paste)
+	* [Other ideas?](#other-ideas)
+- [Limitations & non-goals](#limitations--non-goals)
+- [Other text object plugins](#other-text-object-plugins)
 - [Credits](#credits)
 
 <!-- tocstop -->
 
-## List of Text Objects
+## List of text objects
 <!-- LTeX: enabled=false -->
 
 | textobject               | description                                                                                | inner / outer                                                                             | forward-seeking |     default keymaps      | filetypes (for default keymaps) |
@@ -182,7 +182,7 @@ vim.keymap.set(
 vim.keymap.set({ "o", "x" }, "!", '<cmd>lua require("various-textobjs").diagnostic("wrap")<CR>')
 ```
 
-## Advanced Usage / API
+## Advanced usage / API
 All textobjects can also be used as an API to modify their behavior or create
 custom commands. Here are some examples:
 
@@ -214,7 +214,7 @@ vim.keymap.set("n", "gx", function()
 	require("various-textobjs").url()
 
 	-- plugin only switches to visual mode when textobj is found
-	local foundURL = vim.fn.mode():find("v")
+	local foundURL = vim.fn.mode() == "v"
 	if not foundURL then return end
 
 	-- retrieve URL with the z-register as intermediary
@@ -231,31 +231,32 @@ used by this plugin is exposed for this purpose.)
 ```lua
 vim.keymap.set("n", "gx", function()
 	require("various-textobjs").url()
-	local foundURL = vim.fn.mode():find("v")
+	local foundURL = vim.fn.mode() == "v"
 	if foundURL then
 		vim.cmd.normal('"zy')
 		local url = vim.fn.getreg("z")
 		vim.ui.open(url)
-	else
-		-- find all URLs in buffer
-		local urlPattern = require("various-textobjs.charwise-textobjs").urlPattern
-		local bufText = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n")
-		local urls = {}
-		for url in bufText:gmatch(urlPattern) do
-			table.insert(urls, url)
-		end
-		if #urls == 0 then return end
-
-		-- select one, use a plugin like dressing.nvim for nicer UI for
-		-- `vim.ui.select`
-		vim.ui.select(urls, { prompt = "Select URL:" }, function(choice)
-			if choice then vim.ui.open(choice) end
-		end)
+		return
 	end
+
+	-- find all URLs in buffer
+	local urlPattern = require("various-textobjs.charwise-textobjs").urlPattern
+	local bufText = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n")
+	local urls = {}
+	for url in bufText:gmatch(urlPattern) do
+		table.insert(urls, url)
+	end
+	if #urls == 0 then return end
+
+	-- select one, use a plugin like dressing.nvim for nicer UI for
+	-- `vim.ui.select`
+	vim.ui.select(urls, { prompt = "Select URL:" }, function(choice)
+		if choice then vim.ui.open(choice) end
+	end)
 end, { desc = "URL Opener" })
 ```
 
-### Delete Surrounding Indentation
+### Delete surrounding indentation
 Using the indentation textobject, you can also create custom indentation-related
 utilities. A common operation is to remove the line before and after an
 indentation. Take for example this case where you are removing the `foo`
@@ -300,7 +301,7 @@ vim.keymap.set("n", "dsi", function()
 end, { desc = "Delete Surrounding Indentation" })
 ```
 
-### Yank Surrounding Indentation
+### Yank surrounding indentation
 Similarly, you can also create a `ysii` command to yank the two lines surrounding
 an indentation textobject. (Not using `ysi`, since that blocks surround
 commands like `ysi)`). Using `nvim_win_[gs]et_cursor()`, you make the
@@ -335,7 +336,7 @@ vim.keymap.set("n", "ysii", function()
 end, { desc = "Yank surrounding indentation" })
 ```
 
-### Indent Last Paste
+### Indent last paste
 The `lastChange` textobject can be used to indent the last text that was pasted.
 This is useful in languages such as Python where indentation is meaningful and
 thus formatters are not able to automatically indent everything for you.
@@ -351,12 +352,12 @@ vim.keymap.set("n", "P", function()
 end
 ```
 
-### Other Ideas?
+### Other ideas?
 If you have some other useful ideas, feel free to [share them in this repo's
 discussion
 page](https://github.com/chrisgrieser/nvim-various-textobjs/discussions).
 
-## Limitations & Non-Goals
+## Limitations & non-goals
 - This plugin uses pattern matching, so it can be inaccurate in some edge cases.
 - The characterwise textobjects do not match multi-line objects. Most notably,
   this affects the value textobject.
@@ -365,14 +366,13 @@ page](https://github.com/chrisgrieser/nvim-various-textobjs/discussions).
   objects, such as function arguments or loops. This plugin's goal is therefore
   not to provide textobjects already offered by `nvim-treesitter-textobjects`.
 
-## Other Text Object Plugins
+## Other text object plugins
 - [treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects)
 - [treesitter-textsubjects](https://github.com/RRethy/nvim-treesitter-textsubjects)
 - [ts-hint-textobject](https://github.com/mfussenegger/nvim-ts-hint-textobject)
 - [mini.ai](https://github.com/echasnovski/mini.nvim/blob/main/readmes/mini-ai.md)
 - [targets.vim](https://github.com/wellle/targets.vim)
 
-<!-- vale Google.FirstPerson = NO -->
 ## Credits
 **Thanks**  
 - To the `Valuable Dev` for [their blog post on how to get started with creating
@@ -391,16 +391,11 @@ I also occasionally blog about vim: [Nano Tips for Vim](https://nanotipsforvim.p
 - [ResearchGate](https://www.researchgate.net/profile/Christopher-Grieser)
 - [LinkedIn](https://www.linkedin.com/in/christopher-grieser-ba693b17a/)
 
-<a href='https://ko-fi.com/Y8Y86SQ91' target='_blank'><img
-	height='36'
-	style='border:0px;height:36px;'
-	src='https://cdn.ko-fi.com/cdn/kofi1.png?v=3'
-	border='0'
-	alt='Buy Me a Coffee at ko-fi.com'
-/></a>
+<a href='https://ko-fi.com/Y8Y86SQ91' target='_blank'><img height='36'
+style='border:0px;height:36px;' src='https://cdn.ko-fi.com/cdn/kofi1.png?v=3'
+border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
 
 [^1]: This respects vim's [`quoteescape` option](https://neovim.io/doc/user/options.html#'quoteescape').
-
 [^2]: The `lastChange` textobject does not work well with plugins that
 	manipulate paste operations such as
 	[yanky.nvim](https://github.com/gbprod/yanky.nvim) or plugins that auto-save
