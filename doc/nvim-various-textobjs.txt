@@ -4,13 +4,13 @@
 Table of Contents                    *nvim-various-textobjs-table-of-contents*
 
 1. nvim-various-textobjs        |nvim-various-textobjs-nvim-various-textobjs-|
-  - Table of Contents|nvim-various-textobjs-nvim-various-textobjs--table-of-contents|
-  - List of Text Objects|nvim-various-textobjs-nvim-various-textobjs--list-of-text-objects|
+  - Table of contents|nvim-various-textobjs-nvim-various-textobjs--table-of-contents|
+  - List of text objects|nvim-various-textobjs-nvim-various-textobjs--list-of-text-objects|
   - Installation   |nvim-various-textobjs-nvim-various-textobjs--installation|
   - Configuration |nvim-various-textobjs-nvim-various-textobjs--configuration|
-  - Advanced Usage / API|nvim-various-textobjs-nvim-various-textobjs--advanced-usage-/-api|
-  - Limitations & Non-Goals|nvim-various-textobjs-nvim-various-textobjs--limitations-&-non-goals|
-  - Other Text Object Plugins|nvim-various-textobjs-nvim-various-textobjs--other-text-object-plugins|
+  - Advanced usage / API|nvim-various-textobjs-nvim-various-textobjs--advanced-usage-/-api|
+  - Limitations & non-goals|nvim-various-textobjs-nvim-various-textobjs--limitations-&-non-goals|
+  - Other text object plugins|nvim-various-textobjs-nvim-various-textobjs--other-text-object-plugins|
   - Credits             |nvim-various-textobjs-nvim-various-textobjs--credits|
 
 ==============================================================================
@@ -340,7 +340,7 @@ on the URL.
         require("various-textobjs").url()
     
         -- plugin only switches to visual mode when textobj is found
-        local foundURL = vim.fn.mode():find("v")
+        local foundURL = vim.fn.mode() == "v"
         if not foundURL then return end
     
         -- retrieve URL with the z-register as intermediary
@@ -357,27 +357,28 @@ used by this plugin is exposed for this purpose.)
 >lua
     vim.keymap.set("n", "gx", function()
         require("various-textobjs").url()
-        local foundURL = vim.fn.mode():find("v")
+        local foundURL = vim.fn.mode() == "v"
         if foundURL then
             vim.cmd.normal('"zy')
             local url = vim.fn.getreg("z")
             vim.ui.open(url)
-        else
-            -- find all URLs in buffer
-            local urlPattern = require("various-textobjs.charwise-textobjs").urlPattern
-            local bufText = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n")
-            local urls = {}
-            for url in bufText:gmatch(urlPattern) do
-                table.insert(urls, url)
-            end
-            if #urls == 0 then return end
-    
-            -- select one, use a plugin like dressing.nvim for nicer UI for
-            -- `vim.ui.select`
-            vim.ui.select(urls, { prompt = "Select URL:" }, function(choice)
-                if choice then vim.ui.open(choice) end
-            end)
+            return
         end
+    
+        -- find all URLs in buffer
+        local urlPattern = require("various-textobjs.charwise-textobjs").urlPattern
+        local bufText = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n")
+        local urls = {}
+        for url in bufText:gmatch(urlPattern) do
+            table.insert(urls, url)
+        end
+        if #urls == 0 then return end
+    
+        -- select one, use a plugin like dressing.nvim for nicer UI for
+        -- `vim.ui.select`
+        vim.ui.select(urls, { prompt = "Select URL:" }, function(choice)
+            if choice then vim.ui.open(choice) end
+        end)
     end, { desc = "URL Opener" })
 <
 
