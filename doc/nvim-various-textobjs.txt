@@ -1,4 +1,4 @@
-*nvim-various-textobjs.txt*      For Neovim      Last change: 2024 December 01
+*nvim-various-textobjs.txt*      For Neovim      Last change: 2024 December 02
 
 ==============================================================================
 Table of Contents                    *nvim-various-textobjs-table-of-contents*
@@ -251,6 +251,9 @@ The `.setup()` call is optional if you are fine with the defaults below.
     
         -- display notification if a text object is not found
         notifyNotFound = true,
+    
+        -- only relevant when using notification plugins like `nvim-notify`
+        notificationIcon = "󰠱"
     }
 <
 
