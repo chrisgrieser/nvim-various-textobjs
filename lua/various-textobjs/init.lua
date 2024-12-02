@@ -1,7 +1,7 @@
 local M = {}
 --------------------------------------------------------------------------------
 
----@param userConfig? config
+---@param userConfig? VariousTextobjs.Config
 function M.setup(userConfig) require("various-textobjs.config").setup(userConfig) end
 
 -- redirect calls to this module to the respective submodules
