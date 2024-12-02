@@ -132,6 +132,9 @@ require("various-textobjs").setup {
 
 	-- display notification if a text object is not found
 	notifyNotFound = true,
+
+	-- only relevant when using notification plugins like `nvim-notify`
+	notificationIcon = "󰠱"
 }
 ```
 

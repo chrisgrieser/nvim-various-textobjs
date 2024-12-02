@@ -26,7 +26,8 @@ function M.notify(msg, level)
 		if not require("various-textobjs.config").config.notifyNotFound then return end
 		level = "warn"
 	end
-	vim.notify(msg, vim.log.levels[level:upper()], { title = "nvim-various-textobjs" })
+	local icon = require("various-textobjs.config").config.notificationIcon
+	vim.notify(msg, vim.log.levels[level:upper()], { title = "nvim-various-textobjs", icon = icon })
 end
 
 ---notification when no textobj could be found
