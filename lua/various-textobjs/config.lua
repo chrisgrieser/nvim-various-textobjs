@@ -17,7 +17,7 @@ local defaultConfig = {
 	notifyNotFound = true,
 
 	-- only relevant when using notification plugins like `nvim-notify`
-	notificationIcon = "󰠱"
+	notificationIcon = "󰠱",
 }
 M.config = defaultConfig
 
