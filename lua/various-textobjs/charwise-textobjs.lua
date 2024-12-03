@@ -162,7 +162,7 @@ function M.subword(scope)
 	-- the selection (see #83).
 	local charBefore = line:sub(startCol - 1, startCol - 1)
 	local charAtEnd = line:sub(endCol, endCol)
-	if not charAtEnd:find("[_-]") and charBefore:find("[_-]") then
+	if scope == "outer" and charBefore:find("[_-]") and not charAtEnd:find("[_-]") then
 		-- `o`: to start of sel, `h`: select char before `o`: back to end of selection
 		u.normal("oho")
 	end
