@@ -5,10 +5,8 @@ local config = require("various-textobjs.config").config
 --------------------------------------------------------------------------------
 
 ---@return boolean
-local function isVisualLineMode()
-	local modeWithV = vim.fn.mode():find("V")
-	return modeWithV ~= nil
-end
+---@nodiscard
+local function isVisualLineMode() return vim.fn.mode():find("V") ~= nil end
 
 ---sets the selection for the textobj (linewise)
 ---@param startline integer

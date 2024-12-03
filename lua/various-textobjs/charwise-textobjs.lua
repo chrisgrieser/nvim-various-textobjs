@@ -5,6 +5,7 @@ local config = require("various-textobjs.config").config
 --------------------------------------------------------------------------------
 
 ---@return boolean
+---@nodiscard
 local function isVisualMode() return vim.fn.mode():find("v") ~= nil end
 
 ---@alias pos {[1]: integer, [2]: integer}
@@ -15,19 +16,17 @@ local function isVisualMode() return vim.fn.mode():find("v") ~= nil end
 function M.setSelection(startPos, endPos)
 	u.normal("m`") -- save last position in jumplist
 	vim.api.nvim_win_set_cursor(0, startPos)
-	if isVisualMode() then
-		u.normal("o")
-	else
-		u.normal("v")
-	end
+	u.normal(isVisualMode() and "o" or "v")
 	vim.api.nvim_win_set_cursor(0, endPos)
 end
 
 --------------------------------------------------------------------------------
 
+-- INFO The following function are exposed for creation of custom textobjs, but
+-- subject to change without notice.
+
 ---Seek and select characterwise a text object based on one pattern.
 ---CAVEAT multi-line-objects are not supported.
----INFO Exposed for creation of custom textobjs, but subject to change without notice.
 ---@param pattern string lua pattern. REQUIRES two capture groups marking the
 ---two additions for the outer variant of the textobj. Use an empty capture group
 ---when there is no difference between inner and outer on that side.
@@ -80,13 +79,12 @@ function M.searchTextobj(pattern, scope, lookForwL)
 	return startPos, endPos
 end
 
----searches for the position of one or multiple patterns and selects the closest one
----INFO Exposed for creation of custom textobjs, but subject to change without notice.
+---Searches for the position of one or multiple patterns and selects the closest one
 ---@param patterns string|string[] lua, pattern(s) with the specification from `searchTextobj`
 ---@param scope "inner"|"outer"
 ---@param lookForwL integer
 ---@return boolean -- whether textobj search was successful
-function M.selectTextobj(patterns, scope, lookForwL)
+function M.selectClosestTextobj(patterns, scope, lookForwL)
 	local closestObj
 
 	if type(patterns) == "string" then
@@ -108,7 +106,7 @@ function M.selectTextobj(patterns, scope, lookForwL)
 				-- If the cursor is standing on a big textobj A, and there is a
 				-- second textobj B which starts right after the cursor, A has a
 				-- high negative distance, and B has a small positive distance.
-				-- Using simply the absolute value to determine the which obj is the
+				-- Using simply the absolute value to determine which obj is the
 				-- closer one would then result in B being selected, even though the
 				-- idiomatic behavior in vim is to always select an obj the cursor
 				-- is standing on before seeking forward for a textobj.
@@ -194,7 +192,7 @@ function M.anyQuote(scope)
 		("([^%s]`).-[^%s](`)"):format(escape, escape), -- ``
 	}
 
-	M.selectTextobj(patterns, scope, config.lookForwardSmall)
+	M.selectClosestTextobj(patterns, scope, config.lookForwardSmall)
 
 	-- pattern accounts for escape char, so move to right to account for that
 	local isAtStart = vim.api.nvim_win_get_cursor(0)[2] == 1
@@ -208,7 +206,7 @@ function M.anyBracket(scope)
 		"(%[).-(%])", -- []
 		"({).-(})", -- {}
 	}
-	M.selectTextobj(patterns, scope, config.lookForwardSmall)
+	M.selectClosestTextobj(patterns, scope, config.lookForwardSmall)
 end
 
 ---near end of the line, ignoring trailing whitespace
@@ -233,7 +231,7 @@ function M.lineCharacterwise(scope)
 	if isOnNUL then u.normal("g_") end
 
 	local pattern = "^(%s*).-(%s*)$"
-	M.selectTextobj(pattern, scope, 0)
+	M.selectClosestTextobj(pattern, scope, 0)
 end
 
 ---similar to https://github.com/andrewferrier/textobj-diagnostic.nvim
@@ -306,7 +304,7 @@ end
 ---@param scope "inner"|"outer" outer key includes the `:` or `=` after the key
 function M.key(scope)
 	local pattern = "()%S.-( ?[:=] ?)"
-	M.selectTextobj(pattern, scope, config.lookForwardSmall)
+	M.selectClosestTextobj(pattern, scope, config.lookForwardSmall)
 end
 
 ---@param scope "inner"|"outer" inner number consists purely of digits, outer number factors in decimal points and includes minus sign
@@ -315,14 +313,14 @@ function M.number(scope)
 	-- before and after the decimal dot. enforcing digital after dot so outer
 	-- excludes enumrations.
 	local pattern = scope == "inner" and "%d+" or "%-?%d*%.?%d+"
-	M.selectTextobj(pattern, "outer", config.lookForwardSmall)
+	M.selectClosestTextobj(pattern, "outer", config.lookForwardSmall)
 end
 
 -- make URL pattern available for external use
 -- INFO mastodon URLs contain `@`, neovim docs urls can contain a `'`, special
 -- urls like https://docs.rs/regex/1.*/regex/#syntax can have a `*`
 M.urlPattern = "%l%l%l-://[A-Za-z0-9_%-/.#%%=?&'@+*:]+"
-function M.url() M.selectTextobj(M.urlPattern, "outer", config.lookForwardBig) end
+function M.url() M.selectClosestTextobj(M.urlPattern, "outer", config.lookForwardBig) end
 
 ---@param scope "inner"|"outer" inner excludes the leading dot
 function M.chainMember(scope)
@@ -332,7 +330,7 @@ function M.chainMember(scope)
 		"([:.])[%w_][%w_]-()", -- following member w/ call
 		"([:.])[%w_][%w_]-%b()()", -- following member w/ call
 	}
-	M.selectTextobj(patterns, scope, config.lookForwardSmall)
+	M.selectClosestTextobj(patterns, scope, config.lookForwardSmall)
 end
 
 function M.lastChange()
@@ -353,7 +351,7 @@ end
 ---@param scope "inner"|"outer" inner link only includes the link title, outer link includes link, url, and the four brackets.
 function M.mdlink(scope)
 	local pattern = "(%[)[^%]]-(%]%b())"
-	M.selectTextobj(pattern, scope, config.lookForwardSmall)
+	M.selectClosestTextobj(pattern, scope, config.lookForwardSmall)
 end
 
 ---@param scope "inner"|"outer" inner selector only includes the content, outer selector includes the type.
@@ -370,7 +368,7 @@ function M.mdEmphasis(scope)
 		"(^==).-[^\\](==)", -- ==
 		"(^~~).-[^\\](~~)", -- ~~
 	}
-	M.selectTextobj(patterns, scope, config.lookForwardSmall)
+	M.selectClosestTextobj(patterns, scope, config.lookForwardSmall)
 
 	-- pattern accounts for escape char, so move to right to account for that
 	local isAtStart = vim.api.nvim_win_get_cursor(0)[2] == 1
@@ -380,13 +378,13 @@ end
 ---@param scope "inner"|"outer" inner selector excludes the brackets themselves
 function M.doubleSquareBrackets(scope)
 	local pattern = "(%[%[).-(%]%])"
-	M.selectTextobj(pattern, scope, config.lookForwardSmall)
+	M.selectClosestTextobj(pattern, scope, config.lookForwardSmall)
 end
 
 ---@param scope "inner"|"outer" outer selector includes trailing comma and whitespace
 function M.cssSelector(scope)
 	local pattern = "()[#.][%w-_]+(,? ?)"
-	M.selectTextobj(pattern, scope, config.lookForwardSmall)
+	M.selectClosestTextobj(pattern, scope, config.lookForwardSmall)
 end
 
 ---@param scope "inner"|"outer" inner selector is only the value of the attribute inside the quotation marks.
@@ -395,7 +393,7 @@ function M.htmlAttribute(scope)
 		'([%w-]+=").-(")',
 		"([%w-]+=').-(')",
 	}
-	M.selectTextobj(pattern, scope, config.lookForwardSmall)
+	M.selectClosestTextobj(pattern, scope, config.lookForwardSmall)
 end
 
 ---@param scope "inner"|"outer" outer selector includes the pipe
@@ -404,7 +402,7 @@ function M.shellPipe(scope)
 		"()[^|%s][^|]-( ?| ?)", -- trailing pipe, 1st char non-space to exclude indentation
 		"( ?| ?)[^|]*()", -- leading pipe
 	}
-	M.selectTextobj(patterns, scope, config.lookForwardSmall)
+	M.selectClosestTextobj(patterns, scope, config.lookForwardSmall)
 end
 
 ---@param scope "inner"|"outer" inner selector only affects the color value
@@ -415,7 +413,7 @@ function M.cssColor(scope)
 		"(hsla?%()[%%%d,./deg ]-(%))", -- hsl(123, 23, 23) or hsl(123deg, 123%, 123% / 100)
 		"(rgba?%()[%d,./ ]-(%))", -- rgb(123, 123, 123) or rgb(50%, 50%, 50%)
 	}
-	M.selectTextobj(pattern, scope, config.lookForwardSmall)
+	M.selectClosestTextobj(pattern, scope, config.lookForwardSmall)
 end
 
 --------------------------------------------------------------------------------
