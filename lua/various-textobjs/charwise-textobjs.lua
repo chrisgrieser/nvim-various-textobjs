@@ -147,7 +147,10 @@ function M.subword(scope)
 		"()%d+([_-]?)", -- number
 	}
 	local startPos, endPos = M.selectClosestTextobj(pattern, scope, 0)
+
 	if not (startPos and endPos) then return end
+	local startRow, startCol, endCol = startPos[1], startPos[2] + 1, endPos[2] + 1
+	local line = vim.api.nvim_buf_get_lines(0, startRow - 1, startRow, false)[1]
 
 	-- INFO the outer pattern checks for subwords that with potentially trailing
 	-- `_- `, however, if the subword is the last segment of a word, there is
@@ -157,13 +160,10 @@ function M.subword(scope)
 	-- even though the usage expectation is that `subword` should be more greedy.
 	-- Thus, we check if there is a leading `_- ` available, and if so, add it to
 	-- the selection (see #83).
-	local line = vim.api.nvim_buf_get_lines(0, startPos[1] - 1, startPos[1], false)[1]
-	local charBefore = line:sub(startPos[2], startPos[2]) -- minus-1 with off-by-one = no adjustment
-	local charAtEnd = line:sub(endPos[2] + 1, endPos[2] + 1) -- off-by-one
+	local charBefore = line:sub(startCol - 1, startCol - 1)
+	local charAtEnd = line:sub(endCol, endCol)
 	if not charAtEnd:find("[_-]") and charBefore:find("[_-]") then
-		-- `o`: to go back to start of selection
-		-- `h`: select char before
-		-- `o`: go back to end of selection
+		-- `o`: to start of sel, `h`: select char before `o`: back to end of selection
 		u.normal("oho")
 	end
 end
