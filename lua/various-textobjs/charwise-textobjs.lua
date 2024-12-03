@@ -83,7 +83,8 @@ end
 ---@param patterns string|string[] lua, pattern(s) with the specification from `searchTextobj`
 ---@param scope "inner"|"outer"
 ---@param lookForwL integer
----@return boolean -- whether textobj search was successful
+---@return pos? startPos -- only returned if a textobj was found
+---@return pos? endPos
 function M.selectClosestTextobj(patterns, scope, lookForwL)
 	local closestObj
 
@@ -130,10 +131,9 @@ function M.selectClosestTextobj(patterns, scope, lookForwL)
 	if closestObj then
 		local startPos, endPos = unpack(closestObj)
 		M.setSelection(startPos, endPos)
-		return true
+		return startPos, endPos
 	else
 		u.notFoundMsg(lookForwL)
-		return false
 	end
 end
 
@@ -146,7 +146,26 @@ function M.subword(scope)
 		"()%u[%u%d]+([_%- ]?)", -- UPPER_CASE
 		"()%d+([_%- ]?)", -- number
 	}
-	M.selectTextobj(pattern, scope, 0)
+	local startPos, endPos = M.selectClosestTextobj(pattern, scope, 0)
+	if not (startPos and endPos) then return end
+
+	-- INFO the outer pattern checks for subwords that with potentially trailing
+	-- `_- `, however, if the subword is the last segment of a word, there is
+	-- potentially also a leading `_- `. Checking for those with patterns is
+	-- tricky, since subwords without any trailing/leading chars are always
+	-- considered the smallest (and thus prioritized by `selectClosestTextobj`),
+	-- even though the usage expectation is that `subword` should be more greedy.
+	-- Thus, we check if there is a leading `_- ` available, and if so, add it to
+	-- the selection (see #83).
+	local line = vim.api.nvim_buf_get_lines(0, startPos[1] - 1, startPos[1], false)[1]
+	local charBefore = line:sub(startPos[2], startPos[2]) -- minus-1 with off-by-one = no adjustment
+	local charAtEnd = line:sub(endPos[2] + 1, endPos[2] + 1) -- off-by-one
+	if not charAtEnd:find("[_%- ]") and charBefore:find("[_%- ]") then
+		-- `o`: to go back to start of selection
+		-- `h`: select char before
+		-- `o`: go back to end of selection
+		u.normal("oho")
+	end
 end
 
 function M.toNextClosingBracket()
