@@ -183,9 +183,9 @@ end
 function M.toNextClosingBracket()
 	local pattern = "().([]})])"
 
-	local _, endPos = M.searchTextobj(pattern, "inner", config.lookForwardSmall)
+	local _, endPos = M.searchTextobj(pattern, "inner", config.forwardLooking.small)
 	if not endPos then
-		u.notFoundMsg(config.lookForwardSmall)
+		u.notFoundMsg(config.forwardLooking.small)
 		return
 	end
 	local startPos = vim.api.nvim_win_get_cursor(0)
@@ -199,9 +199,9 @@ function M.toNextQuotationMark()
 	local quoteEscape = vim.opt_local.quoteescape:get() -- default: \
 	local pattern = ([[()[^%s](["'`])]]):format(quoteEscape)
 
-	local _, endPos = M.searchTextobj(pattern, "inner", config.lookForwardSmall)
+	local _, endPos = M.searchTextobj(pattern, "inner", config.forwardLooking.small)
 	if not endPos then
-		u.notFoundMsg(config.lookForwardSmall)
+		u.notFoundMsg(config.forwardLooking.small)
 		return
 	end
 	local startPos = vim.api.nvim_win_get_cursor(0)
@@ -223,7 +223,7 @@ function M.anyQuote(scope)
 		("([^%s]`).-[^%s](`)"):format(escape, escape), -- ``
 	}
 
-	M.selectClosestTextobj(patterns, scope, config.lookForwardSmall)
+	M.selectClosestTextobj(patterns, scope, config.forwardLooking.small)
 
 	-- pattern accounts for escape char, so move to right to account for that
 	local isAtStart = vim.api.nvim_win_get_cursor(0)[2] == 1
@@ -237,7 +237,7 @@ function M.anyBracket(scope)
 		"(%[).-(%])", -- []
 		"({).-(})", -- {}
 	}
-	M.selectClosestTextobj(patterns, scope, config.lookForwardSmall)
+	M.selectClosestTextobj(patterns, scope, config.forwardLooking.small)
 end
 
 ---near end of the line, ignoring trailing whitespace
@@ -307,9 +307,9 @@ function M.value(scope)
 	-- or css pseudo-elements :: are not matched
 	local pattern = "(%s*%f[!<>~=:][=:]%s*)[^=:].*()"
 
-	local startPos, endPos = M.searchTextobj(pattern, scope, config.lookForwardSmall)
+	local startPos, endPos = M.searchTextobj(pattern, scope, config.forwardLooking.small)
 	if not startPos or not endPos then
-		u.notFoundMsg(config.lookForwardSmall)
+		u.notFoundMsg(config.forwardLooking.small)
 		return
 	end
 
@@ -335,7 +335,7 @@ end
 ---@param scope "inner"|"outer" outer key includes the `:` or `=` after the key
 function M.key(scope)
 	local pattern = "()%S.-( ?[:=] ?)"
-	M.selectClosestTextobj(pattern, scope, config.lookForwardSmall)
+	M.selectClosestTextobj(pattern, scope, config.forwardLooking.small)
 end
 
 ---@param scope "inner"|"outer" inner number consists purely of digits, outer number factors in decimal points and includes minus sign
@@ -344,14 +344,14 @@ function M.number(scope)
 	-- before and after the decimal dot. enforcing digital after dot so outer
 	-- excludes enumrations.
 	local pattern = scope == "inner" and "%d+" or "%-?%d*%.?%d+"
-	M.selectClosestTextobj(pattern, "outer", config.lookForwardSmall)
+	M.selectClosestTextobj(pattern, "outer", config.forwardLooking.small)
 end
 
 -- make URL pattern available for external use
 -- INFO mastodon URLs contain `@`, neovim docs urls can contain a `'`, special
 -- urls like https://docs.rs/regex/1.*/regex/#syntax can have a `*`
 M.urlPattern = "%l%l%l-://[A-Za-z0-9_%-/.#%%=?&'@+*:]+"
-function M.url() M.selectClosestTextobj(M.urlPattern, "outer", config.lookForwardBig) end
+function M.url() M.selectClosestTextobj(M.urlPattern, "outer", config.forwardLooking.big) end
 
 ---@param scope "inner"|"outer" inner excludes the leading dot
 function M.chainMember(scope)
@@ -361,7 +361,7 @@ function M.chainMember(scope)
 		"([:.])[%w_][%w_]-()", -- following member w/ call
 		"([:.])[%w_][%w_]-%b()()", -- following member w/ call
 	}
-	M.selectClosestTextobj(patterns, scope, config.lookForwardSmall)
+	M.selectClosestTextobj(patterns, scope, config.forwardLooking.small)
 end
 
 function M.lastChange()
@@ -382,7 +382,7 @@ end
 ---@param scope "inner"|"outer" inner link only includes the link title, outer link includes link, url, and the four brackets.
 function M.mdlink(scope)
 	local pattern = "(%[)[^%]]-(%]%b())"
-	M.selectClosestTextobj(pattern, scope, config.lookForwardSmall)
+	M.selectClosestTextobj(pattern, scope, config.forwardLooking.small)
 end
 
 ---@param scope "inner"|"outer" inner selector only includes the content, outer selector includes the type.
@@ -399,7 +399,7 @@ function M.mdEmphasis(scope)
 		"(^==).-[^\\](==)", -- ==
 		"(^~~).-[^\\](~~)", -- ~~
 	}
-	M.selectClosestTextobj(patterns, scope, config.lookForwardSmall)
+	M.selectClosestTextobj(patterns, scope, config.forwardLooking.small)
 
 	-- pattern accounts for escape char, so move to right to account for that
 	local isAtStart = vim.api.nvim_win_get_cursor(0)[2] == 1
@@ -409,13 +409,13 @@ end
 ---@param scope "inner"|"outer" inner selector excludes the brackets themselves
 function M.doubleSquareBrackets(scope)
 	local pattern = "(%[%[).-(%]%])"
-	M.selectClosestTextobj(pattern, scope, config.lookForwardSmall)
+	M.selectClosestTextobj(pattern, scope, config.forwardLooking.small)
 end
 
 ---@param scope "inner"|"outer" outer selector includes trailing comma and whitespace
 function M.cssSelector(scope)
 	local pattern = "()[#.][%w-_]+(,? ?)"
-	M.selectClosestTextobj(pattern, scope, config.lookForwardSmall)
+	M.selectClosestTextobj(pattern, scope, config.forwardLooking.small)
 end
 
 ---@param scope "inner"|"outer" inner selector is only the value of the attribute inside the quotation marks.
@@ -424,7 +424,7 @@ function M.htmlAttribute(scope)
 		'([%w-]+=").-(")',
 		"([%w-]+=').-(')",
 	}
-	M.selectClosestTextobj(pattern, scope, config.lookForwardSmall)
+	M.selectClosestTextobj(pattern, scope, config.forwardLooking.small)
 end
 
 ---@param scope "inner"|"outer" outer selector includes the pipe
@@ -433,7 +433,7 @@ function M.shellPipe(scope)
 		"()[^|%s][^|]-( ?| ?)", -- trailing pipe, 1st char non-space to exclude indentation
 		"( ?| ?)[^|]*()", -- leading pipe
 	}
-	M.selectClosestTextobj(patterns, scope, config.lookForwardSmall)
+	M.selectClosestTextobj(patterns, scope, config.forwardLooking.small)
 end
 
 ---@param scope "inner"|"outer" inner selector only affects the color value
@@ -444,7 +444,7 @@ function M.cssColor(scope)
 		"(hsla?%()[%%%d,./deg ]-(%))", -- hsl(123, 23, 23) or hsl(123deg, 123%, 123% / 100)
 		"(rgba?%()[%d,./ ]-(%))", -- rgb(123, 123, 123) or rgb(50%, 50%, 50%)
 	}
-	M.selectClosestTextobj(pattern, scope, config.lookForwardSmall)
+	M.selectClosestTextobj(pattern, scope, config.forwardLooking.small)
 end
 
 --------------------------------------------------------------------------------

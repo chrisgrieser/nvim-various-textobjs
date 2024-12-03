@@ -120,21 +120,24 @@ The `.setup()` call is optional if you are fine with the defaults below.
 ```lua
 -- default config
 require("various-textobjs").setup {
-	-- set to 0 to only look in the current line
-	lookForwardSmall = 5,
-	lookForwardBig = 15,
-
 	-- use suggested keymaps (see overview table in README)
 	useDefaultKeymaps = false,
 
 	-- disable only some default keymaps, e.g. { "ai", "ii" }
+	---@type string[]
 	disabledKeymaps = {},
 
-	-- display notification if a text object is not found
-	notifyNotFound = true,
+	-- Number of lines to seek forwards for a text object. See the overview table
+	-- in the README for which text object uses which value.
+	forwardLooking = {
+		small = 5,
+		big = 15,
+	},
 
-	-- only relevant when using notification plugins like `nvim-notify`
-	notificationIcon = "󰠱"
+	notify = {
+		icon = "󰠱", -- only used with notification plugins like `nvim-notify`
+		whenObjectNotFound = true,
+	},
 }
 ```
 

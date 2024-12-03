@@ -23,10 +23,10 @@ function M.getline(lnum) return vim.api.nvim_buf_get_lines(0, lnum - 1, lnum, tr
 function M.notify(msg, level)
 	if not level then level = "info" end
 	if level == "notfound" then
-		if not require("various-textobjs.config").config.notifyNotFound then return end
+		if not require("various-textobjs.config").config.notify.whenObjectNotFound then return end
 		level = "warn"
 	end
-	local icon = require("various-textobjs.config").config.notificationIcon
+	local icon = require("various-textobjs.config").config.notify.icon
 	vim.notify(msg, vim.log.levels[level:upper()], { title = "nvim-various-textobjs", icon = icon })
 end
 

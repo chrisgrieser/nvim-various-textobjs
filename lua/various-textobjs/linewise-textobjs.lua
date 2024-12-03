@@ -45,8 +45,8 @@ function M.closedFold(scope)
 	else
 		foldStart = startLnum
 		repeat
-			if foldStart >= lastLine or foldStart > (config.lookForwardBig + startLnum) then
-				u.notFoundMsg(config.lookForwardBig)
+			if foldStart >= lastLine or foldStart > (config.forwardLooking.big + startLnum) then
+				u.notFoundMsg(config.forwardLooking.big)
 				return
 			end
 			foldStart = foldStart + 1
@@ -117,13 +117,13 @@ function M.mdFencedCodeBlock(scope)
 	repeat
 		j = j + 1
 		if j > #cbBegin then
-			u.notFoundMsg(config.lookForwardBig)
+			u.notFoundMsg(config.forwardLooking.big)
 			return
 		end
 		local cursorInBetween = (cbBegin[j] <= cursorLnum) and (cbEnd[j] >= cursorLnum)
 		-- seek forward for a codeblock
 		local cursorInFront = (cbBegin[j] > cursorLnum)
-			and (cbBegin[j] <= cursorLnum + config.lookForwardBig)
+			and (cbBegin[j] <= cursorLnum + config.forwardLooking.big)
 	until cursorInBetween or cursorInFront
 
 	local start = cbBegin[j]
