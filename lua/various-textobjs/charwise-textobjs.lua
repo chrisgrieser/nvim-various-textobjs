@@ -170,13 +170,16 @@ function M.subword(scope)
 
 	-- When deleting the start of a camelCased word, the result should still be
 	-- camelCased and not PascalCased (see #113).
-	local originalWasCamelCased = vim.fn.expand("<cword>"):find("%l%u") ~= nil
-	local charAfter = line:sub(endCol + 1, endCol + 1)
-	local isStartOfWord = line:sub(startCol - 1, startCol - 1) == " "
-	local isDeletion = vim.v.operator == "d"
-	if originalWasCamelCased and charAfter:find("%u") and isStartOfWord and isDeletion then
-		local updatedLine = line:sub(1, endCol) .. charAfter:lower() .. line:sub(endCol + 2)
-		vim.api.nvim_buf_set_lines(0, startRow - 1, startRow, false, { updatedLine })
+	local noPascal = require("various-textobjs.config").config.textobjs.subword.noCamelToPascalCase
+	if noPascal then
+		local originalWasCamelCased = vim.fn.expand("<cword>"):find("%l%u") ~= nil
+		local charAfter = line:sub(endCol + 1, endCol + 1)
+		local isStartOfWord = line:sub(startCol - 1, startCol - 1) == " "
+		local isDeletion = vim.v.operator == "d"
+		if originalWasCamelCased and charAfter:find("%u") and isStartOfWord and isDeletion then
+			local updatedLine = line:sub(1, endCol) .. charAfter:lower() .. line:sub(endCol + 2)
+			vim.api.nvim_buf_set_lines(0, startRow - 1, startRow, false, { updatedLine })
+		end
 	end
 end
 

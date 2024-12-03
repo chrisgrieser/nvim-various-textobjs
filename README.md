@@ -141,7 +141,12 @@ require("various-textobjs").setup {
 
 	textobjs = {
 		diagnostic = { wrap = true },
-	}
+		subword = {
+			-- When deleting the start of a camelCased word, the result should still be
+			-- camelCased and not PascalCased (see #113).
+			noCamelToPascalCase = true,
+		},
+	},
 }
 ```
 

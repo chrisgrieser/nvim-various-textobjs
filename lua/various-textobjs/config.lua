@@ -2,7 +2,10 @@ local M = {}
 --------------------------------------------------------------------------------
 ---@class VariousTextobjs.Config
 local defaultConfig = {
-	-- use suggested keymaps (see overview table in README)
+	-- See overview table in README for the defaults keymaps. 
+	-- (Note that lazy-loading this plugin, the default keymaps cannot be set up.
+	-- if you set this to `true`, you thus need to add `lazy = false` to your
+	-- lazy.nvim config.)
 	useDefaultKeymaps = false,
 
 	-- disable only some default keymaps, e.g. { "ai", "ii" }
@@ -23,7 +26,12 @@ local defaultConfig = {
 
 	textobjs = {
 		diagnostic = { wrap = true },
-	}
+		subword = {
+			-- When deleting the start of a camelCased word, the result should still be
+			-- camelCased and not PascalCased (see #113).
+			noCamelToPascalCase = true,
+		},
+	},
 }
 M.config = defaultConfig
 
