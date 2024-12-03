@@ -163,7 +163,7 @@ function M.indentation(startBorder, endBorder, blankLines)
 	local lastLine = vim.api.nvim_buf_line_count(0)
 	while isBlankLine(curLnum) do -- when on blank line, use next line
 		if lastLine == curLnum then
-			u.notify("No indented line found.", "notfound")
+			u.notFoundMsg("No indented line found.")
 			return
 		end
 		curLnum = curLnum + 1
@@ -171,8 +171,8 @@ function M.indentation(startBorder, endBorder, blankLines)
 
 	local indentOfStart = vim.fn.indent(curLnum)
 	if indentOfStart == 0 then
-		u.notify("Current line is not indented.", "notfound")
-		return false -- return value needed for greedyOuterIndentation textobj
+		u.warn("Current line is not indented.")
+		return false -- return value needed for `greedyOuterIndentation` textobj
 	end
 
 	local prevLnum = curLnum - 1
@@ -221,7 +221,7 @@ function M.restOfIndentation()
 
 	local indentOfStart = vim.fn.indent(curLnum)
 	if indentOfStart == 0 then
-		u.notify("Current line is not indented.", "notfound")
+		u.warn("Current line is not indented.")
 		return
 	end
 
@@ -260,7 +260,7 @@ end
 ---@param scope "inner"|"outer" outer includes bottom cell border
 function M.notebookCell(scope)
 	if vim.bo.commentstring == "" then
-		u.notify("Buffer has no commentstring set.", "warn")
+		u.warn("Buffer has no commentstring set.")
 		return
 	end
 

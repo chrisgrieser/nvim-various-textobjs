@@ -29,24 +29,24 @@ M.config = defaultConfig
 ---@param userConfig? VariousTextobjs.Config
 function M.setup(userConfig)
 	M.config = vim.tbl_deep_extend("force", M.config, userConfig or {})
-	local notify = require("various-textobjs.utils").notify
+	local warn = require("various-textobjs.utils").warn
 
 	-- DEPRECATION (2024-12-03)
 	---@diagnostic disable: undefined-field
 	if M.config.lookForwardSmall then
-		notify("The `lookForwardSmall` option is deprecated. Use `forwardLooking.small` instead.")
+		warn("The `lookForwardSmall` option is deprecated. Use `forwardLooking.small` instead.")
 	end
 	if M.config.lookForwardBig then
-		notify("The `lookForwardBig` option is deprecated. Use `forwardLooking.big` instead.")
+		warn("The `lookForwardBig` option is deprecated. Use `forwardLooking.big` instead.")
 	end
 	if M.config.lookForwardBig then
-		notify("The `lookForwardBig` option is deprecated. Use `forwardLooking.big` instead.")
+		warn("The `lookForwardBig` option is deprecated. Use `forwardLooking.big` instead.")
 	end
 	if M.config.notificationIcon then
-		notify("The `notificationIcon` option is deprecated. Use `config.notify.icon` instead.")
+		warn("The `notificationIcon` option is deprecated. Use `config.notify.icon` instead.")
 	end
 	if M.config.notifyNotFound then
-		notify(
+		warn(
 			"The `notifyNotFound` option is deprecated. Use `config.notify.whenObjectNotFound` instead."
 		)
 	end

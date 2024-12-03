@@ -296,7 +296,7 @@ function M.diagnostic(wrap)
 	if target then
 		M.setSelection({ target.lnum + 1, target.col }, { target.end_lnum + 1, target.end_col - 1 })
 	else
-		u.notify("No diagnostic found.", "notfound")
+		u.notFoundMsg("No diagnostic found.")
 	end
 end
 
@@ -369,7 +369,7 @@ function M.lastChange()
 	local changeEndPos = vim.api.nvim_buf_get_mark(0, "]")
 
 	if changeStartPos[1] == changeEndPos[1] and changeStartPos[2] == changeEndPos[2] then
-		u.notify("Last change was a deletion operation, aborting.", "warn")
+		u.warn("Last change was a deletion operation, aborting.")
 		return
 	end
 

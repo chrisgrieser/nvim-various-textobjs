@@ -8,12 +8,12 @@ local u = require("various-textobjs.utils")
 function M.pyTripleQuotes(scope)
 	-- GUARD
 	if vim.treesitter.get_node == nil then
-		u.notify("This textobj requires least nvim 0.9.", "warn")
+		u.warn("This textobj requires least nvim 0.9.")
 		return
 	end
 	local node = vim.treesitter.get_node()
 	if not node then
-		u.notify("No node found.", "notfound")
+		u.notFoundMsg("No node found.")
 		return
 	end
 
@@ -29,7 +29,7 @@ function M.pyTripleQuotes(scope)
 	then
 		strNode = node:parent():parent()
 	else
-		u.notify("Not on a triple quoted string.", "warn")
+		u.warn("Not on a triple quoted string.")
 		return
 	end
 	---@cast strNode TSNode
