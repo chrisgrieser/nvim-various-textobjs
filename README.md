@@ -138,6 +138,10 @@ require("various-textobjs").setup {
 		icon = "󰠱", -- only used with notification plugins like `nvim-notify`
 		whenObjectNotFound = true,
 	},
+
+	textobjs = {
+		diagnostic = { wrap = true },
+	}
 }
 ```
 
@@ -161,10 +165,10 @@ vim.keymap.set({ "o", "x" }, "is", '<cmd>lua require("various-textobjs").subword
 ```
 
 For most text objects, there is only one parameter which accepts `"inner"` or
-`"outer"`. There are two exceptions for that:
+`"outer"`. There only exceptions is the indentation textobject:
 
 ```lua
--- 1. THE INDENTATION TEXTOBJ requires two parameters, the first for
+-- THE INDENTATION TEXTOBJ requires two parameters, the first for
 -- exclusion of the starting border, the second for the exclusion of ending border
 vim.keymap.set(
 	{ "o", "x" },
@@ -183,9 +187,6 @@ vim.keymap.set(
 	"ai",
 	'<cmd>lua require("various-textobjs").indentation("outer", "inner", "noBlanks")<CR>'
 )
-
--- 2. THE DIAGNOSTIC TEXTOBJ accepts `"wrap"` or `"nowrap"`
-vim.keymap.set({ "o", "x" }, "!", '<cmd>lua require("various-textobjs").diagnostic("wrap")<CR>')
 ```
 
 ## Advanced usage / API

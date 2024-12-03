@@ -265,12 +265,15 @@ function M.lineCharacterwise(scope)
 	M.selectClosestTextobj(pattern, scope, 0)
 end
 
----similar to https://github.com/andrewferrier/textobj-diagnostic.nvim
----requires builtin LSP
----@param wrap "wrap"|"nowrap"
-function M.diagnostic(wrap)
-	-- INFO for whatever reason, diagnostic line numbers and the end column (but
-	-- not the start column) are all off-by-one…
+function M.diagnostic(oldWrapSetting)
+	-- DEPRECATION (2024-12-03)
+	if oldWrapSetting ~= nil then
+		u.warn(
+			'`.diagnostic()` does not use "wrap" argument anymore. Use the config `textobjs.diagnostic.wrap` instead.'
+		)
+	end
+
+	local wrap = require("various-textobjs.config").config.textobjs.diagnostic.wrap
 
 	-- HACK if cursor is standing on a diagnostic, get_prev() will return that
 	-- diagnostic *BUT* only if the cursor is not on the first character of the
@@ -280,7 +283,7 @@ function M.diagnostic(wrap)
 	local prevD = vim.diagnostic.get_prev { wrap = false }
 	u.normal("h")
 
-	local nextD = vim.diagnostic.get_next { wrap = (wrap == "wrap") }
+	local nextD = vim.diagnostic.get_next { wrap = wrap }
 	local curStandingOnPrevD = false -- however, if prev diag is covered by or before the cursor has yet to be determined
 	local curRow, curCol = unpack(vim.api.nvim_win_get_cursor(0))
 

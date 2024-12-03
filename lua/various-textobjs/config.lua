@@ -20,6 +20,10 @@ local defaultConfig = {
 		icon = "󰠱", -- only used with notification plugins like `nvim-notify`
 		whenObjectNotFound = true,
 	},
+
+	textobjs = {
+		diagnostic = { wrap = true },
+	}
 }
 M.config = defaultConfig
 
