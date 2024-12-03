@@ -215,7 +215,6 @@ own keymaps.
     -- lazy.nvim
     {
         "chrisgrieser/nvim-various-textobjs",
-        lazy = true,
         keys = {
             -- ...
         },
@@ -239,21 +238,37 @@ The `.setup()` call is optional if you are fine with the defaults below.
 >lua
     -- default config
     require("various-textobjs").setup {
-        -- set to 0 to only look in the current line
-        lookForwardSmall = 5,
-        lookForwardBig = 15,
-    
-        -- use suggested keymaps (see overview table in README)
+        -- See overview table in README for the defaults keymaps. 
+        -- (Note that lazy-loading this plugin, the default keymaps cannot be set up.
+        -- if you set this to `true`, you thus need to add `event = "VeryLazy"` to your
+        -- lazy.nvim config.)
         useDefaultKeymaps = false,
     
-        -- disable only some default keymaps, e.g. { "ai", "ii" }
-        disabledKeymaps = {},
+        ---@type string[]
+        disabledKeymaps = {}, -- disable only some default keymaps, e.g. { "ai", "ii" }
     
-        -- display notification if a text object is not found
-        notifyNotFound = true,
+        -- Number of lines to seek forwards for a text object. See the overview table
+        -- in the README for which text object uses which value.
+        forwardLooking = {
+            small = 5,
+            big = 15,
+        },
     
-        -- only relevant when using notification plugins like `nvim-notify`
-        notificationIcon = "󰠱"
+        notify = {
+            icon = "󰠱", -- only used with notification plugins like `nvim-notify`
+            whenObjectNotFound = true,
+        },
+    
+        textobjs = {
+            diagnostic = { 
+                wrap = true 
+            },
+            subword = {
+                -- When deleting the start of a camelCased word, the result should still be
+                -- camelCased and not PascalCased (see #113).
+                noCamelToPascalCase = true,
+            },
+        },
     }
 <
 
@@ -278,10 +293,10 @@ from the |nvim-various-textobjs-overview-table|.
 <
 
 For most text objects, there is only one parameter which accepts `"inner"` or
-`"outer"`. There are two exceptions for that:
+`"outer"`. There only exceptions is the indentation textobject:
 
 >lua
-    -- 1. THE INDENTATION TEXTOBJ requires two parameters, the first for
+    -- THE INDENTATION TEXTOBJ requires two parameters, the first for
     -- exclusion of the starting border, the second for the exclusion of ending border
     vim.keymap.set(
         { "o", "x" },
@@ -300,9 +315,6 @@ For most text objects, there is only one parameter which accepts `"inner"` or
         "ai",
         '<cmd>lua require("various-textobjs").indentation("outer", "inner", "noBlanks")<CR>'
     )
-    
-    -- 2. THE DIAGNOSTIC TEXTOBJ accepts `"wrap"` or `"nowrap"`
-    vim.keymap.set({ "o", "x" }, "!", '<cmd>lua require("various-textobjs").diagnostic("wrap")<CR>')
 <
 
 
