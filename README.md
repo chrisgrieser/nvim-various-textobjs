@@ -98,7 +98,6 @@ section for information on setting your own keymaps.
 -- lazy.nvim
 {
 	"chrisgrieser/nvim-various-textobjs",
-	lazy = true,
 	keys = {
 		-- ...
 	},
@@ -120,12 +119,14 @@ The `.setup()` call is optional if you are fine with the defaults below.
 ```lua
 -- default config
 require("various-textobjs").setup {
-	-- use suggested keymaps (see overview table in README)
+	-- See overview table in README for the defaults keymaps. 
+	-- (Note that lazy-loading this plugin, the default keymaps cannot be set up.
+	-- if you set this to `true`, you thus need to add `event = "VeryLazy"` to your
+	-- lazy.nvim config.)
 	useDefaultKeymaps = false,
 
-	-- disable only some default keymaps, e.g. { "ai", "ii" }
 	---@type string[]
-	disabledKeymaps = {},
+	disabledKeymaps = {}, -- disable only some default keymaps, e.g. { "ai", "ii" }
 
 	-- Number of lines to seek forwards for a text object. See the overview table
 	-- in the README for which text object uses which value.
@@ -140,7 +141,9 @@ require("various-textobjs").setup {
 	},
 
 	textobjs = {
-		diagnostic = { wrap = true },
+		diagnostic = { 
+			wrap = true 
+		},
 		subword = {
 			-- When deleting the start of a camelCased word, the result should still be
 			-- camelCased and not PascalCased (see #113).
