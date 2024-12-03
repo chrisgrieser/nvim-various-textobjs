@@ -145,6 +145,7 @@ function M.subword(scope)
 		"()%w[%l%d]+([_-]?)", -- camelCase or lowercase
 		"()%u[%u%d]+([_-]?)", -- UPPER_CASE
 		"()%d+([_-]?)", -- number
+		"()%a([_-]?)", -- single char subwords like "xSide" or "sideX", see #75
 	}
 	local startPos, endPos = M.selectClosestTextobj(pattern, scope, 0)
 
