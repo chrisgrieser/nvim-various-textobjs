@@ -1,4 +1,4 @@
-*nvim-various-textobjs.txt*      For Neovim      Last change: 2024 December 02
+*nvim-various-textobjs.txt*      For Neovim      Last change: 2024 December 03
 
 ==============================================================================
 Table of Contents                    *nvim-various-textobjs-table-of-contents*
@@ -61,10 +61,10 @@ LIST OF TEXT OBJECTS*nvim-various-textobjs-nvim-various-textobjs--list-of-text-o
                            functions with                                                             
                            annotations                                                                
 
-  subword                  like iw, but treating - outer includes         -                   iS/aS   all
-                           and _ as word           trailing _,-, or space                             
-                           delimiters and only                                                        
-                           part of camelCase                                                          
+  subword                  like iw, but for        outer includes         -                   iS/aS   all
+                           segments of camelCase,  trailing _ or -                                    
+                           snake_case, and                                                            
+                           kebab-case words.                                                          
 
   toNextClosingBracket     from cursor to next     -                      small                 C     all
                            closing ], ), or }                                                         
