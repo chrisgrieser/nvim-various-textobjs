@@ -142,9 +142,9 @@ end
 ---@param scope "inner"|"outer" outer includes trailing -_
 function M.subword(scope)
 	local pattern = {
-		"()%w[%l%d]+([_%- ]?)", -- camelCase or lowercase
-		"()%u[%u%d]+([_%- ]?)", -- UPPER_CASE
-		"()%d+([_%- ]?)", -- number
+		"()%w[%l%d]+([_-]?)", -- camelCase or lowercase
+		"()%u[%u%d]+([_-]?)", -- UPPER_CASE
+		"()%d+([_-]?)", -- number
 	}
 	local startPos, endPos = M.selectClosestTextobj(pattern, scope, 0)
 	if not (startPos and endPos) then return end
@@ -160,7 +160,7 @@ function M.subword(scope)
 	local line = vim.api.nvim_buf_get_lines(0, startPos[1] - 1, startPos[1], false)[1]
 	local charBefore = line:sub(startPos[2], startPos[2]) -- minus-1 with off-by-one = no adjustment
 	local charAtEnd = line:sub(endPos[2] + 1, endPos[2] + 1) -- off-by-one
-	if not charAtEnd:find("[_%- ]") and charBefore:find("[_%- ]") then
+	if not charAtEnd:find("[_-]") and charBefore:find("[_-]") then
 		-- `o`: to go back to start of selection
 		-- `h`: select char before
 		-- `o`: go back to end of selection
