@@ -158,7 +158,7 @@ end
 ---@param scope "inner"|"outer" outer includes trailing -_
 function M.subword(scope)
 	local patterns = {
-		camelOrLowercase = "()%w[%l%d]+([_-]?)",
+		camelOrLowercase = "()%a[%l%d]+([_-]?)",
 		UPPER_CASE = "()%u[%u%d]+([_-]?)",
 		number = "()%d+([_-]?)",
 		singleChar = "()%a([_-]?)", -- "xSide" or "sideX", see #75
