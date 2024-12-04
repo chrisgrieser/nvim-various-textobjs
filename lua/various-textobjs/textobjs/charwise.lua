@@ -5,6 +5,9 @@ local u = require("various-textobjs.utils")
 local config = require("various-textobjs.config").config
 --------------------------------------------------------------------------------
 
+-- INFO The following functions are exposed for creation of custom textobjs, but
+-- subject to change without notice.
+
 ---Sets the selection for the textobj (characterwise)
 ---@param startPos { [1]: integer, [2]: integer }
 ---@param endPos { [1]: integer, [2]: integer }
@@ -17,7 +20,7 @@ end
 
 ---@param endPos { [1]: integer, [2]: integer }
 ---@param notFoundMsg string|number
-local function selectFromCursorTo(endPos, notFoundMsg)
+function M.selectFromCursorTo(endPos, notFoundMsg)
 	if #endPos ~= 2 then
 		u.notFoundMsg(notFoundMsg)
 		return
@@ -26,25 +29,21 @@ local function selectFromCursorTo(endPos, notFoundMsg)
 	u.normal(vim.fn.mode() == "v" and "o" or "v")
 	vim.api.nvim_win_set_cursor(0, endPos)
 end
---------------------------------------------------------------------------------
 
--- INFO The following functions are exposed for creation of custom textobjs, but
--- subject to change without notice.
-
----Seek and select characterwise a text object based on one pattern.
+---Seek and select a characterwise textobj based on one pattern.
 ---CAVEAT multi-line-objects are not supported.
 ---@param pattern string lua pattern. REQUIRES two capture groups marking the
 ---two additions for the outer variant of the textobj. Use an empty capture group
----when there is no difference between inner and outer on that side.
----Basically, the two capture groups work similar to lookbehind/lookahead for the
----inner selector.
+---when there is no difference between inner and outer on that side. Basically,
+---the two capture groups work similar to lookbehind/lookahead for the inner
+---selector.
 ---@param scope "inner"|"outer"
----@param lookForwL integer
+---@param lookForwLines integer
 ---@return integer? startCol
 ---@return integer? endCol
 ---@return integer? row
 ---@nodiscard
-function M.getTextobjPos(pattern, scope, lookForwL)
+function M.getTextobjPos(pattern, scope, lookForwLines)
 	local cursorRow, cursorCol = unpack(vim.api.nvim_win_get_cursor(0))
 	local lineContent = u.getline(cursorRow)
 	local lastLine = vim.api.nvim_buf_line_count(0)
@@ -64,7 +63,7 @@ function M.getTextobjPos(pattern, scope, lookForwL)
 	if noneInStartingLine then
 		while true do
 			linesSearched = linesSearched + 1
-			if linesSearched > lookForwL or cursorRow + linesSearched > lastLine then return end
+			if linesSearched > lookForwLines or cursorRow + linesSearched > lastLine then return end
 			lineContent = u.getline(cursorRow + linesSearched)
 
 			beginCol, endCol, captureG1, captureG2 = lineContent:find(pattern)
@@ -88,13 +87,15 @@ function M.getTextobjPos(pattern, scope, lookForwL)
 end
 
 ---Searches for the position of one or multiple patterns and selects the closest one
----@param patterns string|table<string, string> lua, pattern(s) with the specification from `searchTextobj`
+---@param patterns string|table<string, string> lua pattern(s) for
+---`getTextobjPos`; If the pattern starts with `tieloser` the textobj is always
+---deprioritzed if the cursor stands on two objects.
 ---@param scope "inner"|"outer"
----@param lookForwL integer
+---@param lookForwLines integer
 ---@return integer? row
 ---@return integer? startCol
 ---@return integer? endCol
-function M.selectClosestTextobj(patterns, scope, lookForwL)
+function M.selectClosestTextobj(patterns, scope, lookForwLines)
 	local enableLogging = false -- DEBUG
 	local objLogging = {}
 
@@ -103,13 +104,14 @@ function M.selectClosestTextobj(patterns, scope, lookForwL)
 
 	-- get text object
 	if type(patterns) == "string" then
-		closest.row, closest.startCol, closest.endCol = M.getTextobjPos(patterns, scope, lookForwL)
+		closest.row, closest.startCol, closest.endCol =
+			M.getTextobjPos(patterns, scope, lookForwLines)
 	elseif type(patterns) == "table" then
 		local cursorCol = vim.api.nvim_win_get_cursor(0)[2]
 
 		for patternName, pattern in pairs(patterns) do
 			local cur = {}
-			cur.row, cur.startCol, cur.endCol = M.getTextobjPos(pattern, scope, lookForwL)
+			cur.row, cur.startCol, cur.endCol = M.getTextobjPos(pattern, scope, lookForwLines)
 			if cur.row and cur.startCol and cur.endCol then
 				if patternName:find("tieloser") then cur.tieloser = true end
 				cur.distance = cur.startCol - cursorCol
@@ -144,7 +146,7 @@ function M.selectClosestTextobj(patterns, scope, lookForwL)
 	end
 
 	if not (closest.row and closest.startCol and closest.endCol) then
-		u.notFoundMsg(lookForwL)
+		u.notFoundMsg(lookForwLines)
 		return
 	end
 
@@ -212,7 +214,7 @@ end
 function M.toNextClosingBracket()
 	local pattern = "().([]})])"
 	local row, _, endCol = M.getTextobjPos(pattern, "inner", config.forwardLooking.small)
-	selectFromCursorTo({ row, endCol }, config.forwardLooking.small)
+	M.selectFromCursorTo({ row, endCol }, config.forwardLooking.small)
 end
 
 function M.toNextQuotationMark()
@@ -221,7 +223,7 @@ function M.toNextQuotationMark()
 	local quoteEscape = vim.opt_local.quoteescape:get() -- default: \
 	local pattern = ([[()[^%s](["'`])]]):format(quoteEscape)
 	local row, _, endCol = M.getTextobjPos(pattern, "inner", config.forwardLooking.small)
-	selectFromCursorTo({ row, endCol }, config.forwardLooking.small)
+	M.selectFromCursorTo({ row, endCol }, config.forwardLooking.small)
 end
 
 ---@param scope "inner"|"outer"
@@ -260,7 +262,7 @@ end
 function M.nearEoL()
 	local pattern = "().(%S%s*)$"
 	local row, _, endCol = M.getTextobjPos(pattern, "inner", 0)
-	selectFromCursorTo({ row, endCol }, config.forwardLooking.small)
+	M.selectFromCursorTo({ row, endCol }, config.forwardLooking.small)
 end
 
 ---current line, but characterwise
