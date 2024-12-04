@@ -1,5 +1,5 @@
 local M = {}
-local charwise = require("various-textobjs.charwise-textobjs")
+local charwise = require("various-textobjs.textobjs.charwise")
 local u = require("various-textobjs.utils")
 --------------------------------------------------------------------------------
 

@@ -357,8 +357,10 @@ function M.number(scope)
 	M.selectClosestTextobj(pattern, "outer", config.forwardLooking.small)
 end
 
-M.urlPattern = "%l%l%l-://%S+" -- make URL pattern available for external use
-function M.url() M.selectClosestTextobj(M.urlPattern, "outer", config.forwardLooking.big) end
+function M.url()
+	local pattern = "%l%l%l-://%S+"
+	M.selectClosestTextobj(pattern, "outer", config.forwardLooking.big)
+end
 
 ---@param scope "inner"|"outer" inner excludes the leading dot
 function M.chainMember(scope)

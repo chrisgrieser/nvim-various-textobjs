@@ -8,13 +8,13 @@ function M.setup(userConfig) require("various-textobjs.config").setup(userConfig
 setmetatable(M, {
 	__index = function(_, key)
 		return function(...)
-			local linewiseObjs = vim.tbl_keys(require("various-textobjs.linewise-textobjs"))
+			local linewiseObjs = vim.tbl_keys(require("various-textobjs.textobjs.linewise"))
 
-			local module = "charwise-textobjs"
-			if vim.tbl_contains(linewiseObjs, key) then module = "linewise-textobjs" end
-			if key == "column" then module = "blockwise-textobjs" end
-			if key == "pyTripleQuotes" then module = "treesitter-textobjs" end
-			require("various-textobjs." .. module)[key](...)
+			local module = "charwise"
+			if vim.tbl_contains(linewiseObjs, key) then module = "linewise" end
+			if key == "column" then module = "blockwise" end
+			if key == "pyTripleQuotes" then module = "treesitter" end
+			require("various-textobjs.textobjs." .. module)[key](...)
 		end
 	end,
 })

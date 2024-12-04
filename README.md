@@ -255,7 +255,7 @@ vim.keymap.set("n", "gx", function()
 	end
 
 	-- find all URLs in buffer
-	local urlPattern = require("various-textobjs.charwise-textobjs").urlPattern
+	local urlPattern = "%l%l%l-://%S+"
 	local bufText = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n")
 	local urls = {}
 	for url in bufText:gmatch(urlPattern) do
