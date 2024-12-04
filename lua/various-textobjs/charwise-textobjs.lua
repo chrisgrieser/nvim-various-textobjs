@@ -155,7 +155,7 @@ end
 
 --------------------------------------------------------------------------------
 
----@param scope "inner"|"outer" outer includes trailing -_
+---@param scope "inner"|"outer"
 function M.subword(scope)
 	local patterns = {
 		camelOrLowercase = "()%a[%l%d]+([_-]?)",
@@ -164,35 +164,40 @@ function M.subword(scope)
 		singleChar = "()%a([_-]?)", -- "xSide" or "sideX", see #75
 	}
 	local startPos, endPos = M.selectClosestTextobj(patterns, scope, 0)
-
 	if not (startPos and endPos) then return end
+
+	-----------------------------------------------------------------------------
+	-- EXTRA ADJUSTMENTS
 	local startRow, startCol, endCol = startPos[1], startPos[2] + 1, endPos[2] + 1
 	local line = vim.api.nvim_buf_get_lines(0, startRow - 1, startRow, false)[1]
-
-	-- INFO the outer pattern checks for subwords that with potentially trailing
-	-- `_- `, however, if the subword is the last segment of a word, there is
-	-- potentially also a leading `_- `. Checking for those with patterns is
-	-- tricky, since subwords without any trailing/leading chars are always
-	-- considered the smallest (and thus prioritized by `selectClosestTextobj`),
-	-- even though the usage expectation is that `subword` should be more greedy.
-	-- Thus, we check if there is a leading `_- ` available, and if so, add it to
-	-- the selection (see #83).
 	local charBefore = line:sub(startCol - 1, startCol - 1)
-	local charAtEnd = line:sub(endCol, endCol)
-	if scope == "outer" and charBefore:find("[_-]") and not charAtEnd:find("[_-]") then
-		-- `o`: to start of sel, `h`: select char before `o`: back to end of selection
+	local lastChar = line:sub(endCol, endCol)
+	local charAfter = line:sub(endCol + 1, endCol + 1)
+
+	-- The outer pattern checks for subwords that with potentially trailing
+	-- `_-`, however, if the subword is the last segment of a word, there is
+	-- potentially also a leading `_-` which should be included (see #83).
+
+	-- Checking for those with patterns is not possible, since subwords without
+	-- any trailing/leading chars are always considered the closest (and thus
+	-- prioritized by `selectClosestTextobj`), even though the usage expectation
+	-- is that `subword` should be more greedy. Thus, we check if we are on the
+	-- last part of a snake_cased word, and if so, add the leading `_-` to the
+	-- selection.
+	local onLastSnakeCasePart = charBefore:find("[_-]") and not lastChar:find("[_-]")
+	if scope == "outer" and onLastSnakeCasePart then
+		-- `o`: to start of selection, `h`: select char before `o`: back to end
 		u.normal("oho")
 	end
 
 	-- When deleting the start of a camelCased word, the result should still be
 	-- camelCased and not PascalCased (see #113).
-	local noPascal = require("various-textobjs.config").config.textobjs.subword.noCamelToPascalCase
-	if noPascal then
-		local originalWasCamelCased = vim.fn.expand("<cword>"):find("%l%u") ~= nil
-		local charAfter = line:sub(endCol + 1, endCol + 1)
+	if require("various-textobjs.config").config.textobjs.subword.noCamelToPascalCase then
+		local wasCamelCased = vim.fn.expand("<cword>"):find("%l%u") ~= nil
+		local followedByPascalCase = charAfter:find("%u")
 		local isStartOfWord = charBefore:find("%W") or charBefore == ""
 		local isDeletion = vim.v.operator == "d"
-		if originalWasCamelCased and charAfter:find("%u") and isStartOfWord and isDeletion then
+		if wasCamelCased and followedByPascalCase and isStartOfWord and isDeletion then
 			local updatedLine = line:sub(1, endCol) .. charAfter:lower() .. line:sub(endCol + 2)
 			vim.api.nvim_buf_set_lines(0, startRow - 1, startRow, false, { updatedLine })
 		end
