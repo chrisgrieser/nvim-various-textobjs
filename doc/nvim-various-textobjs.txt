@@ -1,4 +1,4 @@
-*nvim-various-textobjs.txt*      For Neovim      Last change: 2024 December 03
+*nvim-various-textobjs.txt*      For Neovim      Last change: 2024 December 04
 
 ==============================================================================
 Table of Contents                    *nvim-various-textobjs-table-of-contents*
@@ -138,7 +138,7 @@ LIST OF TEXT OBJECTS*nvim-various-textobjs-nvim-various-textobjs--list-of-text-o
                            non-deletion-change,                                                       
                            yank, or paste.[3]                                                         
 
-  mdlink                   markdown link like      inner is only the link small               il/al   markdown,
+  mdLink                   markdown link like      inner is only the link small               il/al   markdown,
                            [title](url)            title (between the [])                             toml
 
   mdEmphasis               markdown text enclosed  inner is only the      small               ie/ae   markdown
@@ -381,7 +381,7 @@ used by this plugin is exposed for this purpose.)
         end
     
         -- find all URLs in buffer
-        local urlPattern = require("various-textobjs.charwise-textobjs").urlPattern
+        local urlPattern = "%l%l%l-://%S+"
         local bufText = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n")
         local urls = {}
         for url in bufText:gmatch(urlPattern) do
