@@ -92,6 +92,7 @@ function M.selectClosestTextobj(patterns, scope, lookForwL)
 		patternName = nil,
 		row = math.huge,
 		distance = math.huge,
+		loseOnOverlap = true,
 	}
 	local enableLogging = false -- DEBUG
 	local objLogging = {}
@@ -109,10 +110,9 @@ function M.selectClosestTextobj(patterns, scope, lookForwL)
 		for patternName, pattern in pairs(patterns) do
 			local startPos, endPos = M.searchTextobj(pattern, scope, lookForwL)
 			if startPos and endPos then
-				objLogging[patternName] = { startPos[2], endPos[2], "L" .. startPos[1] }
 				local row, startCol = unpack(startPos)
 				local distance = startCol - cursorCol
-				local isCloserInRow = distance < closest.distance
+				local loseOnOverlap = patternName:find("loseOnOverlap") ~= nil
 
 				-- INFO Here, we cannot simply use the absolute value of the distance.
 				-- If the cursor is standing on a big textobj A, and there is a
@@ -122,18 +122,32 @@ function M.selectClosestTextobj(patterns, scope, lookForwL)
 				-- closer one would then result in B being selected, even though the
 				-- idiomatic behavior in vim is to always select an obj the cursor
 				-- is standing on before seeking forward for a textobj.
-				local cursorOnCurrentObj = (distance < 0)
-				local cursorOnClosestObj = (closest.distance < 0)
+				local closerInRow
+				local cursorOnCurrentObj = distance <= 0
+				local cursorOnClosestObj = closest.distance <= 0
 				if cursorOnCurrentObj and cursorOnClosestObj then
-					isCloserInRow = distance > closest.distance
+					closerInRow = distance > closest.distance
+					if closest.loseOnOverlap and not loseOnOverlap then closerInRow = true end
+					if not closest.loseOnOverlap and loseOnOverlap then closerInRow = false end
+				else
+					closerInRow = distance < closest.distance
 				end
 
 				-- this condition for rows suffices since `searchTextobj` does not
 				-- return multi-line-objects
-				if (row < closest.row) or (row == closest.row and isCloserInRow) then
-					-- stylua: ignore
-					closest = { row = row, distance = distance, startPos = startPos, endPos = endPos, patternName = patternName }
+				if (row < closest.row) or (row == closest.row and closerInRow) then
+					closest = {
+						patternName = patternName,
+						row = row,
+						startPos = startPos,
+						endPos = endPos,
+						loseOnOverlap = loseOnOverlap,
+						distance = distance,
+					}
 				end
+
+				-- stylua: ignore
+				objLogging[patternName] = { startPos[2], endPos[2], "L" .. startPos[1], onObject = cursorOnCurrentObj, dist = distance }
 			end
 		end
 	end
@@ -161,7 +175,7 @@ function M.subword(scope)
 		camelOrLowercase = "()%a[%l%d]+([_-]?)",
 		UPPER_CASE = "()%u[%u%d]+([_-]?)",
 		number = "()%d+([_-]?)",
-		singleChar = "()%a([_-]?)", -- "xSide" or "sideX", see #75
+		loseOnOverlap_singleChar = "()%a([_-]?)", -- "x" in "xSide" or "sideX", see #75.
 	}
 	local startPos, endPos = M.selectClosestTextobj(patterns, scope, 0)
 	if not (startPos and endPos) then return end
