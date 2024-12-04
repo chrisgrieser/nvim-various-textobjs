@@ -174,7 +174,7 @@ function M.subword(scope)
 	if noPascal then
 		local originalWasCamelCased = vim.fn.expand("<cword>"):find("%l%u") ~= nil
 		local charAfter = line:sub(endCol + 1, endCol + 1)
-		local isStartOfWord = line:sub(startCol - 1, startCol - 1) == " "
+		local isStartOfWord = charBefore:find("%W") or charBefore == ""
 		local isDeletion = vim.v.operator == "d"
 		if originalWasCamelCased and charAfter:find("%u") and isStartOfWord and isDeletion then
 			local updatedLine = line:sub(1, endCol) .. charAfter:lower() .. line:sub(endCol + 2)
