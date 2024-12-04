@@ -4,10 +4,6 @@ local u = require("various-textobjs.utils")
 local config = require("various-textobjs.config").config
 --------------------------------------------------------------------------------
 
----@return boolean
----@nodiscard
-local function isVisualLineMode() return vim.fn.mode():find("V") ~= nil end
-
 ---sets the selection for the textobj (linewise)
 ---@param startline integer
 ---@param endline integer
@@ -15,7 +11,7 @@ local function setLinewiseSelection(startline, endline)
 	-- save last position in jumplist (see #86)
 	u.normal("m`")
 	vim.api.nvim_win_set_cursor(0, { startline, 0 })
-	if not isVisualLineMode() then u.normal("V") end
+	if vim.fn.mode() ~= "V" then u.normal("V") end
 	u.normal("o")
 	vim.api.nvim_win_set_cursor(0, { endline, 0 })
 end
@@ -79,7 +75,7 @@ end
 
 ---rest of paragraph (linewise)
 function M.restOfParagraph()
-	if not isVisualLineMode() then u.normal("V") end
+	if vim.fn.mode() ~= "V" then u.normal("V") end
 	u.normal("}")
 
 	-- one up, except on last line

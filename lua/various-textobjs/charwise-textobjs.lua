@@ -4,20 +4,27 @@ local u = require("various-textobjs.utils")
 local config = require("various-textobjs.config").config
 --------------------------------------------------------------------------------
 
----@return boolean
----@nodiscard
-local function isVisualMode() return vim.fn.mode():find("v") ~= nil end
-
 ---Sets the selection for the textobj (characterwise)
 ---@param startPos { [1]: integer, [2]: integer }
 ---@param endPos { [1]: integer, [2]: integer }
 function M.setSelection(startPos, endPos)
 	u.normal("m`") -- save last position in jumplist
 	vim.api.nvim_win_set_cursor(0, startPos)
-	u.normal(isVisualMode() and "o" or "v")
+	u.normal(vim.fn.mode() == "v" and "o" or "v")
 	vim.api.nvim_win_set_cursor(0, endPos)
 end
 
+---@param endPos { [1]: integer, [2]: integer }
+---@param notFoundMsg string|number
+local function selectFromCursorTo(endPos, notFoundMsg)
+	if #endPos ~= 2 then
+		u.notFoundMsg(notFoundMsg)
+		return
+	end
+	u.normal("m`") -- save last position in jumplist
+	u.normal(vim.fn.mode() == "v" and "o" or "v")
+	vim.api.nvim_win_set_cursor(0, endPos)
+end
 --------------------------------------------------------------------------------
 
 -- INFO The following function are exposed for creation of custom textobjs, but
@@ -203,13 +210,7 @@ end
 function M.toNextClosingBracket()
 	local pattern = "().([]})])"
 	local row, _, endCol = M.getTextobjPos(pattern, "inner", config.forwardLooking.small)
-	if not (row and endCol) then
-		u.notFoundMsg(config.forwardLooking.small)
-		return
-	end
-	local cursorPos = vim.api.nvim_win_get_cursor(0)
-
-	M.setSelection(cursorPos, { row, endCol })
+	selectFromCursorTo({ row, endCol }, config.forwardLooking.small)
 end
 
 function M.toNextQuotationMark()
@@ -217,15 +218,8 @@ function M.toNextQuotationMark()
 	-- the off-chance that the user has customized this.
 	local quoteEscape = vim.opt_local.quoteescape:get() -- default: \
 	local pattern = ([[()[^%s](["'`])]]):format(quoteEscape)
-
 	local row, _, endCol = M.getTextobjPos(pattern, "inner", config.forwardLooking.small)
-	if not (row and endCol) then
-		u.notFoundMsg(config.forwardLooking.small)
-		return
-	end
-	local cursorPos = vim.api.nvim_win_get_cursor(0)
-
-	M.setSelection(cursorPos, { row, endCol })
+	selectFromCursorTo({ row, endCol }, config.forwardLooking.small)
 end
 
 ---@param scope "inner"|"outer"
@@ -264,10 +258,7 @@ end
 function M.nearEoL()
 	local pattern = "().(%S%s*)$"
 	local row, _, endCol = M.getTextobjPos(pattern, "inner", 0)
-	if not (row and endCol) then return end
-	local cursorPos = vim.api.nvim_win_get_cursor(0)
-
-	M.setSelection(cursorPos, { row, endCol })
+	selectFromCursorTo({ row, endCol }, config.forwardLooking.small)
 end
 
 ---current line (but characterwise)
@@ -287,7 +278,7 @@ function M.diagnostic(oldWrapSetting)
 	-- DEPRECATION (2024-12-03)
 	if oldWrapSetting ~= nil then
 		u.warn(
-			'`.diagnostic()` does not use "wrap" argument anymore. Use the config `textobjs.diagnostic.wrap` instead.'
+			'`.diagnostic()` does not use a "wrap" argument anymore. Use the config `textobjs.diagnostic.wrap` instead.'
 		)
 	end
 
