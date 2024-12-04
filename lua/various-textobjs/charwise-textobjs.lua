@@ -80,28 +80,39 @@ function M.searchTextobj(pattern, scope, lookForwL)
 end
 
 ---Searches for the position of one or multiple patterns and selects the closest one
----@param patterns string|string[] lua, pattern(s) with the specification from `searchTextobj`
+---@param patterns string|table<string, string> lua, pattern(s) with the specification from `searchTextobj`
 ---@param scope "inner"|"outer"
 ---@param lookForwL integer
 ---@return pos? startPos -- only returned if a textobj was found
 ---@return pos? endPos
 function M.selectClosestTextobj(patterns, scope, lookForwL)
-	local closestObj
+	local closest = {
+		startPos = nil,
+		endPos = nil,
+		patternName = nil,
+		row = math.huge,
+		distance = math.huge,
+	}
+	local enableLogging = false -- DEBUG
+	local objLogging = {}
 
+	-- get text object
 	if type(patterns) == "string" then
 		local startPos, endPos = M.searchTextobj(patterns, scope, lookForwL)
-		if startPos and endPos then closestObj = { startPos, endPos } end
+		if startPos and endPos then
+			closest.startPos = startPos
+			closest.endPos = endPos
+		end
 	elseif type(patterns) == "table" then
-		local closestRow = math.huge
-		local shortestDist = math.huge
 		local cursorCol = vim.api.nvim_win_get_cursor(0)[2]
 
-		for _, pattern in ipairs(patterns) do
+		for patternName, pattern in pairs(patterns) do
 			local startPos, endPos = M.searchTextobj(pattern, scope, lookForwL)
 			if startPos and endPos then
+				objLogging[patternName] = { startPos[2], endPos[2], "L" .. startPos[1] }
 				local row, startCol = unpack(startPos)
 				local distance = startCol - cursorCol
-				local isCloserInRow = distance < shortestDist
+				local isCloserInRow = distance < closest.distance
 
 				-- INFO Here, we cannot simply use the absolute value of the distance.
 				-- If the cursor is standing on a big textobj A, and there is a
@@ -112,42 +123,47 @@ function M.selectClosestTextobj(patterns, scope, lookForwL)
 				-- idiomatic behavior in vim is to always select an obj the cursor
 				-- is standing on before seeking forward for a textobj.
 				local cursorOnCurrentObj = (distance < 0)
-				local cursorOnClosestObj = (shortestDist < 0)
+				local cursorOnClosestObj = (closest.distance < 0)
 				if cursorOnCurrentObj and cursorOnClosestObj then
-					isCloserInRow = distance > shortestDist
+					isCloserInRow = distance > closest.distance
 				end
 
 				-- this condition for rows suffices since `searchTextobj` does not
 				-- return multi-line-objects
-				if (row < closestRow) or (row == closestRow and isCloserInRow) then
-					closestRow = row
-					shortestDist = distance
-					closestObj = { startPos, endPos }
+				if (row < closest.row) or (row == closest.row and isCloserInRow) then
+					-- stylua: ignore
+					closest = { row = row, distance = distance, startPos = startPos, endPos = endPos, patternName = patternName }
 				end
 			end
 		end
 	end
 
-	if closestObj then
-		local startPos, endPos = unpack(closestObj)
-		M.setSelection(startPos, endPos)
-		return startPos, endPos
-	else
+	if not (closest.startPos and closest.endPos) then
 		u.notFoundMsg(lookForwL)
+		return
 	end
+
+	-- set selection & log
+	M.setSelection(closest.startPos, closest.endPos)
+	if enableLogging then
+		local textobj = debug.getinfo(3, "n").name
+		objLogging._closest = closest.patternName
+		vim.notify(vim.inspect(objLogging), nil, { ft = "lua", title = scope .. " " .. textobj })
+	end
+	return closest.startPos, closest.endPos
 end
 
 --------------------------------------------------------------------------------
 
 ---@param scope "inner"|"outer" outer includes trailing -_
 function M.subword(scope)
-	local pattern = {
-		"()%w[%l%d]+([_-]?)", -- camelCase or lowercase
-		"()%u[%u%d]+([_-]?)", -- UPPER_CASE
-		"()%d+([_-]?)", -- number
-		"()%a([_-]?)", -- single char subwords like "xSide" or "sideX", see #75
+	local patterns = {
+		camelOrLowercase = "()%w[%l%d]+([_-]?)",
+		UPPER_CASE = "()%u[%u%d]+([_-]?)",
+		number = "()%d+([_-]?)",
+		singleChar = "()%a([_-]?)", -- "xSide" or "sideX", see #75
 	}
-	local startPos, endPos = M.selectClosestTextobj(pattern, scope, 0)
+	local startPos, endPos = M.selectClosestTextobj(patterns, scope, 0)
 
 	if not (startPos and endPos) then return end
 	local startRow, startCol, endCol = startPos[1], startPos[2] + 1, endPos[2] + 1
@@ -218,12 +234,12 @@ function M.anyQuote(scope)
 	-- the off-chance that the user has customized this.
 	local escape = vim.opt_local.quoteescape:get() -- default: \
 	local patterns = {
-		('^(").-[^%s](")'):format(escape), -- ""
-		("^(').-[^%s](')"):format(escape), -- ''
-		("^(`).-[^%s](`)"):format(escape), -- ``
-		('([^%s]").-[^%s](")'):format(escape, escape), -- ""
-		("([^%s]').-[^%s](')"):format(escape, escape), -- ''
-		("([^%s]`).-[^%s](`)"):format(escape, escape), -- ``
+		['"" 1'] = ('^(").-[^%s](")'):format(escape),
+		["'' 1"] = ("^(').-[^%s](')"):format(escape),
+		["`` 1"] = ("^(`).-[^%s](`)"):format(escape),
+		['"" 2'] = ('([^%s]").-[^%s](")'):format(escape, escape),
+		["'' 2"] = ("([^%s]').-[^%s](')"):format(escape, escape),
+		["`` 2"] = ("([^%s]`).-[^%s](`)"):format(escape, escape),
 	}
 
 	M.selectClosestTextobj(patterns, scope, config.forwardLooking.small)
@@ -236,9 +252,9 @@ end
 ---@param scope "inner"|"outer"
 function M.anyBracket(scope)
 	local patterns = {
-		"(%().-(%))", -- ()
-		"(%[).-(%])", -- []
-		"({).-(})", -- {}
+		["()"] = "(%().-(%))",
+		["[]"] = "(%[).-(%])",
+		["{}"] = "({).-(})",
 	}
 	M.selectClosestTextobj(patterns, scope, config.forwardLooking.small)
 end
@@ -362,10 +378,10 @@ function M.url() M.selectClosestTextobj(M.urlPattern, "outer", config.forwardLoo
 ---@param scope "inner"|"outer" inner excludes the leading dot
 function M.chainMember(scope)
 	local patterns = {
-		"()[%w_][%w_]-([:.])", -- leading member w/o call
-		"()[%w_][%w_]-%b()([:.])", -- leading member w/o call
-		"([:.])[%w_][%w_]-()", -- following member w/ call
-		"([:.])[%w_][%w_]-%b()()", -- following member w/ call
+		leadingWithoutCall = "()[%w_][%w_]-([:.])",
+		leadingWithCall = "()[%w_][%w_]-%b()([:.])",
+		followingWithoutCall = "([:.])[%w_][%w_]-()",
+		followingWithCall = "([:.])[%w_][%w_]-%b()()",
 	}
 	M.selectClosestTextobj(patterns, scope, config.forwardLooking.small)
 end
@@ -396,14 +412,14 @@ function M.mdEmphasis(scope)
 	-- CAVEAT this still has a few edge cases with escaped markup, will need a
 	-- treesitter object to reliably account for that.
 	local patterns = {
-		"([^\\]%*%*?).-[^\\](%*%*?)", -- * or **
-		"([^\\]__?).-[^\\](__?)", -- _ or __
-		"([^\\]==).-[^\\](==)", -- ==
-		"([^\\]~~).-[^\\](~~)", -- ~~
-		"(^%*%*?).-[^\\](%*%*?)", -- * or **
-		"(^__?).-[^\\](__?)", -- _ or __
-		"(^==).-[^\\](==)", -- ==
-		"(^~~).-[^\\](~~)", -- ~~
+		["**? 1"] = "([^\\]%*%*?).-[^\\](%*%*?)",
+		["__? 1"] = "([^\\]__?).-[^\\](__?)",
+		["== 1"] = "([^\\]==).-[^\\](==)",
+		["~~ 1"] = "([^\\]~~).-[^\\](~~)",
+		["**? 2"] = "(^%*%*?).-[^\\](%*%*?)",
+		["__? 2"] = "(^__?).-[^\\](__?)",
+		["== 2"] = "(^==).-[^\\](==)",
+		["~~ 2"] = "(^~~).-[^\\](~~)",
 	}
 	M.selectClosestTextobj(patterns, scope, config.forwardLooking.small)
 
@@ -427,8 +443,8 @@ end
 ---@param scope "inner"|"outer" inner selector is only the value of the attribute inside the quotation marks.
 function M.htmlAttribute(scope)
 	local pattern = {
-		'([%w-]+=").-(")',
-		"([%w-]+=').-(')",
+		['""'] = '([%w-]+=").-(")',
+		["''"] = "([%w-]+=').-(')",
 	}
 	M.selectClosestTextobj(pattern, scope, config.forwardLooking.small)
 end
@@ -436,8 +452,8 @@ end
 ---@param scope "inner"|"outer" outer selector includes the pipe
 function M.shellPipe(scope)
 	local patterns = {
-		"()[^|%s][^|]-( ?| ?)", -- trailing pipe, 1st char non-space to exclude indentation
-		"( ?| ?)[^|]*()", -- leading pipe
+		trailingPipe = "()[^|%s][^|]-( ?| ?)", -- 1st char non-space to exclude indentation
+		leadingPipe = "( ?| ?)[^|]*()",
 	}
 	M.selectClosestTextobj(patterns, scope, config.forwardLooking.small)
 end
@@ -445,10 +461,10 @@ end
 ---@param scope "inner"|"outer" inner selector only affects the color value
 function M.cssColor(scope)
 	local pattern = {
-		"(#)" .. ("%x"):rep(6) .. "()", -- #123456
-		"(#)" .. ("%x"):rep(3) .. "()", -- #123
-		"(hsla?%()[%%%d,./deg ]-(%))", -- hsl(123, 23, 23) or hsl(123deg, 123%, 123% / 100)
-		"(rgba?%()[%d,./ ]-(%))", -- rgb(123, 123, 123) or rgb(50%, 50%, 50%)
+		["#123456"] = "(#)" .. ("%x"):rep(6) .. "()",
+		["#123"] = "(#)" .. ("%x"):rep(3) .. "()",
+		["hsl(123, 23%, 23%)"] = "(hsla?%()[%%%d,./deg ]-(%))", -- optionally with `deg`/`%`
+		["rgb(123, 23, 23)"] = "(rgba?%()[%d,./ ]-(%))", -- optionally with `%`
 	}
 	M.selectClosestTextobj(pattern, scope, config.forwardLooking.small)
 end
