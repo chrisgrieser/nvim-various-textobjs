@@ -88,7 +88,7 @@ end
 ---@param scope "inner"|"outer" inner excludes the backticks
 function M.mdFencedCodeBlock(scope)
 	local cursorLnum = vim.api.nvim_win_get_cursor(0)[1]
-	local codeBlockPattern = "^```%w*$"
+	local codeBlockPattern = "```%w*$" -- only check end of line, see #78
 
 	-- scan buffer for all code blocks, add beginnings & endings to a table each
 	local cbBegin = {}
