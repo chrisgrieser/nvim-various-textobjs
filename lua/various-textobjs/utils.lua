@@ -1,8 +1,8 @@
 local M = {}
 --------------------------------------------------------------------------------
 
----runs :normal natively with bang
----@param cmdStr any
+---runs `:normal` with bang
+---@param cmdStr string
 function M.normal(cmdStr)
 	local is08orHigher = vim.version().major > 0 or vim.version().minor > 7
 	if is08orHigher then
@@ -15,6 +15,7 @@ end
 ---equivalent to fn.getline(), but using more efficient nvim api
 ---@param lnum integer
 ---@return string
+---@nodiscard
 function M.getline(lnum) return vim.api.nvim_buf_get_lines(0, lnum - 1, lnum, true)[1] end
 
 ---@param msg string

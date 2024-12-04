@@ -8,11 +8,9 @@ local config = require("various-textobjs.config").config
 ---@nodiscard
 local function isVisualMode() return vim.fn.mode():find("v") ~= nil end
 
----@alias pos {[1]: integer, [2]: integer}
-
 ---Sets the selection for the textobj (characterwise)
----@param startPos pos
----@param endPos pos
+---@param startPos { [1]: integer, [2]: integer }
+---@param endPos { [1]: integer, [2]: integer }
 function M.setSelection(startPos, endPos)
 	u.normal("m`") -- save last position in jumplist
 	vim.api.nvim_win_set_cursor(0, startPos)
@@ -34,10 +32,11 @@ end
 ---inner selector.
 ---@param scope "inner"|"outer"
 ---@param lookForwL integer
----@return pos? startPos
----@return pos? endPos
+---@return integer? startCol
+---@return integer? endCol
+---@return integer? row
 ---@nodiscard
-function M.searchTextobj(pattern, scope, lookForwL)
+function M.getTextobjPos(pattern, scope, lookForwL)
 	local cursorRow, cursorCol = unpack(vim.api.nvim_win_get_cursor(0))
 	local lineContent = u.getline(cursorRow)
 	local lastLine = vim.api.nvim_buf_line_count(0)
@@ -74,45 +73,39 @@ function M.searchTextobj(pattern, scope, lookForwL)
 		endCol = endCol - backOuterLen
 	end
 
-	local startPos = { cursorRow + linesSearched, beginCol - 1 }
-	local endPos = { cursorRow + linesSearched, endCol - 1 }
-	return startPos, endPos
+	beginCol = beginCol - 1
+	endCol = endCol - 1
+	local row = cursorRow + linesSearched
+	return row, beginCol, endCol
 end
 
 ---Searches for the position of one or multiple patterns and selects the closest one
 ---@param patterns string|table<string, string> lua, pattern(s) with the specification from `searchTextobj`
 ---@param scope "inner"|"outer"
 ---@param lookForwL integer
----@return pos? startPos -- only returned if a textobj was found
----@return pos? endPos
+---@return integer? row
+---@return integer? startCol
+---@return integer? endCol
 function M.selectClosestTextobj(patterns, scope, lookForwL)
-	local closest = {
-		startPos = nil,
-		endPos = nil,
-		patternName = nil,
-		row = math.huge,
-		distance = math.huge,
-		loseOnOverlap = true,
-	}
 	local enableLogging = false -- DEBUG
 	local objLogging = {}
 
+	-- initialized with values to always loose comparisons
+	local closest = { row = math.huge, distance = math.huge, tieloser = true, cursorOnObj = false }
+
 	-- get text object
 	if type(patterns) == "string" then
-		local startPos, endPos = M.searchTextobj(patterns, scope, lookForwL)
-		if startPos and endPos then
-			closest.startPos = startPos
-			closest.endPos = endPos
-		end
+		closest.row, closest.startCol, closest.endCol = M.getTextobjPos(patterns, scope, lookForwL)
 	elseif type(patterns) == "table" then
 		local cursorCol = vim.api.nvim_win_get_cursor(0)[2]
 
 		for patternName, pattern in pairs(patterns) do
-			local startPos, endPos = M.searchTextobj(pattern, scope, lookForwL)
-			if startPos and endPos then
-				local row, startCol = unpack(startPos)
-				local distance = startCol - cursorCol
-				local loseOnOverlap = patternName:find("loseOnOverlap") ~= nil
+			local cur = {}
+			cur.row, cur.startCol, cur.endCol = M.getTextobjPos(pattern, scope, lookForwL)
+			if cur.row and cur.startCol and cur.endCol then
+				cur.distance = cur.startCol - cursorCol
+				cur.tieloser = patternName:find("tieloser") ~= nil
+				cur.cursorOnObj = cur.distance <= 0
 
 				-- INFO Here, we cannot simply use the absolute value of the distance.
 				-- If the cursor is standing on a big textobj A, and there is a
@@ -122,49 +115,38 @@ function M.selectClosestTextobj(patterns, scope, lookForwL)
 				-- closer one would then result in B being selected, even though the
 				-- idiomatic behavior in vim is to always select an obj the cursor
 				-- is standing on before seeking forward for a textobj.
-				local closerInRow
-				local cursorOnCurrentObj = distance <= 0
-				local cursorOnClosestObj = closest.distance <= 0
-				if cursorOnCurrentObj and cursorOnClosestObj then
-					closerInRow = distance > closest.distance
-					if closest.loseOnOverlap and not loseOnOverlap then closerInRow = true end
-					if not closest.loseOnOverlap and loseOnOverlap then closerInRow = false end
-				else
-					closerInRow = distance < closest.distance
+				local closerInRow = cur.distance < closest.distance
+				if cur.cursorOnObj and closest.cursorOnObj then
+					closerInRow = cur.distance > closest.distance
+					-- tieloser = when both objects enclose the cursor, the tieloser
+					-- loses even when it is closer
+					if closest.tieloser and not cur.tieloser then closerInRow = true end
+					if not closest.tieloser and cur.tieloser then closerInRow = false end
 				end
 
-				-- this condition for rows suffices since `searchTextobj` does not
-				-- return multi-line-objects
-				if (row < closest.row) or (row == closest.row and closerInRow) then
-					closest = {
-						patternName = patternName,
-						row = row,
-						startPos = startPos,
-						endPos = endPos,
-						loseOnOverlap = loseOnOverlap,
-						distance = distance,
-					}
+				if (cur.row < closest.row) or (cur.row == closest.row and closerInRow) then
+					closest = cur
 				end
 
 				-- stylua: ignore
-				objLogging[patternName] = { startPos[2], endPos[2], "L" .. startPos[1], onObject = cursorOnCurrentObj, dist = distance }
+				objLogging[patternName] = { cur.startCol, cur.endCol, row = cur.row, distance = cur.distance, tieloser = cur.tieloser, cursorOnObj = cur.cursorOnObj }
 			end
 		end
 	end
 
-	if not (closest.startPos and closest.endPos) then
+	if not (closest.row and closest.startCol and closest.endCol) then
 		u.notFoundMsg(lookForwL)
 		return
 	end
 
 	-- set selection & log
-	M.setSelection(closest.startPos, closest.endPos)
+	M.setSelection({ closest.row, closest.startCol }, { closest.row, closest.endCol })
 	if enableLogging then
 		local textobj = debug.getinfo(3, "n").name
 		objLogging._closest = closest.patternName
 		vim.notify(vim.inspect(objLogging), nil, { ft = "lua", title = scope .. " " .. textobj })
 	end
-	return closest.startPos, closest.endPos
+	return closest.row, closest.startCol, closest.endCol
 end
 
 --------------------------------------------------------------------------------
@@ -175,15 +157,15 @@ function M.subword(scope)
 		camelOrLowercase = "()%a[%l%d]+([_-]?)",
 		UPPER_CASE = "()%u[%u%d]+([_-]?)",
 		number = "()%d+([_-]?)",
-		loseOnOverlap_singleChar = "()%a([_-]?)", -- "x" in "xSide" or "sideX", see #75.
+		tieloser_singleChar = "()%a([_-]?)", -- e.g., "x" in "xSide" or "sideX" (see #75)
 	}
-	local startPos, endPos = M.selectClosestTextobj(patterns, scope, 0)
-	if not (startPos and endPos) then return end
+	local row, startCol, endCol = M.selectClosestTextobj(patterns, scope, 0)
+	if not (row and startCol and endCol) then return end
 
 	-----------------------------------------------------------------------------
 	-- EXTRA ADJUSTMENTS
-	local startRow, startCol, endCol = startPos[1], startPos[2] + 1, endPos[2] + 1
-	local line = vim.api.nvim_buf_get_lines(0, startRow - 1, startRow, false)[1]
+	local line = vim.api.nvim_buf_get_lines(0, row - 1, row, false)[1]
+	startCol, endCol = startCol + 1, endCol + 1 -- adjust for lua indexing
 	local charBefore = line:sub(startCol - 1, startCol - 1)
 	local lastChar = line:sub(endCol, endCol)
 	local charAfter = line:sub(endCol + 1, endCol + 1)
@@ -213,22 +195,21 @@ function M.subword(scope)
 		local isDeletion = vim.v.operator == "d"
 		if wasCamelCased and followedByPascalCase and isStartOfWord and isDeletion then
 			local updatedLine = line:sub(1, endCol) .. charAfter:lower() .. line:sub(endCol + 2)
-			vim.api.nvim_buf_set_lines(0, startRow - 1, startRow, false, { updatedLine })
+			vim.api.nvim_buf_set_lines(0, row - 1, row, false, { updatedLine })
 		end
 	end
 end
 
 function M.toNextClosingBracket()
 	local pattern = "().([]})])"
-
-	local _, endPos = M.searchTextobj(pattern, "inner", config.forwardLooking.small)
-	if not endPos then
+	local row, _, endCol = M.getTextobjPos(pattern, "inner", config.forwardLooking.small)
+	if not (row and endCol) then
 		u.notFoundMsg(config.forwardLooking.small)
 		return
 	end
-	local startPos = vim.api.nvim_win_get_cursor(0)
+	local cursorPos = vim.api.nvim_win_get_cursor(0)
 
-	M.setSelection(startPos, endPos)
+	M.setSelection(cursorPos, { row, endCol })
 end
 
 function M.toNextQuotationMark()
@@ -237,14 +218,14 @@ function M.toNextQuotationMark()
 	local quoteEscape = vim.opt_local.quoteescape:get() -- default: \
 	local pattern = ([[()[^%s](["'`])]]):format(quoteEscape)
 
-	local _, endPos = M.searchTextobj(pattern, "inner", config.forwardLooking.small)
-	if not endPos then
+	local row, _, endCol = M.getTextobjPos(pattern, "inner", config.forwardLooking.small)
+	if not (row and endCol) then
 		u.notFoundMsg(config.forwardLooking.small)
 		return
 	end
-	local startPos = vim.api.nvim_win_get_cursor(0)
+	local cursorPos = vim.api.nvim_win_get_cursor(0)
 
-	M.setSelection(startPos, endPos)
+	M.setSelection(cursorPos, { row, endCol })
 end
 
 ---@param scope "inner"|"outer"
@@ -282,12 +263,11 @@ end
 ---(relevant for markdown, where you normally add a -space after the `.` ending a sentence.)
 function M.nearEoL()
 	local pattern = "().(%S%s*)$"
+	local row, _, endCol = M.getTextobjPos(pattern, "inner", 0)
+	if not (row and endCol) then return end
+	local cursorPos = vim.api.nvim_win_get_cursor(0)
 
-	local _, endPos = M.searchTextobj(pattern, "inner", 0)
-	if not endPos then return end
-	local startPos = vim.api.nvim_win_get_cursor(0)
-
-	M.setSelection(startPos, endPos)
+	M.setSelection(cursorPos, { row, endCol })
 end
 
 ---current line (but characterwise)
@@ -348,15 +328,14 @@ function M.value(scope)
 	-- or css pseudo-elements :: are not matched
 	local pattern = "(%s*%f[!<>~=:][=:]%s*)[^=:].*()"
 
-	local startPos, endPos = M.searchTextobj(pattern, scope, config.forwardLooking.small)
-	if not startPos or not endPos then
+	local row, startCol, _ = M.getTextobjPos(pattern, scope, config.forwardLooking.small)
+	if not (row and startCol) then
 		u.notFoundMsg(config.forwardLooking.small)
 		return
 	end
 
 	-- if value found, remove trailing comment from it
-	local curRow = startPos[1]
-	local lineContent = u.getline(curRow)
+	local lineContent = u.getline(row)
 	if vim.bo.commentstring ~= "" then -- JSON has empty commentstring
 		local commentPat = vim.bo.commentstring:gsub(" ?%%s.*", "") -- remove placeholder and backside of commentstring
 		commentPat = vim.pesc(commentPat) -- escape lua pattern
@@ -369,8 +348,7 @@ function M.value(scope)
 	if scope == "inner" and lineContent:find("[,;]$") then valueEndCol = valueEndCol - 1 end
 
 	-- set selection
-	endPos[2] = valueEndCol
-	M.setSelection(startPos, endPos)
+	M.setSelection({ row, startCol }, { row, valueEndCol })
 end
 
 ---@param scope "inner"|"outer" outer key includes the `:` or `=` after the key
