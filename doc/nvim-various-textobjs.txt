@@ -18,7 +18,7 @@ Table of Contents                    *nvim-various-textobjs-table-of-contents*
 
 
 
-Bundleof more than 30 new textobjects for Neovim.
+Bundleof more than 30 new text objects for Neovim.
 
 
 TABLE OF CONTENTS*nvim-various-textobjs-nvim-various-textobjs--table-of-contents*
@@ -43,7 +43,7 @@ TABLE OF CONTENTS*nvim-various-textobjs-nvim-various-textobjs--table-of-contents
 LIST OF TEXT OBJECTS*nvim-various-textobjs-nvim-various-textobjs--list-of-text-objects*
 
   ---------------------------------------------------------------------------------------------------------------
-  textobject               description             inner / outer          forward-seeking    default  filetypes
+  text object              description             inner / outer          forward-seeking    default  filetypes
                                                                                              keymaps  (for
                                                                                                       default
                                                                                                       keymaps)
@@ -181,7 +181,7 @@ LIST OF TEXT OBJECTS*nvim-various-textobjs-nvim-various-textobjs--list-of-text-o
 
 [2] This respects vim’s quoteescape option.
 
-[3] The lastChange textobject does not work well with plugins that
+[3] The lastChange text object does not work well with plugins that
 manipulate paste operations such as yanky.nvim or plugins that auto-save
 the buffer.
 
@@ -276,7 +276,7 @@ The `.setup()` call is optional if you are fine with the defaults below.
 USE YOUR OWN KEYBINDINGS ~
 
 If you want to set your own keybindings, you can do so by calling the
-respective functions. The function names correspond to the textobject names
+respective functions. The function names correspond to the text object names
 from the |nvim-various-textobjs-overview-table|.
 
 
@@ -293,7 +293,7 @@ from the |nvim-various-textobjs-overview-table|.
 <
 
 For most text objects, there is only one parameter which accepts `"inner"` or
-`"outer"`. There only exceptions is the indentation textobject:
+`"outer"`. There only exceptions is the indentation text object:
 
 >lua
     -- THE INDENTATION TEXTOBJ requires two parameters, the first for
@@ -320,7 +320,7 @@ For most text objects, there is only one parameter which accepts `"inner"` or
 
 ADVANCED USAGE / API*nvim-various-textobjs-nvim-various-textobjs--advanced-usage-/-api*
 
-All textobjects can also be used as an API to modify their behavior or create
+All text objects can also be used as an API to modify their behavior or create
 custom commands. Here are some examples:
 
 
@@ -400,7 +400,7 @@ used by this plugin is exposed for this purpose.)
 
 DELETE SURROUNDING INDENTATION ~
 
-Using the indentation textobject, you can also create custom
+Using the indentation text object, you can also create custom
 indentation-related utilities. A common operation is to remove the line before
 and after an indentation. Take for example this case where you are removing the
 `foo` condition:
@@ -417,11 +417,11 @@ and after an indentation. Take for example this case where you are removing the
     print("baz")
 <
 
-The code below achieves this by dedenting the inner indentation textobject
+The code below achieves this by dedenting the inner indentation text object
 (essentially running `<ii`), and deleting the two lines surrounding it. As for
 the mapping, `dsi` should make sense since this command is similar to the `ds`
 operator from vim-surround <https://github.com/tpope/vim-surround> but
-performed on an indentation textobject. (It is also an intuitive mnemonic:
+performed on an indentation text object. (It is also an intuitive mnemonic:
 Delete Surrounding Indentation.)
 
 >lua
@@ -448,7 +448,7 @@ Delete Surrounding Indentation.)
 YANK SURROUNDING INDENTATION ~
 
 Similarly, you can also create a `ysii` command to yank the two lines
-surrounding an indentation textobject. (Not using `ysi`, since that blocks
+surrounding an indentation text object. (Not using `ysi`, since that blocks
 surround commands like `ysi)`). Using `nvim_win_[gs]et_cursor()`, you make the
 operation sticky, meaning the cursor is not moved. `vim.highlight.range` is
 used to highlight the yanked text, to imitate the effect of
@@ -485,7 +485,7 @@ used to highlight the yanked text, to imitate the effect of
 
 INDENT LAST PASTE ~
 
-The `lastChange` textobject can be used to indent the last text that was
+The `lastChange` text object can be used to indent the last text that was
 pasted. This is useful in languages such as Python where indentation is
 meaningful and thus formatters are not able to automatically indent everything
 for you.
@@ -512,12 +512,12 @@ discussion page
 LIMITATIONS & NON-GOALS*nvim-various-textobjs-nvim-various-textobjs--limitations-&-non-goals*
 
 - This plugin uses pattern matching, so it can be inaccurate in some edge cases.
-- The characterwise textobjects do not match multi-line objects. Most notably,
-    this affects the value textobject.
+- The characterwise text objects do not match multi-line objects. Most notably,
+    this affects the value text object.
 - nvim-treesitter-textobjects <https://github.com/nvim-treesitter/nvim-treesitter-textobjects>
     already does an excellent job when it comes to using Treesitter for text
     objects, such as function arguments or loops. This plugin’s goal is therefore
-    not to provide textobjects already offered by `nvim-treesitter-textobjects`.
+    not to provide text objects already offered by `nvim-treesitter-textobjects`.
 
 
 OTHER TEXT OBJECT PLUGINS*nvim-various-textobjs-nvim-various-textobjs--other-text-object-plugins*
