@@ -357,10 +357,7 @@ function M.number(scope)
 	M.selectClosestTextobj(pattern, "outer", config.forwardLooking.small)
 end
 
--- make URL pattern available for external use
--- INFO mastodon URLs contain `@`, neovim docs urls can contain a `'`, special
--- urls like https://docs.rs/regex/1.*/regex/#syntax can have a `*`
-M.urlPattern = "%l%l%l-://[A-Za-z0-9_%-/.#%%=?&'@+*:]+"
+M.urlPattern = "%l%l%l-://%S+" -- make URL pattern available for external use
 function M.url() M.selectClosestTextobj(M.urlPattern, "outer", config.forwardLooking.big) end
 
 ---@param scope "inner"|"outer" inner excludes the leading dot
