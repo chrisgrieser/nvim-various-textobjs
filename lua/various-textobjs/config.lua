@@ -38,11 +38,18 @@ M.config = defaultConfig
 
 --------------------------------------------------------------------------------
 
----optional setup function
+local setupHasAlreadyBeenCalled = false
+
 ---@param userConfig? VariousTextobjs.Config
 function M.setup(userConfig)
-	M.config = vim.tbl_deep_extend("force", M.config, userConfig or {})
 	local warn = require("various-textobjs.utils").warn
+	if setupHasAlreadyBeenCalled then
+		warn("`.setup()` can only be called once")
+		return
+	end
+	setupHasAlreadyBeenCalled = true
+
+	M.config = vim.tbl_deep_extend("force", M.config, userConfig or {})
 
 	-- DEPRECATION (2024-12-03)
 	---@diagnostic disable: undefined-field

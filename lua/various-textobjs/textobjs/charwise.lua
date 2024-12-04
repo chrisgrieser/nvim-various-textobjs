@@ -1,6 +1,7 @@
 local M = {}
-
 local u = require("various-textobjs.utils")
+
+-- can be set at top of file, since `.setup()` is only allowed to be called once
 local config = require("various-textobjs.config").config
 --------------------------------------------------------------------------------
 
