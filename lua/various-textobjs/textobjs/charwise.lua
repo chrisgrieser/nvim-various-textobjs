@@ -110,9 +110,10 @@ function M.selectClosestTextobj(patterns, scope, lookForwL)
 			local cur = {}
 			cur.row, cur.startCol, cur.endCol = M.getTextobjPos(pattern, scope, lookForwL)
 			if cur.row and cur.startCol and cur.endCol then
-				cur.distance = cur.startCol - cursorCol
 				if patternName:find("tieloser") then cur.tieloser = true end
-				cur.cursorOnObj = cur.distance <= 0
+				cur.distance = cur.startCol - cursorCol
+				cur.endDistance = cursorCol - cur.endCol
+				cur.cursorOnObj = cur.distance <= 0 and cur.endDistance <= 0
 
 				-- INFO Here, we cannot simply use the absolute value of the distance.
 				-- If the cursor is standing on a big textobj A, and there is a
