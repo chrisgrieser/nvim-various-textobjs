@@ -1,5 +1,5 @@
-name: Textobj Change
-description: Suggest a change to an existing textobj
+name: Text Object Change
+description: Suggest a change to an existing text object
 title: "Change Textobj: "
 labels: ["change to existing textobj"]
 body:
@@ -10,23 +10,23 @@ body:
       options:
         - label:
             The change would be useful to more users than just me. ([You can use the API to create
-            custom textobjects](../#advanced-usage--api).)
+            custom text objects](../#advanced-usage--api).)
           required: true
         - label:
-            This is a feature request to change an existing textobject, not a bug report. (Use the
+            This is a feature request to change an existing text object, not a bug report. (Use the
             bug report form for those.)
           required: true
   - type: textarea
     id: textobj-change-requested
     attributes:
       label: Change requested
-      description: Describe which textobject should change in what way.
+      description: Describe which text object should change in what way.
     validations: { required: true }
   - type: textarea
     id: sample-text
     attributes:
       label: Sample Text
       description:
-        Provide sample text for the textobject, including as many variations as necessary. If
+        Provide sample text for the text object, including as many variations as necessary. If
         relevant, also provide examples of what should *not* be matched.
     validations: { required: true }

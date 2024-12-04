@@ -4,7 +4,7 @@
 <a href="https://dotfyle.com/plugins/chrisgrieser/nvim-various-textobjs">
 <img alt="badge" src="https://dotfyle.com/plugins/chrisgrieser/nvim-various-textobjs/shield"/></a>
 
-Bundle of more than 30 new textobjects for Neovim.
+Bundle of more than 30 new text objects for Neovim.
 
 ## Table of contents
 
@@ -31,7 +31,7 @@ Bundle of more than 30 new textobjects for Neovim.
 ## List of text objects
 <!-- LTeX: enabled=false -->
 
-| textobject               | description                                                                                | inner / outer                                                                             | forward-seeking |     default keymaps      | filetypes (for default keymaps) |
+| text object              | description                                                                                | inner / outer                                                                             | forward-seeking |     default keymaps      | filetypes (for default keymaps) |
 |:-----------------------  |:-------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------|:----------------|:------------------------:|:--------------------------------|
 | `indentation`            | surrounding lines with same or higher indentation                                          | [see overview from vim-indent-object](https://github.com/michaeljsmith/vim-indent-object) | \-              | `ii`, `ai`, `aI`, (`iI`) | all                             |
 | `restOfIndentation`      | lines down with same or higher indentation                                                 | \-                                                                                        | \-              |           `R`            | all                             |
@@ -155,7 +155,7 @@ require("various-textobjs").setup {
 
 ### Use your own keybindings
 If you want to set your own keybindings, you can do so by calling the respective
-functions. The function names correspond to the textobject names from the
+functions. The function names correspond to the text object names from the
 [overview table](#list-of-text-objects).
 
 > [!NOTE]
@@ -173,7 +173,7 @@ vim.keymap.set({ "o", "x" }, "is", '<cmd>lua require("various-textobjs").subword
 ```
 
 For most text objects, there is only one parameter which accepts `"inner"` or
-`"outer"`. There only exceptions is the indentation textobject:
+`"outer"`. There only exceptions is the indentation text object:
 
 ```lua
 -- THE INDENTATION TEXTOBJ requires two parameters, the first for
@@ -198,7 +198,7 @@ vim.keymap.set(
 ```
 
 ## Advanced usage / API
-All textobjects can also be used as an API to modify their behavior or create
+All text objects can also be used as an API to modify their behavior or create
 custom commands. Here are some examples:
 
 ### `ii` on unindented line should select entire buffer
@@ -272,7 +272,7 @@ end, { desc = "URL Opener" })
 ```
 
 ### Delete surrounding indentation
-Using the indentation textobject, you can also create custom indentation-related
+Using the indentation text object, you can also create custom indentation-related
 utilities. A common operation is to remove the line before and after an
 indentation. Take for example this case where you are removing the `foo`
 condition:
@@ -289,11 +289,11 @@ print("bar")
 print("baz")
 ```
 
-The code below achieves this by dedenting the inner indentation textobject
+The code below achieves this by dedenting the inner indentation text object
 (essentially running `<ii`), and deleting the two lines surrounding it. As for
 the mapping, `dsi` should make sense since this command is similar to the `ds`
 operator from [vim-surround](https://github.com/tpope/vim-surround) but
-performed on an indentation textobject. (It is also an intuitive mnemonic:
+performed on an indentation text object. (It is also an intuitive mnemonic:
 Delete Surrounding Indentation.)
 
 ```lua
@@ -318,7 +318,7 @@ end, { desc = "Delete Surrounding Indentation" })
 
 ### Yank surrounding indentation
 Similarly, you can also create a `ysii` command to yank the two lines surrounding
-an indentation textobject. (Not using `ysi`, since that blocks surround
+an indentation text object. (Not using `ysi`, since that blocks surround
 commands like `ysi)`). Using `nvim_win_[gs]et_cursor()`, you make the
 operation sticky, meaning the cursor is not moved. `vim.highlight.range` is
 used to highlight the yanked text, to imitate the effect of `vim.highlight.yank`.
@@ -352,7 +352,7 @@ end, { desc = "Yank surrounding indentation" })
 ```
 
 ### Indent last paste
-The `lastChange` textobject can be used to indent the last text that was pasted.
+The `lastChange` text object can be used to indent the last text that was pasted.
 This is useful in languages such as Python where indentation is meaningful and
 thus formatters are not able to automatically indent everything for you.
 
@@ -374,12 +374,12 @@ page](https://github.com/chrisgrieser/nvim-various-textobjs/discussions).
 
 ## Limitations & non-goals
 - This plugin uses pattern matching, so it can be inaccurate in some edge cases.
-- The characterwise textobjects do not match multi-line objects. Most notably,
-  this affects the value textobject.
+- The characterwise text objects do not match multi-line objects. Most notably,
+  this affects the value text object.
 - [nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects)
   already does an excellent job when it comes to using Treesitter for text
   objects, such as function arguments or loops. This plugin's goal is therefore
-  not to provide textobjects already offered by `nvim-treesitter-textobjects`.
+  not to provide text objects already offered by `nvim-treesitter-textobjects`.
 
 ## Other text object plugins
 - [treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects)
@@ -411,7 +411,7 @@ style='border:0px;height:36px;' src='https://cdn.ko-fi.com/cdn/kofi1.png?v=3'
 border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
 
 [^1]: This respects vim's [`quoteescape` option](https://neovim.io/doc/user/options.html#'quoteescape').
-[^2]: The `lastChange` textobject does not work well with plugins that
+[^2]: The `lastChange` text object does not work well with plugins that
 	manipulate paste operations such as
 	[yanky.nvim](https://github.com/gbprod/yanky.nvim) or plugins that auto-save
 	the buffer.
