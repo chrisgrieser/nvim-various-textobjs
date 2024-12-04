@@ -27,7 +27,7 @@ local function selectFromCursorTo(endPos, notFoundMsg)
 end
 --------------------------------------------------------------------------------
 
--- INFO The following function are exposed for creation of custom textobjs, but
+-- INFO The following functions are exposed for creation of custom textobjs, but
 -- subject to change without notice.
 
 ---Seek and select characterwise a text object based on one pattern.
@@ -261,7 +261,7 @@ function M.nearEoL()
 	selectFromCursorTo({ row, endCol }, config.forwardLooking.small)
 end
 
----current line (but characterwise)
+---current line, but characterwise
 ---@param scope "inner"|"outer" outer includes indentation and trailing spaces
 function M.lineCharacterwise(scope)
 	-- FIX being on NUL, see #108 and #109
@@ -389,10 +389,13 @@ end
 -- FILETYPE SPECIFIC TEXTOBJS
 
 ---@param scope "inner"|"outer" inner link only includes the link title, outer link includes link, url, and the four brackets.
-function M.mdlink(scope)
+function M.mdLink(scope)
 	local pattern = "(%[)[^%]]-(%]%b())"
 	M.selectClosestTextobj(pattern, scope, config.forwardLooking.small)
 end
+
+-- DEPRECATION (2024-12-04), changed for consistency with other objects
+function M.mdlink() u.warn("`.mdlink()` is deprecated. Use `.mdLink()` instead (uses capital L).") end
 
 ---@param scope "inner"|"outer" inner selector only includes the content, outer selector includes the type.
 function M.mdEmphasis(scope)

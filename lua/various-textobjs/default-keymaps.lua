@@ -29,7 +29,7 @@ local oneMaps = {
 	lastChange = "g;", -- consistent with g; movement
 }
 local ftMaps = {
-	{ map = { mdlink = "l" }, fts = { "markdown", "toml" } },
+	{ map = { mdLink = "l" }, fts = { "markdown", "toml" } },
 	{ map = { mdEmphasis = "e" }, fts = { "markdown" } },
 	{ map = { pyTripleQuotes = "y" }, fts = { "python" } },
 	{ map = { mdFencedCodeBlock = "C" }, fts = { "markdown" } },
