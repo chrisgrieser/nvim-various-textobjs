@@ -111,7 +111,7 @@ function M.selectClosestTextobj(patterns, scope, lookForwL)
 			cur.row, cur.startCol, cur.endCol = M.getTextobjPos(pattern, scope, lookForwL)
 			if cur.row and cur.startCol and cur.endCol then
 				cur.distance = cur.startCol - cursorCol
-				cur.tieloser = patternName:find("tieloser") ~= nil
+				if patternName:find("tieloser") then cur.tieloser = true end
 				cur.cursorOnObj = cur.distance <= 0
 
 				-- INFO Here, we cannot simply use the absolute value of the distance.
@@ -228,12 +228,12 @@ function M.anyQuote(scope)
 	-- the off-chance that the user has customized this.
 	local escape = vim.opt_local.quoteescape:get() -- default: \
 	local patterns = {
-		['"" 1'] = ('^(").-[^%s](")'):format(escape),
-		["'' 1"] = ("^(').-[^%s](')"):format(escape),
-		["`` 1"] = ("^(`).-[^%s](`)"):format(escape),
-		['"" 2'] = ('([^%s]").-[^%s](")'):format(escape, escape),
-		["'' 2"] = ("([^%s]').-[^%s](')"):format(escape, escape),
-		["`` 2"] = ("([^%s]`).-[^%s](`)"):format(escape, escape),
+		['"" (start)'] = ('^(").-[^%s](")'):format(escape),
+		["'' (start)"] = ("^(').-[^%s](')"):format(escape),
+		["`` (start)"] = ("^(`).-[^%s](`)"):format(escape),
+		['""'] = ('([^%s]").-[^%s](")'):format(escape, escape),
+		["''"] = ("([^%s]').-[^%s](')"):format(escape, escape),
+		["``"] = ("([^%s]`).-[^%s](`)"):format(escape, escape),
 	}
 
 	M.selectClosestTextobj(patterns, scope, config.forwardLooking.small)
@@ -402,14 +402,14 @@ function M.mdEmphasis(scope)
 	-- CAVEAT this still has a few edge cases with escaped markup, will need a
 	-- treesitter object to reliably account for that.
 	local patterns = {
-		["**? 1"] = "([^\\]%*%*?).-[^\\](%*%*?)",
-		["__? 1"] = "([^\\]__?).-[^\\](__?)",
-		["== 1"] = "([^\\]==).-[^\\](==)",
-		["~~ 1"] = "([^\\]~~).-[^\\](~~)",
-		["**? 2"] = "(^%*%*?).-[^\\](%*%*?)",
-		["__? 2"] = "(^__?).-[^\\](__?)",
-		["== 2"] = "(^==).-[^\\](==)",
-		["~~ 2"] = "(^~~).-[^\\](~~)",
+		["**?"] = "([^\\]%*%*?).-[^\\](%*%*?)",
+		["__?"] = "([^\\]__?).-[^\\](__?)",
+		["=="] = "([^\\]==).-[^\\](==)",
+		["~~"] = "([^\\]~~).-[^\\](~~)",
+		["**? (start)"] = "(^%*%*?).-[^\\](%*%*?)",
+		["__? (start)"] = "(^__?).-[^\\](__?)",
+		["== (start)"] = "(^==).-[^\\](==)",
+		["~~ (start)"] = "(^~~).-[^\\](~~)",
 	}
 	M.selectClosestTextobj(patterns, scope, config.forwardLooking.small)
 
