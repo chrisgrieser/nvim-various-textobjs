@@ -225,7 +225,7 @@ end
 
 ---@param scope "inner"|"outer"
 function M.anyQuote(scope)
-	-- INFO 
+	-- INFO
 	-- `%f[\"]` is the lua frontier pattern, and effectively used as a negative
 	-- lookbehind, that is ensuring that the previous character may not be a `\`
 	local patterns = {
@@ -234,7 +234,6 @@ function M.anyQuote(scope)
 		["``"] = [[(%f[\`]`).-(%f[\`]`)]],
 	}
 	M.selectClosestTextobj(patterns, scope, config.forwardLooking.small)
-
 end
 
 ---@param scope "inner"|"outer"
