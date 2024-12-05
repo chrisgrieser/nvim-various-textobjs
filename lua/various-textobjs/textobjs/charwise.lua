@@ -218,33 +218,23 @@ function M.toNextClosingBracket()
 end
 
 function M.toNextQuotationMark()
-	-- char before quote must not be escape char. Using `vim.opt.quoteescape` on
-	-- the off-chance that the user has customized this.
-	local quoteEscape = vim.opt_local.quoteescape:get() -- default: \
-	local pattern = ([[()[^%s](["'`])]]):format(quoteEscape)
+	local pattern = [[()[^\](["'`])]]
 	local row, _, endCol = M.getTextobjPos(pattern, "inner", config.forwardLooking.small)
 	M.selectFromCursorTo({ row, endCol }, config.forwardLooking.small)
 end
 
 ---@param scope "inner"|"outer"
 function M.anyQuote(scope)
-	-- INFO char before quote must not be escape char. Using `vim.opt.quoteescape` on
-	-- the off-chance that the user has customized this.
-	local escape = vim.opt_local.quoteescape:get() -- default: \
+	-- INFO 
+	-- `%f[\"]` is the lua frontier pattern, and effectively used as a negative
+	-- lookbehind, that is ensuring that the previous character may not be a `\`
 	local patterns = {
-		['"" (start)'] = ('^(").-[^%s](")'):format(escape),
-		["'' (start)"] = ("^(').-[^%s](')"):format(escape),
-		["`` (start)"] = ("^(`).-[^%s](`)"):format(escape),
-		['""'] = ('([^%s]").-[^%s](")'):format(escape, escape),
-		["''"] = ("([^%s]').-[^%s](')"):format(escape, escape),
-		["``"] = ("([^%s]`).-[^%s](`)"):format(escape, escape),
+		['""'] = [[(%f[\"]").-(%f[\"]")]],
+		["''"] = [[(%f[\']').-(%f[\']')]],
+		["``"] = [[(%f[\`]`).-(%f[\`]`)]],
 	}
-
 	M.selectClosestTextobj(patterns, scope, config.forwardLooking.small)
 
-	-- pattern accounts for escape char, so move to right to account for that
-	local isAtStart = vim.api.nvim_win_get_cursor(0)[2] == 1
-	if scope == "outer" and not isAtStart then u.normal("ol") end
 end
 
 ---@param scope "inner"|"outer"
