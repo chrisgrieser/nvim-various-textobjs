@@ -6,7 +6,9 @@ local u = require("various-textobjs.utils")
 local forwardLooking = require("various-textobjs.config").config.forwardLooking
 --------------------------------------------------------------------------------
 
--- warn in case user tries to call a textobj that doesn't exist
+-- Warn in case user tries to call a textobj that doesn't exist.
+-- (Only needed in the module for `charwise` text objects, since it is the catch
+-- all for the `__index` redirect from this plugin's main `init.lua`.)
 setmetatable(M, {
 	__index = function(_, key)
 		return function()

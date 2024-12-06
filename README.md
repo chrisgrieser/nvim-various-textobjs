@@ -149,8 +149,8 @@ require("various-textobjs").setup {
 	-- extra configuration for specific text objects
 	textobjs = {
 		indentation = {
-			-- `false`: only indentation changes delimit the text object
-			-- `true`: indentation changes as well as blank lines delimit the text object
+			-- `false`: only indentation decreases delimit the text object
+			-- `true`: indentation decreases as well as blank lines delimit the text object
 			blanksAreDelimiter = false,
 		},
 		subword = {
