@@ -3,7 +3,7 @@ local u = require("various-textobjs.utils")
 local core = require("various-textobjs.textobjs.charwise.core")
 
 -- can be set at top of file, since `.setup()` is only allowed to be called once
-local config = require("various-textobjs.config").config
+local forwardLooking = require("various-textobjs.config").config.forwardLooking
 --------------------------------------------------------------------------------
 
 ---@param scope "inner"|"outer"
@@ -57,14 +57,14 @@ end
 
 function M.toNextClosingBracket()
 	local pattern = "().([]})])"
-	local row, _, endCol = core.getTextobjPos(pattern, "inner", config.forwardLooking.small)
-	core.selectFromCursorTo({ row, endCol }, config.forwardLooking.small)
+	local row, _, endCol = core.getTextobjPos(pattern, "inner", forwardLooking.small)
+	core.selectFromCursorTo({ row, endCol }, forwardLooking.small)
 end
 
 function M.toNextQuotationMark()
 	local pattern = [[()[^\](["'`])]]
-	local row, _, endCol = core.getTextobjPos(pattern, "inner", config.forwardLooking.small)
-	core.selectFromCursorTo({ row, endCol }, config.forwardLooking.small)
+	local row, _, endCol = core.getTextobjPos(pattern, "inner", forwardLooking.small)
+	core.selectFromCursorTo({ row, endCol }, forwardLooking.small)
 end
 
 ---@param scope "inner"|"outer"
@@ -77,7 +77,7 @@ function M.anyQuote(scope)
 		["''"] = [[(%f[\']').-(%f[\']')]],
 		["``"] = [[(%f[\`]`).-(%f[\`]`)]],
 	}
-	core.selectClosestTextobj(patterns, scope, config.forwardLooking.small)
+	core.selectClosestTextobj(patterns, scope, forwardLooking.small)
 end
 
 ---@param scope "inner"|"outer"
@@ -87,7 +87,7 @@ function M.anyBracket(scope)
 		["[]"] = "(%[).-(%])",
 		["{}"] = "({).-(})",
 	}
-	core.selectClosestTextobj(patterns, scope, config.forwardLooking.small)
+	core.selectClosestTextobj(patterns, scope, forwardLooking.small)
 end
 
 ---near end of the line, ignoring trailing whitespace
@@ -95,7 +95,7 @@ end
 function M.nearEoL()
 	local pattern = "().(%S%s*)$"
 	local row, _, endCol = core.getTextobjPos(pattern, "inner", 0)
-	core.selectFromCursorTo({ row, endCol }, config.forwardLooking.small)
+	core.selectFromCursorTo({ row, endCol }, forwardLooking.small)
 end
 
 ---current line, but characterwise
@@ -156,9 +156,9 @@ function M.value(scope)
 	-- or css pseudo-elements :: are not matched
 	local pattern = "(%s*%f[!<>~=:][=:]%s*)[^=:].*()"
 
-	local row, startCol, _ = core.getTextobjPos(pattern, scope, config.forwardLooking.small)
+	local row, startCol, _ = core.getTextobjPos(pattern, scope, forwardLooking.small)
 	if not (row and startCol) then
-		u.notFoundMsg(config.forwardLooking.small)
+		u.notFoundMsg(forwardLooking.small)
 		return
 	end
 
@@ -182,7 +182,7 @@ end
 ---@param scope "inner"|"outer" outer key includes the `:` or `=` after the key
 function M.key(scope)
 	local pattern = "()%S.-( ?[:=] ?)"
-	core.selectClosestTextobj(pattern, scope, config.forwardLooking.small)
+	core.selectClosestTextobj(pattern, scope, forwardLooking.small)
 end
 
 ---@param scope "inner"|"outer" inner number consists purely of digits, outer number factors in decimal points and includes minus sign
@@ -191,12 +191,12 @@ function M.number(scope)
 	-- before and after the decimal dot. enforcing digital after dot so outer
 	-- excludes enumrations.
 	local pattern = scope == "inner" and "%d+" or "%-?%d*%.?%d+"
-	core.selectClosestTextobj(pattern, "outer", config.forwardLooking.small)
+	core.selectClosestTextobj(pattern, "outer", forwardLooking.small)
 end
 
 function M.url()
 	local pattern = "%l%l%l-://[^%s)]+"
-	core.selectClosestTextobj(pattern, "outer", config.forwardLooking.big)
+	core.selectClosestTextobj(pattern, "outer", forwardLooking.big)
 end
 
 ---@param scope "inner"|"outer" inner excludes the leading dot
@@ -207,7 +207,7 @@ function M.chainMember(scope)
 		followingWithoutCall = "([:.])[%w_][%w_]-()",
 		followingWithCall = "([:.])[%w_][%w_]-%b()()",
 	}
-	core.selectClosestTextobj(patterns, scope, config.forwardLooking.small)
+	core.selectClosestTextobj(patterns, scope, forwardLooking.small)
 end
 
 function M.lastChange()
@@ -228,7 +228,7 @@ end
 ---@param scope "inner"|"outer" inner link only includes the link title, outer link includes link, url, and the four brackets.
 function M.mdLink(scope)
 	local pattern = "(%[)[^%]]-(%]%b())"
-	core.selectClosestTextobj(pattern, scope, config.forwardLooking.small)
+	core.selectClosestTextobj(pattern, scope, forwardLooking.small)
 end
 
 -- DEPRECATION (2024-12-04), changed for consistency with other objects
@@ -248,7 +248,7 @@ function M.mdEmphasis(scope)
 		["== (start)"] = "(^==).-[^\\](==)",
 		["~~ (start)"] = "(^~~).-[^\\](~~)",
 	}
-	core.selectClosestTextobj(patterns, scope, config.forwardLooking.small)
+	core.selectClosestTextobj(patterns, scope, forwardLooking.small)
 
 	-- pattern accounts for escape char, so move to right to account for that
 	local isAtStart = vim.api.nvim_win_get_cursor(0)[2] == 1
@@ -258,13 +258,13 @@ end
 ---@param scope "inner"|"outer" inner selector excludes the brackets themselves
 function M.doubleSquareBrackets(scope)
 	local pattern = "(%[%[).-(%]%])"
-	core.selectClosestTextobj(pattern, scope, config.forwardLooking.small)
+	core.selectClosestTextobj(pattern, scope, forwardLooking.small)
 end
 
 ---@param scope "inner"|"outer" outer selector includes trailing comma and whitespace
 function M.cssSelector(scope)
 	local pattern = "()[#.][%w-_]+(,? ?)"
-	core.selectClosestTextobj(pattern, scope, config.forwardLooking.small)
+	core.selectClosestTextobj(pattern, scope, forwardLooking.small)
 end
 
 ---@param scope "inner"|"outer" inner selector is only the value of the attribute inside the quotation marks.
@@ -273,7 +273,7 @@ function M.htmlAttribute(scope)
 		['""'] = '([%w-]+=").-(")',
 		["''"] = "([%w-]+=').-(')",
 	}
-	core.selectClosestTextobj(pattern, scope, config.forwardLooking.small)
+	core.selectClosestTextobj(pattern, scope, forwardLooking.small)
 end
 
 ---@param scope "inner"|"outer" outer selector includes the pipe
@@ -282,7 +282,7 @@ function M.shellPipe(scope)
 		trailingPipe = "()[^|%s][^|]-( ?| ?)", -- 1st char non-space to exclude indentation
 		leadingPipe = "( ?| ?)[^|]*()",
 	}
-	core.selectClosestTextobj(patterns, scope, config.forwardLooking.small)
+	core.selectClosestTextobj(patterns, scope, forwardLooking.small)
 end
 
 ---@param scope "inner"|"outer" inner selector only affects the color value
@@ -293,7 +293,7 @@ function M.cssColor(scope)
 		["hsl(123, 23%, 23%)"] = "(hsla?%()[%%%d,./deg ]-(%))", -- optionally with `deg`/`%`
 		["rgb(123, 23, 23)"] = "(rgba?%()[%d,./ ]-(%))", -- optionally with `%`
 	}
-	core.selectClosestTextobj(pattern, scope, config.forwardLooking.small)
+	core.selectClosestTextobj(pattern, scope, forwardLooking.small)
 end
 
 --------------------------------------------------------------------------------
