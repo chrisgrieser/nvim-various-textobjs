@@ -1,5 +1,5 @@
 local M = {}
-local charwise = require("various-textobjs.textobjs.charwise")
+local setSelection = require("various-textobjs.textobjs.charwise.core").setSelection
 local u = require("various-textobjs.utils")
 --------------------------------------------------------------------------------
 
@@ -56,7 +56,7 @@ function M.pyTripleQuotes(scope)
 		endCol = endCol - 1
 	end
 
-	charwise.setSelection({ startRow, startCol }, { endRow, endCol })
+	setSelection({ startRow, startCol }, { endRow, endCol })
 end
 
 --------------------------------------------------------------------------------
