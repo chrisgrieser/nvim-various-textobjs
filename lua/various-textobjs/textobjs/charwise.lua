@@ -1,9 +1,22 @@
 local M = {}
-local u = require("various-textobjs.utils")
 local core = require("various-textobjs.textobjs.charwise.core")
+local u = require("various-textobjs.utils")
 
 -- can be set at top of file, since `.setup()` is only allowed to be called once
 local forwardLooking = require("various-textobjs.config").config.forwardLooking
+--------------------------------------------------------------------------------
+
+-- warn in case user tries to call a textobj that doesn't exist
+setmetatable(M, {
+	__index = function(_, key)
+		return function()
+			local msg = ("There is no text object called `%s`.\n\n"):format(key)
+				.. "Make sure it exists in the list of text objects, and that you haven't misspelled it."
+			u.warn(msg)
+		end
+	end,
+})
+
 --------------------------------------------------------------------------------
 
 ---@param scope "inner"|"outer"
@@ -143,7 +156,10 @@ function M.diagnostic(oldWrapSetting)
 
 	local target = curStandingOnPrevD and prevD or nextD
 	if target then
-		core.setSelection({ target.lnum + 1, target.col }, { target.end_lnum + 1, target.end_col - 1 })
+		core.setSelection(
+			{ target.lnum + 1, target.col },
+			{ target.end_lnum + 1, target.end_col - 1 }
+		)
 	else
 		u.notFoundMsg("No diagnostic found.")
 	end
