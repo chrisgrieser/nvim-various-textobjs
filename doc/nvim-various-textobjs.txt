@@ -1,4 +1,4 @@
-*nvim-various-textobjs.txt*      For Neovim      Last change: 2024 December 05
+*nvim-various-textobjs.txt*      For Neovim      Last change: 2024 December 06
 
 ==============================================================================
 Table of Contents                    *nvim-various-textobjs-table-of-contents*
@@ -366,7 +366,7 @@ used by this plugin is exposed for this purpose.)
         end
     
         -- find all URLs in buffer
-        local urlPattern = "%l%l%l-://%S+"
+        local urlPattern = "%l%l%l-://[^%s)]+"
         local bufText = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n")
         local urls = {}
         for url in bufText:gmatch(urlPattern) do
