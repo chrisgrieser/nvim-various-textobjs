@@ -182,11 +182,17 @@ function M.indentation(startBorder, endBorder, oldBlankSetting)
 
 	while (isBlankLine(prevLn) and not blanksAreDelimiter) or vim.fn.indent(prevLn) >= startIndent do
 		prevLn = prevLn - 1
-		if prevLn == 0 then break end
+		if prevLn == 0 and startBorder == "outer" then
+			u.notFoundMsg("No top border found.")
+			return false
+		end
 	end
 	while (isBlankLine(nextLn) and not blanksAreDelimiter) or vim.fn.indent(nextLn) >= startIndent do
 		nextLn = nextLn + 1
-		if nextLn > lastLine then break end
+		if nextLn > lastLine and endBorder == "outer" then
+			u.notFoundMsg("No bottom border found.")
+			return false
+		end
 	end
 
 	-- differentiate `ai` and `ii`
