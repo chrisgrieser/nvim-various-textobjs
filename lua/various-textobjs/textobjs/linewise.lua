@@ -27,7 +27,6 @@ end
 
 --------------------------------------------------------------------------------
 
--- next *closed* fold
 ---@param scope "inner"|"outer" outer adds one line after the fold
 function M.closedFold(scope)
 	local startLnum = vim.api.nvim_win_get_cursor(0)[1]
@@ -61,7 +60,6 @@ function M.closedFold(scope)
 	if vim.v.operator == "y" then vim.cmd(("%d,%d foldclose"):format(foldStart, foldEnd)) end
 end
 
----Textobject for the entire buffer content
 function M.entireBuffer()
 	-- FIX folds at the first or last line cause lines being left out
 	local foldWasEnabled = vim.opt_local.foldenable:get() ---@diagnostic disable-line: undefined-field
@@ -84,7 +82,6 @@ function M.restOfParagraph()
 	if curLnum ~= lastLine then u.normal("k") end
 end
 
----Md Fenced Code Block Textobj
 ---@param scope "inner"|"outer" inner excludes the backticks
 function M.mdFencedCodeBlock(scope)
 	local cursorLnum = vim.api.nvim_win_get_cursor(0)[1]
@@ -132,14 +129,12 @@ function M.mdFencedCodeBlock(scope)
 	setLinewiseSelection(start, ending)
 end
 
----lines visible in window textobj
 function M.visibleInWindow()
 	local start = vim.fn.line("w0")
 	local ending = vim.fn.line("w$")
 	setLinewiseSelection(start, ending)
 end
 
--- from cursor line to last visible line in window
 function M.restOfWindow()
 	local start = vim.fn.line(".")
 	local ending = vim.fn.line("w$")
