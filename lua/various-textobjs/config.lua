@@ -24,8 +24,8 @@ local defaultConfig = {
 	-- extra configuration for specific text objects
 	textobjs = {
 		indentation = {
-			-- `false`: only indentation changes delimit the text object
-			-- `true`: indentation changes as well as blank lines delimit the text object
+			-- `false`: only indentation decreases delimit the text object
+			-- `true`: indentation decreases as well as blank lines delimit the text object
 			blanksAreDelimiter = false,
 		},
 		subword = {
@@ -74,11 +74,11 @@ function M.setup(userConfig)
 	if M.config.notificationIcon then
 		warn("The `notificationIcon` option is deprecated. Use `notify.icon` instead.")
 	end
-	if M.config.notifyNotFound then
+	if M.config.notifyNotFound ~= nil then -- not nil, since `false` is a valid value
 		warn("The `notifyNotFound` option is deprecated. Use `notify.whenObjectNotFound` instead.")
 	end
 	-- DEPRECATION (2024-12-06)
-	if M.config.useDefaultKeymaps then
+	if M.config.useDefaultKeymaps ~= nil then
 		warn("The `useDefaultKeymaps` option is deprecated. Use `keymaps.useDefaults` instead.")
 		M.config.keymaps.useDefaults = M.config.useDefaultKeymaps
 	end
