@@ -90,7 +90,7 @@ end
 ---@return integer? startCol
 ---@return integer? endCol
 function M.selectClosestTextobj(patterns, scope, lookForwLines)
-	local enableLogging = false -- DEBUG
+	local enableLogging = require("various-textobjs.config").config.debug
 	local objLogging = {}
 
 	-- initialized with values to always loose comparisons
@@ -111,6 +111,7 @@ function M.selectClosestTextobj(patterns, scope, lookForwLines)
 				cur.distance = cur.startCol - cursorCol
 				cur.endDistance = cursorCol - cur.endCol
 				cur.cursorOnObj = cur.distance <= 0 and cur.endDistance <= 0
+				cur.patternName = patternName
 
 				-- INFO Here, we cannot simply use the absolute value of the distance.
 				-- If the cursor is standing on a big textobj A, and there is a
@@ -149,7 +150,11 @@ function M.selectClosestTextobj(patterns, scope, lookForwLines)
 	if enableLogging then
 		local textobj = debug.getinfo(3, "n").name
 		objLogging._closest = closest.patternName
-		vim.notify(vim.inspect(objLogging), nil, { ft = "lua", title = scope .. " " .. textobj })
+		vim.notify(
+			vim.inspect(objLogging),
+			vim.log.levels.DEBUG,
+			{ ft = "lua", title = scope .. " " .. textobj }
+		)
 	end
 	return closest.row, closest.startCol, closest.endCol
 end

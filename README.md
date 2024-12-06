@@ -167,6 +167,9 @@ require("various-textobjs").setup {
 		icon = "󰠱", -- only used with notification plugins like `nvim-notify`
 		whenObjectNotFound = true,
 	},
+
+	-- show debugging messages on use of certain text objects
+	debug = false,
 }
 ```
 
