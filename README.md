@@ -79,14 +79,22 @@ table above for you.
 {
 	"chrisgrieser/nvim-various-textobjs",
 	event = "VeryLazy",
-	opts = { useDefaultKeymaps = true },
+	opts = { 
+		keymaps = {
+			useDefaults = true 
+		}
+	},
 },
 
 -- packer
 use {
 	"chrisgrieser/nvim-various-textobjs",
 	config = function () 
-		require("various-textobjs").setup({ useDefaultKeymaps = true })
+		require("various-textobjs").setup({ 
+			keymaps = {
+				useDefaults = true 
+			}
+		})
 	end,
 }
 ```
@@ -108,25 +116,28 @@ use { "chrisgrieser/nvim-various-textobjs" }
 ```
 
 > [!TIP]
-> You can also use the `disabledKeymaps` config option to disable only *some*
-> default keymaps.
+> You can also use the `keymaps.disabledDefaults` config option to disable
+> only *some* default keymaps.
 
 ## Configuration
 
 ### Options
-The `.setup()` call is optional if you are fine with the defaults below.
+The `.setup()` call is optional if you do not want to use the default keymaps.
 
 ```lua
 -- default config
 require("various-textobjs").setup {
-	-- See overview table in README for the defaults keymaps.
-	-- (Note that lazy-loading this plugin, the default keymaps cannot be set up.
-	-- if you set this to `true`, you thus need to add `lazy = false` to your
-	-- lazy.nvim config.)
-	useDefaultKeymaps = false,
+	keymaps = {
+		-- See overview table in README for the defaults. (Note that lazy-loading
+		-- this plugin, the default keymaps cannot be set up. if you set this to
+		-- `true`, you thus need to add `lazy = false` to your lazy.nvim config.)
+		useDefaults = false,
 
-	---@type string[]
-	disabledKeymaps = {}, -- disable only some default keymaps, e.g. { "ai", "ii" }
+		-- disable only some default keymaps, for example { "ai", "!" }
+		-- (only relevant when you set `useDefaults = true`)
+		---@type string[]
+		disabledDefaults = {},
+	},
 
 	-- Number of lines to seek forwards for a text object. See the overview table
 	-- in the README for which text object uses which value.
@@ -179,7 +190,7 @@ vim.keymap.set({ "o", "x" }, "is", '<cmd>lua require("various-textobjs").subword
 ```
 
 For most text objects, there is only one parameter which accepts `"inner"` or
-`"outer"`. There only exceptions is the indentation text object:
+`"outer"`. There only exceptions is the `indentation` text object:
 
 ```lua
 -- THE INDENTATION TEXTOBJ requires two parameters, the first for

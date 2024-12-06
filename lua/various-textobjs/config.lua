@@ -2,14 +2,17 @@ local M = {}
 --------------------------------------------------------------------------------
 ---@class VariousTextobjs.Config
 local defaultConfig = {
-	-- See overview table in README for the defaults keymaps.
-	-- (Note that lazy-loading this plugin, the default keymaps cannot be set up.
-	-- if you set this to `true`, you thus need to add `lazy = false` to your
-	-- lazy.nvim config.)
-	useDefaultKeymaps = false,
+	keymaps = {
+		-- See overview table in README for the defaults. (Note that lazy-loading
+		-- this plugin, the default keymaps cannot be set up. if you set this to
+		-- `true`, you thus need to add `lazy = false` to your lazy.nvim config.)
+		useDefaults = false,
 
-	---@type string[]
-	disabledKeymaps = {}, -- disable only some default keymaps, e.g. { "ai", "ii" }
+		-- disable only some default keymaps, for example { "ai", "!" }
+		-- (only relevant when you set `useDefaults = true`)
+		---@type string[]
+		disabledDefaults = {},
+	},
 
 	-- Number of lines to seek forwards for a text object. See the overview table
 	-- in the README for which text object uses which value.
@@ -72,14 +75,21 @@ function M.setup(userConfig)
 		warn("The `notificationIcon` option is deprecated. Use `notify.icon` instead.")
 	end
 	if M.config.notifyNotFound then
-		warn(
-			"The `notifyNotFound` option is deprecated. Use `notify.whenObjectNotFound` instead."
-		)
+		warn("The `notifyNotFound` option is deprecated. Use `notify.whenObjectNotFound` instead.")
+	end
+	-- DEPRECATION (2024-12-06)
+	if M.config.useDefaultKeymaps then
+		warn("The `useDefaultKeymaps` option is deprecated. Use `keymaps.useDefaults` instead.")
+		M.config.keymaps.useDefaults = M.config.useDefaultKeymaps
+	end
+	if M.config.disabledKeymaps then
+		warn("The `disabledKeymaps` option is deprecated. Use `keymaps.disabledDefaults` instead.")
+		M.config.keymaps.disabledDefaults = M.config.disabledKeymaps
 	end
 	---@diagnostic enable: undefined-field
 
-	if M.config.useDefaultKeymaps then
-		require("various-textobjs.default-keymaps").setup(M.config.disabledKeymaps)
+	if M.config.keymaps.useDefaults then
+		require("various-textobjs.default-keymaps").setup(M.config.keymaps.disabledDefaults)
 	end
 end
 
