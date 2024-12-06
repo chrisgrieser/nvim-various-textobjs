@@ -154,9 +154,9 @@ end
 function M.indentation(startBorder, endBorder, oldBlankSetting)
 	-- DEPRECATION (2024-12-06)
 	if oldBlankSetting ~= nil then
-		u.warn(
+		local msg =
 			"`.indentation()` does not use a 3rd argument anymore. Use the config `textobjs.indent.blanksAreDelimiter` instead."
-		)
+		u.warn(msg)
 	end
 	local blanksAreDelimiter =
 		require("various-textobjs.config").config.textobjs.indentation.blanksAreDelimiter

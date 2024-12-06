@@ -135,26 +135,26 @@ require("various-textobjs").setup {
 		big = 15,
 	},
 
-	notify = {
-		icon = "󰠱", -- only used with notification plugins like `nvim-notify`
-		whenObjectNotFound = true,
-	},
-
 	-- extra configuration for specific text objects
 	textobjs = {
 		indentation = {
 			-- `false`: only indentation changes delimit the text object
-			-- `true`: indentation changes as well as blanks delimit the text object
+			-- `true`: indentation changes as well as blank lines delimit the text object
 			blanksAreDelimiter = false,
-		},
-		diagnostic = {
-			wrap = true,
 		},
 		subword = {
 			-- When deleting the start of a camelCased word, the result should
 			-- still be camelCased and not PascalCased (see #113).
 			noCamelToPascalCase = true,
 		},
+		diagnostic = {
+			wrap = true,
+		},
+	},
+
+	notify = {
+		icon = "󰠱", -- only used with notification plugins like `nvim-notify`
+		whenObjectNotFound = true,
 	},
 }
 ```
@@ -165,9 +165,9 @@ functions. The function names correspond to the text object names from the
 [overview table](#list-of-text-objects).
 
 > [!NOTE]
-> For dot-repeat to work, you have to call the motions as Ex-commands. When
-> using `function() require("various-textobjs").diagnostic() end` as third
-> argument of the keymap, dot-repeatability is not going to work.
+> For dot-repeat to work, you have to call the motions as Ex-commands. Using
+> `function() require("various-textobjs").diagnostic() end` as third argument of
+> the keymap will not work.
 
 ```lua
 -- example: `U` for url textobj

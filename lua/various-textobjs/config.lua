@@ -18,26 +18,26 @@ local defaultConfig = {
 		big = 15,
 	},
 
-	notify = {
-		icon = "󰠱", -- only used with notification plugins like `nvim-notify`
-		whenObjectNotFound = true,
-	},
-
 	-- extra configuration for specific text objects
 	textobjs = {
 		indentation = {
 			-- `false`: only indentation changes delimit the text object
-			-- `true`: indentation changes as well as blanks delimit the text object
+			-- `true`: indentation changes as well as blank lines delimit the text object
 			blanksAreDelimiter = false,
-		},
-		diagnostic = {
-			wrap = true,
 		},
 		subword = {
 			-- When deleting the start of a camelCased word, the result should
 			-- still be camelCased and not PascalCased (see #113).
 			noCamelToPascalCase = true,
 		},
+		diagnostic = {
+			wrap = true,
+		},
+	},
+
+	notify = {
+		icon = "󰠱", -- only used with notification plugins like `nvim-notify`
+		whenObjectNotFound = true,
 	},
 }
 M.config = defaultConfig
@@ -69,11 +69,11 @@ function M.setup(userConfig)
 		warn("The `lookForwardBig` option is deprecated. Use `forwardLooking.big` instead.")
 	end
 	if M.config.notificationIcon then
-		warn("The `notificationIcon` option is deprecated. Use `config.notify.icon` instead.")
+		warn("The `notificationIcon` option is deprecated. Use `notify.icon` instead.")
 	end
 	if M.config.notifyNotFound then
 		warn(
-			"The `notifyNotFound` option is deprecated. Use `config.notify.whenObjectNotFound` instead."
+			"The `notifyNotFound` option is deprecated. Use `notify.whenObjectNotFound` instead."
 		)
 	end
 	---@diagnostic enable: undefined-field

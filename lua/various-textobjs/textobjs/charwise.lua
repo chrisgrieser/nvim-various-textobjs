@@ -127,9 +127,9 @@ end
 function M.diagnostic(oldWrapSetting)
 	-- DEPRECATION (2024-12-03)
 	if oldWrapSetting ~= nil then
-		u.warn(
+		local msg =
 			'`.diagnostic()` does not use a "wrap" argument anymore. Use the config `textobjs.diagnostic.wrap` instead.'
-		)
+		u.warn(msg)
 	end
 
 	local wrap = require("various-textobjs.config").config.textobjs.diagnostic.wrap
