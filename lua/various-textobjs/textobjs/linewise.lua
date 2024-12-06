@@ -150,7 +150,7 @@ end
 
 ---@param startBorder "inner"|"outer"
 ---@param endBorder "inner"|"outer"
----@return boolean|nil success
+---@return boolean success
 function M.indentation(startBorder, endBorder, oldBlankSetting)
 	-- DEPRECATION (2024-12-06)
 	if oldBlankSetting ~= nil then
@@ -171,43 +171,45 @@ function M.indentation(startBorder, endBorder, oldBlankSetting)
 		curLnum = curLnum + 1
 	end
 
-	local indentOfStart = vim.fn.indent(curLnum)
-	if indentOfStart == 0 then
+	local startIndent = vim.fn.indent(curLnum)
+	if startIndent == 0 then
 		u.warn("Current line is not indented.")
 		return false
 	end
 
-	local prevLnum = curLnum - 1
-	local nextLnum = curLnum + 1
+	local prevLn = curLnum - 1
+	local nextLn = curLnum + 1
 
-	while
-		prevLnum > 0
-		and (
-			(isBlankLine(prevLnum) and not blanksAreDelimiter)
-			or vim.fn.indent(prevLnum) >= indentOfStart
-		)
-	do
-		prevLnum = prevLnum - 1
+	while (isBlankLine(prevLn) and not blanksAreDelimiter) or vim.fn.indent(prevLn) >= startIndent do
+		prevLn = prevLn - 1
+		if prevLn == 0 then break end
 	end
-	while
-		nextLnum <= lastLine
-		and (
-			(isBlankLine(nextLnum) and not blanksAreDelimiter)
-			or vim.fn.indent(nextLnum) >= indentOfStart
-		)
-	do
-		nextLnum = nextLnum + 1
+	while (isBlankLine(nextLn) and not blanksAreDelimiter) or vim.fn.indent(nextLn) >= startIndent do
+		nextLn = nextLn + 1
+		if nextLn > lastLine then break end
 	end
 
-	-- differentiate ai and ii
-	if startBorder == "inner" then prevLnum = prevLnum + 1 end
-	if endBorder == "inner" then nextLnum = nextLnum - 1 end
+	-- differentiate `ai` and `ii`
+	if startBorder == "inner" then prevLn = prevLn + 1 end
+	if endBorder == "inner" then nextLn = nextLn - 1 end
 
-	while isBlankLine(nextLnum) do
-		nextLnum = nextLnum - 1
+	while isBlankLine(nextLn) do
+		nextLn = nextLn - 1
 	end
 
-	setLinewiseSelection(prevLnum, nextLnum)
+	setLinewiseSelection(prevLn, nextLn)
+	return true
+end
+
+---outer indentation, expanded until the next blank lines in both directions
+---@param scope "inner"|"outer" outer adds a blank, like ip/ap textobjs
+function M.greedyOuterIndentation(scope)
+	local success = M.indentation("outer", "outer")
+	if not success then return end
+
+	u.normal("o{j") -- to next blank line above
+	u.normal("o}") -- to next blank line down
+	if scope == "inner" then u.normal("k") end -- exclude blank below if inner
 end
 
 ---from cursor position down all lines with same or higher indentation;
@@ -237,30 +239,16 @@ function M.restOfIndentation()
 	setLinewiseSelection(startLnum, nextLnum - 1)
 end
 
----outer indentation, expanded until the next blank lines in both directions
----@param scope "inner"|"outer" outer adds a blank, like ip/ap textobjs
-function M.greedyOuterIndentation(scope)
-	-- select outer indentation
-	local invalid = M.indentation("outer", "outer") == false
-	if invalid then return end
-	u.normal("o{j") -- to next blank line above
-	u.normal("o}") -- to next blank line down
-	if scope == "inner" then u.normal("k") end -- exclude blank below if inner
-end
-
 --------------------------------------------------------------------------------
 
----@param lnum number
----@return boolean
-local function isCellBorder(lnum)
-	local cellMarker = vim.bo.commentstring:format("%%")
-	local line = u.getline(lnum)
-	return vim.startswith(vim.trim(line), cellMarker)
-end
-
--- for plugins like NotebookNavigator.nvim
 ---@param scope "inner"|"outer" outer includes bottom cell border
 function M.notebookCell(scope)
+	local function isCellBorder(lnum)
+		local cellMarker = vim.bo.commentstring:format("%%")
+		local line = u.getline(lnum)
+		return vim.startswith(vim.trim(line), cellMarker)
+	end
+
 	if vim.bo.commentstring == "" then
 		u.warn("Buffer has no commentstring set.")
 		return
