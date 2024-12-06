@@ -351,7 +351,7 @@ function M.number(scope)
 end
 
 function M.url()
-	local pattern = "%l%l%l-://%S+"
+	local pattern = "%l%l%l-://[^%s)]+"
 	M.selectClosestTextobj(pattern, "outer", config.forwardLooking.big)
 end
 
