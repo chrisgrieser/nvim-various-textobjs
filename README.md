@@ -119,9 +119,9 @@ The `.setup()` call is optional if you are fine with the defaults below.
 ```lua
 -- default config
 require("various-textobjs").setup {
-	-- See overview table in README for the defaults keymaps. 
+	-- See overview table in README for the defaults keymaps.
 	-- (Note that lazy-loading this plugin, the default keymaps cannot be set up.
-	-- if you set this to `true`, you thus need to add `event = "VeryLazy"` to your
+	-- if you set this to `true`, you thus need to add `lazy = false` to your
 	-- lazy.nvim config.)
 	useDefaultKeymaps = false,
 
@@ -140,9 +140,15 @@ require("various-textobjs").setup {
 		whenObjectNotFound = true,
 	},
 
+	-- extra configuration for specific text objects
 	textobjs = {
-		diagnostic = { 
-			wrap = true 
+		indentation = {
+			-- `false`: only indentation changes delimit the text object
+			-- `true`: indentation changes as well as blanks delimit the text object
+			blanksAreDelimiter = false,
+		},
+		diagnostic = {
+			wrap = true,
 		},
 		subword = {
 			-- When deleting the start of a camelCased word, the result should
@@ -187,13 +193,6 @@ vim.keymap.set(
 	{ "o", "x" },
 	"ai",
 	'<cmd>lua require("various-textobjs").indentation("outer", "inner")<CR>'
-)
-
--- an additional parameter can be passed to control whether blank lines are included
-vim.keymap.set(
-	{ "o", "x" },
-	"ai",
-	'<cmd>lua require("various-textobjs").indentation("outer", "inner", "noBlanks")<CR>'
 )
 ```
 

@@ -23,7 +23,13 @@ local defaultConfig = {
 		whenObjectNotFound = true,
 	},
 
+	-- extra configuration for specific text objects
 	textobjs = {
+		indentation = {
+			-- `false`: only indentation changes delimit the text object
+			-- `true`: indentation changes as well as blanks delimit the text object
+			blanksAreDelimiter = false,
+		},
 		diagnostic = {
 			wrap = true,
 		},

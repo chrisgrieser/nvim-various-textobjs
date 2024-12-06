@@ -148,19 +148,25 @@ end
 
 --------------------------------------------------------------------------------
 
----indentation textobj
 ---@param startBorder "inner"|"outer"
 ---@param endBorder "inner"|"outer"
----@param blankLines? "withBlanks"|"noBlanks"
-function M.indentation(startBorder, endBorder, blankLines)
-	if not blankLines then blankLines = "withBlanks" end
+---@return boolean|nil success
+function M.indentation(startBorder, endBorder, oldBlankSetting)
+	-- DEPRECATION (2024-12-06)
+	if oldBlankSetting ~= nil then
+		u.warn(
+			"`.indentation()` does not use a 3rd argument anymore. Use the config `textobjs.indent.blanksAreDelimiter` instead."
+		)
+	end
+	local blanksAreDelimiter =
+		require("various-textobjs.config").config.textobjs.indentation.blanksAreDelimiter
 
 	local curLnum = vim.api.nvim_win_get_cursor(0)[1]
 	local lastLine = vim.api.nvim_buf_line_count(0)
 	while isBlankLine(curLnum) do -- when on blank line, use next line
 		if lastLine == curLnum then
 			u.notFoundMsg("No indented line found.")
-			return
+			return false
 		end
 		curLnum = curLnum + 1
 	end
@@ -168,7 +174,7 @@ function M.indentation(startBorder, endBorder, blankLines)
 	local indentOfStart = vim.fn.indent(curLnum)
 	if indentOfStart == 0 then
 		u.warn("Current line is not indented.")
-		return false -- return value needed for `greedyOuterIndentation` textobj
+		return false
 	end
 
 	local prevLnum = curLnum - 1
@@ -177,7 +183,7 @@ function M.indentation(startBorder, endBorder, blankLines)
 	while
 		prevLnum > 0
 		and (
-			(blankLines == "withBlanks" and isBlankLine(prevLnum))
+			(isBlankLine(prevLnum) and not blanksAreDelimiter)
 			or vim.fn.indent(prevLnum) >= indentOfStart
 		)
 	do
@@ -186,7 +192,7 @@ function M.indentation(startBorder, endBorder, blankLines)
 	while
 		nextLnum <= lastLine
 		and (
-			(blankLines == "withBlanks" and isBlankLine(nextLnum))
+			(isBlankLine(nextLnum) and not blanksAreDelimiter)
 			or vim.fn.indent(nextLnum) >= indentOfStart
 		)
 	do
