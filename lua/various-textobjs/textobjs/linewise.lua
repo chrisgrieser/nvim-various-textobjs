@@ -17,7 +17,7 @@ local function setLinewiseSelection(startline, endline)
 end
 
 ---@param lineNr number
----@return boolean|nil whether given line is blank line
+---@return boolean|nil -- nil when lineNr is out of bounds
 local function isBlankLine(lineNr)
 	local lastLine = vim.api.nvim_buf_line_count(0)
 	if lineNr > lastLine or lineNr < 1 then return nil end
@@ -161,24 +161,20 @@ function M.indentation(startBorder, endBorder, oldBlankSetting)
 	local blanksAreDelimiter =
 		require("various-textobjs.config").config.textobjs.indentation.blanksAreDelimiter
 
+	-- when on blank line seek for next non-blank line to start
 	local curLnum = vim.api.nvim_win_get_cursor(0)[1]
-	local lastLine = vim.api.nvim_buf_line_count(0)
-	while isBlankLine(curLnum) do -- when on blank line, use next line
-		if lastLine == curLnum then
-			u.notFoundMsg("No indented line found.")
-			return false
-		end
+	while isBlankLine(curLnum) do
 		curLnum = curLnum + 1
 	end
-
-	local startIndent = vim.fn.indent(curLnum)
-	if startIndent == 0 then
+	local startIndent = vim.fn.indent(curLnum) -- `-1` for out of bounds
+	if startIndent < 1 then
 		u.warn("Current line is not indented.")
 		return false
 	end
 
 	local prevLn = curLnum - 1
 	local nextLn = curLnum + 1
+	local lastLine = vim.api.nvim_buf_line_count(0)
 
 	while (isBlankLine(prevLn) and not blanksAreDelimiter) or vim.fn.indent(prevLn) >= startIndent do
 		prevLn = prevLn - 1
@@ -195,10 +191,10 @@ function M.indentation(startBorder, endBorder, oldBlankSetting)
 		end
 	end
 
-	-- differentiate `ai` and `ii`
 	if startBorder == "inner" then prevLn = prevLn + 1 end
 	if endBorder == "inner" then nextLn = nextLn - 1 end
 
+	-- keep blanks in case of missing bottom border (e.g. for python)
 	while isBlankLine(nextLn) do
 		nextLn = nextLn - 1
 	end
