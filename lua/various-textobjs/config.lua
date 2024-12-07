@@ -25,7 +25,7 @@ local defaultConfig = {
 	textobjs = {
 		indentation = {
 			-- `false`: only indentation decreases delimit the text object
-			-- `true`: indentation decreases as well as blank lines delimit the text object
+			-- `true`: indentation decreases as well as blank lines serve as delimiter
 			blanksAreDelimiter = false,
 		},
 		subword = {

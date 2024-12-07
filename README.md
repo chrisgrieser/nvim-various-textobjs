@@ -99,8 +99,9 @@ use {
 }
 ```
 
-**Variant 2:** Use your own keybindings. See the [Configuration](#configuration)
-section for information on setting your own keymaps.
+**Variant 2:** Use your own keybindings. See the
+[Configuration](#use-your-own-keybindings) section for information on how to set
+your own keymaps.
 
 ```lua
 -- lazy.nvim
@@ -150,7 +151,7 @@ require("various-textobjs").setup {
 	textobjs = {
 		indentation = {
 			-- `false`: only indentation decreases delimit the text object
-			-- `true`: indentation decreases as well as blank lines delimit the text object
+			-- `true`: indentation decreases as well as blank lines serve as delimiter
 			blanksAreDelimiter = false,
 		},
 		subword = {
@@ -333,8 +334,7 @@ end, { desc = "Delete Surrounding Indentation" })
 Similarly, you can also create a `ysii` command to yank the two lines surrounding
 an indentation text object. (Not using `ysi`, since that blocks surround
 commands like `ysi)`). Using `nvim_win_[gs]et_cursor()`, you make the
-operation sticky, meaning the cursor is not moved. `vim.highlight.range` is
-used to highlight the yanked text, to imitate the effect of `vim.highlight.yank`.
+operation sticky, meaning the cursor is not moved. 
 
 ```lua
 vim.keymap.set("n", "ysii", function()
@@ -397,9 +397,7 @@ page](https://github.com/chrisgrieser/nvim-various-textobjs/discussions).
 ## Other text object plugins
 - [treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects)
 - [treesitter-textsubjects](https://github.com/RRethy/nvim-treesitter-textsubjects)
-- [ts-hint-textobject](https://github.com/mfussenegger/nvim-ts-hint-textobject)
 - [mini.ai](https://github.com/echasnovski/mini.nvim/blob/main/readmes/mini-ai.md)
-- [targets.vim](https://github.com/wellle/targets.vim)
 
 ## Credits
 **Thanks**  
