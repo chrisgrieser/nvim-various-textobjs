@@ -153,7 +153,7 @@ function M.indentation(startBorder, endBorder, oldBlankSetting)
 			"`.indentation()` does not use a 3rd argument anymore. Use the config `textobjs.indent.blanksAreDelimiter` instead."
 		u.warn(msg)
 	end
-	local blanksAreDelimiter =
+	local blanksDelimit =
 		require("various-textobjs.config").config.textobjs.indentation.blanksAreDelimiter
 
 	-- when on blank line seek for next non-blank line to start
@@ -166,26 +166,29 @@ function M.indentation(startBorder, endBorder, oldBlankSetting)
 		u.warn("Current line is not indented.")
 		return false
 	end
-
 	local prevLn = curLnum - 1
 	local nextLn = curLnum + 1
 	local lastLine = vim.api.nvim_buf_line_count(0)
 
-	while (isBlankLine(prevLn) and not blanksAreDelimiter) or vim.fn.indent(prevLn) >= startIndent do
+	-- seek backwards/forwards until meeting line with higher indentation, blank
+	-- (if used as delimiter), or start/end of file
+	while (isBlankLine(prevLn) and not blanksDelimit) or vim.fn.indent(prevLn) >= startIndent do
 		prevLn = prevLn - 1
-		if prevLn == 0 and startBorder == "outer" then
-			u.notFoundMsg("No top border found.")
-			return false
-		end
+		if prevLn == 0 then break end
 	end
-	while (isBlankLine(nextLn) and not blanksAreDelimiter) or vim.fn.indent(nextLn) >= startIndent do
+	while (isBlankLine(nextLn) and not blanksDelimit) or vim.fn.indent(nextLn) >= startIndent do
 		nextLn = nextLn + 1
-		if nextLn > lastLine and endBorder == "outer" then
-			u.notFoundMsg("No bottom border found.")
-			return false
-		end
+		if nextLn > lastLine then break end
 	end
 
+	-- at start/end of file, abort when with `outer` or go back a step for `inner`
+	if prevLn == 0 and startBorder == "outer" then
+		u.notFoundMsg("No top border found.")
+		return false
+	elseif nextLn > lastLine and endBorder == "outer" then
+		u.notFoundMsg("No bottom border found.")
+		return false
+	end
 	if startBorder == "inner" then prevLn = prevLn + 1 end
 	if endBorder == "inner" then nextLn = nextLn - 1 end
 
