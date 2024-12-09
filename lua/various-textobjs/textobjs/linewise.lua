@@ -1,8 +1,5 @@
 local M = {}
 local u = require("various-textobjs.utils")
-
--- can be set at top of file, since `.setup()` is only allowed to be called once
-local forwardLooking = require("various-textobjs.config").config.forwardLooking
 --------------------------------------------------------------------------------
 
 ---sets the selection for the textobj (linewise)
@@ -33,6 +30,7 @@ function M.closedFold(scope)
 	local lastLine = vim.api.nvim_buf_line_count(0)
 	local startedOnFold = vim.fn.foldclosed(startLnum) > 0
 	local foldStart, foldEnd
+	local bigForward = require("various-textobjs.config").config.forwardLooking.big
 
 	if startedOnFold then
 		foldStart = vim.fn.foldclosed(startLnum)
@@ -40,8 +38,8 @@ function M.closedFold(scope)
 	else
 		foldStart = startLnum
 		repeat
-			if foldStart >= lastLine or foldStart > (forwardLooking.big + startLnum) then
-				u.notFoundMsg(forwardLooking.big)
+			if foldStart >= lastLine or foldStart > (bigForward + startLnum) then
+				u.notFoundMsg(bigForward)
 				return
 			end
 			foldStart = foldStart + 1
@@ -86,6 +84,7 @@ end
 function M.mdFencedCodeBlock(scope)
 	local cursorLnum = vim.api.nvim_win_get_cursor(0)[1]
 	local codeBlockPattern = "```%w*$" -- only check end of line, see #78
+	local bigForward = require("various-textobjs.config").config.forwardLooking.big
 
 	-- scan buffer for all code blocks, add beginnings & endings to a table each
 	local cbBegin = {}
@@ -110,13 +109,12 @@ function M.mdFencedCodeBlock(scope)
 	repeat
 		j = j + 1
 		if j > #cbBegin then
-			u.notFoundMsg(forwardLooking.big)
+			u.notFoundMsg(bigForward)
 			return
 		end
 		local cursorInBetween = (cbBegin[j] <= cursorLnum) and (cbEnd[j] >= cursorLnum)
 		-- seek forward for a codeblock
-		local cursorInFront = (cbBegin[j] > cursorLnum)
-			and (cbBegin[j] <= cursorLnum + forwardLooking.big)
+		local cursorInFront = (cbBegin[j] > cursorLnum) and (cbBegin[j] <= cursorLnum + bigForward)
 	until cursorInBetween or cursorInFront
 
 	local start = cbBegin[j]
