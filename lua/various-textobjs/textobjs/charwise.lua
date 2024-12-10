@@ -215,7 +215,7 @@ function M.number(scope)
 end
 
 function M.url()
-	local pattern = "%l%l%l-://[^%s)]+"
+	local pattern = [=[%l%l%l-://[^%s)"'`]+]=] -- excludes: )"'` and whitespace
 	local bigForward = require("various-textobjs.config").config.forwardLooking.big
 	core.selectClosestTextobj(pattern, "outer", bigForward)
 end
