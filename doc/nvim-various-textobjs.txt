@@ -1,4 +1,4 @@
-*nvim-various-textobjs.txt*      For Neovim      Last change: 2024 December 07
+*nvim-various-textobjs.txt*      For Neovim      Last change: 2024 December 11
 
 ==============================================================================
 Table of Contents                    *nvim-various-textobjs-table-of-contents*
@@ -243,11 +243,15 @@ The `.setup()` call is optional if you do not want to use the default keymaps.
             disabledDefaults = {},
         },
     
-        -- Number of lines to seek forwards for a text object. See the overview table
-        -- in the README for which text object uses which value.
         forwardLooking = {
+            -- Number of lines to seek forwards for a text object. See the overview
+            -- table in the README for which text object uses which value.
             small = 5,
             big = 15,
+        },
+        behavior = {
+            -- save position in jumplist when using text objects
+            jumplist = true, 
         },
     
         -- extra configuration for specific text objects
