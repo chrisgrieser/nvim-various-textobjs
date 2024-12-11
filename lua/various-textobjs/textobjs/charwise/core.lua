@@ -45,10 +45,11 @@ function M.getTextobjPos(pattern, scope, lookForwLines)
 	local endCol, captureG1, captureG2, noneInStartingLine
 
 	-- first line: check if standing on or in front of textobj
+	-- `endCol < beginCol` happens on empty line, see #116
 	repeat
 		beginCol = beginCol + 1
 		beginCol, endCol, captureG1, captureG2 = lineContent:find(pattern, beginCol)
-		noneInStartingLine = not beginCol
+		noneInStartingLine = not (beginCol and endCol) or (endCol < beginCol)
 		local standingOnOrInFront = endCol and endCol > cursorCol
 	until standingOnOrInFront or noneInStartingLine
 

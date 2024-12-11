@@ -124,7 +124,7 @@ function M.lineCharacterwise(scope)
 	local isOnNUL = #vim.api.nvim_get_current_line() < vim.fn.col(".")
 	if isOnNUL then u.normal("g_") end
 
-	local pattern = "^(%s*).-(%s*)$"
+	local pattern = "^(%s*).+(%s*)$"
 	core.selectClosestTextobj(pattern, scope, 0)
 end
 
