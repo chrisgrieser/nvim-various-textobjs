@@ -42,32 +42,28 @@ function M.getTextobjPos(pattern, scope, lookForwLines)
 	local lineContent = u.getline(cursorRow)
 	local lastLine = vim.api.nvim_buf_line_count(0)
 	local beginCol = 0 ---@type number|nil
-	local endCol, captureG1, captureG2, noneInStartingLine
+	local endCol, captureG1, captureG2, in1stLine
 
 	-- first line: check if standing on or in front of textobj
-	-- `endCol < beginCol` happens on empty line, see #116
 	repeat
-		beginCol = beginCol + 1
-		beginCol, endCol, captureG1, captureG2 = lineContent:find(pattern, beginCol)
-		noneInStartingLine = not (beginCol and endCol) or (endCol < beginCol)
+		beginCol, endCol, captureG1, captureG2 = lineContent:find(pattern, beginCol + 1)
+		in1stLine = beginCol and (lineContent ~= "") -- check "" as .* returns non-nil then (#116)
 		local standingOnOrInFront = endCol and endCol > cursorCol
-	until standingOnOrInFront or noneInStartingLine
+	until standingOnOrInFront or not in1stLine
 
 	-- subsequent lines: search full line for first occurrence
 	local linesSearched = 0
-	if noneInStartingLine then
-		while true do
+	if not in1stLine then
+		repeat
 			linesSearched = linesSearched + 1
 			if linesSearched > lookForwLines or cursorRow + linesSearched > lastLine then return end
 			lineContent = u.getline(cursorRow + linesSearched)
-
 			beginCol, endCol, captureG1, captureG2 = lineContent:find(pattern)
-			if beginCol then break end
-		end
+		until beginCol
 	end
 
 	-- capture groups determine the inner/outer difference
-	-- INFO :find() returns integers of the position if the capture group is empty
+	-- `:find()` returns integers of the position if the capture group is empty
 	if scope == "inner" then
 		local frontOuterLen = type(captureG1) ~= "number" and #captureG1 or 0
 		local backOuterLen = type(captureG2) ~= "number" and #captureG2 or 0
