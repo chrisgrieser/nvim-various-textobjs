@@ -223,10 +223,10 @@ end
 ---@param scope "inner"|"outer" inner excludes the leading dot
 function M.chainMember(scope)
 	local patterns = {
-		leadingWithoutCall = "()[%w_][%w_]-([:.])",
-		leadingWithCall = "()[%w_][%w_]-%b()([:.])",
-		followingWithoutCall = "([:.])[%w_][%w_]-()",
-		followingWithCall = "([:.])[%w_][%w_]-%b()()",
+		leadingWithoutCall = "()[%w_][%w_]*([:.])",
+		leadingWithCall = "()[%w_][%w_]*%b()([:.])",
+		followingWithoutCall = "([:.])[%w_][%w_]*()",
+		followingWithCall = "([:.])[%w_][%w_]*%b()()",
 	}
 	core.selectClosestTextobj(patterns, scope, smallForward())
 end
