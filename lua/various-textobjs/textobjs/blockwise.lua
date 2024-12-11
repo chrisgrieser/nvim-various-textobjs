@@ -7,7 +7,7 @@ function M.column()
 	local lastLnum = vim.api.nvim_buf_line_count(0)
 	local startRow = vim.api.nvim_win_get_cursor(0)[1]
 	local trueCursorCol = vim.fn.virtcol(".") -- virtcol accurately accounts for tabs as indentation
-	local extraColumns = vim.v.count1 - 1 -- has to be done before running the other :normal commands, since they change v:count
+	local extraColumns = vim.v.count1 - 1 -- before running other :normal commands, since they change v:count
 	local nextLnum = startRow
 
 	repeat
@@ -22,11 +22,9 @@ function M.column()
 	-- SET POSITION
 	u.saveJumpToJumplist()
 
-	-- start visual block mode
-	-- INFO requires special character `^V`
+	-- start visual block mode ( requires special character `^V`)
 	if not (vim.fn.mode() == "") then vim.cmd.execute([["normal! \<C-v>"]]) end
 
-	-- set position
 	-- not using `setCursor`, since its column-positions are messed up by tab indentation
 	-- not using `G` to go down lines, since affected by `opt.startofline`
 	if linesDown > 0 then u.normal(tostring(linesDown) .. "j") end

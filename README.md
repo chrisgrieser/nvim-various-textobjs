@@ -140,9 +140,9 @@ require("various-textobjs").setup {
 		disabledDefaults = {},
 	},
 
-	-- Number of lines to seek forwards for a text object. See the overview table
-	-- in the README for which text object uses which value.
 	forwardLooking = {
+		-- Number of lines to seek forwards for a text object. See the overview
+		-- table in the README for which text object uses which value.
 		small = 5,
 		big = 15,
 	},
