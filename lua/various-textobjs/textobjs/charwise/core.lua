@@ -148,7 +148,7 @@ function M.selectClosestTextobj(patterns, scope, lookForwLines)
 
 	-- set selection & log
 	M.setSelection({ closest.row, closest.startCol }, { closest.row, closest.endCol })
-	if enableLogging then
+	if enableLogging and type(patterns) == "table" then
 		local textobj = debug.getinfo(3, "n").name
 		objLogging._closest = closest.patternName
 		vim.notify(
