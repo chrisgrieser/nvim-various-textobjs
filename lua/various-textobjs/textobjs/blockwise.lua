@@ -19,8 +19,8 @@ function M.column()
 	until hitsIndent or shorterLine
 	local linesDown = nextLnum - 1 - startRow
 
-	-- save last position in jumplist
-	u.normal("m`")
+	-- SET POSITION
+	u.saveJumpToJumplist()
 
 	-- start visual block mode
 	-- INFO requires special character `^V`

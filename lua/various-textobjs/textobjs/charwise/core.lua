@@ -6,7 +6,7 @@ local u = require("various-textobjs.utils")
 ---@param startPos { [1]: integer, [2]: integer }
 ---@param endPos { [1]: integer, [2]: integer }
 function M.setSelection(startPos, endPos)
-	u.normal("m`") -- save last position in jumplist
+	u.saveJumpToJumplist()
 	vim.api.nvim_win_set_cursor(0, startPos)
 	u.normal(vim.fn.mode() == "v" and "o" or "v")
 	vim.api.nvim_win_set_cursor(0, endPos)
@@ -19,7 +19,7 @@ function M.selectFromCursorTo(endPos, notFoundMsg)
 		u.notFoundMsg(notFoundMsg)
 		return
 	end
-	u.normal("m`") -- save last position in jumplist
+	u.saveJumpToJumplist()
 	u.normal(vim.fn.mode() == "v" and "o" or "v")
 	vim.api.nvim_win_set_cursor(0, endPos)
 end

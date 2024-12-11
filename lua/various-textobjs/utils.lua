@@ -41,5 +41,10 @@ function M.notFoundMsg(msg)
 	vim.notify(notifyText, vim.log.levels.INFO, { title = "various-textobjs", icon = icon })
 end
 
+function M.saveJumpToJumplist()
+	local jumplist = require("various-textobjs.config").config.behavior.jumplist
+	if jumplist then M.normal("m`") end
+end
+
 --------------------------------------------------------------------------------
 return M

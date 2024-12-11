@@ -20,6 +20,10 @@ local defaultConfig = {
 		small = 5,
 		big = 15,
 	},
+	behavior = {
+		-- save position in jumplist when using text objects
+		jumplist = true, 
+	},
 
 	-- extra configuration for specific text objects
 	textobjs = {

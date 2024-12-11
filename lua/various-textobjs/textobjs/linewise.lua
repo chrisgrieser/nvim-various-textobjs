@@ -6,7 +6,7 @@ local u = require("various-textobjs.utils")
 ---@param startline integer
 ---@param endline integer
 local function setLinewiseSelection(startline, endline)
-	u.normal("m`") -- save last position in jumplist (see #86)
+	u.saveJumpToJumplist()
 	vim.api.nvim_win_set_cursor(0, { startline, 0 })
 	if vim.fn.mode() ~= "V" then u.normal("V") end
 	u.normal("o")
