@@ -38,6 +38,10 @@ end
 ---@return integer? row
 ---@nodiscard
 function M.getTextobjPos(pattern, scope, lookForwLines)
+	-- when past the EoL in visual mode, will not find anything in that line
+	-- anymore, thus moving back to EoL (see #108 and #109)
+	if #vim.api.nvim_get_current_line() < vim.fn.col(".") then u.normal("h") end
+
 	local cursorRow, cursorCol = unpack(vim.api.nvim_win_get_cursor(0))
 	local lineContent = u.getline(cursorRow)
 	local lastLine = vim.api.nvim_buf_line_count(0)

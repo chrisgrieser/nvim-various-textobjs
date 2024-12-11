@@ -118,12 +118,6 @@ end
 ---current line, but characterwise
 ---@param scope "inner"|"outer" outer includes indentation and trailing spaces
 function M.lineCharacterwise(scope)
-	-- FIX being on NUL, see #108 and #109
-	-- (Not sure why this only happens for `lineCharacterwise` though…)
-	-- `col()` results in "true" char, as it factors in Tabs
-	local isOnNUL = #vim.api.nvim_get_current_line() < vim.fn.col(".")
-	if isOnNUL then u.normal("g_") end
-
 	local pattern = "^(%s*).+(%s*)$"
 	core.selectClosestTextobj(pattern, scope, 0)
 end
