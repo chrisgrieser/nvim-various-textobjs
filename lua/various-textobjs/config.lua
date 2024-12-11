@@ -22,7 +22,7 @@ local defaultConfig = {
 	},
 	behavior = {
 		-- save position in jumplist when using text objects
-		jumplist = true, 
+		jumplist = true,
 	},
 
 	-- extra configuration for specific text objects
