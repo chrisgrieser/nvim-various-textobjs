@@ -219,6 +219,21 @@ vim.keymap.set(
 All text objects can also be used as an API to modify their behavior or create
 custom commands. Here are some examples:
 
+### Go to next occurrence of a text object
+When called in normal mode, `nvim-various-textobjs` selects the next occurrence
+of the text object. Thus, you can easily create custom motions that go to the
+next occurrence of the text object:
+
+```lua
+local function gotoNextInnerNumber()
+	require("various-textobjs").number("inner")
+	local mode = vim.fn.mode()
+	if mode:find("[Vv]") then -- only switches to visual when textobj found
+		vim.cmd.normal { mode, bang = true } -- leaves visual mode
+	end
+end,
+```
+
 ### `ii` on unindented line should select entire buffer
 Using a simple if-else-block, you can create a hybrid of the inner indentation
 text object and the entire-buffer text object, if you prefer that kind of
