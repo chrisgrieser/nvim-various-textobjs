@@ -1,4 +1,4 @@
-*nvim-various-textobjs.txt*      For Neovim      Last change: 2024 December 11
+*nvim-various-textobjs.txt*      For Neovim      Last change: 2024 December 13
 
 ==============================================================================
 Table of Contents                    *nvim-various-textobjs-table-of-contents*
@@ -85,8 +85,8 @@ LIST OF TEXT OBJECTS*nvim-various-textobjs-nvim-various-textobjs--list-of-text-o
   nearEoL                  from cursor position to end  -                    -                     n     all
                            of line minus one character                                                   
 
-  lineCharacterwise        current line, but            outer includes       -                   i_/a_   all
-                           characterwise                indentation and&                                 
+  lineCharacterwise        current line, but            outer includes       small, if on        i_/a_   all
+                           characterwise                indentation &        blank                       
                                                         trailing spaces                                  
 
   column                   column down until indent or  -                    -                    \|     all
