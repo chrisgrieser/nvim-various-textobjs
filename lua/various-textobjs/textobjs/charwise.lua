@@ -119,7 +119,7 @@ end
 ---@param scope "inner"|"outer" outer includes indentation and trailing spaces
 function M.lineCharacterwise(scope)
 	local pattern = "^(%s*).+(%s*)$" -- use `.-` so inner obj does not match trailing spaces
-	core.selectClosestTextobj(pattern, scope, 0)
+	core.selectClosestTextobj(pattern, scope, smallForward())
 end
 
 function M.diagnostic(oldWrapSetting)
