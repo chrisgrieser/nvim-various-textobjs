@@ -118,7 +118,7 @@ end
 ---current line, but characterwise
 ---@param scope "inner"|"outer" outer includes indentation and trailing spaces
 function M.lineCharacterwise(scope)
-	local pattern = "^(%s*).+(%s*)$" -- use `.-` so inner obj does not match trailing spaces
+	local pattern = "^(%s*).-(%s*)$" -- use `.-` so inner obj does not match trailing spaces
 	core.selectClosestTextobj(pattern, scope, smallForward())
 end
 
