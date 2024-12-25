@@ -16,6 +16,7 @@ Bundle of more than 30 new text objects for Neovim.
 	* [Options](#options)
 	* [Use your own keybindings](#use-your-own-keybindings)
 - [Advanced usage / API](#advanced-usage--api)
+	* [Go to next occurrence of a text object](#go-to-next-occurrence-of-a-text-object)
 	* [`ii` on unindented line should select entire buffer](#ii-on-unindented-line-should-select-entire-buffer)
 	* [Smarter `gx`](#smarter-gx)
 	* [Delete surrounding indentation](#delete-surrounding-indentation)
@@ -352,7 +353,7 @@ end, { desc = "Delete Surrounding Indentation" })
 Similarly, you can also create a `ysii` command to yank the two lines surrounding
 an indentation text object. (Not using `ysi`, since that blocks surround
 commands like `ysi)`). Using `nvim_win_[gs]et_cursor()`, you make the
-operation sticky, meaning the cursor is not moved. 
+operation sticky, meaning the cursor is not moved.
 
 ```lua
 vim.keymap.set("n", "ysii", function()
