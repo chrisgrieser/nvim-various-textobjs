@@ -1,4 +1,4 @@
-*nvim-various-textobjs.txt*      For Neovim      Last change: 2024 December 13
+*nvim-various-textobjs.txt*      For Neovim      Last change: 2024 December 25
 
 ==============================================================================
 Table of Contents                    *nvim-various-textobjs-table-of-contents*
@@ -29,6 +29,7 @@ TABLE OF CONTENTS*nvim-various-textobjs-nvim-various-textobjs--table-of-contents
     - |nvim-various-textobjs-options|
     - |nvim-various-textobjs-use-your-own-keybindings|
 - |nvim-various-textobjs-advanced-usage-/-api|
+    - |nvim-various-textobjs-go-to-next-occurrence-of-a-text-object|
     - |nvim-various-textobjs-`ii`-on-unindented-line-should-select-entire-buffer|
     - |nvim-various-textobjs-smarter-`gx`|
     - |nvim-various-textobjs-delete-surrounding-indentation|
