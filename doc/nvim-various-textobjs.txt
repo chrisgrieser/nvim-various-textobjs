@@ -1,4 +1,4 @@
-*nvim-various-textobjs.txt*      For Neovim      Last change: 2024 December 25
+*nvim-various-textobjs.txt*      For Neovim      Last change: 2024 December 26
 
 ==============================================================================
 Table of Contents                    *nvim-various-textobjs-table-of-contents*
@@ -269,6 +269,11 @@ The `.setup()` call is optional if you do not want to use the default keymaps.
             },
             diagnostic = {
                 wrap = true,
+            },
+            url = {
+                patterns = {
+                    [[%l%l%l-://[^%s)"'`]+]], -- exclude ) for md, "'` for strings
+                },
             },
         },
     
