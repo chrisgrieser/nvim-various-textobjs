@@ -108,7 +108,9 @@ function M.selectClosestTextobj(patterns, scope, lookForwLines)
 			local cur = {}
 			cur.row, cur.startCol, cur.endCol = M.getTextobjPos(pattern, scope, lookForwLines)
 			if cur.row and cur.startCol and cur.endCol then
-				if patternName:find("tieloser") then cur.tieloser = true end
+				if type(patternName) == "string" and patternName:find("tieloser") then
+					cur.tieloser = true
+				end
 				cur.distance = cur.startCol - cursorCol
 				cur.endDistance = cursorCol - cur.endCol
 				cur.cursorOnObj = cur.distance <= 0 and cur.endDistance <= 0

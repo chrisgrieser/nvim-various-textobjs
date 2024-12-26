@@ -40,6 +40,11 @@ local defaultConfig = {
 		diagnostic = {
 			wrap = true,
 		},
+		url = {
+			patterns = {
+				[[%l%l%l-://[^%s)"'`]+]], -- exclude ) for md, "'` for strings
+			},
+		},
 	},
 
 	notify = {

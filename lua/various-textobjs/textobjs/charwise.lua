@@ -209,9 +209,9 @@ function M.number(scope)
 end
 
 function M.url()
-	local pattern = [[%l%l%l-://[^%s)"'`]+]] -- excludes: )"'` and whitespace
+	local urlPatterns = require("various-textobjs.config").config.textobjs.url.patterns
 	local bigForward = require("various-textobjs.config").config.forwardLooking.big
-	core.selectClosestTextobj(pattern, "outer", bigForward)
+	core.selectClosestTextobj(urlPatterns, "outer", bigForward)
 end
 
 ---@param scope "inner"|"outer" inner excludes the leading dot
