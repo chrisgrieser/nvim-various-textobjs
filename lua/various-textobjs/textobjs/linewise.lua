@@ -144,15 +144,10 @@ end
 ---@param startBorder "inner"|"outer"
 ---@param endBorder "inner"|"outer"
 ---@return boolean success
-function M.indentation(startBorder, endBorder, oldBlankSetting)
-	-- DEPRECATION (2024-12-06)
-	if oldBlankSetting ~= nil then
-		local msg =
-			"`.indentation()` does not use a 3rd argument anymore. Use the config `textobjs.indent.blanksAreDelimiter` instead."
-		u.warn(msg)
+function M.indentation(startBorder, endBorder, blanksDelimit)
+	if blanksDelimit == nil then
+	   blanksDelimit = require("various-textobjs.config").config.textobjs.indentation.blanksAreDelimiter
 	end
-	local blanksDelimit =
-		require("various-textobjs.config").config.textobjs.indentation.blanksAreDelimiter
 
 	-- when on blank line seek for next non-blank line to start
 	local curLnum = vim.api.nvim_win_get_cursor(0)[1]
