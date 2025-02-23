@@ -42,7 +42,7 @@ local defaultConfig = {
 		},
 		url = {
 			patterns = {
-				[[%l%l%l+://[^%s)%]}"'`]+]], -- exclude ) for md, "'` for strings, } for bibtex
+				[[%l%l%l+://[^%s)%]}"'`>]+]],
 			},
 		},
 	},
