@@ -1,4 +1,4 @@
-*nvim-various-textobjs.txt*      For Neovim      Last change: 2025 February 23
+*nvim-various-textobjs.txt*        For Neovim       Last change: 2025 March 18
 
 ==============================================================================
 Table of Contents                    *nvim-various-textobjs-table-of-contents*
@@ -167,7 +167,7 @@ LIST OF TEXT OBJECTS*nvim-various-textobjs-nvim-various-textobjs--list-of-text-o
                            Treesitter parser                                                             
 
   notebookCell             cell delimited by double     outer includes the   -                   iN/aN   all
-                           percent comment, such as     bottom cell border                               
+                           percent comment, such as     top cell border                                  
                            # %%                                                                          
   ------------------------------------------------------------------------------------------------------------------
 
