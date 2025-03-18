@@ -264,8 +264,8 @@ function M.notebookCell(scope)
 		nextLnum = nextLnum + 1
 	end
 
-	-- outer includes bottom cell border
-	if scope == "outer" and nextLnum < lastLine then nextLnum = nextLnum + 1 end
+	-- outer includes *top* cell border (see #124)
+	if scope == "outer" and prevLnum > 1 then prevLnum = prevLnum - 1 end
 
 	setLinewiseSelection(prevLnum + 1, nextLnum - 1)
 end
