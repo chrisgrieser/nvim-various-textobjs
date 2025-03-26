@@ -17,6 +17,7 @@ Bundle of more than 30 new text objects for Neovim.
 	* [Use your own keybindings](#use-your-own-keybindings)
 - [Advanced usage / API](#advanced-usage--api)
 	* [Go to next occurrence of a text object](#go-to-next-occurrence-of-a-text-object)
+	* [Dynamically switch text object settings](#dynamically-switch-text-object-settings)
 	* [`ii` on unindented line should select entire buffer](#ii-on-unindented-line-should-select-entire-buffer)
 	* [Smarter `gx`](#smarter-gx)
 	* [Delete surrounding indentation](#delete-surrounding-indentation)
@@ -240,6 +241,36 @@ local function gotoNextInnerNumber()
 end,
 ```
 
+### Dynamically switch text object settings
+Some text objects have specific settings allowing you to configure their
+behavior. In case you want two have two keymaps, one for each behavior, you can
+use this plugin's `setup` call before calling the respective text object.
+
+```lua
+-- Example: one keymap for `http` urls only, one for `ftp` urls only
+vim.keymap.set({ "o", "x" }, "H", function()
+	require("various-textobjs").setup {
+		textobjs = { 
+			url = {
+				patterns = { [[https?://[^%s)%]}"'`>]+]] },
+			},
+		},
+	}
+	return "<cmd>lua require('various-textobjs').url()<CR>"
+end, { expr = true, desc = "http-url textobj" })
+
+vim.keymap.set({ "o", "x" }, "F", function()
+	require("various-textobjs").setup {
+		textobjs = { 
+			url = {
+				patterns = { [[ftp://[^%s)%]}"'`>]+]] },
+			},
+		},
+	}
+	return "<cmd>lua require('various-textobjs').url()<CR>"
+end, { expr = true, desc = "ftp-url textobj" })
+```
+
 ### `ii` on unindented line should select entire buffer
 Using a simple if-else-block, you can create a hybrid of the inner indentation
 text object and the entire-buffer text object, if you prefer that kind of
@@ -275,37 +306,6 @@ vim.keymap.set("n", "gx", function()
 	vim.cmd.normal { '"zy', bang = true }
 	local url = vim.fn.getreg("z")
 	vim.ui.open(url) -- requires nvim 0.10
-end, { desc = "URL Opener" })
-```
-
-You could go even further: When no URL can be found by `various-textobjs`, you
-could retrieve all URLs in the buffer and select one to open.
-
-```lua
-vim.keymap.set("n", "gx", function()
-	require("various-textobjs").url()
-	local foundURL = vim.fn.mode() == "v"
-	if foundURL then
-		vim.cmd.normal('"zy')
-		local url = vim.fn.getreg("z")
-		vim.ui.open(url) -- requires nvim 0.10
-		return
-	end
-
-	-- find all URLs in buffer
-	local urlPattern = [[%l%l%l-://[^%s)"'`]+]]
-	local bufText = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n")
-	local urls = {}
-	for url in bufText:gmatch(urlPattern) do
-		table.insert(urls, url)
-	end
-	if #urls == 0 then return end
-
-	-- select one
-	vim.ui.select(urls, { prompt = "Select URL:" }, function(choice)
-		if not choice then return end
-		vim.ui.open(url) -- requires nvim 0.10
-	end)
 end, { desc = "URL Opener" })
 ```
 
