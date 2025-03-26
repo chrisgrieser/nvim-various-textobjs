@@ -25,6 +25,9 @@ local function smallForward() return require("various-textobjs.config").config.f
 
 ---@param scope "inner"|"outer"
 function M.subword(scope)
+	-- needs to be saved, since using a textobj always results in visual mode
+	local initialMode = vim.fn.mode()
+
 	local patterns = {
 		camelOrLowercase = "()%a[%l%d]+([_-]?)",
 		UPPER_CASE = "()%u[%u%d]+([_-]?)",
@@ -68,7 +71,7 @@ function M.subword(scope)
 		local nextIsPascal = charAfter:find("%u")
 		local isWordStart = charBefore:find("%W") or charBefore == ""
 		local isDeletion = vim.v.operator == "d"
-		local notVisual = not vim.fn.mode():find("[Vv]") -- see #121
+		local notVisual = not initialMode:find("[Vv]") -- see #121
 		if isCamel and notPascal and nextIsPascal and isWordStart and isDeletion and notVisual then
 			-- lowercase the following subword
 			local updatedLine = line:sub(1, endCol) .. charAfter:lower() .. line:sub(endCol + 2)
