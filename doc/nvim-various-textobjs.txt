@@ -1,4 +1,4 @@
-*nvim-various-textobjs.txt*        For Neovim       Last change: 2025 March 18
+*nvim-various-textobjs.txt*        For Neovim       Last change: 2025 March 26
 
 ==============================================================================
 Table of Contents                    *nvim-various-textobjs-table-of-contents*
@@ -30,6 +30,7 @@ TABLE OF CONTENTS*nvim-various-textobjs-nvim-various-textobjs--table-of-contents
     - |nvim-various-textobjs-use-your-own-keybindings|
 - |nvim-various-textobjs-advanced-usage-/-api|
     - |nvim-various-textobjs-go-to-next-occurrence-of-a-text-object|
+    - |nvim-various-textobjs-dynamically-switch-text-object-settings|
     - |nvim-various-textobjs-`ii`-on-unindented-line-should-select-entire-buffer|
     - |nvim-various-textobjs-smarter-`gx`|
     - |nvim-various-textobjs-delete-surrounding-indentation|
@@ -349,6 +350,38 @@ next occurrence of the text object:
 <
 
 
+DYNAMICALLY SWITCH TEXT OBJECT SETTINGS ~
+
+Some text objects have specific settings allowing you to configure their
+behavior. In case you want two have two keymaps, one for each behavior, you can
+use this plugin’s `setup` call before calling the respective text object.
+
+>lua
+    -- Example: one keymap for `http` urls only, one for `ftp` urls only
+    vim.keymap.set({ "o", "x" }, "H", function()
+        require("various-textobjs").setup {
+            textobjs = { 
+                url = {
+                    patterns = { [[https?://[^%s)%]}"'`>]+]] },
+                },
+            },
+        }
+        return "<cmd>lua require('various-textobjs').url()<CR>"
+    end, { expr = true, desc = "http-url textobj" })
+    
+    vim.keymap.set({ "o", "x" }, "F", function()
+        require("various-textobjs").setup {
+            textobjs = { 
+                url = {
+                    patterns = { [[ftp://[^%s)%]}"'`>]+]] },
+                },
+            },
+        }
+        return "<cmd>lua require('various-textobjs').url()<CR>"
+    end, { expr = true, desc = "ftp-url textobj" })
+<
+
+
 II ON UNINDENTED LINE SHOULD SELECT ENTIRE BUFFER ~
 
 Using a simple if-else-block, you can create a hybrid of the inner indentation
@@ -387,37 +420,6 @@ on the URL.
         vim.cmd.normal { '"zy', bang = true }
         local url = vim.fn.getreg("z")
         vim.ui.open(url) -- requires nvim 0.10
-    end, { desc = "URL Opener" })
-<
-
-You could go even further: When no URL can be found by `various-textobjs`, you
-could retrieve all URLs in the buffer and select one to open.
-
->lua
-    vim.keymap.set("n", "gx", function()
-        require("various-textobjs").url()
-        local foundURL = vim.fn.mode() == "v"
-        if foundURL then
-            vim.cmd.normal('"zy')
-            local url = vim.fn.getreg("z")
-            vim.ui.open(url) -- requires nvim 0.10
-            return
-        end
-    
-        -- find all URLs in buffer
-        local urlPattern = [[%l%l%l-://[^%s)"'`]+]]
-        local bufText = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n")
-        local urls = {}
-        for url in bufText:gmatch(urlPattern) do
-            table.insert(urls, url)
-        end
-        if #urls == 0 then return end
-    
-        -- select one
-        vim.ui.select(urls, { prompt = "Select URL:" }, function(choice)
-            if not choice then return end
-            vim.ui.open(url) -- requires nvim 0.10
-        end)
     end, { desc = "URL Opener" })
 <
 
