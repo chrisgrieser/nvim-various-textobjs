@@ -37,10 +37,11 @@ function M.subword(scope)
 	-----------------------------------------------------------------------------
 	-- EXTRA ADJUSTMENTS
 	local line = vim.api.nvim_buf_get_lines(0, row - 1, row, false)[1]
-	startCol, endCol = startCol + 1, endCol + 1 -- adjust for lua indexing
+	startCol, endCol = startCol + 1, endCol + 1 -- adjust for lua indexing for `:sub`
 	local charBefore = line:sub(startCol - 1, startCol - 1)
-	local lastChar = line:sub(endCol, endCol)
 	local charAfter = line:sub(endCol + 1, endCol + 1)
+	local firstChar = line:sub(startCol, startCol)
+	local lastChar = line:sub(endCol, endCol)
 
 	-- LEADING `-_` ON LAST PART OF SUBWORD
 	-- 1. The outer pattern checks for subwords that with potentially trailing
@@ -62,11 +63,12 @@ function M.subword(scope)
 	-- When deleting the start of a camelCased word, the result should still be
 	-- camelCased and not PascalCased (see #113).
 	if require("various-textobjs.config").config.textobjs.subword.noCamelToPascalCase then
-		local wasCamelCased = vim.fn.expand("<cword>"):find("%l%u")
-		local followedByPascalCase = charAfter:find("%u")
+		local isCamel = vim.fn.expand("<cword>"):find("%l%u")
+		local notPascal = not firstChar:find("%u") -- see https://github.com/chrisgrieser/nvim-various-textobjs/issues/113#issuecomment-2752632884
+		local followedByPascal = charAfter:find("%u")
 		local isStartOfWord = charBefore:find("%W") or charBefore == ""
 		local isDeletion = vim.v.operator == "d"
-		if wasCamelCased and followedByPascalCase and isStartOfWord and isDeletion then
+		if isCamel and notPascal and followedByPascal and isStartOfWord and isDeletion then
 			-- lowercase the following subword
 			local updatedLine = line:sub(1, endCol) .. charAfter:lower() .. line:sub(endCol + 2)
 			vim.api.nvim_buf_set_lines(0, row - 1, row, false, { updatedLine })
