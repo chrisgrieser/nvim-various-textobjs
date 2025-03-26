@@ -65,10 +65,11 @@ function M.subword(scope)
 	if require("various-textobjs.config").config.textobjs.subword.noCamelToPascalCase then
 		local isCamel = vim.fn.expand("<cword>"):find("%l%u")
 		local notPascal = not firstChar:find("%u") -- see https://github.com/chrisgrieser/nvim-various-textobjs/issues/113#issuecomment-2752632884
-		local followedByPascal = charAfter:find("%u")
-		local isStartOfWord = charBefore:find("%W") or charBefore == ""
+		local nextIsPascal = charAfter:find("%u")
+		local isWordStart = charBefore:find("%W") or charBefore == ""
 		local isDeletion = vim.v.operator == "d"
-		if isCamel and notPascal and followedByPascal and isStartOfWord and isDeletion then
+		local notVisual = not vim.fn.mode():find("[Vv]") -- see #121
+		if isCamel and notPascal and nextIsPascal and isWordStart and isDeletion and notVisual then
 			-- lowercase the following subword
 			local updatedLine = line:sub(1, endCol) .. charAfter:lower() .. line:sub(endCol + 2)
 			vim.api.nvim_buf_set_lines(0, row - 1, row, false, { updatedLine })
