@@ -5,8 +5,8 @@ local u = require("various-textobjs.utils")
 --------------------------------------------------------------------------------
 
 -- Warn in case user tries to call a textobj that doesn't exist.
--- (Only needed in the module for `charwise` text objects, since it is the catch
--- all for the `__index` redirect from this plugin's main `init.lua`.)
+-- (Only needed in the module for `charwise` text objects, since it is the
+-- catch-all for the `__index` redirect from this plugin's main `init.lua`.)
 setmetatable(M, {
 	__index = function(_, key)
 		return function()
@@ -42,30 +42,32 @@ function M.subword(scope)
 	local lastChar = line:sub(endCol, endCol)
 	local charAfter = line:sub(endCol + 1, endCol + 1)
 
-	-- The outer pattern checks for subwords that with potentially trailing
+	-- LEADING `-_` ON LAST PART OF SUBWORD
+	-- 1. The outer pattern checks for subwords that with potentially trailing
 	-- `_-`, however, if the subword is the last segment of a word, there is
 	-- potentially also a leading `_-` which should be included (see #83).
-
-	-- Checking for those with patterns is not possible, since subwords without
-	-- any trailing/leading chars are always considered the closest (and thus
-	-- prioritized by `selectClosestTextobj`), even though the usage expectation
-	-- is that `subword` should be more greedy. Thus, we check if we are on the
-	-- last part of a snake_cased word, and if so, add the leading `_-` to the
-	-- selection.
+	-- 2. Checking for those with patterns is not possible, since subwords
+	-- without any trailing/leading chars are always considered the closest (and
+	-- thus prioritized by `selectClosestTextobj`), even though the usage
+	-- expectation is that `subword` should be more greedy.
+	-- 3. Thus, we check if we are on the last part of a snake_cased word, and if
+	-- so, add the leading `_-` to the selection.
 	local onLastSnakeCasePart = charBefore:find("[_-]") and not lastChar:find("[_-]")
 	if scope == "outer" and onLastSnakeCasePart then
 		-- `o`: to start of selection, `h`: select char before `o`: back to end
 		u.normal("oho")
 	end
 
+	-- CAMEL/PASCAL CASE DEALING
 	-- When deleting the start of a camelCased word, the result should still be
 	-- camelCased and not PascalCased (see #113).
 	if require("various-textobjs.config").config.textobjs.subword.noCamelToPascalCase then
-		local wasCamelCased = vim.fn.expand("<cword>"):find("%l%u") ~= nil
+		local wasCamelCased = vim.fn.expand("<cword>"):find("%l%u")
 		local followedByPascalCase = charAfter:find("%u")
 		local isStartOfWord = charBefore:find("%W") or charBefore == ""
 		local isDeletion = vim.v.operator == "d"
 		if wasCamelCased and followedByPascalCase and isStartOfWord and isDeletion then
+			-- lowercase the following subword
 			local updatedLine = line:sub(1, endCol) .. charAfter:lower() .. line:sub(endCol + 2)
 			vim.api.nvim_buf_set_lines(0, row - 1, row, false, { updatedLine })
 		end
