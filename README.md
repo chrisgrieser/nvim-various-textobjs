@@ -361,6 +361,7 @@ commands like `ysi)`). Using `nvim_win_[gs]et_cursor()`, you make the
 operation sticky, meaning the cursor is not moved.
 
 ```lua
+-- NOTE this function uses `vim.hl.range` requires nvim 0.11
 vim.keymap.set("n", "ysii", function()
 	local startPos = vim.api.nvim_win_get_cursor(0)
 
@@ -379,9 +380,10 @@ vim.keymap.set("n", "ysii", function()
 
 	-- highlight yanked text
 	local ns = vim.api.nvim_create_namespace("ysi")
-	vim.api.nvim_buf_add_highlight(0, ns, "IncSearch", startLn, 0, -1)
-	vim.api.nvim_buf_add_highlight(0, ns, "IncSearch", endLn, 0, -1)
-	vim.defer_fn(function() vim.api.nvim_buf_clear_namespace(0, ns, 0, -1) end, 1000)
+	local duration = 1000
+	vim.hl.range(0, ns, "IncSearch", { startLn, 0 }, { startLn, -1 })
+	vim.hl.range(0, ns, "IncSearch", { endLn, 0 }, { endLn, -1 })
+	vim.defer_fn(function() vim.api.nvim_buf_clear_namespace(0, ns, 0, -1) end, duration)
 
 	-- restore cursor position
 	vim.api.nvim_win_set_cursor(0, startPos)
