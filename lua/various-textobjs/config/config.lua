@@ -94,7 +94,7 @@ function M.setup(userConfig)
 	---@diagnostic enable: undefined-field
 
 	if M.config.keymaps.useDefaults then
-		require("various-textobjs.default-keymaps").setup(M.config.keymaps.disabledDefaults)
+		require("various-textobjs..config.default-keymaps").setup(M.config.keymaps.disabledDefaults)
 	end
 end
 

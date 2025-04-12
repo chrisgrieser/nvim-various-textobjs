@@ -20,14 +20,14 @@ function M.getline(lnum) return vim.api.nvim_buf_get_lines(0, lnum - 1, lnum, tr
 
 ---@param msg string
 function M.warn(msg)
-	local icon = require("various-textobjs.config").config.notify.icon
+	local icon = require("various-textobjs.config.config").config.notify.icon
 	vim.notify(msg, vim.log.levels.WARN, { title = "various-textobjs", icon = icon })
 end
 
 ---notification when no textobj could be found
 ---@param msg integer|string lines tried to look forward, or custom message
 function M.notFoundMsg(msg)
-	if not require("various-textobjs.config").config.notify.whenObjectNotFound then return end
+	if not require("various-textobjs.config.config").config.notify.whenObjectNotFound then return end
 	local notifyText
 	if type(msg) == "number" then
 		local lookForwLines = msg
@@ -37,12 +37,12 @@ function M.notFoundMsg(msg)
 	elseif type(msg) == "string" then
 		notifyText = msg
 	end
-	local icon = require("various-textobjs.config").config.notify.icon
+	local icon = require("various-textobjs.config.config").config.notify.icon
 	vim.notify(notifyText, vim.log.levels.INFO, { title = "various-textobjs", icon = icon })
 end
 
 function M.saveJumpToJumplist()
-	local jumplist = require("various-textobjs.config").config.behavior.jumplist
+	local jumplist = require("various-textobjs.config.config").config.behavior.jumplist
 	if jumplist then M.normal("m`") end
 end
 

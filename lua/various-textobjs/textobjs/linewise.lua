@@ -30,7 +30,7 @@ function M.closedFold(scope)
 	local lastLine = vim.api.nvim_buf_line_count(0)
 	local startedOnFold = vim.fn.foldclosed(startLnum) > 0
 	local foldStart, foldEnd
-	local bigForward = require("various-textobjs.config").config.forwardLooking.big
+	local bigForward = require("various-textobjs.config.config").config.forwardLooking.big
 
 	if startedOnFold then
 		foldStart = vim.fn.foldclosed(startLnum)
@@ -84,7 +84,7 @@ end
 function M.mdFencedCodeBlock(scope)
 	local cursorLnum = vim.api.nvim_win_get_cursor(0)[1]
 	local codeBlockPattern = "```%w*$" -- only check end of line, see #78
-	local bigForward = require("various-textobjs.config").config.forwardLooking.big
+	local bigForward = require("various-textobjs.config.config").config.forwardLooking.big
 
 	-- scan buffer for all code blocks, add beginnings & endings to a table each
 	local cbBegin = {}
@@ -152,7 +152,7 @@ function M.indentation(startBorder, endBorder, oldBlankSetting)
 		u.warn(msg)
 	end
 	local blanksDelimit =
-		require("various-textobjs.config").config.textobjs.indentation.blanksAreDelimiter
+		require("various-textobjs.config.config").config.textobjs.indentation.blanksAreDelimiter
 
 	-- when on blank line seek for next non-blank line to start
 	local curLnum = vim.api.nvim_win_get_cursor(0)[1]

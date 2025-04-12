@@ -91,7 +91,7 @@ end
 ---@return integer? startCol
 ---@return integer? endCol
 function M.selectClosestTextobj(patterns, scope, lookForwLines)
-	local enableLogging = require("various-textobjs.config").config.debug
+	local enableLogging = require("various-textobjs.config.config").config.debug
 	local objLogging = {}
 
 	-- initialized with values to always loose comparisons
