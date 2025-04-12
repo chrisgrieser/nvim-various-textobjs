@@ -16,6 +16,7 @@ setmetatable(M, {
 			if key == "diagnostic" then module = "diagnostic" end
 			if key == "subword" then module = "subword" end
 			if key == "pyTripleQuotes" then module = "treesitter" end
+			if key == "emoji" then module = "emoji" end
 			require("various-textobjs.textobjs." .. module)[key](...)
 		end
 	end,

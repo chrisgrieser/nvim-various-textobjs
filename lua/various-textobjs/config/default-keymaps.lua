@@ -27,6 +27,7 @@ local oneMaps = {
 	entireBuffer = "gG", -- G + gg
 	url = "L", -- gu, gU, and U would conflict with gugu, gUgU, and gUU. u would conflict with gcu (undo comment)
 	lastChange = "g;", -- consistent with g; movement
+	emoji = ".", -- `:` would block the cmdline from visual mode, eE conflicts with motions
 }
 local ftMaps = {
 	{ map = { mdLink = "l" }, fts = { "markdown", "toml" } },
