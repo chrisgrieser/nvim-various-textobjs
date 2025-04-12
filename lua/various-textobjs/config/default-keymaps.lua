@@ -30,7 +30,7 @@ local oneMaps = {
 	emoji = ".", -- `:` would block the cmdline from visual mode, eE conflicts with motions
 }
 local ftMaps = {
-	{ map = { mdLink = "l" }, fts = { "markdown", "toml" } },
+	{ map = { mdLink = "l" }, fts = { "markdown" } },
 	{ map = { mdEmphasis = "e" }, fts = { "markdown" } },
 	{ map = { pyTripleQuotes = "y" }, fts = { "python" } },
 	{ map = { mdFencedCodeBlock = "C" }, fts = { "markdown" } },
