@@ -82,8 +82,9 @@ end
 
 ---@param scope "inner"|"outer" inner excludes the backticks
 function M.mdFencedCodeBlock(scope)
-	-- only check end of line (#78), allow anything as codeblock label (#127)
-	local codeBlockPattern = "```.*$"
+	-- 1. allow indented codeblocks after various md syntax (#78)
+	-- 2. allow anything as codeblock label (#127)
+	local codeBlockPattern = "^[%d%s.)>-*+]*```[^`]*$"
 
 	local cursorLnum = vim.api.nvim_win_get_cursor(0)[1]
 	local bigForward = require("various-textobjs.config.config").config.forwardLooking.big
