@@ -17,17 +17,17 @@ local innerOuterMaps = {
 local oneMaps = {
 	nearEoL = "n", -- does override the builtin "to next search match" textobj, but nobody really uses that
 	visibleInWindow = "gw",
-	toNextClosingBracket = "C", -- % has a race condition with vim's builtin matchit plugin
+	toNextClosingBracket = "C", -- `%` has a race condition with vim's builtin matchit plugin
 	toNextQuotationMark = "Q",
 	restOfParagraph = "r",
 	restOfIndentation = "R",
 	restOfWindow = "gW",
 	diagnostic = "!",
 	column = "|",
-	entireBuffer = "gG", -- G + gg
-	url = "L", -- gu, gU, and U would conflict with gugu, gUgU, and gUU. u would conflict with gcu (undo comment)
-	lastChange = "g;", -- consistent with g; movement
-	emoji = ".", -- `:` would block the cmdline from visual mode, eE conflicts with motions
+	entireBuffer = "gG", -- `G` + `gg`
+	url = "L", -- `gu`, `gU`, and `U` would conflict with `gugu`, `gUgU`, and `gUU`. `u` would conflict with `gcu` (undo comment)
+	lastChange = "g;", -- consistent with `g;` movement
+	emoji = ".", -- `:` would block the cmdline from visual mode, `e`/`E` conflicts with motions
 }
 local ftMaps = {
 	{ map = { mdLink = "l" }, fts = { "markdown" } },
