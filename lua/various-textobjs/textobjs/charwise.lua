@@ -137,6 +137,17 @@ function M.chainMember(scope)
 	core.selectClosestTextobj(patterns, scope, smallForward())
 end
 
+---@param scope "inner"|"outer" outer includes the comma
+function M.argument(scope)
+	local patterns = {
+		-- CAVEAT patterns will not work with arguments that contain a `()`, to
+		-- get those accurately, you will need treeesitter
+		leadingComma = [[(,)[%w_."'%]%[]+()]],
+		followingComma = [[()[%w_."'%]%[]+(,)]],
+	}
+	core.selectClosestTextobj(patterns, scope, smallForward())
+end
+
 function M.lastChange()
 	local changeStartPos = vim.api.nvim_buf_get_mark(0, "[")
 	local changeEndPos = vim.api.nvim_buf_get_mark(0, "]")
