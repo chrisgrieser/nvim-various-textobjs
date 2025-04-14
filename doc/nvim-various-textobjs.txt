@@ -1,4 +1,4 @@
-*nvim-various-textobjs.txt*        For Neovim       Last change: 2025 April 12
+*nvim-various-textobjs.txt*        For Neovim       Last change: 2025 April 14
 
 ==============================================================================
 Table of Contents                    *nvim-various-textobjs-table-of-contents*
@@ -115,8 +115,8 @@ LIST OF TEXT OBJECTS*nvim-various-textobjs-nvim-various-textobjs--list-of-text-o
                                                            line after the last                      
                                                            folded line                              
 
-  chainMember              section of a chain connected    outer includes the     small               im/am
-                           with . (or :) like foo.bar or   leading . (or :)                         
+  chainMember              section of a chain connected    outer includes one .   small               im/am
+                           with . (or :) like foo.bar or   (or :)                                   
                            foo.baz(para)                                                            
 
   visibleInWindow          all lines visible in the        -                      -                    gw
@@ -134,47 +134,63 @@ LIST OF TEXT OBJECTS*nvim-various-textobjs-nvim-various-textobjs--list-of-text-o
 
   emoji                    single emoji (or Nerdfont       -                      small                 .
                            glyph)                                                                   
+
+  argument                 comma-separated argument (not   includes one . (or :)  small               i,/a,
+                           as accurate as the                                                       
+                           treesitter-textobjects, use as                                           
+                           fallback)                                                                
   -----------------------------------------------------------------------------------------------------------
-  ---------------------------------------------------------------------------------------------------------------
-  filetype-specific text description                 inner / outer        forward-seeking    default  filetypes
-  objects                                                                                    keymaps  (for
-                                                                                                      default
-                                                                                                      keymaps)
-  ---------------------- --------------------------- -------------------- ----------------- --------- -----------
-  mdLink                 Markdown link like          inner is only the    small               il/al   markdown
-                         [title](url)                link title (between                              
-                                                     the [])                                          
 
-  mdEmphasis             Markdown text enclosed by   inner is only the    small               ie/ae   markdown
-                         *, **, _, __, ~~, or ==     emphasis content                                 
+  [!TIP] For some text objects, you can also use `caW` or `cl` if your cursor is
+  standing on the object in question. However, these text objects become useful
+  when utilizing their forward-seeking behavior: Objects like `cL` (url) or `c.`
+  (emoji) will seek forward to the next occurence and then change them in one go.
+  This saves you the need to navigate to them before you can use `caW` or `cl`.
+  ----------------------------------------------------------------------------------------------------------
+  filetype-specific text description                  inner / outer  forward-seeking    default  filetypes
+  objects                                                                               keymaps  (for
+                                                                                                 default
+                                                                                                 keymaps)
+  ---------------------- ---------------------------- -------------- ----------------- --------- -----------
+  mdLink                 Markdown link like           inner is only  small               il/al   markdown
+                         [title](url)                 the link title                             
+                                                      (between the                               
+                                                      [])                                        
 
-  mdFencedCodeBlock      Markdown fenced code        outer includes the   big                 iC/aC   markdown
-                         (enclosed by three          enclosing backticks                              
-                         backticks)                                                                   
+  mdEmphasis             Markdown text enclosed by *, inner is only  small               ie/ae   markdown
+                         **, _, __, ~~, or ==         the emphasis                               
+                                                      content                                    
 
-  cssSelector            class in CSS such as        outer includes       small               ic/ac   css, scss
-                         .my-class                   trailing comma and                               
-                                                     space                                            
+  mdFencedCodeBlock      Markdown fenced code         outer includes big                 iC/aC   markdown
+                         (enclosed by three           the enclosing                              
+                         backticks)                   backticks                                  
 
-  cssColor               color in CSS (hex, rgb, or  inner includes only  small               i#/a#   css, scss
-                         hsl)                        the color value                                  
+  cssSelector            class in CSS such as         outer includes small               ic/ac   css, scss
+                         .my-class                    trailing comma                             
+                                                      and space                                  
 
-  htmlAttribute          attribute in HTML/XML like  inner is only the    small               ix/ax   html, xml,
-                         href="foobar.com"           value inside the                                 css, scss,
-                                                     quotes                                           vue
+  cssColor               color in CSS (hex, rgb, or   inner includes small               i#/a#   css, scss
+                         hsl)                         only the color                             
+                                                      value                                      
 
-  doubleSquareBrackets   text enclosed by [[]]       outer includes the   small               iD/aD   lua, shell,
-                                                     four square brackets                             neorg,
-                                                                                                      markdown
+  htmlAttribute          attribute in HTML/XML like   inner is only  small               ix/ax   html, xml,
+                         href="foobar.com"            the value                                  css, scss,
+                                                      inside the                                 vue
+                                                      quotes                                     
 
-  shellPipe              segment until/after a pipe  outer includes the   small               iP/aP   bash, zsh,
-                         character (\|)              pipe                                             fish, sh
+  doubleSquareBrackets   text enclosed by [[]]        outer includes small               iD/aD   lua, shell,
+                                                      the four                                   neorg,
+                                                      square                                     markdown
+                                                      brackets                                   
 
-  pyTripleQuotes         python strings surrounded   inner excludes the   -                   iy/ay   python
-                         by three quotes (regular or """ or '''                                       
-                         f-string); requires python                                                   
-                         Treesitter parser                                                            
-  ---------------------------------------------------------------------------------------------------------------
+  shellPipe              segment until/after a pipe   outer includes small               iP/aP   bash, zsh,
+                         character (\|)               the pipe                                   fish, sh
+
+  pyTripleQuotes         python strings surrounded by inner excludes -                   iy/ay   python
+                         three quotes (regular or     the """ or '''                             
+                         f-string); requires python                                              
+                         Treesitter parser                                                       
+  ----------------------------------------------------------------------------------------------------------
 
 INSTALLATION       *nvim-various-textobjs-nvim-various-textobjs--installation*
 
@@ -542,12 +558,19 @@ discussion page
 LIMITATIONS & NON-GOALS*nvim-various-textobjs-nvim-various-textobjs--limitations-&-non-goals*
 
 - This plugin uses pattern matching, so it can be inaccurate in some edge cases.
-- The characterwise text objects do not match multi-line objects. Most notably,
-    this affects the value text object.
+- Counts are not supported for most text objects.
+- Most characterwise text objects do not match multi-line objects. Most notably,
+    this affects the `value` text object.
 - nvim-treesitter-textobjects <https://github.com/nvim-treesitter/nvim-treesitter-textobjects>
     already does an excellent job when it comes to using Treesitter for text
     objects, such as function arguments or loops. This plugin’s goal is therefore
     not to provide text objects already offered by `nvim-treesitter-textobjects`.
+- Some text objects (`argument`, `key`, `value`) are also offered by
+    `nvim-treesitter-textobjects`, and usually, the treesitter version of them is
+    more accurate, since `nvim-various-textobjs` uses pattern matching, which can
+    only get you so far. However `nvim-treesitter-textobjects` does not support
+    all objects for all languages, so `nvim-various-textobjs` version exists to
+    provide a fallback for those languages.
 
 
 OTHER TEXT OBJECT PLUGINS*nvim-various-textobjs-nvim-various-textobjs--other-text-object-plugins*
