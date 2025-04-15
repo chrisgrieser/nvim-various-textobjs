@@ -115,7 +115,13 @@ function M.number(scope)
 	-- Here two different patterns make more sense, so the inner number can match
 	-- before and after the decimal dot. enforcing digital after dot so outer
 	-- excludes enumrations.
-	local pattern = scope == "inner" and "%d+" or "%-?%d*%.?%d+"
+	local pattern = scope == "inner" and "%d+"
+		or {
+			-- The outer pattern considers `.` as decimal separators, `_` as thousand
+			-- separator, and a potential leading `-` for negative numbers.
+			underscoreAsThousandSep = "%-?%d[%d_]*%d%.?%d*",
+			tieloser_noThousandSep = "%-?%d+%.?%d*",
+		}
 	core.selectClosestTextobj(pattern, "outer", smallForward())
 end
 
