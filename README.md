@@ -393,11 +393,12 @@ vim.keymap.set("n", "ysii", function()
 	vim.fn.setreg("+", startLine .. "\n" .. endLine .. "\n")
 
 	-- highlight yanked text
-	local ns = vim.api.nvim_create_namespace("ysi")
 	local duration = 1000
-	vim.hl.range(0, ns, "IncSearch", { startLn, 0 }, { startLn, -1 })
-	vim.hl.range(0, ns, "IncSearch", { endLn, 0 }, { endLn, -1 })
-	vim.defer_fn(function() vim.api.nvim_buf_clear_namespace(0, ns, 0, -1) end, duration)
+	local ns = vim.api.nvim_create_namespace("ysii")
+	local bufnr = vim.api.nvim_get_current_buf()
+	vim.hl.range(bufnr, ns, "IncSearch", { startLn, 0 }, { startLn, -1 })
+	vim.hl.range(bufnr, ns, "IncSearch", { endLn, 0 }, { endLn, -1 })
+	vim.defer_fn(function() vim.api.nvim_buf_clear_namespace(bufnr, ns, 0, -1) end, duration)
 
 	-- restore cursor position
 	vim.api.nvim_win_set_cursor(0, startPos)
