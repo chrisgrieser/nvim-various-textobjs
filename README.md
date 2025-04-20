@@ -67,22 +67,22 @@ Bundle of more than 30 new text objects for Neovim.
 > [!TIP]
 > For some text objects, you can also use `caW` or `cl` if your cursor is
 > standing on the object in question. However, these text objects become useful
-> when utilizing their forward-seeking behavior: Objects like `cL` (url) or `c.`
-> (emoji) will seek forward to the next occurence and then change them in one
+> when utilizing their forward-seeking behavior: Objects like `cL` (`url`) or `c.`
+> (`emoji`) will seek forward to the next occurrence and then change them in one
 > go. This saves you the need to navigate to them before you can use `caW` or
 > `cl`.
 
-| filetype-specific text objects | description                                                                                        | inner / outer                                   | forward-seeking |   default keymaps   | filetypes (for default keymaps) |
-| :----------------------------- | :------------------------------------------------------------------------------------------------- | :-----------------------------------------------| :-------------- | :-----------------: | :------------------------------ |
-| `mdLink`                       | Markdown link like `[title](url)`                                                                  | inner is only the link title (between the `[]`) | small           |      `il`/`al`      | markdown                        |
-| `mdEmphasis`                   | Markdown text enclosed by `*`, `**`, `_`, `__`, `~~`, or `==`                                      | inner is only the emphasis content              | small           |      `ie`/`ae`      | markdown                        |
-| `mdFencedCodeBlock`            | Markdown fenced code (enclosed by three backticks)                                                 | outer includes the enclosing backticks          | big             |      `iC`/`aC`      | markdown                        |
-| `cssSelector`                  | class in CSS such as `.my-class`                                                                   | outer includes trailing comma and space         | small           |      `ic`/`ac`      | css, scss                       |
-| `cssColor`                     | color in CSS (hex, rgb, or hsl)                                                                    | inner includes only the color value             | small           |      `i#`/`a#`      | css, scss                       |
-| `htmlAttribute`                | attribute in HTML/XML like `href="foobar.com"`                                                     | inner is only the value inside the quotes       | small           |      `ix`/`ax`      | html, xml, css, scss, vue       |
-| `doubleSquareBrackets`         | text enclosed by `[[]]`                                                                            | outer includes the four square brackets         | small           |      `iD`/`aD`      | lua, shell, neorg, markdown     |
-| `shellPipe`                    | segment until/after a pipe character (`\|`)                                                        | outer includes the pipe                         | small           |      `iP`/`aP`      | bash, zsh, fish, sh             |
-| `pyTripleQuotes`               | python strings surrounded by three quotes (regular or f-string); requires python Treesitter parser | inner excludes the `"""` or `'''`               | \-              |      `iy`/`ay`      | python                          |
+| filetype-specific text objects | description                                                                                        | inner / outer                                   | forward-seeking |   default keymaps   | filetypes (for default keymaps)     |
+| :----------------------------- | :------------------------------------------------------------------------------------------------- | :-----------------------------------------------| :-------------- | :-----------------: | :---------------------------------- |
+| `mdLink`                       | Markdown link like `[title](url)`                                                                  | inner is only the link title (between the `[]`) | small           |      `il`/`al`      | `markdown`                          |
+| `mdEmphasis`                   | Markdown text enclosed by `*`, `**`, `_`, `__`, `~~`, or `==`                                      | inner is only the emphasis content              | small           |      `ie`/`ae`      | `markdown`                          |
+| `mdFencedCodeBlock`            | Markdown fenced code (enclosed by three backticks)                                                 | outer includes the enclosing backticks          | big             |      `iC`/`aC`      | `markdown`                          |
+| `cssSelector`                  | class in CSS such as `.my-class`                                                                   | outer includes trailing comma and space         | small           |      `ic`/`ac`      | `css`, `scss`                       |
+| `cssColor`                     | color in CSS (hex, rgb, or hsl)                                                                    | inner includes only the color value             | small           |      `i#`/`a#`      | `css`, `scss`                       |
+| `htmlAttribute`                | attribute in HTML/XML like `href="foobar.com"`                                                     | inner is only the value inside the quotes       | small           |      `ix`/`ax`      | `html`, `xml`, `css`, `scss`, `vue` |
+| `doubleSquareBrackets`         | text enclosed by `[[]]`                                                                            | outer includes the four square brackets         | small           |      `iD`/`aD`      | `lua`, `shell`, `neorg`, `markdown` |
+| `shellPipe`                    | segment until/after a pipe character (`\|`)                                                        | outer includes the pipe                         | small           |      `iP`/`aP`      | `bash`, `zsh`, `fish`, `sh`         |
+| `pyTripleQuotes`               | python strings surrounded by three quotes (regular or f-string); requires python Treesitter parser | inner excludes the `"""` or `'''`               | \-              |      `iy`/`ay`      | `python`                            |
 
 <!-- LTeX: enabled=true -->
 
@@ -438,7 +438,7 @@ page](https://github.com/chrisgrieser/nvim-various-textobjs/discussions).
 - Some text objects (`argument`, `key`, `value`) are also offered by
   `nvim-treesitter-textobjects`, and usually, the treesitter version of them is
   more accurate, since `nvim-various-textobjs` uses pattern matching, which can
-  only get you so far. However `nvim-treesitter-textobjects` does not support
+  only get you so far. However, `nvim-treesitter-textobjects` does not support
   all objects for all languages, so `nvim-various-textobjs` version exists to
   provide a fallback for those languages.
 
