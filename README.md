@@ -309,17 +309,14 @@ the URL.
 
 ```lua
 vim.keymap.set("n", "gx", function()
-	-- select URL
-	require("various-textobjs").url()
+	require("various-textobjs").url() -- select URL
 
-	-- plugin only switches to visual mode when textobj is found
-	local foundURL = vim.fn.mode() == "v"
+	local foundURL = vim.fn.mode() == "v" -- only switches to visual mode when textobj found
 	if not foundURL then return end
 
-	-- retrieve URL with the z-register as intermediary
-	vim.cmd.normal { '"zy', bang = true }
-	local url = vim.fn.getreg("z")
+	local url = vim.fn.getregion(vim.fn.getpos("."), vim.fn.getpos("v"), { type = "v" })[1]
 	vim.ui.open(url) -- requires nvim 0.10
+	vim.cmd.normal { "v", bang = true } -- leave visual mode
 end, { desc = "URL Opener" })
 ```
 
