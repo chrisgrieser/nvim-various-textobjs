@@ -1,4 +1,4 @@
-*nvim-various-textobjs.txt*        For Neovim       Last change: 2025 April 20
+*nvim-various-textobjs.txt*        For Neovim       Last change: 2025 April 21
 
 ==============================================================================
 Table of Contents                    *nvim-various-textobjs-table-of-contents*
@@ -32,7 +32,7 @@ TABLE OF CONTENTS*nvim-various-textobjs-nvim-various-textobjs--table-of-contents
     - |nvim-various-textobjs-go-to-next-occurrence-of-a-text-object|
     - |nvim-various-textobjs-dynamically-switch-text-object-settings|
     - |nvim-various-textobjs-`ii`-on-unindented-line-should-select-entire-buffer|
-    - |nvim-various-textobjs-smarter-`gx`|
+    - |nvim-various-textobjs-smarter-`gx`-&-`gf`|
     - |nvim-various-textobjs-delete-surrounding-indentation|
     - |nvim-various-textobjs-yank-surrounding-indentation|
     - |nvim-various-textobjs-indent-last-paste|
@@ -135,10 +135,14 @@ LIST OF TEXT OBJECTS*nvim-various-textobjs-nvim-various-textobjs--list-of-text-o
   emoji                    single emoji (or Nerdfont       -                      small                 .
                            glyph)                                                                   
 
-  argument                 comma-separated argument (not   includes one . (or :)  small               i,/a,
+  argument                 comma-separated argument (not   outer includes the ,   small               i,/a,
                            as accurate as the                                                       
                            treesitter-textobjects, use as                                           
                            fallback)                                                                
+
+  filepath                 unix-filepath; supports ~ or    inner is only the      big                 iF/aF
+                           $HOME, but not spaces in the    filename                                 
+                           filepath.                                                                
   -----------------------------------------------------------------------------------------------------------
 
   [!TIP] For some text objects, you can also use `caW` or `cl` if your cursor is
@@ -427,7 +431,7 @@ behavior:
 <
 
 
-SMARTER GX ~
+SMARTER GX & GF ~
 
 The code below retrieves the next URL (within the amount of lines configured in
 the `setup` call), and opens it in your browser. As opposed to vim’s built-in
@@ -436,22 +440,39 @@ on the URL.
 
 >lua
     vim.keymap.set("n", "gx", function()
-        -- select URL
-        require("various-textobjs").url()
+        require("various-textobjs").url() -- select URL
     
-        -- plugin only switches to visual mode when textobj is found
-        local foundURL = vim.fn.mode() == "v"
+        local foundURL = vim.fn.mode() == "v" -- only switches to visual mode when textobj found
         if not foundURL then return end
     
-        -- retrieve URL with the z-register as intermediary
-        vim.cmd.normal { '"zy', bang = true }
-        local url = vim.fn.getreg("z")
+        local url = vim.fn.getregion(vim.fn.getpos("."), vim.fn.getpos("v"), { type = "v" })[1]
         vim.ui.open(url) -- requires nvim 0.10
+        vim.cmd.normal { "v", bang = true } -- leave visual mode
+    end, { desc = "URL Opener" })
+<
+
+Similarly, we can also create a forward-looking version of `gf`
+
+>lua
+    vim.keymap.set("n", "gf", function()
+        require("various-textobjs").filepath("outer") -- select filepath
+    
+        local foundPath = vim.fn.mode() == "v" -- only switches to visual mode when textobj found
+        if not foundPath then return end
+    
+        local path = vim.fn.getregion(vim.fn.getpos("."), vim.fn.getpos("v"), { type = "v" })[1]
+    
+        local exists = vim.uv.fs_stat(vim.fs.normalize(path)) ~= nil
+        if exists then
+            vim.ui.open(path)
+        else
+            vim.notify("Path does not exist.", vim.log.levels.WARN)
+        end
     end, { desc = "URL Opener" })
 <
 
 
-DELETE SURROUNDING INDENTATION ~
+DELETESURROUNDING INDENTATION ~
 
 Using the indentation text object, you can also create custom
 indentation-related utilities. A common operation is to remove the line before
