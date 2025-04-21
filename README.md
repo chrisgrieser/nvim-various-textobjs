@@ -19,7 +19,7 @@ Bundle of more than 30 new text objects for Neovim.
 	* [Go to next occurrence of a text object](#go-to-next-occurrence-of-a-text-object)
 	* [Dynamically switch text object settings](#dynamically-switch-text-object-settings)
 	* [`ii` on unindented line should select entire buffer](#ii-on-unindented-line-should-select-entire-buffer)
-	* [Smarter `gx`](#smarter-gx)
+	* [Smarter `gx` & `gf`](#smarter-gx--gf)
 	* [Delete surrounding indentation](#delete-surrounding-indentation)
 	* [Yank surrounding indentation](#yank-surrounding-indentation)
 	* [Indent last paste](#indent-last-paste)
@@ -60,7 +60,8 @@ Bundle of more than 30 new text objects for Neovim.
 | `lastChange`             | last non-deletion-change, yank, or paste (paste-manipulation plugins may interfere)                                         | \-                                                                                        | \-                 |           `g;`           |
 | `notebookCell`           | cell delimited by [double percent comment][jupytext], such as `# %%`                                                        | outer includes the top cell border                                                        | \-                 |        `iN`/`aN`         |
 | `emoji`                  | single emoji (or Nerdfont glyph)                                                                                            | \-                                                                                        | small              |           `.`            |
-| `argument`               | comma-separated argument (not as accurate as the treesitter-textobjects, use as fallback)                                   | \outer includes one `.` (or `:`)                                                          | small              |        `i,`/`a,`         |
+| `argument`               | comma-separated argument (not as accurate as the treesitter-textobjects, use as fallback)                                   | outer includes the `,`                                                                    | small              |        `i,`/`a,`         |
+| `filepath`               | unix-filepath; supports `~` or `$HOME`, but not spaces in the filepath.                                                     | inner is only the filename                                                                | big                |        `iF`/`aF`         |
 
 [jupytext]: https://jupytext.readthedocs.io/en/latest/formats-scripts.html#the-percent-format
 
@@ -301,7 +302,7 @@ vim.keymap.set("o", "ii", function()
 end)
 ```
 
-### Smarter `gx`
+### Smarter `gx` & `gf`
 The code below retrieves the next URL (within the amount of lines configured in
 the `setup` call), and opens it in your browser. As opposed to vim's built-in
 `gx`, this is **forward-seeking**, meaning your cursor does not have to stand on
@@ -317,6 +318,26 @@ vim.keymap.set("n", "gx", function()
 	local url = vim.fn.getregion(vim.fn.getpos("."), vim.fn.getpos("v"), { type = "v" })[1]
 	vim.ui.open(url) -- requires nvim 0.10
 	vim.cmd.normal { "v", bang = true } -- leave visual mode
+end, { desc = "URL Opener" })
+```
+
+Similarly, we can also create a forward-looking version of `gf`:
+
+```lua
+vim.keymap.set("n", "gf", function()
+	require("various-textobjs").filepath("outer") -- select filepath
+
+	local foundPath = vim.fn.mode() == "v" -- only switches to visual mode when textobj found
+	if not foundPath then return end
+
+	local path = vim.fn.getregion(vim.fn.getpos("."), vim.fn.getpos("v"), { type = "v" })[1]
+
+	local exists = vim.uv.fs_stat(vim.fs.normalize(path)) ~= nil
+	if exists then
+		vim.ui.open(path)
+	else
+		vim.notify("Path does not exist.", vim.log.levels.WARN)
+	end
 end, { desc = "URL Opener" })
 ```
 

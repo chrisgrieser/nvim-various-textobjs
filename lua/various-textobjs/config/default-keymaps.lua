@@ -6,6 +6,7 @@ local innerOuterMaps = {
 	value = "v",
 	key = "k",
 	subword = "S", -- lowercase taken for sentence textobj
+	filepath = "F", -- `f` is usually used for outer/inner function textobjs
 	notebookCell = "N",
 	closedFold = "z", -- z is the common prefix for folds
 	chainMember = "m",

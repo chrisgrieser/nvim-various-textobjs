@@ -22,6 +22,12 @@ local function smallForward()
 	return require("various-textobjs.config.config").config.forwardLooking.small
 end
 
+---@return integer
+---@nodiscard
+local function bigForward()
+	return require("various-textobjs.config.config").config.forwardLooking.big
+end
+
 --------------------------------------------------------------------------------
 
 function M.toNextClosingBracket()
@@ -127,8 +133,15 @@ end
 
 function M.url()
 	local urlPatterns = require("various-textobjs.config.config").config.textobjs.url.patterns
-	local bigForward = require("various-textobjs.config.config").config.forwardLooking.big
-	core.selectClosestTextobj(urlPatterns, "outer", bigForward)
+	core.selectClosestTextobj(urlPatterns, "outer", bigForward())
+end
+
+---@param scope "inner"|"outer" inner is only the filename
+function M.filepath(scope)
+	local pattern = {
+		unixPath = "([.~]?/?[%w_%-.$/]+/)[%w_%-.]+()",
+	}
+	core.selectClosestTextobj(pattern, scope, bigForward())
 end
 
 ---@param scope "inner"|"outer" inner excludes the leading dot
