@@ -146,12 +146,12 @@ end
 
 ---@param scope "inner"|"outer" inner excludes the leading dot
 function M.chainMember(scope)
-	-- make without-call lose ties, so call is always included
+	-- make with-call greedy, so the call of a chainmember is always included
 	local patterns = {
-		tieloser_leadingWithoutCall = "()[%w_][%w_]*([:.])",
-		leadingWithCall = "()[%w_][%w_]*%b()([:.])",
-		tieloser_followingWithoutCall = "([:.])[%w_][%w_]*()",
-		followingWithCall = "([:.])[%w_][%w_]*%b()()",
+		leadingWithoutCall = "()[%w_][%w_]*([:.])",
+		greedy_leadingWithCall = "()[%w_][%w_]*%b()([:.])",
+		followingWithoutCall = "([:.])[%w_][%w_]*()",
+		greedy_followingWithCall = "([:.])[%w_][%w_]*%b()()",
 	}
 	core.selectClosestTextobj(patterns, scope, smallForward())
 end

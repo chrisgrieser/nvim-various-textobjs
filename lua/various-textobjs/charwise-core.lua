@@ -87,7 +87,7 @@ end
 ---deprioritzed if the cursor stands on two objects.
 ---@param scope "inner"|"outer"
 ---@param lookForwLines integer
----@return integer? row
+---@return integer? row -- only if found
 ---@return integer? startCol
 ---@return integer? endCol
 function M.selectClosestTextobj(patterns, scope, lookForwLines)
@@ -108,8 +108,9 @@ function M.selectClosestTextobj(patterns, scope, lookForwLines)
 			local cur = {}
 			cur.row, cur.startCol, cur.endCol = M.getTextobjPos(pattern, scope, lookForwLines)
 			if cur.row and cur.startCol and cur.endCol then
-				if type(patternName) == "string" and patternName:find("tieloser") then
-					cur.tieloser = true
+				if type(patternName) == "string" then
+					if patternName:find("tieloser") then cur.tieloser = true end
+					if patternName:find("greedy") then cur.greedy = true end
 				end
 				cur.distance = cur.startCol - cursorCol
 				cur.endDistance = cursorCol - cur.endCol
@@ -131,6 +132,13 @@ function M.selectClosestTextobj(patterns, scope, lookForwLines)
 					-- loses even when it is closer
 					if closest.tieloser and not cur.tieloser then closerInRow = true end
 					if not closest.tieloser and cur.tieloser then closerInRow = false end
+
+					-- greedy = when both objects enclose the cursor, the greedy one
+					-- wins if the distance is the same
+					if cur.distance == closest.distance then
+						if cur.greedy and not closest.greedy then closerInRow = true end
+						if not cur.greedy and closest.greedy then closerInRow = false end
+					end
 				end
 
 				if (cur.row < closest.row) or (cur.row == closest.row and closerInRow) then
