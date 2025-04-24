@@ -83,7 +83,6 @@ Bundle of more than 30 new text objects for Neovim.
 | `htmlAttribute`                | attribute in HTML/XML like `href="foobar.com"`                                                     | inner is only the value inside the quotes       | small           |      `ix`/`ax`      | `html`, `xml`, `css`, `scss`, `vue` |
 | `doubleSquareBrackets`         | text enclosed by `[[]]`                                                                            | outer includes the four square brackets         | small           |      `iD`/`aD`      | `lua`, `shell`, `neorg`, `markdown` |
 | `shellPipe`                    | segment until/after a pipe character (`\|`)                                                        | outer includes the pipe                         | small           |      `iP`/`aP`      | `bash`, `zsh`, `fish`, `sh`         |
-| `pyTripleQuotes`               | python strings surrounded by three quotes (regular or f-string); requires python Treesitter parser | inner excludes the `"""` or `'''`               | \-              |      `iy`/`ay`      | `python`                            |
 
 <!-- LTeX: enabled=true -->
 

@@ -34,7 +34,6 @@ local oneMaps = {
 local ftMaps = {
 	{ map = { mdLink = "l" }, fts = { "markdown" } },
 	{ map = { mdEmphasis = "e" }, fts = { "markdown" } },
-	{ map = { pyTripleQuotes = "y" }, fts = { "python" } },
 	{ map = { mdFencedCodeBlock = "C" }, fts = { "markdown" } },
 	-- stylua: ignore
 	{ map = { doubleSquareBrackets = "D" }, fts = { "lua", "norg", "sh", "fish", "zsh", "bash", "markdown" } },

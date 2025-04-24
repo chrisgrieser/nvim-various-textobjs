@@ -15,8 +15,22 @@ setmetatable(M, {
 			if key == "column" then module = "blockwise" end
 			if key == "diagnostic" then module = "diagnostic" end
 			if key == "subword" then module = "subword" end
-			if key == "pyTripleQuotes" then module = "treesitter" end
 			if key == "emoji" then module = "emoji" end
+
+			if key == "pyTripleQuotes" then
+				local msg = "The `pyTripleQuotes` textobj is deprecated. "
+					.. "Please use `nvim-treesitter-teextobjects`, create a file "
+					.. "`./queries/python/textobjects.scm` in your config dir with "
+					.. "the following content:\n\n"
+					.. "```\n"
+					.. "; extends\n"
+					.. "(expression_statement (string (string_content) @docstring.inner) @docstring.outer)\n"
+					.. "```\n"
+					.. "Call the textobject via `:TSTextobjectSelect @docstring.outer`"
+				require("various-textobjs.utils").warn(msg)
+				return function() end -- empty function to prevent error
+			end
+
 			require("various-textobjs.textobjs." .. module)[key](...)
 		end
 	end,
