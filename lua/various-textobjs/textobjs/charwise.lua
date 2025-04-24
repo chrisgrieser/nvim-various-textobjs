@@ -3,19 +3,6 @@ local core = require("various-textobjs.charwise-core")
 local u = require("various-textobjs.utils")
 --------------------------------------------------------------------------------
 
--- Warn in case user tries to call a textobj that doesn't exist.
--- (Only needed in the module for `charwise` text objects, since it is the
--- catch-all for the `__index` redirect from this plugin's main `init.lua`.)
-setmetatable(M, {
-	__index = function(_, key)
-		return function()
-			local msg = ("There is no text object called `%s`.\n\n"):format(key)
-				.. "Make sure it exists in the list of text objects, and that you haven't misspelled it."
-			u.warn(msg)
-		end
-	end,
-})
-
 ---@return integer
 ---@nodiscard
 local function smallForward()
