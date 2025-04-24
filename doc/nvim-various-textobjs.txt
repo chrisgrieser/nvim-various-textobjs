@@ -1,4 +1,4 @@
-*nvim-various-textobjs.txt*        For Neovim       Last change: 2025 April 21
+*nvim-various-textobjs.txt*        For Neovim       Last change: 2025 April 24
 
 ==============================================================================
 Table of Contents                    *nvim-various-textobjs-table-of-contents*
@@ -196,11 +196,6 @@ LIST OF TEXT OBJECTS*nvim-various-textobjs-nvim-various-textobjs--list-of-text-o
   shellPipe              segment until/after a pipe   outer         small               iP/aP   bash, zsh,
                          character (\|)               includes the                              fish, sh
                                                       pipe                                      
-
-  pyTripleQuotes         python strings surrounded by inner         -                   iy/ay   python
-                         three quotes (regular or     excludes the                              
-                         f-string); requires python   """ or '''                                
-                         Treesitter parser                                                      
   ---------------------------------------------------------------------------------------------------------
 
 INSTALLATION       *nvim-various-textobjs-nvim-various-textobjs--installation*
