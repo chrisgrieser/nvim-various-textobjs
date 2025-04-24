@@ -121,13 +121,15 @@ function M.number(scope)
 	-- Here two different patterns make more sense, so the inner number can match
 	-- before and after the decimal dot. enforcing digital after dot so outer
 	-- excludes enumrations.
-	local pattern = scope == "inner" and "%d+"
-		or {
-			-- The outer pattern considers `.` as decimal separators, `_` as thousand
-			-- separator, and a potential leading `-` for negative numbers.
+	local pattern = "%d+" ---@type VariousTextobjs.PatternInput
+	if scope == "outer" then
+		pattern = {
+			-- The outer pattern considers `.` as decimal separators, `_` as
+			-- thousand separator, and a potential leading `-` for negative numbers.
 			underscoreAsThousandSep = "%-?%d[%d_]*%d%.?%d*",
-			tieloser_noThousandSep = "%-?%d+%.?%d*",
+			noThousandSep = { "%-?%d+%.?%d*", tieloser = true },
 		}
+	end
 	core.selectClosestTextobj(pattern, "outer", smallForward())
 end
 
@@ -149,9 +151,9 @@ function M.chainMember(scope)
 	-- make with-call greedy, so the call of a chainmember is always included
 	local patterns = {
 		leadingWithoutCall = "()[%w_][%w_]*([:.])",
-		greedy_leadingWithCall = "()[%w_][%w_]*%b()([:.])",
+		leadingWithCall = { "()[%w_][%w_]*%b()([:.])", greedy = true },
 		followingWithoutCall = "([:.])[%w_][%w_]*()",
-		greedy_followingWithCall = "([:.])[%w_][%w_]*%b()()",
+		followingWithCall = { "([:.])[%w_][%w_]*%b()()", greedy = true },
 	}
 	core.selectClosestTextobj(patterns, scope, smallForward())
 end

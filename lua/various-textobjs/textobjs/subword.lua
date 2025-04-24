@@ -12,7 +12,9 @@ function M.subword(scope)
 		camelOrLowercase = "()%a[%l%d]+([_-]?)",
 		UPPER_CASE = "()%u[%u%d]+([_-]?)",
 		number = "()%d+([_-]?)",
-		tieloser_singleChar = "()%a([_-]?)", -- e.g., "x" in "xSide" or "sideX" (see #75)
+
+		-- e.g., "x" in "xSide" or "sideX" (see #75)
+		singleChar = { "()%a([_-]?)", tieloser = true },
 	}
 	local row, startCol, endCol = core.selectClosestTextobj(patterns, scope, 0)
 	if not (row and startCol and endCol) then return end

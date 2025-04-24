@@ -81,8 +81,17 @@ function M.getTextobjPos(pattern, scope, lookForwLines)
 	return row, beginCol, endCol
 end
 
+--------------------------------------------------------------------------------
+
+---@class (exact) VariousTextobjs.PatternSpec
+---@field [1] string
+---@field greedy? boolean
+---@field tieloser? boolean
+
+---@alias VariousTextobjs.PatternInput string|table<string|integer, string|VariousTextobjs.PatternSpec>
+
 ---Searches for the position of one or multiple patterns and selects the closest one
----@param patterns string|table<string, string> lua pattern(s) for
+---@param patterns VariousTextobjs.PatternInput lua pattern(s) for
 ---`getTextobjPos`; If the pattern starts with `tieloser` the textobj is always
 ---deprioritzed if the cursor stands on two objects.
 ---@param scope "inner"|"outer"
@@ -104,14 +113,17 @@ function M.selectClosestTextobj(patterns, scope, lookForwLines)
 	elseif type(patterns) == "table" then
 		local cursorCol = vim.api.nvim_win_get_cursor(0)[2]
 
-		for patternName, pattern in pairs(patterns) do
+		for patternName, patternSpec in pairs(patterns) do
 			local cur = {}
+			local pattern = patternSpec
+			if type(patternSpec) ~= "string" then -- is PatternSpec instead of string
+				pattern = patternSpec[1] ---@cast pattern string ensuring it here
+				cur.greedy = patternSpec.greedy
+				cur.tieloser = patternSpec.tieloser
+			end
 			cur.row, cur.startCol, cur.endCol = M.getTextobjPos(pattern, scope, lookForwLines)
+
 			if cur.row and cur.startCol and cur.endCol then
-				if type(patternName) == "string" then
-					if patternName:find("tieloser") then cur.tieloser = true end
-					if patternName:find("greedy") then cur.greedy = true end
-				end
 				cur.distance = cur.startCol - cursorCol
 				cur.endDistance = cursorCol - cur.endCol
 				cur.cursorOnObj = cur.distance <= 0 and cur.endDistance <= 0
