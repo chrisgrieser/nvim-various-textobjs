@@ -48,7 +48,6 @@ Bundle of more than 30 new text objects for Neovim.
 | `nearEoL`                | from cursor position to end of line minus one character                                                                     | \-                                                                                        | \-                 |           `n`            |
 | `lineCharacterwise`      | current line, but characterwise                                                                                             | outer includes indentation & trailing spaces                                              | small, if on blank |        `i_`/`a_`         |
 | `column`                 | column down until indent or shorter line; accepts `{count}` for multiple columns                                            | \-                                                                                        | \-                 |           `\|`           |
-| `column_up`              | column up until indent or shorter line; accepts `{count}` for multiple columns                                            | \-                                                                                        | \-                 |           ``           |
 | `value`                  | value of key-value pair, or right side of assignment, excluding trailing comment (does not work for multi-line assignments) | outer includes trailing `,` or `;`                                                        | small              |        `iv`/`av`         |
 | `key`                    | key of key-value pair, or left side of an assignment                                                                        | outer includes the `=` or `:`                                                             | small              |        `ik`/`ak`         |
 | `url`                    | `http` links or any other protocol                                                                                          | \-                                                                                        | big                |           `L`            |
@@ -220,7 +219,7 @@ vim.keymap.set({ "o", "x" }, "is", '<cmd>lua require("various-textobjs").subword
 ```
 
 For most text objects, there is only one parameter which accepts `"inner"` or
-`"outer"`. The only exception is the `indentation` text object:
+`"outer"`. The exceptions are the `indentation` and `column` text objects:
 
 ```lua
 -- THE INDENTATION TEXTOBJ requires two parameters, the first for exclusion of 
@@ -234,6 +233,21 @@ vim.keymap.set(
 	{ "o", "x" },
 	"ai",
 	'<cmd>lua require("various-textobjs").indentation("outer", "inner")<CR>'
+)
+```
+
+```lua
+-- THE COLUMN TEXTOBJ takes an optional parameter for direction:
+-- "down" (default), "up", "both"
+vim.keymap.set(
+	{ "o", "x" },
+	"|",
+	'<cmd>lua require("various-textobjs").column("down")<CR>'
+)
+vim.keymap.set(
+	{ "o", "x" },
+	"a|",
+	'<cmd>lua require("various-textobjs").column("both")<CR>'
 )
 ```
 
