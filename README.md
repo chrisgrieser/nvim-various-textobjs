@@ -219,7 +219,7 @@ vim.keymap.set({ "o", "x" }, "is", '<cmd>lua require("various-textobjs").subword
 ```
 
 For most text objects, there is only one parameter which accepts `"inner"` or
-`"outer"`. The only exception is the `indentation` text object:
+`"outer"`. The exceptions are the `indentation` and `column` text objects:
 
 ```lua
 -- THE INDENTATION TEXTOBJ requires two parameters, the first for exclusion of 
@@ -233,6 +233,21 @@ vim.keymap.set(
 	{ "o", "x" },
 	"ai",
 	'<cmd>lua require("various-textobjs").indentation("outer", "inner")<CR>'
+)
+```
+
+```lua
+-- THE COLUMN TEXTOBJ takes an optional parameter for direction:
+-- "down" (default), "up", "both"
+vim.keymap.set(
+	{ "o", "x" },
+	"|",
+	'<cmd>lua require("various-textobjs").column("down")<CR>'
+)
+vim.keymap.set(
+	{ "o", "x" },
+	"a|",
+	'<cmd>lua require("various-textobjs").column("both")<CR>'
 )
 ```
 
