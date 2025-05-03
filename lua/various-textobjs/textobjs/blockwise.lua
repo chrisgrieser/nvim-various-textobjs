@@ -2,9 +2,16 @@ local M = {}
 local u = require("various-textobjs.utils")
 --------------------------------------------------------------------------------
 
----Column Textobj (blockwise up or down until indent or shorter line)
----@param direction number Direction: +1 for "down" (default), -1 for "up"
+---Column Textobj (blockwise up and/or down until indent or shorter line)
+---@param direction number Direction: +1 for "down" (default), -1 for "up", 0 for both
 function M.column(direction)
+
+	if direction == 0 then
+		M.column(-1)
+		u.normal("oO")
+		M.column(1)
+		return
+	end
 
 	direction = direction == -1 and direction or 1
 	local key = direction == -1 and "k" or "j"
