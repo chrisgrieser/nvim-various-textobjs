@@ -31,7 +31,7 @@ setmetatable(M, {
 			local module
 			if vim.tbl_contains(linewiseObjs, key) then module = "linewise" end
 			if vim.tbl_contains(charwiseObjs, key) then module = "charwise" end
-			if key == "column" then module = "blockwise" end
+			if key == "column" or key == "column_up" then module = "blockwise" end
 			if key == "diagnostic" then module = "diagnostic" end
 			if key == "subword" then module = "subword" end
 			if key == "emoji" then module = "emoji" end
