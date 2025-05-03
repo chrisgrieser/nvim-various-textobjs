@@ -5,7 +5,6 @@ local u = require("various-textobjs.utils")
 ---Column Textobj (blockwise up and/or down until indent or shorter line)
 ---@param direction string "down" (default), "up", "both"
 function M.column(direction)
-
 	if direction == "both" then
 		M.column("up")
 		u.normal("oO")
@@ -32,7 +31,7 @@ function M.column(direction)
 		local shorterLine = trueLineLength <= trueCursorCol
 		local hitsIndent = trueCursorCol <= vim.fn.indent(nextLnum)
 	until hitsIndent or shorterLine
-	local linesToMove = step*(nextLnum - startRow) - 1
+	local linesToMove = step * (nextLnum - startRow) - 1
 
 	-- SET POSITION
 	u.saveJumpToJumplist()
