@@ -16,6 +16,8 @@ body:
             This is a feature request to change an existing text object, not a bug report. (Use the
             bug report form for those.)
           required: true
+        - label: I have searched the existing issues for this plugin.
+          required: true
   - type: textarea
     id: textobj-change-requested
     attributes:

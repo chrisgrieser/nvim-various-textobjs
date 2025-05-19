@@ -1,6 +1,6 @@
 name: New Text Object
 description: Suggest a new text object
-title: "New Textobj: "
+title: "New textobj: "
 labels: ["new textobj"]
 body:
   - type: checkboxes
@@ -12,9 +12,9 @@ body:
             The text object would be useful to more users than just me. ([You can use the API to
             create custom text objects](../#advanced-usage--api).)
           required: true
-        - label: There is no lua plugin already implementing the text object in an adequate manner.
+        - label: I read the documentation and checked that there is no such text object already.
           required: true
-        - label: I read the docs and checked that there is no such text object already.
+        - label: I have searched the existing issues for this plugin.
           required: true
   - type: textarea
     id: textobj-requested

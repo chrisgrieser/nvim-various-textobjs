@@ -12,6 +12,8 @@ body:
           required: true
         - label: I have read the README.
           required: true
+        - label: I have searched the existing issues for this plugin.
+          required: true
   - type: textarea
     id: bug-description
     attributes:
