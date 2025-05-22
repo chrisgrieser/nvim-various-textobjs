@@ -16,6 +16,7 @@ local innerOuterMaps = {
 	anyBracket = "o",
 	argument = ",",
 	color = "#",
+	doubleSquareBrackets = "D",
 }
 local oneMaps = {
 	nearEoL = "n", -- does override the builtin "to next search match" textobj, but nobody really uses that
@@ -36,8 +37,6 @@ local ftMaps = {
 	{ map = { mdLink = "l" }, fts = { "markdown" } },
 	{ map = { mdEmphasis = "e" }, fts = { "markdown" } },
 	{ map = { mdFencedCodeBlock = "C" }, fts = { "markdown" } },
-	-- stylua: ignore
-	{ map = { doubleSquareBrackets = "D" }, fts = { "lua", "norg", "sh", "fish", "zsh", "bash", "markdown" } },
 	{ map = { cssSelector = "c" }, fts = { "css", "scss" } },
 	{ map = { shellPipe = "P" }, fts = { "sh", "bash", "zsh", "fish" } },
 	{ map = { htmlAttribute = "x" }, fts = { "html", "css", "scss", "xml", "vue" } },

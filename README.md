@@ -62,7 +62,8 @@ Bundle of more than 30 new text objects for Neovim.
 | `emoji`                  | single emoji (or Nerdfont glyph)                                                                                            | \-                                                                                        | small              |           `.`            |
 | `argument`               | comma-separated argument (not as accurate as the treesitter-textobjects, use as fallback)                                   | outer includes the `,`                                                                    | small              |        `i,`/`a,`         |
 | `filepath`               | unix-filepath; supports `~` or `$HOME`, but not spaces in the filepath.                                                     | inner is only the filename                                                                | big                |        `iF`/`aF`         |
-| `color`                  | hex; rgb or hsl in CSS format; ANSI color code                                                                              | inner includes only the color value                                                       | small              |      `i#`/`a#`           |
+| `color`                  | hex; rgb or hsl in CSS format; ANSI color code                                                                              | inner includes only the color value                                                       | small              |        `i#`/`a#`         |
+| `doubleSquareBrackets`   | text enclosed by `[[]]`                                                                                                     | outer includes the four square brackets                                                   | small              |        `iD`/`aD`         |
 
 [jupytext]: https://jupytext.readthedocs.io/en/latest/formats-scripts.html#the-percent-format
 
@@ -81,7 +82,6 @@ Bundle of more than 30 new text objects for Neovim.
 | `mdFencedCodeBlock`            | Markdown fenced code (enclosed by three backticks)                                                 | outer includes the enclosing backticks          | big             |      `iC`/`aC`      | `markdown`                          |
 | `cssSelector`                  | class in CSS such as `.my-class`                                                                   | outer includes trailing comma and space         | small           |      `ic`/`ac`      | `css`, `scss`                       |
 | `htmlAttribute`                | attribute in HTML/XML like `href="foobar.com"`                                                     | inner is only the value inside the quotes       | small           |      `ix`/`ax`      | `html`, `xml`, `css`, `scss`, `vue` |
-| `doubleSquareBrackets`         | text enclosed by `[[]]`                                                                            | outer includes the four square brackets         | small           |      `iD`/`aD`      | `lua`, `shell`, `neorg`, `markdown` |
 | `shellPipe`                    | segment until/after a pipe character (`\|`)                                                        | outer includes the pipe                         | small           |      `iP`/`aP`      | `bash`, `zsh`, `fish`, `sh`         |
 
 <!-- LTeX: enabled=true -->
