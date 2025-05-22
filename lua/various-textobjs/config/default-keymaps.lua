@@ -15,6 +15,7 @@ local innerOuterMaps = {
 	anyQuote = "q",
 	anyBracket = "o",
 	argument = ",",
+	color = "#",
 }
 local oneMaps = {
 	nearEoL = "n", -- does override the builtin "to next search match" textobj, but nobody really uses that
@@ -38,7 +39,6 @@ local ftMaps = {
 	-- stylua: ignore
 	{ map = { doubleSquareBrackets = "D" }, fts = { "lua", "norg", "sh", "fish", "zsh", "bash", "markdown" } },
 	{ map = { cssSelector = "c" }, fts = { "css", "scss" } },
-	{ map = { cssColor = "#" }, fts = { "css", "scss" } },
 	{ map = { shellPipe = "P" }, fts = { "sh", "bash", "zsh", "fish" } },
 	{ map = { htmlAttribute = "x" }, fts = { "html", "css", "scss", "xml", "vue" } },
 }

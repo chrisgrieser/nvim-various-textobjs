@@ -232,14 +232,22 @@ function M.shellPipe(scope)
 end
 
 ---@param scope "inner"|"outer" inner selector only affects the color value
-function M.cssColor(scope)
+function M.color(scope)
 	local pattern = {
 		["#123456"] = "(#)" .. ("%x"):rep(6) .. "()",
-		["#123"] = "(#)" .. ("%x"):rep(3) .. "()",
 		["hsl(123, 23%, 23%)"] = "(hsla?%()[%%%d,./deg ]-(%))", -- optionally with `deg`/`%`
 		["rgb(123, 23, 23)"] = "(rgba?%()[%d,./ ]-(%))", -- optionally with `%`
+		["ansi-color-e"] = "\\e%[[%d;]+m", -- \e[1;32m or \e[48;5;123m
+		["ansi-color-033"] = "\\033%[[%d;]+m",
+		["ansi-color-x1b"] = "\\x1b%[[%d;]+m",
 	}
 	core.selectClosestTextobj(pattern, scope, smallForward())
+end
+
+---@deprecated
+function M.cssColor(...)
+	u.warn("`.cssColor` is deprecated, use `.color`. (Now also supports ansi color codes)")
+	M.color(...)
 end
 
 --------------------------------------------------------------------------------
