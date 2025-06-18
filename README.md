@@ -81,7 +81,7 @@ Bundle of more than 30 new text objects for Neovim.
 | `mdEmphasis`                   | Markdown text enclosed by `*`, `**`, `_`, `__`, `~~`, or `==`                                      | inner is only the emphasis content              | small           |      `ie`/`ae`      | `markdown`                          |
 | `mdFencedCodeBlock`            | Markdown fenced code (enclosed by three backticks)                                                 | outer includes the enclosing backticks          | big             |      `iC`/`aC`      | `markdown`                          |
 | `cssSelector`                  | class in CSS such as `.my-class`                                                                   | outer includes trailing comma and space         | small           |      `ic`/`ac`      | `css`, `scss`                       |
-| `htmlAttribute`                | attribute in HTML/XML like `href="foobar.com"`                                                     | inner is only the value inside the quotes       | small           |      `ix`/`ax`      | `html`, `xml`, `css`, `scss`, `vue` |
+| `htmlAttribute`                | attribute in HTML/XML like `href="foobar.com"`                                                     | inner is only the value inside the quotes       | small           |      `ix`/`ax`      | `html`, `xml`, `css`, `scss`, `vue`, `svelte` |
 | `shellPipe`                    | segment until/after a pipe character (`\|`)                                                        | outer includes the pipe                         | small           |      `iP`/`aP`      | `bash`, `zsh`, `fish`, `sh`         |
 
 <!-- LTeX: enabled=true -->

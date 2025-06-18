@@ -39,7 +39,7 @@ local ftMaps = {
 	{ map = { mdFencedCodeBlock = "C" }, fts = { "markdown" } },
 	{ map = { cssSelector = "c" }, fts = { "css", "scss" } },
 	{ map = { shellPipe = "P" }, fts = { "sh", "bash", "zsh", "fish" } },
-	{ map = { htmlAttribute = "x" }, fts = { "html", "css", "scss", "xml", "vue" } },
+	{ map = { htmlAttribute = "x" }, fts = { "html", "css", "scss", "xml", "vue", "svelte" } },
 }
 
 --------------------------------------------------------------------------------
