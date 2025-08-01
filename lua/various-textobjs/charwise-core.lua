@@ -84,9 +84,9 @@ end
 --------------------------------------------------------------------------------
 
 ---@class (exact) VariousTextobjs.PatternSpec
----@field [1] string
----@field greedy? boolean
----@field tieloser? boolean
+---@field [1] string the pattern
+---@field greedy? boolean when both objs enclose cursor, greedy wins if the distance is the same
+---@field tieloser? boolean when both objs enclose cursor, tieloser loses even when it is closer
 
 ---@alias VariousTextobjs.PatternInput string|table<string|integer, string|VariousTextobjs.PatternSpec>
 
