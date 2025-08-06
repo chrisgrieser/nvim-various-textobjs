@@ -31,13 +31,25 @@ end
 
 ---@param scope "inner"|"outer"
 function M.anyQuote(scope)
-	-- INFO
-	-- `%f[\"]` is the lua frontier pattern, and effectively used as a negative
-	-- lookbehind, that is ensuring that the previous character may not be a `\`
+	--[[ INFO
+	`%f[\"]` is the lua frontier pattern, and effectively used as a negative
+	lookbehind, that is ensuring that the previous character may not be a `\`.
+
+	However, since the second frontier pattern has to include the quote char,
+	empty strings such as `""` are not matched, thus requiring extra set of
+	patterns form them (while keeping the first frontier to prevent the first
+	quote being escaped.) 
+	Caveat: zero-width textobject, such as the inner quote for `""`, are actually
+	expanded to include the quote chars (like vanilla vim does, when it's not a
+	deletion operation).
+	--]]
 	local patterns = {
-		['""'] = [[(%f[\"]").-(%f[\"]")]],
-		["''"] = [[(%f[\']').-(%f[\']')]],
-		["``"] = [[(%f[\`]`).-(%f[\`]`)]],
+		['"'] = [[(%f[\"]").-(%f[\"]")]],
+		["'"] = [[(%f[\']').-(%f[\']')]],
+		["`"] = [[(%f[\`]`).-(%f[\`]`)]],
+		['empty "'] = [[(%f[\"]")(")]],
+		["empty '"] = [[(%f[\']')(')]],
+		["empty `"] = [[(%f[\`]`)(`)]],
 	}
 	core.selectClosestTextobj(patterns, scope, smallForward())
 end
