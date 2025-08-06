@@ -31,25 +31,28 @@ end
 
 ---@param scope "inner"|"outer"
 function M.anyQuote(scope)
-	--[[ INFO
-	`%f[\"]` is the lua frontier pattern, and effectively used as a negative
-	lookbehind, that is ensuring that the previous character may not be a `\`.
+	-- INFO `%f[\"]` is the lua frontier pattern, and effectively used as a negative
+	-- lookbehind, that is ensuring that the previous character may not be a `\`.
+	-- Caveat: zero-width textobject, such as the inner quote for `""`, are
+	-- actually expanded to include the quote chars 
+	-- (like vanilla vim does, when it's not a deletion operation).
 
-	However, since the second frontier pattern has to include the quote char,
-	empty strings such as `""` are not matched, thus requiring extra set of
-	patterns form them (while keeping the first frontier to prevent the first
-	quote being escaped.) 
-	Caveat: zero-width textobject, such as the inner quote for `""`, are actually
-	expanded to include the quote chars (like vanilla vim does, when it's not a
-	deletion operation).
-	--]]
 	local patterns = {
 		['"'] = [[(%f[\"]").-(%f[\"]")]],
 		["'"] = [[(%f[\']').-(%f[\']')]],
 		["`"] = [[(%f[\`]`).-(%f[\`]`)]],
+
+		-- Since the 2nd frontier pattern has to include the quote char, empty
+		-- strings such as `""` and strings with an escaped quote as at the end
+		-- like `"foo \""` are not matched, thus requiring two extra set of
+		-- patterns form them (while keeping the 1st frontier pattern to prevent
+		-- the 1st quote from being escaped.) 
 		['empty "'] = [[(%f[\"]")(")]],
+		['escaped quote last "'] = [[(%f[\"]").*\"(")]],
 		["empty '"] = [[(%f[\']')(')]],
+		["escaped quote last '"] = [[(%f[\']').*\'(')]],
 		["empty `"] = [[(%f[\`]`)(`)]],
+		["escaped quote last `"] = [[(%f[\`]`).*\`(`)]],
 	}
 	core.selectClosestTextobj(patterns, scope, smallForward())
 end
