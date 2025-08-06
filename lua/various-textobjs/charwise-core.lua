@@ -158,8 +158,17 @@ function M.selectClosestTextobj(patterns, scope, lookForwLines)
 					closest = cur
 				end
 
-				-- stylua: ignore
-				objLogging[patternName] = { cur.startCol, cur.endCol, row = cur.row, distance = cur.distance, tieloser = cur.tieloser, cursorOnObj = cur.cursorOnObj }
+				if enableLogging then
+					objLogging[patternName] = {
+						cur.startCol,
+						cur.endCol,
+						row = cur.row,
+						distance = cur.distance,
+						tieloser = cur.tieloser,
+						cursorOnObj = cur.cursorOnObj,
+						zeroWidthTextobj = cur.startCol > cur.endCol and true or nil,
+					}
+				end
 			end
 		end
 	end
@@ -169,8 +178,6 @@ function M.selectClosestTextobj(patterns, scope, lookForwLines)
 		return
 	end
 
-	-- set selection & log
-	M.setSelection({ closest.row, closest.startCol }, { closest.row, closest.endCol })
 	if enableLogging and type(patterns) == "table" then
 		local textobj = (debug.getinfo(3, "n") or {}).name or "unknown"
 		objLogging._closest = closest.patternName
@@ -180,6 +187,8 @@ function M.selectClosestTextobj(patterns, scope, lookForwLines)
 			{ ft = "lua", title = scope .. " " .. textobj }
 		)
 	end
+
+	M.setSelection({ closest.row, closest.startCol }, { closest.row, closest.endCol })
 	return closest.row, closest.startCol, closest.endCol
 end
 
