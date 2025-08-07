@@ -31,8 +31,13 @@ end
 
 ---@param scope "inner"|"outer"
 function M.anyQuote(scope)
-	-- INFO `%f[\"]` is the lua frontier pattern, and effectively used as a negative
-	-- lookbehind, that is ensuring that the previous character may not be a `\`.
+	-- INFO
+	-- `(").-(")` would be enough if we were just to check for any quote character.
+	--
+	-- To handle escaped quotes, we use make use of frontier patterns and handle
+	-- various edge cases. `%f[\"]` is the lua frontier pattern, and effectively
+	-- used as a negative lookbehind, that is ensuring that the previous
+	-- character may not be a `\`.
 	local patterns = {
 		['"'] = [[(%f[\"]").-(%f[\"]")]],
 		["'"] = [[(%f[\']').-(%f[\']')]],
@@ -42,7 +47,7 @@ function M.anyQuote(scope)
 		-- strings such as `""` and strings with an escaped quote as at the end
 		-- like `"foo \""` are not matched, thus requiring two extra set of
 		-- patterns form them (while keeping the 1st frontier pattern to prevent
-		-- the 1st quote from being escaped.) 
+		-- the 1st quote from being escaped.)
 		['empty "'] = [[(%f[\"]")(")]],
 		['escaped quote last "'] = [[(%f[\"]").*\"(")]],
 		["empty '"] = [[(%f[\']')(')]],
