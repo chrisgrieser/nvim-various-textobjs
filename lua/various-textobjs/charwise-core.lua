@@ -7,6 +7,29 @@ local u = require("various-textobjs.utils")
 ---@param endPos { [1]: integer, [2]: integer }
 function M.setSelection(startPos, endPos)
 	u.saveJumpToJumplist()
+
+	-- GUARD Zero-width textobj
+	-- These are, for instance, `ci)` on empty brackets like `()`. We copy
+	-- vanilla vim's behavior of doing nothing on `d` or `c`, but switch to the
+	-- outer object when using `y`.
+	-- see also: https://github.com/echasnovski/mini.nvim/issues/1927
+	local isZeroWidthTextobj = startPos[1] >= startPos[2] and startPos[2] > endPos[2]
+	if isZeroWidthTextobj and vim.v.operator ~= "y" then
+		-- Add single space (without triggering events) and visually select it.
+		-- Seems like the only way to make `ci)` and `di)` move inside empty
+		-- brackets. Idea from 'wellle/targets.vim' & `echasnovski/mini.ai`.
+		local prevEventignore = vim.o.eventignore
+		vim.o.eventignore = "all"
+
+		vim.api.nvim_win_set_cursor(0, startPos)
+		-- First escape from previously started Visual mode
+		vim.cmd([[silent! execute "normal! \<Esc>i \<Esc>v"]])
+
+		vim.o.eventignore = prevEventignore
+		u.warn("Zero-width textobj detected, doing nothing.")
+		return
+	end
+
 	vim.api.nvim_win_set_cursor(0, startPos)
 	u.normal(vim.fn.mode() == "v" and "o" or "v")
 	vim.api.nvim_win_set_cursor(0, endPos)

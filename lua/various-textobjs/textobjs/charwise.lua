@@ -33,10 +33,6 @@ end
 function M.anyQuote(scope)
 	-- INFO `%f[\"]` is the lua frontier pattern, and effectively used as a negative
 	-- lookbehind, that is ensuring that the previous character may not be a `\`.
-	-- Caveat: zero-width textobject, such as the inner quote for `""`, are
-	-- actually expanded to include the quote chars 
-	-- (like vanilla vim does, when it's not a deletion operation).
-
 	local patterns = {
 		['"'] = [[(%f[\"]").-(%f[\"]")]],
 		["'"] = [[(%f[\']').-(%f[\']')]],
