@@ -26,7 +26,10 @@ function M.setSelection(startPos, endPos)
 		vim.cmd([[silent! execute "normal! \<Esc>i \<Esc>v"]])
 
 		vim.o.eventignore = prevEventignore
-		u.warn("Zero-width textobj detected, doing nothing.")
+		local actsOnZeroWidthObr = vim.v.operator == "c"
+			or (vim.v.operator == "g@" and vim.o.operatorfunc:find("MiniOperators%.replace"))
+			or (vim.v.operator == "g@" and vim.o.operatorfunc:find("substitute"))
+		if not actsOnZeroWidthObr then u.warn("Textobj has a width of zero doing nothing.") end
 		return
 	end
 
