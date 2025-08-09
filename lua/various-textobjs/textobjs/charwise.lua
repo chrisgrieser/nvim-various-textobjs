@@ -88,7 +88,7 @@ function M.value(scope)
 	-- captures value till the end of the line
 	-- negative sets and frontier pattern ensure that equality comparators ==, !=
 	-- or css pseudo-elements :: are not matched
-	local pattern = "(%s*%f[!<>~=:][=:]%s*)[^=:].*()"
+	local pattern = "(%f[!<>~=:][=:]%s*)[^=:].*()"
 
 	local row, startCol, _ = core.getTextobjPos(pattern, scope, smallForward())
 	if not (row and startCol) then
@@ -115,7 +115,7 @@ end
 
 ---@param scope "inner"|"outer" outer key includes the `:` or `=` after the key
 function M.key(scope)
-	local pattern = "()%S.-( ?[:=] ?)"
+	local pattern = "()%S.-( ?[:=])"
 	core.selectClosestTextobj(pattern, scope, smallForward())
 end
 
