@@ -29,7 +29,7 @@ function M.setSelection(startPos, endPos)
 		local actsOnZeroWidthObr = vim.v.operator == "c"
 			or (vim.v.operator == "g@" and vim.o.operatorfunc:find("MiniOperators%.replace"))
 			or (vim.v.operator == "g@" and vim.o.operatorfunc:find("substitute"))
-		if not actsOnZeroWidthObr then u.warn("Textobj has a width of zero doing nothing.") end
+		if not actsOnZeroWidthObr then u.warn("Text object has a width of zero; doing nothing.") end
 		return
 	end
 
