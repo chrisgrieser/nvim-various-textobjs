@@ -32,22 +32,31 @@ end
 ---@param scope "inner"|"outer"
 function M.anyQuote(scope)
 	-- INFO
-	-- `(").-(")` would be enough if we were just to check for any quote character.
+	-- `(").-(")` would be enough if we were just to check for any quote char,
+	-- but to correctly deal with escaped quotes, empty quotes, while keeping
+	-- quotes balanced, we need to employ a more complex system of patterns.
 	--
-	-- To handle escaped quotes, we use make use of frontier patterns and handle
-	-- various edge cases. `%f[\"]` is the lua frontier pattern, and effectively
-	-- used as a negative lookbehind, that is ensuring that the previous
-	-- character may not be a `\`.
+	-- * To ignore escaped quotes, we use of frontier patterns `%f[\"]` as quasi
+	--   negative lookbehind, ensuring that the previous character may not be a `\`.
+	-- * Caveat A: since the 2nd frontier pattern has to include the quote char,
+	--   empty quotes such as `""` and strings with an escaped quote as at the end
+	--   like `"foo \""` are not matched.
+	-- * Caveat B: In a line like `"" + "foo"`, the pattern `(%f[\"]").-(%f[\"]")`
+	--   would match between the 2nd and 3rd quote, but not between the 3rd and 4th
+	--   quote.
+	-- * To address Caveat B, we also require the first character to not be a
+	--   quote. This makes the pattern fully ignore empty quotes, so that in a
+	--   line `"" + "foo"`, only the string between the 3rd and 4th quote is
+	--   matched. (This requires at least one character between the quotes, but
+	--   due to Caveat A, we already never match empty quotes anyway.)
 	local patterns = {
-		['"'] = [[(%f[\"]").-(%f[\"]")]],
-		["'"] = [[(%f[\']').-(%f[\']')]],
-		["`"] = [[(%f[\`]`).-(%f[\`]`)]],
+		['"'] = [[(%f[\"]")[^"].-(%f[\"]")]],
+		["'"] = [[(%f[\']')[^'].-(%f[\']')]],
+		["`"] = [[(%f[\`]`)[^`].-(%f[\`]`)]],
 
-		-- Since the 2nd frontier pattern has to include the quote char, empty
-		-- strings such as `""` and strings with an escaped quote as at the end
-		-- like `"foo \""` are not matched, thus requiring two extra set of
-		-- patterns form them (while keeping the 1st frontier pattern to prevent
-		-- the 1st quote from being escaped.)
+		-- * To address Caveat A, we use a two extra sets of patterns to match
+		-- empty quote `""` and strings with an escaped quote as last character
+		-- like `"foo \""`.
 		['empty "'] = [[(%f[\"]")(")]],
 		['escaped quote last "'] = [[(%f[\"]").*\"(")]],
 		["empty '"] = [[(%f[\']')(')]],
