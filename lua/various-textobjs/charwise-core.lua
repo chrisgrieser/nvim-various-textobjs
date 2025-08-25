@@ -210,7 +210,7 @@ function M.selectClosestTextobj(patterns, scope, lookForwLines)
 		vim.notify(
 			vim.inspect(objLogging),
 			vim.log.levels.DEBUG,
-			{ ft = "lua", title = scope .. " " .. textobj }
+			{ ft = "lua", title = scope .. " " .. textobj, timeout = false }
 		)
 	end
 
