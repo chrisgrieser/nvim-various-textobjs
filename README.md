@@ -272,7 +272,7 @@ end,
 
 ### Dynamically switch text object settings
 Some text objects have specific settings allowing you to configure their
-behavior. In case you want two have two keymaps, one for each behavior, you can
+behavior. In case you want to have two keymaps, one for each behavior, you can
 use this plugin's `setup` call before calling the respective text object.
 
 ```lua
