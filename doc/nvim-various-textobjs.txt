@@ -1,4 +1,4 @@
-*nvim-various-textobjs.txt*       For Neovim       Last change: 2025 August 11
+*nvim-various-textobjs.txt*      For Neovim     Last change: 2025 September 08
 
 ==============================================================================
 Table of Contents                    *nvim-various-textobjs-table-of-contents*
@@ -390,7 +390,7 @@ next occurrence of the text object:
 DYNAMICALLY SWITCH TEXT OBJECT SETTINGS ~
 
 Some text objects have specific settings allowing you to configure their
-behavior. In case you want two have two keymaps, one for each behavior, you can
+behavior. In case you want to have two keymaps, one for each behavior, you can
 use this plugin’s `setup` call before calling the respective text object.
 
 >lua
