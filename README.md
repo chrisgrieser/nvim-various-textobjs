@@ -38,7 +38,7 @@ Bundle of more than 30 new text objects for Neovim.
 | `indentation`            | surrounding lines with same or higher indentation                                                                           | [see overview from vim-indent-object](https://github.com/michaeljsmith/vim-indent-object) | \-                 | `ii`, `ai`, `aI`, (`iI`) |
 | `restOfIndentation`      | lines downwards with same or higher indentation                                                                             | \-                                                                                        | \-                 |           `R`            |
 | `greedyOuterIndentation` | outer indentation, expanded to blank lines; useful to get functions with annotations                                        | outer includes a blank (like `ap`/`ip`)                                                   | \-                 |        `ag`/`ig`         |
-| `subword`                | segment of a camelCase, snake_case, and kebab-case words                                                                    | outer includes one trailing/leading `_` or `-`                                            | \-                 |        `iS`/`aS`         |
+| `subword`                | segment of a camelCase, snake_case, and kebab-case words                                                                    | outer includes trailing/leading `_` or `-`                                                | \-                 |        `iS`/`aS`         |
 | `toNextClosingBracket`   | from cursor to next closing `]`, `)`, or `}`, can span multiple lines                                                       | \-                                                                                        | small              |           `C`            |
 | `toNextQuotationMark`    | from cursor to next unescaped `"`, `'`, or `` ` ``, can span multiple lines                                                 | \-                                                                                        | small              |           `Q`            |
 | `anyQuote`               | between any unescaped `"`, `'`, or `` ` `` in one line                                                                      | outer includes the quotation marks                                                        | small              |        `iq`/`aq`         |
@@ -63,7 +63,7 @@ Bundle of more than 30 new text objects for Neovim.
 | `argument`               | comma-separated argument (not as accurate as the treesitter-textobjects, use as fallback)                                   | outer includes the `,`                                                                    | small              |        `i,`/`a,`         |
 | `filepath`               | unix-filepath; supports `~` or `$HOME`, but not spaces in the filepath.                                                     | inner is only the filename                                                                | big                |        `iF`/`aF`         |
 | `color`                  | hex; rgb or hsl in CSS format; ANSI color code                                                                              | inner includes only the color value                                                       | small              |        `i#`/`a#`         |
-| `doubleSquareBrackets`   | text enclosed by `[[]]`                                                                                                     | outer includes the four square brackets                                                   | small              |        `iD`/`aD`         |
+| `doubleSquareBrackets`   | text enclosed by `[[]]`                                                                                                     | outer includes the 4 square brackets                                                      | small              |        `iD`/`aD`         |
 
 [jupytext]: https://jupytext.readthedocs.io/en/latest/formats-scripts.html#the-percent-format
 
@@ -267,7 +267,7 @@ local function gotoNextInnerNumber()
 	if mode:find("[Vv]") then -- only switches to visual when textobj found
 		vim.cmd.normal { mode, bang = true } -- leaves visual mode
 	end
-end,
+end
 ```
 
 ### Dynamically switch text object settings
