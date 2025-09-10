@@ -16,13 +16,13 @@ Bundle of more than 30 new text objects for Neovim.
 	* [Options](#options)
 	* [Use your own keybindings](#use-your-own-keybindings)
 - [Advanced usage / API](#advanced-usage--api)
-	* [Go to next occurrence of a text object](#go-to-next-occurrence-of-a-text-object)
 	* [Dynamically switch text object settings](#dynamically-switch-text-object-settings)
 	* [`ii` on unindented line should select entire buffer](#ii-on-unindented-line-should-select-entire-buffer)
 	* [Smarter `gx` & `gf`](#smarter-gx--gf)
 	* [Delete surrounding indentation](#delete-surrounding-indentation)
 	* [Yank surrounding indentation](#yank-surrounding-indentation)
 	* [Indent last paste](#indent-last-paste)
+	* [Go to next occurrence of a text object](#go-to-next-occurrence-of-a-text-object)
 	* [Other ideas?](#other-ideas)
 - [Limitations & non-goals](#limitations--non-goals)
 - [Other text object plugins](#other-text-object-plugins)
@@ -164,7 +164,7 @@ require("various-textobjs").setup {
 	},
 	behavior = {
 		-- save position in jumplist when using text objects
-		jumplist = true, 
+		jumplist = true,
 	},
 
 	-- extra configuration for specific text objects
@@ -222,7 +222,7 @@ For most text objects, there is only one parameter which accepts `"inner"` or
 `"outer"`. The exceptions are the `indentation` and `column` text objects:
 
 ```lua
--- THE INDENTATION TEXTOBJ requires two parameters, the first for exclusion of 
+-- THE INDENTATION TEXTOBJ requires two parameters, the first for exclusion of
 -- the starting border, the second for the exclusion of ending border
 vim.keymap.set(
 	{ "o", "x" },
@@ -239,36 +239,13 @@ vim.keymap.set(
 ```lua
 -- THE COLUMN TEXTOBJ takes an optional parameter for direction:
 -- "down" (default), "up", "both"
-vim.keymap.set(
-	{ "o", "x" },
-	"|",
-	'<cmd>lua require("various-textobjs").column("down")<CR>'
-)
-vim.keymap.set(
-	{ "o", "x" },
-	"a|",
-	'<cmd>lua require("various-textobjs").column("both")<CR>'
-)
+vim.keymap.set({ "o", "x" }, "|", '<cmd>lua require("various-textobjs").column("down")<CR>')
+vim.keymap.set({ "o", "x" }, "a|", '<cmd>lua require("various-textobjs").column("both")<CR>')
 ```
 
 ## Advanced usage / API
 All text objects can also be used as an API to modify their behavior or create
 custom commands. Here are some examples:
-
-### Go to next occurrence of a text object
-When called in normal mode, `nvim-various-textobjs` selects the next occurrence
-of the text object. Thus, you can easily create custom motions that go to the
-next occurrence of the text object:
-
-```lua
-local function gotoNextInnerNumber()
-	require("various-textobjs").number("inner")
-	local mode = vim.fn.mode()
-	if mode:find("[Vv]") then -- only switches to visual when textobj found
-		vim.cmd.normal { mode, bang = true } -- leaves visual mode
-	end
-end
-```
 
 ### Dynamically switch text object settings
 Some text objects have specific settings allowing you to configure their
@@ -279,7 +256,7 @@ use this plugin's `setup` call before calling the respective text object.
 -- Example: one keymap for `http` urls only, one for `ftp` urls only
 vim.keymap.set({ "o", "x" }, "H", function()
 	require("various-textobjs").setup {
-		textobjs = { 
+		textobjs = {
 			url = {
 				patterns = { [[https?://[^%s)%]}"'`>]+]] },
 			},
@@ -290,7 +267,7 @@ end, { expr = true, desc = "http-url textobj" })
 
 vim.keymap.set({ "o", "x" }, "F", function()
 	require("various-textobjs").setup {
-		textobjs = { 
+		textobjs = {
 			url = {
 				patterns = { [[ftp://[^%s)%]}"'`>]+]] },
 			},
@@ -451,6 +428,26 @@ vim.keymap.set("n", "P", function()
 	if changeFound then vim.cmd.normal { ">", bang = true } end
 end
 ```
+
+### Go to next occurrence of a text object
+When called in normal mode, `nvim-various-textobjs` selects the next occurrence
+of the *characterwise* text object. Thus, you can create custom motions that go
+to the next occurrence of the text object:
+
+```lua
+local function gotoNextInnerNumber()
+	require("various-textobjs").number("inner")
+	local mode = vim.fn.mode()
+	if mode:find("[Vv]") then -- only switches to visual when textobj found
+		vim.cmd.normal { mode, bang = true } -- leaves visual mode
+	end
+end
+```
+
+Note that the primary concern of `nvim-various-textobjs` are text objects and
+not motions, so this will not work for all text objects with many exceptions
+like subwords. For subwords, it is recommended to use a motion plugin like
+[nvim-spider](https://github.com/chrisgrieser/nvim-spider) instead.
 
 ### Other ideas?
 If you have some other useful ideas, feel free to [share them in this repo's
