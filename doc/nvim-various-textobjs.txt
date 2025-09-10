@@ -1,4 +1,4 @@
-*nvim-various-textobjs.txt*      For Neovim     Last change: 2025 September 08
+*nvim-various-textobjs.txt*      For Neovim     Last change: 2025 September 10
 
 ==============================================================================
 Table of Contents                    *nvim-various-textobjs-table-of-contents*
@@ -29,13 +29,13 @@ TABLE OF CONTENTS*nvim-various-textobjs-nvim-various-textobjs--table-of-contents
     - |nvim-various-textobjs-options|
     - |nvim-various-textobjs-use-your-own-keybindings|
 - |nvim-various-textobjs-advanced-usage-/-api|
-    - |nvim-various-textobjs-go-to-next-occurrence-of-a-text-object|
     - |nvim-various-textobjs-dynamically-switch-text-object-settings|
     - |nvim-various-textobjs-`ii`-on-unindented-line-should-select-entire-buffer|
     - |nvim-various-textobjs-smarter-`gx`-&-`gf`|
     - |nvim-various-textobjs-delete-surrounding-indentation|
     - |nvim-various-textobjs-yank-surrounding-indentation|
     - |nvim-various-textobjs-indent-last-paste|
+    - |nvim-various-textobjs-go-to-next-occurrence-of-a-text-object|
     - |nvim-various-textobjs-other-ideas?|
 - |nvim-various-textobjs-limitations-&-non-goals|
 - |nvim-various-textobjs-other-text-object-plugins|
@@ -58,7 +58,7 @@ LIST OF TEXT OBJECTS*nvim-various-textobjs-nvim-various-textobjs--list-of-text-o
                            blank lines; useful to get      (like ap/ip)                             
                            functions with annotations                                               
 
-  subword                  segment of a camelCase,         outer includes one     -                   iS/aS
+  subword                  segment of a camelCase,         outer includes         -                   iS/aS
                            snake_case, and kebab-case      trailing/leading _ or                    
                            words                           -                                        
 
@@ -147,8 +147,8 @@ LIST OF TEXT OBJECTS*nvim-various-textobjs-nvim-various-textobjs--list-of-text-o
   color                    hex; rgb or hsl in CSS format;  inner includes only    small               i#/a#
                            ANSI color code                 the color value                          
 
-  doubleSquareBrackets     text enclosed by [[]]           outer includes the     small               iD/aD
-                                                           four square brackets                     
+  doubleSquareBrackets     text enclosed by [[]]           outer includes the 4   small               iD/aD
+                                                           square brackets                          
   -----------------------------------------------------------------------------------------------------------
 
   [!TIP] For some text objects, you can also use `caW` or `cl` if your cursor is
@@ -275,7 +275,7 @@ The `.setup()` call is optional if you do not want to use the default keymaps.
         },
         behavior = {
             -- save position in jumplist when using text objects
-            jumplist = true, 
+            jumplist = true,
         },
     
         -- extra configuration for specific text objects
@@ -334,7 +334,7 @@ For most text objects, there is only one parameter which accepts `"inner"` or
 `"outer"`. The exceptions are the `indentation` and `column` text objects:
 
 >lua
-    -- THE INDENTATION TEXTOBJ requires two parameters, the first for exclusion of 
+    -- THE INDENTATION TEXTOBJ requires two parameters, the first for exclusion of
     -- the starting border, the second for the exclusion of ending border
     vim.keymap.set(
         { "o", "x" },
@@ -351,16 +351,8 @@ For most text objects, there is only one parameter which accepts `"inner"` or
 >lua
     -- THE COLUMN TEXTOBJ takes an optional parameter for direction:
     -- "down" (default), "up", "both"
-    vim.keymap.set(
-        { "o", "x" },
-        "|",
-        '<cmd>lua require("various-textobjs").column("down")<CR>'
-    )
-    vim.keymap.set(
-        { "o", "x" },
-        "a|",
-        '<cmd>lua require("various-textobjs").column("both")<CR>'
-    )
+    vim.keymap.set({ "o", "x" }, "|", '<cmd>lua require("various-textobjs").column("down")<CR>')
+    vim.keymap.set({ "o", "x" }, "a|", '<cmd>lua require("various-textobjs").column("both")<CR>')
 <
 
 
@@ -368,23 +360,6 @@ ADVANCED USAGE / API*nvim-various-textobjs-nvim-various-textobjs--advanced-usage
 
 All text objects can also be used as an API to modify their behavior or create
 custom commands. Here are some examples:
-
-
-GO TO NEXT OCCURRENCE OF A TEXT OBJECT ~
-
-When called in normal mode, `nvim-various-textobjs` selects the next occurrence
-of the text object. Thus, you can easily create custom motions that go to the
-next occurrence of the text object:
-
->lua
-    local function gotoNextInnerNumber()
-        require("various-textobjs").number("inner")
-        local mode = vim.fn.mode()
-        if mode:find("[Vv]") then -- only switches to visual when textobj found
-            vim.cmd.normal { mode, bang = true } -- leaves visual mode
-        end
-    end,
-<
 
 
 DYNAMICALLY SWITCH TEXT OBJECT SETTINGS ~
@@ -397,7 +372,7 @@ use this plugin’s `setup` call before calling the respective text object.
     -- Example: one keymap for `http` urls only, one for `ftp` urls only
     vim.keymap.set({ "o", "x" }, "H", function()
         require("various-textobjs").setup {
-            textobjs = { 
+            textobjs = {
                 url = {
                     patterns = { [[https?://[^%s)%]}"'`>]+]] },
                 },
@@ -408,7 +383,7 @@ use this plugin’s `setup` call before calling the respective text object.
     
     vim.keymap.set({ "o", "x" }, "F", function()
         require("various-textobjs").setup {
-            textobjs = { 
+            textobjs = {
                 url = {
                     patterns = { [[ftp://[^%s)%]}"'`>]+]] },
                 },
@@ -580,6 +555,28 @@ mnemonic.
         if changeFound then vim.cmd.normal { ">", bang = true } end
     end
 <
+
+
+GO TO NEXT OCCURRENCE OF A TEXT OBJECT ~
+
+When called in normal mode, `nvim-various-textobjs` selects the next occurrence
+of the _characterwise_ text object. Thus, you can create custom motions that go
+to the next occurrence of the text object:
+
+>lua
+    local function gotoNextInnerNumber()
+        require("various-textobjs").number("inner")
+        local mode = vim.fn.mode()
+        if mode:find("[Vv]") then -- only switches to visual when textobj found
+            vim.cmd.normal { mode, bang = true } -- leaves visual mode
+        end
+    end
+<
+
+Note that the primary concern of `nvim-various-textobjs` are text objects and
+not motions, so this will not work for all text objects with many exceptions
+like subwords. For subwords, it is recommended to use a motion plugin like
+nvim-spider <https://github.com/chrisgrieser/nvim-spider> instead.
 
 
 OTHER IDEAS? ~
