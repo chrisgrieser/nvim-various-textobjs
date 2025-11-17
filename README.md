@@ -61,28 +61,28 @@ Bundle of more than 30 new text objects for Neovim.
 | `notebookCell`           | cell delimited by [double percent comment][jupytext], such as `# %%`                                                        | outer includes the top cell border                                                        | \-                 |        `iN`/`aN`         |
 | `emoji`                  | single emoji (or Nerdfont glyph)                                                                                            | \-                                                                                        | small              |           `.`            |
 | `argument`               | comma-separated argument (not as accurate as the treesitter-textobjects, use as fallback)                                   | outer includes the `,`                                                                    | small              |        `i,`/`a,`         |
-| `filepath`               | unix-filepath; supports `~` or `$HOME`, but not spaces in the filepath.                                                     | inner is only the filename                                                                | big                |        `iF`/`aF`         |
-| `color`                  | hex; rgb or hsl in CSS format; ANSI color code                                                                              | inner includes only the color value                                                       | small              |        `i#`/`a#`         |
+| `filepath`               | UNIX-filepath; supports `~` or `$HOME`, but not spaces in the filepath.                                                     | inner is only the filename                                                                | big                |        `iF`/`aF`         |
+| `color`                  | HEX; RGB or HSL in CSS format; ANSI color code                                                                              | inner includes only the color value                                                       | small              |        `i#`/`a#`         |
 | `doubleSquareBrackets`   | text enclosed by `[[]]`                                                                                                     | outer includes the 4 square brackets                                                      | small              |        `iD`/`aD`         |
 
 [jupytext]: https://jupytext.readthedocs.io/en/latest/formats-scripts.html#the-percent-format
 
 > [!TIP]
-> For some text objects, you can also use `caW` or `cl` if your cursor is
-> standing on the object in question. However, these text objects become useful
-> when utilizing their forward-seeking behavior: Objects like `cL` (`url`) or `c.`
-> (`emoji`) will seek forward to the next occurrence and then change them in one
-> go. This saves you the need to navigate to them before you can use `caW` or
-> `cl`.
+> Some text objects may at first appear redundant, since you can also use `caW`
+> or `cl` if your cursor is standing on the object in question. However, these
+> text objects become useful when utilizing their forward-seeking behavior:
+> Objects like `cL` (`url`) or `c.` (`emoji`) will seek forward to the next
+> occurrence and then change them in one go. This saves you the need to navigate
+> to them before you use `caW` or `cl`.
 
-| filetype-specific text objects | description                                                                                        | inner / outer                                   | forward-seeking |   default keymaps   | filetypes (for default keymaps)     |
-| :----------------------------- | :------------------------------------------------------------------------------------------------- | :-----------------------------------------------| :-------------- | :-----------------: | :---------------------------------- |
-| `mdLink`                       | Markdown link like `[title](url)`                                                                  | inner is only the link title (between the `[]`) | small           |      `il`/`al`      | `markdown`                          |
-| `mdEmphasis`                   | Markdown text enclosed by `*`, `**`, `_`, `__`, `~~`, or `==`                                      | inner is only the emphasis content              | small           |      `ie`/`ae`      | `markdown`                          |
-| `mdFencedCodeBlock`            | Markdown fenced code (enclosed by three backticks)                                                 | outer includes the enclosing backticks          | big             |      `iC`/`aC`      | `markdown`                          |
-| `cssSelector`                  | class in CSS such as `.my-class`                                                                   | outer includes trailing comma and space         | small           |      `ic`/`ac`      | `css`, `scss`                       |
+| filetype-specific text objects | description                                                                                        | inner / outer                                   | forward-seeking |   default keymaps   | filetypes (for default keymaps)               |
+| :----------------------------- | :------------------------------------------------------------------------------------------------- | :-----------------------------------------------| :-------------- | :-----------------: | :-------------------------------------------- |
+| `mdLink`                       | Markdown link like `[title](url)`                                                                  | inner is only the link title (between the `[]`) | small           |      `il`/`al`      | `markdown`                                    |
+| `mdEmphasis`                   | Markdown text enclosed by `*`, `**`, `_`, `__`, `~~`, or `==`                                      | inner is only the emphasis content              | small           |      `ie`/`ae`      | `markdown`                                    |
+| `mdFencedCodeBlock`            | Markdown fenced code (enclosed by three backticks)                                                 | outer includes the enclosing backticks          | big             |      `iC`/`aC`      | `markdown`                                    |
+| `cssSelector`                  | class in CSS such as `.my-class`                                                                   | outer includes trailing comma and space         | small           |      `ic`/`ac`      | `css`, `scss`                                 |
 | `htmlAttribute`                | attribute in HTML/XML like `href="foobar.com"`                                                     | inner is only the value inside the quotes       | small           |      `ix`/`ax`      | `html`, `xml`, `css`, `scss`, `vue`, `svelte` |
-| `shellPipe`                    | segment until/after a pipe character (`\|`)                                                        | outer includes the pipe                         | small           |      `iP`/`aP`      | `bash`, `zsh`, `fish`, `sh`         |
+| `shellPipe`                    | segment until/after a pipe character (`\|`)                                                        | outer includes the pipe                         | small           |      `iP`/`aP`      | `bash`, `zsh`, `fish`, `sh`                   |
 
 <!-- LTeX: enabled=true -->
 
