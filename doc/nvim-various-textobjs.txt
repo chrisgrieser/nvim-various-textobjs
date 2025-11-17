@@ -1,4 +1,4 @@
-*nvim-various-textobjs.txt*       For Neovim      Last change: 2025 October 13
+*nvim-various-textobjs.txt*      For Neovim      Last change: 2025 November 17
 
 ==============================================================================
 Table of Contents                    *nvim-various-textobjs-table-of-contents*
@@ -140,58 +140,57 @@ LIST OF TEXT OBJECTS*nvim-various-textobjs-nvim-various-textobjs--list-of-text-o
                            treesitter-textobjects, use as                                           
                            fallback)                                                                
 
-  filepath                 unix-filepath; supports ~ or    inner is only the      big                 iF/aF
+  filepath                 UNIX-filepath; supports ~ or    inner is only the      big                 iF/aF
                            $HOME, but not spaces in the    filename                                 
                            filepath.                                                                
 
-  color                    hex; rgb or hsl in CSS format;  inner includes only    small               i#/a#
+  color                    HEX; RGB or HSL in CSS format;  inner includes only    small               i#/a#
                            ANSI color code                 the color value                          
 
   doubleSquareBrackets     text enclosed by [[]]           outer includes the 4   small               iD/aD
                                                            square brackets                          
   -----------------------------------------------------------------------------------------------------------
 
-  [!TIP] For some text objects, you can also use `caW` or `cl` if your cursor is
-  standing on the object in question. However, these text objects become useful
-  when utilizing their forward-seeking behavior: Objects like `cL` (`url`) or
-  `c.` (`emoji`) will seek forward to the next occurrence and then change them in
-  one go. This saves you the need to navigate to them before you can use `caW` or
-  `cl`.
+  [!TIP] Some text objects may at first appear redundant, since you can also use
+  `caW` or `cl` if your cursor is standing on the object in question. However,
+  these text objects become useful when utilizing their forward-seeking behavior:
+  Objects like `cL` (`url`) or `c.` (`emoji`) will seek forward to the next
+  occurrence and then change them in one go. This saves you the need to navigate
+  to them before you use `caW` or `cl`.
   ------------------------------------------------------------------------------------------------------
-  filetype-specific   description                  inner / outer forward-seeking    default  filetypes
-  text objects                                                                      keymaps  (for
-                                                                                             default
-                                                                                             keymaps)
-  ------------------- ---------------------------- ------------- ----------------- --------- -----------
-  mdLink              Markdown link like           inner is only small               il/al   markdown
-                      [title](url)                 the link                                  
-                                                   title                                     
-                                                   (between the                              
-                                                   [])                                       
+  filetype-specific   description                 inner / outer forward-seeking    default  filetypes
+  text objects                                                                     keymaps  (for default
+                                                                                            keymaps)
+  ------------------- --------------------------- ------------- ----------------- --------- ------------
+  mdLink              Markdown link like          inner is only small               il/al   markdown
+                      [title](url)                the link                                  
+                                                  title                                     
+                                                  (between the                              
+                                                  [])                                       
 
-  mdEmphasis          Markdown text enclosed by *, inner is only small               ie/ae   markdown
-                      **, _, __, ~~, or ==         the emphasis                              
-                                                   content                                   
+  mdEmphasis          Markdown text enclosed by   inner is only small               ie/ae   markdown
+                      *, **, _, __, ~~, or ==     the emphasis                              
+                                                  content                                   
 
-  mdFencedCodeBlock   Markdown fenced code         outer         big                 iC/aC   markdown
-                      (enclosed by three           includes the                              
-                      backticks)                   enclosing                                 
-                                                   backticks                                 
+  mdFencedCodeBlock   Markdown fenced code        outer         big                 iC/aC   markdown
+                      (enclosed by three          includes the                              
+                      backticks)                  enclosing                                 
+                                                  backticks                                 
 
-  cssSelector         class in CSS such as         outer         small               ic/ac   css, scss
-                      .my-class                    includes                                  
-                                                   trailing                                  
-                                                   comma and                                 
-                                                   space                                     
+  cssSelector         class in CSS such as        outer         small               ic/ac   css, scss
+                      .my-class                   includes                                  
+                                                  trailing                                  
+                                                  comma and                                 
+                                                  space                                     
 
-  htmlAttribute       attribute in HTML/XML like   inner is only small               ix/ax   html, xml,
-                      href="foobar.com"            the value                                 css, scss,
-                                                   inside the                                vue, svelte
-                                                   quotes                                    
+  htmlAttribute       attribute in HTML/XML like  inner is only small               ix/ax   html, xml,
+                      href="foobar.com"           the value                                 css, scss,
+                                                  inside the                                vue, svelte
+                                                  quotes                                    
 
-  shellPipe           segment until/after a pipe   outer         small               iP/aP   bash, zsh,
-                      character (\|)               includes the                              fish, sh
-                                                   pipe                                      
+  shellPipe           segment until/after a pipe  outer         small               iP/aP   bash, zsh,
+                      character (\|)              includes the                              fish, sh
+                                                  pipe                                      
   ------------------------------------------------------------------------------------------------------
 
 INSTALLATION       *nvim-various-textobjs-nvim-various-textobjs--installation*
