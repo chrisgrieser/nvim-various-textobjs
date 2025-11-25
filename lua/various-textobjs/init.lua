@@ -10,21 +10,6 @@ setmetatable(M, {
 		return function(...)
 			local warn = require("various-textobjs.utils").warn
 
-			-- DEPRECATION (2025-04-24)
-			if key == "pyTripleQuotes" then
-				local msg = "The `pyTripleQuotes` textobj is deprecated. "
-					.. "Please use `nvim-treesitter-teextobjects`, create a file "
-					.. "`./queries/python/textobjects.scm` in your config dir with "
-					.. "the following content:\n\n"
-					.. "```\n"
-					.. "; extends\n"
-					.. "(expression_statement (string (string_content) @docstring.inner) @docstring.outer)\n"
-					.. "```\n"
-					.. "Call the textobject via `:TSTextobjectSelect @docstring.outer`"
-				warn(msg)
-				return function() end -- empty function to prevent error
-			end
-
 			local linewiseObjs = vim.tbl_keys(require("various-textobjs.textobjs.linewise"))
 			local charwiseObjs = vim.tbl_keys(require("various-textobjs.textobjs.charwise"))
 

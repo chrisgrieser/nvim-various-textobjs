@@ -269,11 +269,5 @@ function M.color(scope)
 	core.selectClosestTextobj(pattern, scope, smallForward())
 end
 
----@deprecated
-function M.cssColor(...)
-	u.warn("`.cssColor` is deprecated, use `.color`. (Now also supports ansi color codes)")
-	M.color(...)
-end
-
 --------------------------------------------------------------------------------
 return M
