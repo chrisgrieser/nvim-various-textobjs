@@ -15,6 +15,7 @@ Bundle of more than 30 new text objects for Neovim.
 - [Configuration](#configuration)
 	* [Options](#options)
 	* [Use your own keybindings](#use-your-own-keybindings)
+- [Deprecated filetype-specific textobjects](#deprecated-filetype-specific-textobjects)
 - [Advanced usage / API](#advanced-usage--api)
 	* [Dynamically switch text object settings](#dynamically-switch-text-object-settings)
 	* [`ii` on unindented line should select entire buffer](#ii-on-unindented-line-should-select-entire-buffer)
@@ -230,6 +231,17 @@ vim.keymap.set(
 vim.keymap.set({ "o", "x" }, "|", '<cmd>lua require("various-textobjs").column("down")<CR>')
 vim.keymap.set({ "o", "x" }, "a|", '<cmd>lua require("various-textobjs").column("both")<CR>')
 ```
+
+## Deprecated filetype-specific textobjects
+The previously available filetype-specific text objects `htmlAttribute`,
+`shellPipe`, `cssSelector`, `mdEmphasis`, and `mdFencedCodeBlock` have been
+deprecated, since creating treesitter-based textobjects for them is both easy
+and more precise than using the pattern-based approach of this plugin.
+
+Call the respective function, for example
+`require("various-textobjs").cssSelector()`, for information how to set them up
+with
+[nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects).
 
 ## Advanced usage / API
 All text objects can also be used as an API to modify their behavior or create
