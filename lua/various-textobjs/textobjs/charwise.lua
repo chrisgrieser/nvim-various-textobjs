@@ -194,9 +194,6 @@ function M.lastChange()
 	core.setSelection(changeStartPos, changeEndPos)
 end
 
---------------------------------------------------------------------------------
--- FILETYPE SPECIFIC TEXTOBJS
-
 ---@param scope "inner"|"outer" inner selector excludes the brackets themselves
 function M.doubleSquareBrackets(scope)
 	local pattern = "(%[%[).-(%]%])"
@@ -210,15 +207,6 @@ function M.htmlAttribute(scope)
 		["''"] = "([%w-]+=').-(')",
 	}
 	core.selectClosestTextobj(pattern, scope, smallForward())
-end
-
----@param scope "inner"|"outer" outer selector includes the pipe
-function M.shellPipe(scope)
-	local patterns = {
-		trailingPipe = "()[^|%s][^|]-( ?| ?)", -- 1st char non-space to exclude indentation
-		leadingPipe = "( ?| ?)[^|]*()",
-	}
-	core.selectClosestTextobj(patterns, scope, smallForward())
 end
 
 ---@param scope "inner"|"outer" inner selector only affects the color value

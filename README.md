@@ -78,7 +78,6 @@ Bundle of more than 30 new text objects for Neovim.
 | filetype-specific text objects | description                                                                                        | inner / outer                                   | forward-seeking |   default keymaps   | filetypes (for default keymaps)               |
 | :----------------------------- | :------------------------------------------------------------------------------------------------- | :-----------------------------------------------| :-------------- | :-----------------: | :-------------------------------------------- |
 | `htmlAttribute`                | attribute in HTML/XML like `href="foobar.com"`                                                     | inner is only the value inside the quotes       | small           |      `ix`/`ax`      | `html`, `xml`, `css`, `scss`, `vue`, `svelte` |
-| `shellPipe`                    | segment until/after a pipe character (`\|`)                                                        | outer includes the pipe                         | small           |      `iP`/`aP`      | `bash`, `zsh`, `fish`, `sh`                   |
 
 <!-- LTeX: enabled=true -->
 

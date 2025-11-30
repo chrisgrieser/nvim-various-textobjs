@@ -34,7 +34,6 @@ local oneMaps = {
 	emoji = ".", -- `:` would block the cmdline from visual mode, `e`/`E` conflicts with motions
 }
 local ftMaps = {
-	{ map = { shellPipe = "P" }, fts = { "sh", "bash", "zsh", "fish" } },
 	{ map = { htmlAttribute = "x" }, fts = { "html", "css", "scss", "xml", "vue", "svelte" } },
 }
 
