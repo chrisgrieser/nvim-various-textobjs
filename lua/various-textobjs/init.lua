@@ -65,6 +65,10 @@ setmetatable(M, {
 					.. '(pipeline (command) @pipeline.inner @pipeline.outer "|" @pipeline.outer)\n'
 					.. "```\n"
 					.. "Call the textobject via `:TSTextobjectSelect @pipeline.outer`"
+			elseif key == "htmlAttribute" then
+				warning = "The `htmlAttribute` textobj is deprecated. "
+					.. "Please use the existing `@attribute.outer` textobj from "
+					.. "`nvim-treesitter-teextobjects`."
 			end
 			if warning then
 				warn(warning)

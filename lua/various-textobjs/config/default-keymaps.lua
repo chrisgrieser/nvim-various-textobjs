@@ -33,9 +33,6 @@ local oneMaps = {
 	lastChange = "g;", -- consistent with `g;` movement
 	emoji = ".", -- `:` would block the cmdline from visual mode, `e`/`E` conflicts with motions
 }
-local ftMaps = {
-	{ map = { htmlAttribute = "x" }, fts = { "html", "css", "scss", "xml", "vue", "svelte" } },
-}
 
 --------------------------------------------------------------------------------
 
@@ -76,23 +73,6 @@ function M.setup(disabledKeymaps)
 	keymap( { "o", "x" }, "iI" , "<cmd>lua require('various-textobjs').indentation('inner', 'inner')<CR>", { desc = "inner-inner indentation textobj" })
 	keymap( { "o", "x" }, "aI" , "<cmd>lua require('various-textobjs').indentation('outer', 'outer')<CR>", { desc = "outer-outer indentation textobj" })
 	-- stylua: ignore end
-
-	local group = vim.api.nvim_create_augroup("VariousTextobjs", {})
-	for _, textobj in pairs(ftMaps) do
-		vim.api.nvim_create_autocmd("FileType", {
-			group = group,
-			pattern = textobj.fts,
-			callback = function()
-				for objName, map in pairs(textobj.map) do
-					local name = " " .. objName .. " textobj"
-					-- stylua: ignore start
-					keymap( { "o", "x" }, "a" .. map, ("<cmd>lua require('various-textobjs').%s('%s')<CR>"):format(objName, "outer"), { desc = "outer" .. name, buffer = true })
-					keymap( { "o", "x" }, "i" .. map, ("<cmd>lua require('various-textobjs').%s('%s')<CR>"):format(objName, "inner"), { desc = "inner" .. name, buffer = true })
-					-- stylua: ignore end
-				end
-			end,
-		})
-	end
 end
 
 --------------------------------------------------------------------------------

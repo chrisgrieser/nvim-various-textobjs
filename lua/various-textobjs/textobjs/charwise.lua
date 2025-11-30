@@ -200,15 +200,6 @@ function M.doubleSquareBrackets(scope)
 	core.selectClosestTextobj(pattern, scope, smallForward())
 end
 
----@param scope "inner"|"outer" inner selector is only the value of the attribute inside the quotation marks.
-function M.htmlAttribute(scope)
-	local pattern = {
-		['""'] = '([%w-]+=").-(")',
-		["''"] = "([%w-]+=').-(')",
-	}
-	core.selectClosestTextobj(pattern, scope, smallForward())
-end
-
 ---@param scope "inner"|"outer" inner selector only affects the color value
 function M.color(scope)
 	local pattern = {

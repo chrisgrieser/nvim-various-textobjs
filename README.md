@@ -67,6 +67,7 @@ Bundle of more than 30 new text objects for Neovim.
 
 [jupytext]:
 https://jupytext.readthedocs.io/en/latest/formats-scripts.html#the-percent-format
+<!-- LTeX: enabled=true -->
 
 > [!TIP]
 > Some text objects may at first appear redundant, since you can also use `caW`
@@ -75,12 +76,6 @@ https://jupytext.readthedocs.io/en/latest/formats-scripts.html#the-percent-forma
 > Objects like `cL` (`url`) or `c.` (`emoji`) will seek forward to the next
 > occurrence and then change them in one go. This saves you the need to navigate
 > to them before you use `caW` or `cl`.
-
-| filetype-specific text objects | description                                                                                        | inner / outer                                   | forward-seeking |   default keymaps   | filetypes (for default keymaps)               |
-| :----------------------------- | :------------------------------------------------------------------------------------------------- | :-----------------------------------------------| :-------------- | :-----------------: | :-------------------------------------------- |
-| `htmlAttribute`                | attribute in HTML/XML like `href="foobar.com"`                                                     | inner is only the value inside the quotes       | small           |      `ix`/`ax`      | `html`, `xml`, `css`, `scss`, `vue`, `svelte` |
-
-<!-- LTeX: enabled=true -->
 
 ## Installation
 **Variant 1:** Have `nvim-various-textobjs` set up all the keybindings from the
