@@ -197,27 +197,6 @@ end
 --------------------------------------------------------------------------------
 -- FILETYPE SPECIFIC TEXTOBJS
 
----@param scope "inner"|"outer" inner selector only includes the content, outer selector includes the type.
-function M.mdEmphasis(scope)
-	-- CAVEAT this still has a few edge cases with escaped markup, will need a
-	-- treesitter object to reliably account for that.
-	local patterns = {
-		["**?"] = "([^\\]%*%*?).-[^\\](%*%*?)",
-		["__?"] = "([^\\]__?).-[^\\](__?)",
-		["=="] = "([^\\]==).-[^\\](==)",
-		["~~"] = "([^\\]~~).-[^\\](~~)",
-		["**? (start)"] = "(^%*%*?).-[^\\](%*%*?)",
-		["__? (start)"] = "(^__?).-[^\\](__?)",
-		["== (start)"] = "(^==).-[^\\](==)",
-		["~~ (start)"] = "(^~~).-[^\\](~~)",
-	}
-	core.selectClosestTextobj(patterns, scope, smallForward())
-
-	-- pattern accounts for escape char, so move to right to account for that
-	local isAtStart = vim.api.nvim_win_get_cursor(0)[2] == 1
-	if scope == "outer" and not isAtStart then u.normal("ol") end
-end
-
 ---@param scope "inner"|"outer" inner selector excludes the brackets themselves
 function M.doubleSquareBrackets(scope)
 	local pattern = "(%[%[).-(%]%])"
