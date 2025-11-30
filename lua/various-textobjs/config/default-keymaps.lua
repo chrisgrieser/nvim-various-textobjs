@@ -36,7 +36,6 @@ local oneMaps = {
 local ftMaps = {
 	{ map = { mdLink = "l" }, fts = { "markdown" } },
 	{ map = { mdEmphasis = "e" }, fts = { "markdown" } },
-	{ map = { mdFencedCodeBlock = "C" }, fts = { "markdown" } },
 	{ map = { cssSelector = "c" }, fts = { "css", "scss" } },
 	{ map = { shellPipe = "P" }, fts = { "sh", "bash", "zsh", "fish" } },
 	{ map = { htmlAttribute = "x" }, fts = { "html", "css", "scss", "xml", "vue", "svelte" } },
