@@ -197,15 +197,6 @@ end
 --------------------------------------------------------------------------------
 -- FILETYPE SPECIFIC TEXTOBJS
 
----@param scope "inner"|"outer" inner link only includes the link title, outer link includes link, url, and the four brackets.
-function M.mdLink(scope)
-	local pattern = "(%[)[^%]]-(%]%b())"
-	core.selectClosestTextobj(pattern, scope, smallForward())
-end
-
--- DEPRECATION (2024-12-04), changed for consistency with other objects
-function M.mdlink() u.warn("`.mdlink()` is deprecated. Use `.mdLink()` instead (uses capital L).") end
-
 ---@param scope "inner"|"outer" inner selector only includes the content, outer selector includes the type.
 function M.mdEmphasis(scope)
 	-- CAVEAT this still has a few edge cases with escaped markup, will need a
