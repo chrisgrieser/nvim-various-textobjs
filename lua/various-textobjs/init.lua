@@ -61,6 +61,18 @@ setmetatable(M, {
 					.. "Call the textobject via `:TSTextobjectSelect @emphasis.outer`"
 				warn(msg)
 				return function() end -- empty function to prevent error
+			elseif key == "cssSelector" then
+				local msg = "The `cssSelector` textobj is deprecated. "
+					.. "Please use `nvim-treesitter-teextobjects`, create a file "
+					.. "`./queries/css/textobjects.scm` in your config dir with "
+					.. "the following content:\n\n"
+					.. "```\n"
+					.. "; extends\n"
+					.. '(class_selector "." @selector.outer (class_name) @selector.inner @selector.outer)\n'
+					.. "```\n"
+					.. "Call the textobject via `:TSTextobjectSelect @selector.outer`"
+				warn(msg)
+				return function() end -- empty function to prevent error
 			end
 
 			if module then

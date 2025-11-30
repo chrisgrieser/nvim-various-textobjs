@@ -203,12 +203,6 @@ function M.doubleSquareBrackets(scope)
 	core.selectClosestTextobj(pattern, scope, smallForward())
 end
 
----@param scope "inner"|"outer" outer selector includes trailing comma and whitespace
-function M.cssSelector(scope)
-	local pattern = "()[#.][%w-_]+(,? ?)"
-	core.selectClosestTextobj(pattern, scope, smallForward())
-end
-
 ---@param scope "inner"|"outer" inner selector is only the value of the attribute inside the quotation marks.
 function M.htmlAttribute(scope)
 	local pattern = {
