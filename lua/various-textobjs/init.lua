@@ -20,6 +20,20 @@ setmetatable(M, {
 			if key == "diagnostic" then module = "diagnostic" end
 			if key == "subword" then module = "subword" end
 			if key == "emoji" then module = "emoji" end
+			if key == "mdFencedCodeBlock" then
+				local msg = "The `mdFencedCodeBlock` textobj is deprecated. "
+					.. "Please use `nvim-treesitter-teextobjects`, create a file "
+					.. "`./queries/markdown/textobjects.scm` in your config dir with "
+					.. "the following content:\n\n"
+					.. "```\n"
+					.. "; extends\n"
+					.. "(fenced_code_block) @codeblock.outer\n"
+					.. "(code_fence_content) @codeblock.inner\n"
+					.. "```\n"
+					.. "Call the textobject via `:TSTextobjectSelect @codeblock.outer`"
+				require("various-textobjs.utils").warn(msg)
+				return function() end -- empty function to prevent error
+			end
 
 			if module then
 				require("various-textobjs.textobjs." .. module)[key](...)

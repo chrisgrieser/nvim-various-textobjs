@@ -80,56 +80,6 @@ function M.restOfParagraph()
 	if curLnum ~= lastLine then u.normal("k") end
 end
 
----@param scope "inner"|"outer" inner excludes the backticks
-function M.mdFencedCodeBlock(scope)
-	-- 1. allow indented codeblocks after various md syntax (#78)
-	-- 2. allow anything as codeblock label (#127)
-	local codeBlockPattern = "^[%d%s.)>-*+]*```[^`]*$"
-
-	local cursorLnum = vim.api.nvim_win_get_cursor(0)[1]
-	local bigForward = require("various-textobjs.config.config").config.forwardLooking.big
-
-	-- scan buffer for all code blocks, add beginnings & endings to a table each
-	local cbBegin = {}
-	local cbEnd = {}
-	local allLines = vim.api.nvim_buf_get_lines(0, 0, -1, true)
-	local i = 1
-	for _, line in pairs(allLines) do
-		if line:find(codeBlockPattern) then
-			if #cbBegin == #cbEnd then
-				table.insert(cbBegin, i)
-			else
-				table.insert(cbEnd, i)
-			end
-		end
-		i = i + 1
-	end
-
-	if #cbBegin > #cbEnd then table.remove(cbBegin) end -- incomplete codeblock
-
-	-- determine cursor location in a codeblock
-	local j = 0
-	repeat
-		j = j + 1
-		if j > #cbBegin then
-			u.notFoundMsg(bigForward)
-			return
-		end
-		local cursorInBetween = (cbBegin[j] <= cursorLnum) and (cbEnd[j] >= cursorLnum)
-		-- seek forward for a codeblock
-		local cursorInFront = (cbBegin[j] > cursorLnum) and (cbBegin[j] <= cursorLnum + bigForward)
-	until cursorInBetween or cursorInFront
-
-	local start = cbBegin[j]
-	local ending = cbEnd[j]
-	if scope == "inner" then
-		start = start + 1
-		ending = ending - 1
-	end
-
-	setLinewiseSelection(start, ending)
-end
-
 function M.visibleInWindow()
 	local start = vim.fn.line("w0")
 	local ending = vim.fn.line("w$")
