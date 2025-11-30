@@ -1,4 +1,4 @@
-*nvim-various-textobjs.txt*      For Neovim      Last change: 2025 November 24
+*nvim-various-textobjs.txt*      For Neovim      Last change: 2025 November 30
 
 ==============================================================================
 Table of Contents                    *nvim-various-textobjs-table-of-contents*
@@ -82,7 +82,9 @@ LIST OF TEXT OBJECTS*nvim-various-textobjs-nvim-various-textobjs--list-of-text-o
                            object                                                                   
 
   nearEoL                  from cursor position to end of  -                      -                     n
-                           line minus one character                                                 
+                           line, excluding last char (and                                           
+                           trailing spaces); {count}                                                
+                           excludes last x chars instead                                            
 
   lineCharacterwise        current line, but characterwise outer includes         small, if on        i_/a_
                                                            indentation & trailing blank             
