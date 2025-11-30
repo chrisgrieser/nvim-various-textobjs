@@ -78,9 +78,10 @@ function M.anyBracket(scope)
 end
 
 ---near end of the line, ignoring trailing whitespace
----(relevant for markdown, where you normally add a -space after the `.` ending a sentence.)
+---(relevant for markdown, where you normally add a space after the `.` ending a sentence.)
 function M.nearEoL()
-	local pattern = "().(%S%s*)$"
+	local chars = vim.v.count1
+	local pattern = "().(" .. ("%S"):rep(chars) .. "%s*)$"
 	local row, _, endCol = core.getTextobjPos(pattern, "inner", 0)
 	core.selectFromCursorTo({ row, endCol }, smallForward())
 end
