@@ -9,6 +9,68 @@ setmetatable(M, {
 	__index = function(_, key)
 		return function(...)
 			local warn = require("various-textobjs.utils").warn
+			-----------------------------------------------------------------------
+			-- DEPRECATION (2025-11-30)
+			local warning
+			if key == "mdFencedCodeBlock" then
+				warning = "The `mdFencedCodeBlock` textobj is deprecated. "
+					.. "Please use `nvim-treesitter-teextobjects`, create a file "
+					.. "`./queries/markdown/textobjects.scm` in your config dir with "
+					.. "the following content:\n\n"
+					.. "```\n"
+					.. "; extends\n"
+					.. "(fenced_code_block) @codeblock.outer\n"
+					.. "(code_fence_content) @codeblock.inner\n"
+					.. "```\n"
+					.. "Call the textobject via `:TSTextobjectSelect @codeblock.outer`"
+			elseif key == "mdLink" then
+				warning = "The `mdLink` textobj is deprecated. "
+					.. "Please use `nvim-treesitter-teextobjects`, create a file "
+					.. "`./queries/markdown_inline/textobjects.scm` in your config dir with "
+					.. "the following content:\n\n"
+					.. "```\n"
+					.. "; extends\n"
+					.. "(inline_link) @mdlink.outer\n"
+					.. "(link_text) @mdlink.inner\n"
+					.. "```\n"
+					.. "Call the textobject via `:TSTextobjectSelect @mdlink.outer`"
+			elseif key == "mdEmphasis" then
+				warning = "The `mdEmphasis` textobj is deprecated. "
+					.. "Please use `nvim-treesitter-teextobjects`, create a file "
+					.. "`./queries/markdown_inline/textobjects.scm` in your config dir with "
+					.. "the following content:\n\n"
+					.. "```\n"
+					.. "; extends\n"
+					.. "(emphasis) @emphasis.outer\n"
+					.. "(strong_emphasis) @emphasis.outer\n"
+					.. "```\n"
+					.. "Call the textobject via `:TSTextobjectSelect @emphasis.outer`"
+			elseif key == "cssSelector" then
+				warning = "The `cssSelector` textobj is deprecated. "
+					.. "Please use `nvim-treesitter-teextobjects`, create a file "
+					.. "`./queries/css/textobjects.scm` in your config dir with "
+					.. "the following content:\n\n"
+					.. "```\n"
+					.. "; extends\n"
+					.. '(class_selector "." @selector.outer (class_name) @selector.inner @selector.outer)\n'
+					.. "```\n"
+					.. "Call the textobject via `:TSTextobjectSelect @selector.outer`"
+			elseif key == "shellPipe" then
+				warning = "The `shellPipe` textobj is deprecated. "
+					.. "Please use `nvim-treesitter-teextobjects`, create a file "
+					.. "`./queries/{zsh,bash}/textobjects.scm` in your config dir with "
+					.. "the following content:\n\n"
+					.. "```\n"
+					.. "; extends\n"
+					.. '(pipeline (command) @pipeline.inner @pipeline.outer "|" @pipeline.outer)\n'
+					.. "```\n"
+					.. "Call the textobject via `:TSTextobjectSelect @pipeline.outer`"
+			end
+			if warning then
+				warn(warning)
+				return function() end -- empty function to prevent error
+			end
+			-----------------------------------------------------------------------
 
 			local linewiseObjs = vim.tbl_keys(require("various-textobjs.textobjs.linewise"))
 			local charwiseObjs = vim.tbl_keys(require("various-textobjs.textobjs.charwise"))
@@ -20,72 +82,6 @@ setmetatable(M, {
 			if key == "diagnostic" then module = "diagnostic" end
 			if key == "subword" then module = "subword" end
 			if key == "emoji" then module = "emoji" end
-
-			-- DEPRECATION (2025-11-30)
-			if key == "mdFencedCodeBlock" then
-				local msg = "The `mdFencedCodeBlock` textobj is deprecated. "
-					.. "Please use `nvim-treesitter-teextobjects`, create a file "
-					.. "`./queries/markdown/textobjects.scm` in your config dir with "
-					.. "the following content:\n\n"
-					.. "```\n"
-					.. "; extends\n"
-					.. "(fenced_code_block) @codeblock.outer\n"
-					.. "(code_fence_content) @codeblock.inner\n"
-					.. "```\n"
-					.. "Call the textobject via `:TSTextobjectSelect @codeblock.outer`"
-				warn(msg)
-				return function() end -- empty function to prevent error
-			elseif key == "mdLink" then
-				local msg = "The `mdLink` textobj is deprecated. "
-					.. "Please use `nvim-treesitter-teextobjects`, create a file "
-					.. "`./queries/markdown_inline/textobjects.scm` in your config dir with "
-					.. "the following content:\n\n"
-					.. "```\n"
-					.. "; extends\n"
-					.. "(inline_link) @mdlink.outer\n"
-					.. "(link_text) @mdlink.inner\n"
-					.. "```\n"
-					.. "Call the textobject via `:TSTextobjectSelect @mdlink.outer`"
-				warn(msg)
-				return function() end -- empty function to prevent error
-			elseif key == "mdEmphasis" then
-				local msg = "The `mdEmphasis` textobj is deprecated. "
-					.. "Please use `nvim-treesitter-teextobjects`, create a file "
-					.. "`./queries/markdown_inline/textobjects.scm` in your config dir with "
-					.. "the following content:\n\n"
-					.. "```\n"
-					.. "; extends\n"
-					.. "(emphasis) @emphasis.outer\n"
-					.. "(strong_emphasis) @emphasis.outer\n"
-					.. "```\n"
-					.. "Call the textobject via `:TSTextobjectSelect @emphasis.outer`"
-				warn(msg)
-				return function() end -- empty function to prevent error
-			elseif key == "cssSelector" then
-				local msg = "The `cssSelector` textobj is deprecated. "
-					.. "Please use `nvim-treesitter-teextobjects`, create a file "
-					.. "`./queries/css/textobjects.scm` in your config dir with "
-					.. "the following content:\n\n"
-					.. "```\n"
-					.. "; extends\n"
-					.. '(class_selector "." @selector.outer (class_name) @selector.inner @selector.outer)\n'
-					.. "```\n"
-					.. "Call the textobject via `:TSTextobjectSelect @selector.outer`"
-				warn(msg)
-				return function() end -- empty function to prevent error
-			elseif key == "shellPipe" then
-				local msg = "The `shellPipe` textobj is deprecated. "
-					.. "Please use `nvim-treesitter-teextobjects`, create a file "
-					.. "`./queries/{zsh,bash}/textobjects.scm` in your config dir with "
-					.. "the following content:\n\n"
-					.. "```\n"
-					.. "; extends\n"
-					.. '(pipeline (command) @pipeline.inner @pipeline.outer "|" @pipeline.outer)\n'
-					.. "```\n"
-					.. "Call the textobject via `:TSTextobjectSelect @pipeline.outer`"
-				warn(msg)
-				return function() end -- empty function to prevent error
-			end
 
 			if module then
 				require("various-textobjs.textobjs." .. module)[key](...)
