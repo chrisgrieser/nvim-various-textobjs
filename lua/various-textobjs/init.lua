@@ -33,7 +33,7 @@ setmetatable(M, {
 					.. "(code_fence_content) @codeblock.inner\n"
 					.. "```\n"
 					.. "Call the textobject via `:TSTextobjectSelect @codeblock.outer`"
-				require("various-textobjs.utils").warn(msg)
+				warn(msg)
 				return function() end -- empty function to prevent error
 			elseif key == "mdLink" then
 				local msg = "The `mdLink` textobj is deprecated. "
@@ -46,7 +46,20 @@ setmetatable(M, {
 					.. "(link_text) @mdlink.inner\n"
 					.. "```\n"
 					.. "Call the textobject via `:TSTextobjectSelect @mdlink.outer`"
-				require("various-textobjs.utils").warn(msg)
+				warn(msg)
+				return function() end -- empty function to prevent error
+			elseif key == "mdEmphasis" then
+				local msg = "The `mdEmphasis` textobj is deprecated. "
+					.. "Please use `nvim-treesitter-teextobjects`, create a file "
+					.. "`./queries/markdown_inline/textobjects.scm` in your config dir with "
+					.. "the following content:\n\n"
+					.. "```\n"
+					.. "; extends\n"
+					.. "(emphasis) @emphasis.outer\n"
+					.. "(strong_emphasis) @emphasis.outer\n"
+					.. "```\n"
+					.. "Call the textobject via `:TSTextobjectSelect @emphasis.outer`"
+				warn(msg)
 				return function() end -- empty function to prevent error
 			end
 
