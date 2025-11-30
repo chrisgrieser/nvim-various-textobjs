@@ -164,20 +164,9 @@ LIST OF TEXT OBJECTS*nvim-various-textobjs-nvim-various-textobjs--list-of-text-o
   text objects                                                                     keymaps  (for default
                                                                                             keymaps)
   ------------------- --------------------------- ------------- ----------------- --------- ------------
-  mdLink              Markdown link like          inner is only small               il/al   markdown
-                      [title](url)                the link                                  
-                                                  title                                     
-                                                  (between the                              
-                                                  [])                                       
-
   mdEmphasis          Markdown text enclosed by   inner is only small               ie/ae   markdown
                       *, **, _, __, ~~, or ==     the emphasis                              
                                                   content                                   
-
-  mdFencedCodeBlock   Markdown fenced code        outer         big                 iC/aC   markdown
-                      (enclosed by three          includes the                              
-                      backticks)                  enclosing                                 
-                                                  backticks                                 
 
   cssSelector         class in CSS such as        outer         small               ic/ac   css, scss
                       .my-class                   includes                                  
