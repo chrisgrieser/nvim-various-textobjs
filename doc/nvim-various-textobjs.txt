@@ -164,10 +164,6 @@ LIST OF TEXT OBJECTS*nvim-various-textobjs-nvim-various-textobjs--list-of-text-o
   text objects                                                                     keymaps  (for default
                                                                                             keymaps)
   ------------------- --------------------------- ------------- ----------------- --------- ------------
-  mdEmphasis          Markdown text enclosed by   inner is only small               ie/ae   markdown
-                      *, **, _, __, ~~, or ==     the emphasis                              
-                                                  content                                   
-
   cssSelector         class in CSS such as        outer         small               ic/ac   css, scss
                       .my-class                   includes                                  
                                                   trailing                                  
