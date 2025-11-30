@@ -41,9 +41,7 @@ local defaultConfig = {
 			wrap = true,
 		},
 		url = {
-			patterns = {
-				[[%l%l%l+://[^%s)%]}"'`>]+]],
-			},
+			patterns = { [[%l%l%l+://[^%s)%]}"'`>]+]] },
 		},
 	},
 
@@ -52,8 +50,7 @@ local defaultConfig = {
 		whenObjectNotFound = true,
 	},
 
-	-- show debugging messages on use of certain text objects
-	debug = false,
+	debug = false, -- debugging messages when using some text objects
 }
 M.config = defaultConfig
 

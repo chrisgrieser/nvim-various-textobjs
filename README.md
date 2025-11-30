@@ -65,7 +65,8 @@ Bundle of more than 30 new text objects for Neovim.
 | `color`                  | HEX; RGB or HSL in CSS format; ANSI color code                                                                              | inner includes only the color value                                                       | small              |        `i#`/`a#`         |
 | `doubleSquareBrackets`   | text enclosed by `[[]]`                                                                                                     | outer includes the 4 square brackets                                                      | small              |        `iD`/`aD`         |
 
-[jupytext]: https://jupytext.readthedocs.io/en/latest/formats-scripts.html#the-percent-format
+[jupytext]:
+https://jupytext.readthedocs.io/en/latest/formats-scripts.html#the-percent-format
 
 > [!TIP]
 > Some text objects may at first appear redundant, since you can also use `caW`
@@ -178,9 +179,7 @@ require("various-textobjs").setup {
 			wrap = true,
 		},
 		url = {
-			patterns = {
-				[[%l%l%l+://[^%s)%]}"'`>]+]],
-			},
+			patterns = { [[%l%l%l+://[^%s)%]}"'`>]+]] },
 		},
 	},
 
@@ -189,8 +188,7 @@ require("various-textobjs").setup {
 		whenObjectNotFound = true,
 	},
 
-	-- show debugging messages on use of certain text objects
-	debug = false,
+	debug = false, -- debugging messages when using some text objects
 }
 ```
 
@@ -328,10 +326,10 @@ end, { desc = "URL Opener" })
 ```
 
 ### Delete surrounding indentation
-Using the indentation text object, you can also create custom indentation-related
-utilities. A common operation is to remove the line before and after an
-indentation. Take for example this case where you are removing the `foo`
-condition:
+Using the indentation text object, you can also create custom
+indentation-related utilities. A common operation is to remove the line before
+and after an indentation. Take for example this case where you are removing the
+`foo` condition:
 
 ```lua
 -- before
@@ -373,9 +371,9 @@ end, { desc = "Delete Surrounding Indentation" })
 ```
 
 ### Yank surrounding indentation
-Similarly, you can also create a `ysii` command to yank the two lines surrounding
-an indentation text object. (Not using `ysi`, since that blocks surround
-commands like `ysi)`). Using `nvim_win_[gs]et_cursor()`, you make the
+Similarly, you can also create a `ysii` command to yank the two lines
+surrounding an indentation text object. (Not using `ysi`, since that blocks
+surround commands like `ysi)`). Using `nvim_win_[gs]et_cursor()`, you make the
 operation sticky, meaning the cursor is not moved.
 
 ```lua
@@ -409,9 +407,10 @@ end, { desc = "Yank surrounding indentation" })
 ```
 
 ### Indent last paste
-The `lastChange` text object can be used to indent the last text that was pasted.
-This is useful in languages such as Python where indentation is meaningful and
-thus formatters are not able to automatically indent everything for you.
+The `lastChange` text object can be used to indent the last text that was
+pasted. This is useful in languages such as Python where indentation is
+meaningful and thus formatters are not able to automatically indent everything
+for you.
 
 If you do not use `P` for upwards paste, "shift paste" serves as a great
 mnemonic.
@@ -472,9 +471,11 @@ page](https://github.com/chrisgrieser/nvim-various-textobjs/discussions).
 
 ## Credits
 **Thanks**  
-- To the `Valuable Dev` for [their blog post on how to get started with creating
-  custom text objects](https://thevaluable.dev/vim-create-text-objects/).
-- [To `@vypxl` and `@ii14` for figuring out dot-repeatability.](https://github.com/chrisgrieser/nvim-spider/pull/4)
+- To the `Valuable Dev` for [their blog post on how to get started with
+  creating custom text
+  objects](https://thevaluable.dev/vim-create-text-objects/).
+- [To `@vypxl` and `@ii14` for figuring out
+  dot-repeatability.](https://github.com/chrisgrieser/nvim-spider/pull/4)
 
 In my day job, I am a sociologist studying the social mechanisms underlying the
 digital economy. For my PhD project, I investigate the governance of the app
