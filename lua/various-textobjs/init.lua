@@ -40,6 +40,8 @@ local function deprecations(key)
 			.. "; extends\n"
 			.. "(emphasis) @emphasis.outer\n"
 			.. "(strong_emphasis) @emphasis.outer\n"
+			.. "((strong_emphasis) @emphasis.inner (#offset! @emphasis.inner 0 2 0 -2))\n"
+			.. "((emphasis) @emphasis.inner (#offset! @emphasis.inner 0 1 0 -1))\n"
 			.. "```\n"
 			.. "Call the textobject via `:TSTextobjectSelect @emphasis.outer`"
 	elseif key == "cssSelector" then
