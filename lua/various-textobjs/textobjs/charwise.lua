@@ -81,7 +81,7 @@ end
 ---(relevant for markdown, where you normally add a space after the `.` ending a sentence.)
 function M.nearEoL()
 	local chars = vim.v.count1
-	local pattern = "().(" .. ("%S"):rep(chars) .. "%s*)$"
+	local pattern = "().(" .. ("."):rep(chars - 1) .. "%S%s*)$"
 	local row, _, endCol = core.getTextobjPos(pattern, "inner", 0)
 	core.selectFromCursorTo({ row, endCol }, smallForward())
 end
