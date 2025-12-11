@@ -118,9 +118,7 @@ end
 ---@alias VariousTextobjs.PatternInput string|table<string|integer, string|VariousTextobjs.PatternSpec>
 
 ---Searches for the position of one or multiple patterns and selects the closest one
----@param patterns VariousTextobjs.PatternInput lua pattern(s) for
----`getTextobjPos`; If the pattern starts with `tieloser` the textobj is always
----deprioritzed if the cursor stands on two objects.
+---@param patterns VariousTextobjs.PatternInput lua pattern(s) for `getTextobjPos`
 ---@param scope "inner"|"outer"
 ---@param lookForwLines integer
 ---@return integer? row -- only if found
