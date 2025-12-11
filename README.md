@@ -138,7 +138,7 @@ The `.setup()` call is optional if you do not want to use the default keymaps.
 require("various-textobjs").setup {
 	keymaps = {
 		-- See overview table in README for the defaults. (Note that lazy-loading
-		-- this plugin, the default keymaps cannot be set up. if you set this to
+		-- this plugin, the default keymaps cannot be set up. If you set this to
 		-- `true`, you thus need to add `lazy = false` to your lazy.nvim config.)
 		useDefaults = false,
 

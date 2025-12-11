@@ -59,11 +59,12 @@ end
 ---selector.
 ---@param scope "inner"|"outer"
 ---@param lookForwLines integer
+---@param smallestMatch "smallest-match"|nil
 ---@return integer? startCol
 ---@return integer? endCol
 ---@return integer? row
 ---@nodiscard
-function M.getTextobjPos(pattern, scope, lookForwLines)
+function M.getTextobjPos(pattern, scope, lookForwLines, smallestMatch)
 	-- when past the EoL in visual mode, will not find anything in that line
 	-- anymore, thus moving back to EoL (see #108 and #109)
 	if #vim.api.nvim_get_current_line() < vim.fn.col(".") then u.normal("h") end
@@ -71,19 +72,35 @@ function M.getTextobjPos(pattern, scope, lookForwLines)
 	local cursorRow, cursorCol = unpack(vim.api.nvim_win_get_cursor(0))
 	local lineContent = u.getline(cursorRow)
 	local lastLine = vim.api.nvim_buf_line_count(0)
-	local endCol = 0 ---@type number|nil
-	local beginCol, captureG1, captureG2, in1stLine
+	local beginCol, endCol, captureG1, captureG2
 
-	-- first line: check if standing on or in front of textobj
-	repeat
-		beginCol, endCol, captureG1, captureG2 = lineContent:find(pattern, endCol + 1)
-		in1stLine = beginCol and (lineContent ~= "") -- check "" as .* returns non-nil then (#116)
-		local standingOnOrInFront = endCol and endCol > cursorCol
-	until standingOnOrInFront or not in1stLine
+	-- first line: check if cursor is standing on or in front of textobject
+	local nextSearchPos = 1
+	while true do
+		if lineContent == "" then break end -- check "" as .* returns non-nil then (#116)
+		local start, stop, c1, c2 = lineContent:find(pattern, nextSearchPos)
+		if not start then break end -- no match
+
+		-- 1. Normally, we want to stop on the first match found, e.g., `%w+`
+		-- should match the largest word and not just a letter. We can then stop
+		-- on the first valid object (valid = the cursor stands on or is in front
+		-- of it).
+		-- 2. For some cases like nested brackets, we need the closest/smallest,
+		-- match, potentially nested inside another valid match. For that, we need
+		-- to continue after every match, until we have the last (= smallest)
+		-- valid match.
+		local standingOnOrInFront = stop > cursorCol
+		if standingOnOrInFront then
+			beginCol, endCol, captureG1, captureG2 = start, stop, c1, c2
+			if not smallestMatch then break end
+		end
+		nextSearchPos = start + 1
+	end
 
 	-- subsequent lines: search full line for first occurrence
 	local linesSearched = 0
-	if not in1stLine then
+	local notFoundInFirstLine = not beginCol
+	if notFoundInFirstLine then
 		repeat
 			linesSearched = linesSearched + 1
 			if linesSearched > lookForwLines or cursorRow + linesSearched > lastLine then return end
@@ -121,10 +138,11 @@ end
 ---@param patterns VariousTextobjs.PatternInput lua pattern(s) for `getTextobjPos`
 ---@param scope "inner"|"outer"
 ---@param lookForwLines integer
----@return integer? row -- only if found
+---@param smallestMatch "smallest-match"|nil
+---@return integer? row -- nil if not found
 ---@return integer? startCol
 ---@return integer? endCol
-function M.selectClosestTextobj(patterns, scope, lookForwLines)
+function M.selectClosestTextobj(patterns, scope, lookForwLines, smallestMatch)
 	local enableLogging = require("various-textobjs.config.config").config.debug
 	local objLogging = {}
 
@@ -134,7 +152,7 @@ function M.selectClosestTextobj(patterns, scope, lookForwLines)
 	-- get text object
 	if type(patterns) == "string" then
 		closest.row, closest.startCol, closest.endCol =
-			M.getTextobjPos(patterns, scope, lookForwLines)
+			M.getTextobjPos(patterns, scope, lookForwLines, smallestMatch)
 	elseif type(patterns) == "table" then
 		local cursorCol = vim.api.nvim_win_get_cursor(0)[2]
 
@@ -146,7 +164,8 @@ function M.selectClosestTextobj(patterns, scope, lookForwLines)
 				cur.greedy = patternSpec.greedy
 				cur.tieloser = patternSpec.tieloser
 			end
-			cur.row, cur.startCol, cur.endCol = M.getTextobjPos(pattern, scope, lookForwLines)
+			cur.row, cur.startCol, cur.endCol =
+				M.getTextobjPos(pattern, scope, lookForwLines, smallestMatch)
 
 			if cur.row and cur.startCol and cur.endCol then
 				cur.distance = cur.startCol - cursorCol

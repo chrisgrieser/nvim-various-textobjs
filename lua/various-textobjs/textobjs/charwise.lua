@@ -70,11 +70,21 @@ end
 ---@param scope "inner"|"outer"
 function M.anyBracket(scope)
 	local patterns = {
-		["()"] = "(%().-(%))",
-		["[]"] = "(%[).-(%])",
-		["{}"] = "({).-(})",
+		["()"] = "%b()",
+		["[]"] = "%b[]",
+		["{}"] = "%b{}",
 	}
-	core.selectClosestTextobj(patterns, scope, smallForward())
+	-- check for smallest match, since we want to find the innermost valid bracket
+	core.selectClosestTextobj(patterns, "outer", smallForward(), "smallest-match")
+
+	-- To make use of balanced patterns `%b()`, we cannot use the pattern syntax
+	-- from charwise-core, which reliase on the use of two empty capture groups
+	-- to determine the inner/outer difference. Thus, we manually remove the
+	-- first and last char from the selection, if we are in inner mode.
+	local found = vim.fn.mode() == "v"
+	if scope == "inner" and found then
+		u.normal("holo") -- remove first and last char from selection
+	end
 end
 
 ---near end of the line, ignoring trailing whitespace

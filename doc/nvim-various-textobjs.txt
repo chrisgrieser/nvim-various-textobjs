@@ -1,4 +1,4 @@
-*nvim-various-textobjs.txt*      For Neovim      Last change: 2025 November 30
+*nvim-various-textobjs.txt*      For Neovim      Last change: 2025 December 11
 
 ==============================================================================
 Table of Contents                    *nvim-various-textobjs-table-of-contents*
@@ -225,7 +225,7 @@ The `.setup()` call is optional if you do not want to use the default keymaps.
     require("various-textobjs").setup {
         keymaps = {
             -- See overview table in README for the defaults. (Note that lazy-loading
-            -- this plugin, the default keymaps cannot be set up. if you set this to
+            -- this plugin, the default keymaps cannot be set up. If you set this to
             -- `true`, you thus need to add `lazy = false` to your lazy.nvim config.)
             useDefaults = false,
     
