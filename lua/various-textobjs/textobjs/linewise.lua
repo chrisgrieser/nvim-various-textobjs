@@ -97,13 +97,7 @@ end
 ---@param startBorder "inner"|"outer"
 ---@param endBorder "inner"|"outer"
 ---@return boolean success
-function M.indentation(startBorder, endBorder, oldBlankSetting)
-	-- DEPRECATION (2024-12-06)
-	if oldBlankSetting ~= nil then
-		local msg =
-			"`.indentation()` does not use a 3rd argument anymore. Use the config `textobjs.indent.blanksAreDelimiter` instead."
-		u.warn(msg)
-	end
+function M.indentation(startBorder, endBorder)
 	local blanksDelimit =
 		require("various-textobjs.config.config").config.textobjs.indentation.blanksAreDelimiter
 

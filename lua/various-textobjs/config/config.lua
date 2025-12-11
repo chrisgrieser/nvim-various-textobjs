@@ -58,37 +58,7 @@ M.config = defaultConfig
 
 ---@param userConfig? VariousTextobjs.Config
 function M.setup(userConfig)
-	local warn = require("various-textobjs.utils").warn
-
 	M.config = vim.tbl_deep_extend("force", M.config, userConfig or {})
-
-	-- DEPRECATION (2024-12-03)
-	---@diagnostic disable: undefined-field
-	if M.config.lookForwardSmall then
-		warn("The `lookForwardSmall` option is deprecated. Use `forwardLooking.small` instead.")
-	end
-	if M.config.lookForwardBig then
-		warn("The `lookForwardBig` option is deprecated. Use `forwardLooking.big` instead.")
-	end
-	if M.config.lookForwardBig then
-		warn("The `lookForwardBig` option is deprecated. Use `forwardLooking.big` instead.")
-	end
-	if M.config.notificationIcon then
-		warn("The `notificationIcon` option is deprecated. Use `notify.icon` instead.")
-	end
-	if M.config.notifyNotFound ~= nil then -- not nil, since `false` is a valid value
-		warn("The `notifyNotFound` option is deprecated. Use `notify.whenObjectNotFound` instead.")
-	end
-	-- DEPRECATION (2024-12-06)
-	if M.config.useDefaultKeymaps ~= nil then
-		warn("The `useDefaultKeymaps` option is deprecated. Use `keymaps.useDefaults` instead.")
-		M.config.keymaps.useDefaults = M.config.useDefaultKeymaps
-	end
-	if M.config.disabledKeymaps then
-		warn("The `disabledKeymaps` option is deprecated. Use `keymaps.disabledDefaults` instead.")
-		M.config.keymaps.disabledDefaults = M.config.disabledKeymaps
-	end
-	---@diagnostic enable: undefined-field
 
 	if M.config.keymaps.useDefaults then
 		require("various-textobjs..config.default-keymaps").setup(M.config.keymaps.disabledDefaults)
