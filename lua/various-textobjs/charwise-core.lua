@@ -8,24 +8,21 @@ local u = require("various-textobjs.utils")
 function M.setSelection(startPos, endPos)
 	u.saveJumpToJumplist()
 
-	-- GUARD Zero-width textobj
+	-- ZERO-WIDTH TEXTOBJECT
 	-- These are, for instance, `ci)` on empty brackets like `()`. We copy
 	-- vanilla vim's behavior of doing nothing on `d` or `c`, but switch to the
-	-- outer object when using `y`.
-	-- see also: https://github.com/echasnovski/mini.nvim/issues/1927
+	-- outer object when using `y`. See: https://github.com/echasnovski/mini.nvim/issues/1927
 	local isZeroWidthTextobj = startPos[1] >= startPos[2] and startPos[2] > endPos[2]
 	if isZeroWidthTextobj and vim.v.operator ~= "y" then
-		-- Add single space (without triggering events) and visually select it.
-		-- Seems like the only way to make `ci)` and `di)` move inside empty
-		-- brackets. Idea from 'wellle/targets.vim' & `echasnovski/mini.ai`.
+		-- Add single space (without triggering events) and visually select it,
+		-- since it's the only way to make `ci)` and `di)` move inside empty
+		-- brackets. Idea from `wellle/targets.vim` & `echasnovski/mini.ai`.
 		local prevEventignore = vim.o.eventignore
 		vim.o.eventignore = "all"
-
 		vim.api.nvim_win_set_cursor(0, startPos)
-		-- First escape from previously started Visual mode
 		vim.cmd([[silent! execute "normal! \<Esc>i \<Esc>v"]])
-
 		vim.o.eventignore = prevEventignore
+
 		local actsOnZeroWidthObr = vim.v.operator == "c"
 			or (vim.v.operator == "g@" and vim.o.operatorfunc:find("MiniOperators%.replace"))
 			or (vim.v.operator == "g@" and vim.o.operatorfunc:find("substitute"))
@@ -51,12 +48,11 @@ function M.selectFromCursorTo(endPos, notFoundMsg)
 end
 
 ---Seek and select a characterwise textobj based on one pattern.
----CAVEAT multi-line-objects are not supported.
----@param pattern string lua pattern. REQUIRES two capture groups marking the
----two additions for the outer variant of the textobj. Use an empty capture group
----when there is no difference between inner and outer on that side. Basically,
----the two capture groups work similar to lookbehind/lookahead for the inner
----selector.
+---`pattern` uses two capture groups to determine the two additions for the
+---outer variant of the textobj. Use an empty capture group when there is no
+---difference between inner and outer on that side. Basically, the two capture
+---groups work similar to lookbehind/lookahead for the inner selector.
+---@param pattern string
 ---@param scope "inner"|"outer"
 ---@param lookForwLines integer
 ---@param smallestMatch "smallest-match"|nil
@@ -77,7 +73,7 @@ function M.getTextobjPos(pattern, scope, lookForwLines, smallestMatch)
 	-- first line: check if cursor is standing on or in front of textobject
 	local nextSearchPos = 1
 	while true do
-		if lineContent == "" then break end -- check "" as .* returns non-nil then (#116)
+		if lineContent == "" then break end -- GUARD against `""` as `.*` returns non-nil then (#116)
 		local start, stop, c1, c2 = lineContent:find(pattern, nextSearchPos)
 		if not start then break end -- no match
 
@@ -143,76 +139,62 @@ end
 ---@return integer? startCol
 ---@return integer? endCol
 function M.selectClosestTextobj(patterns, scope, lookForwLines, smallestMatch)
-	local enableLogging = require("various-textobjs.config.config").config.debug
-	local objLogging = {}
+	local enableLogging, objLogging = require("various-textobjs.config.config").config.debug, {}
+	local cursorCol = vim.api.nvim_win_get_cursor(0)[2]
 
-	-- initialized with values to always loose comparisons
+	-- initialized with values to always lose comparisons
 	local closest = { row = math.huge, distance = math.huge, tieloser = true, cursorOnObj = false }
 
-	-- get text object
-	if type(patterns) == "string" then
-		closest.row, closest.startCol, closest.endCol =
-			M.getTextobjPos(patterns, scope, lookForwLines, smallestMatch)
-	elseif type(patterns) == "table" then
-		local cursorCol = vim.api.nvim_win_get_cursor(0)[2]
+	if type(patterns) == "string" then patterns = { patterns } end
 
-		for patternName, patternSpec in pairs(patterns) do
-			local cur = {}
-			local pattern = patternSpec
-			if type(patternSpec) ~= "string" then -- is PatternSpec instead of string
-				pattern = patternSpec[1] ---@cast pattern string ensuring it here
-				cur.greedy = patternSpec.greedy
-				cur.tieloser = patternSpec.tieloser
-			end
-			cur.row, cur.startCol, cur.endCol =
-				M.getTextobjPos(pattern, scope, lookForwLines, smallestMatch)
+	for patternName, patternSpec in pairs(patterns) do
+		local cur = {}
+		local pattern = patternSpec
+		if type(patternSpec) ~= "string" then -- is PatternSpec instead of string
+			pattern = patternSpec[1] ---@cast pattern string ensuring it here
+			cur.greedy = patternSpec.greedy
+			cur.tieloser = patternSpec.tieloser
+		end
+		cur.row, cur.startCol, cur.endCol =
+			M.getTextobjPos(pattern, scope, lookForwLines, smallestMatch)
 
-			if cur.row and cur.startCol and cur.endCol then
-				cur.distance = cur.startCol - cursorCol
-				cur.endDistance = cursorCol - cur.endCol
-				cur.cursorOnObj = cur.distance <= 0 and cur.endDistance <= 0
-				cur.patternName = patternName
+		if cur.row and cur.startCol and cur.endCol then
+			cur.distance = cur.startCol - cursorCol
+			cur.endDistance = cursorCol - cur.endCol
+			cur.cursorOnObj = cur.distance <= 0 and cur.endDistance <= 0
+			cur.patternName = patternName
 
-				-- INFO Here, we cannot simply use the absolute value of the distance.
-				-- If the cursor is standing on a big textobj A, and there is a
-				-- second textobj B which starts right after the cursor, A has a
-				-- high negative distance, and B has a small positive distance.
-				-- Using simply the absolute value to determine which obj is the
-				-- closer one would then result in B being selected, even though the
-				-- idiomatic behavior in vim is to always select an obj the cursor
-				-- is standing on before seeking forward for a textobj.
-				local closerInRow = cur.distance < closest.distance
-				if cur.cursorOnObj and closest.cursorOnObj then
-					closerInRow = cur.distance > closest.distance
-					-- tieloser = when both objects enclose the cursor, the tieloser
-					-- loses even when it is closer
-					if closest.tieloser and not cur.tieloser then closerInRow = true end
-					if not closest.tieloser and cur.tieloser then closerInRow = false end
+			-- INFO Here, we cannot simply use the absolute value of the distance.
+			-- If the cursor is standing on a big textobj A, and there is a
+			-- second textobj B which starts right after the cursor, A has a
+			-- high negative distance, and B has a small positive distance.
+			-- Using simply the absolute value to determine which obj is the
+			-- closer one would then result in B being selected, even though the
+			-- idiomatic behavior in vim is to always select an obj the cursor
+			-- is standing on before seeking forward for a textobj.
+			local closerInRow = cur.distance < closest.distance
+			if cur.cursorOnObj and closest.cursorOnObj then
+				closerInRow = cur.distance > closest.distance
 
-					-- greedy = when both objects enclose the cursor, the greedy one
-					-- wins if the distance is the same
-					if cur.distance == closest.distance then
-						if cur.greedy and not closest.greedy then closerInRow = true end
-						if not cur.greedy and closest.greedy then closerInRow = false end
-					end
-				end
+				-- tieloser = when both objects enclose the cursor, the tieloser
+				-- loses even when it is closer
+				if closest.tieloser and not cur.tieloser then closerInRow = true end
+				if not closest.tieloser and cur.tieloser then closerInRow = false end
 
-				if (cur.row < closest.row) or (cur.row == closest.row and closerInRow) then
-					closest = cur
-				end
-
-				if enableLogging then
-					objLogging[patternName] = {
-						cur.startCol,
-						cur.endCol,
-						row = cur.row,
-						distance = cur.distance,
-						tieloser = cur.tieloser,
-						cursorOnObj = cur.cursorOnObj,
-						zeroWidthTextobj = cur.startCol > cur.endCol and true or nil,
-					}
+				-- greedy = when both objects enclose the cursor, the greedy one
+				-- wins if the distance is the same
+				if cur.distance == closest.distance then
+					if cur.greedy and not closest.greedy then closerInRow = true end
+					if not cur.greedy and closest.greedy then closerInRow = false end
 				end
 			end
+
+			if (cur.row < closest.row) or (cur.row == closest.row and closerInRow) then
+				closest = cur
+			end
+
+			-- stylua: ignore
+			if enableLogging then objLogging[patternName] = { cur.startCol, cur.endCol, row = cur.row, distance = cur.distance, tieloser = cur.tieloser, cursorOnObj = cur.cursorOnObj, zeroWidthTextobj = cur.startCol > cur.endCol and true or nil } end
 		end
 	end
 
@@ -221,14 +203,11 @@ function M.selectClosestTextobj(patterns, scope, lookForwLines, smallestMatch)
 		return
 	end
 
-	if enableLogging and type(patterns) == "table" then
+	if enableLogging then
 		local textobj = (debug.getinfo(3, "n") or {}).name or "unknown"
 		objLogging._closest = closest.patternName
-		vim.notify(
-			vim.inspect(objLogging),
-			vim.log.levels.DEBUG,
-			{ ft = "lua", title = scope .. " " .. textobj, timeout = false }
-		)
+		local opts = { ft = "lua", title = scope .. " " .. textobj, timeout = false }
+		vim.notify(vim.inspect(objLogging), nil, opts)
 	end
 
 	M.setSelection({ closest.row, closest.startCol }, { closest.row, closest.endCol })
