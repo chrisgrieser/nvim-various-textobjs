@@ -67,43 +67,93 @@ LIST OF TEXT OBJECTS*nvim-various-textobjs-nvim-various-textobjs--list-of-text-o
   toNextClosingBracket     from cursor to next closing ],  -                      small                 C
                            ), or }, can span multiple                                               
                            lines                                                                    
+
+  toNextQuotationMark      from cursor to next unescaped   -                      small                 Q
+                           ", ', or `, can span multiple                                            
+                           lines                                                                    
+
+  anyQuote                 between any unescaped ", ', or  outer includes the     small               iq/aq
+                           ` in one line                   quotation marks                          
+
+  anyBracket               between any (), [], or {} in    outer includes the     small               io/ao
+                           one line                        brackets                                 
+
+  restOfParagraph          like }, but linewise            -                      -                     r
+
+  entireBuffer             entire buffer as one text       -                      -                    gG
+                           object                                                                   
+
+  nearEoL                  from cursor position to end of  -                      -                     n
+                           line, excluding last char (and                                           
+                           trailing spaces); {count}                                                
+                           excludes last x chars instead                                            
+
+  lineCharacterwise        current line, but characterwise outer includes         small, if on        i_/a_
+                                                           indentation & trailing blank             
+                                                           spaces                                   
+
+  column                   column down until indent or     -                      -                    \|
+                           shorter line; accepts {count}                                            
+                           for multiple columns                                                     
+
+  value                    value of key-value pair, or     outer includes         small               iv/av
+                           right side of assignment,       trailing , or ;                          
+                           excluding trailing comment                                               
+                           (does not work for multiline                                             
+                           assignments)                                                             
+
+  key                      key of key-value pair, or left  outer includes the =   small               ik/ak
+                           side of an assignment           or :                                     
+
+  url                      http links or any other         -                      big                   L
+                           protocol                                                                 
+
+  number                   numbers, similar to <C-a>       inner: only digits,    small               in/an
+                                                           outer: number                            
+                                                           including minus sign                     
+                                                           and decimal point                        
+
+  diagnostic               nvim diagnostic                 -                      ∞                     !
+
+  closedFold               closed fold                     outer includes one     big                 iz/az
+                                                           line after the last                      
+                                                           folded line                              
+
+  chainMember              section of a chain connected    outer includes one .   small               im/am
+                           with . (or :) like foo.bar or   (or :)                                   
+                           foo.baz(para)                                                            
+
+  visibleInWindow          all lines visible in the        -                      -                    gw
+                           current window                                                           
+
+  restOfWindow             from the cursorline to the last -                      -                    gW
+                           line in the window                                                       
+
+  lastChange               last non-deletion-change, yank, -                      -                    g;
+                           or paste (paste-manipulation                                             
+                           plugins may interfere)                                                   
+
+  notebookCell             cell delimited by double        outer includes the top -                   iN/aN
+                           percent comment, such as # %%   cell border                              
+
+  emoji                    single emoji (or Nerdfont       -                      small                 .
+                           glyph)                                                                   
+
+  argument                 comma-separated argument (not   outer includes the ,   small               i,/a,
+                           as accurate as the                                                       
+                           treesitter-textobjects, use as                                           
+                           fallback)                                                                
+
+  filepath                 UNIX-filepath; supports ~ or    inner is only the      big                 iF/aF
+                           $HOME, but not spaces in the    filename                                 
+                           filepath.                                                                
+
+  color                    HEX; RGB or HSL in CSS format;  inner includes only    small               i#/a#
+                           ANSI color code                 the color value                          
+
+  doubleSquareBrackets     text enclosed by [[]]           outer includes the 4   small               iD/aD
+                                                           square brackets                          
   -----------------------------------------------------------------------------------------------------------
-
-| `toNextQuotationMark` | from cursor to next unescaped `"`, `'`, or ``` `
-`, can span multiple lines | \- | small |` Q `| |`anyQuote `| between any
-unescaped`” `,`’ `, or` `` ``in one line | outer includes the quotation
-marks | small |`iq`/`aq`| |`anyBracket`| between any`()`,`[]`, or``in one line
-| outer includes the brackets | small |`io`/`ao`| |`restOfParagraph`| like`}`,
-but linewise | \- | \- |`r`| |`entireBuffer`| entire buffer as one text object
-| \- | \- |`gG`| |`nearEoL`| from cursor position to end of line, excluding
-last char (and trailing spaces);`{count}`excludes last x chars instead | \- |
-\- |`n`| |`lineCharacterwise`| current line, but characterwise | outer includes
-indentation & trailing spaces | small, if on blank |`i_`/`a_`| |`column`|
-column down until indent or shorter line; accepts`{count}`for multiple columns
-| \- | \- |`|`| |`value`| value of key-value pair, or right side of assignment,
-excluding trailing comment (does not work for multi-line assignments) | outer
-includes trailing`,`or`;`| small |`iv`/`av`| |`key`| key of key-value pair, or
-left side of an assignment | outer includes the`=`or`:`| small |`ik`/`ak`|
-|`url`|`http`links or any other protocol | \- | big |`L`| |`number`| numbers,
-similar to``| inner: only digits, outer: number including minus sign and
-decimal *point* | small |`in`/`an`| |`diagnostic`| nvim diagnostic | \- | ∞
-|`!`| |`closedFold`| closed fold | outer includes one line after the last
-folded line | big |`iz`/`az`| |`chainMember`| section of a chain connected
-with`.`(or`:`) like`foo.bar`or`foo.baz(para)`| outer includes one`.`(or`:`) |
-small |`im`/`am`| |`visibleInWindow`| all lines visible in the current window |
-\- | \- |`gw`| |`restOfWindow`| from the cursorline to the last line in the
-window | \- | \- |`gW`| |`lastChange`| last non-deletion-change, yank, or paste
-(paste-manipulation plugins may interfere) | \- | \- |`g;`| |`notebookCell`|
-cell delimited by [double percent comment][jupytext], such as`# %%`| outer
-includes the top cell border | \- |`iN`/`aN`| |`emoji`| single emoji (or
-Nerdfont glyph) | \- | small |`.`| |`argument`| comma-separated argument (not
-as accurate as the treesitter-textobjects, use as fallback) | outer includes
-the`,`| small |`i,`/`a,`| |`filepath`| UNIX-filepath; supports`~`or`$HOME`, but
-not spaces in the filepath. | inner is only the filename | big |`iF`/`aF`|
-|`color`| HEX; RGB or HSL in CSS format; ANSI color code | inner includes only
-the color value | small |`i#`/`a#`| |`doubleSquareBrackets`| text enclosed
-by`[[]]`| outer includes the 4 square brackets | small |`iD`/`aD` |
-
 
   [!TIP] Some text objects may at first appear redundant, since you can also use
   `caW` or `cl` if your cursor is standing on the object in question. However,
@@ -275,7 +325,7 @@ DEPRECATED FILETYPE-SPECIFIC TEXTOBJECTS*nvim-various-textobjs-nvim-various-text
 
 The previously available filetype-specific text objects `htmlAttribute`,
 `shellPipe`, `cssSelector`, `mdEmphasis`, and `mdFencedCodeBlock` have been
-deprecated, since creating treesitter-based textobjects for them is both easy
+deprecated, since creating treesitter-based text objects for them is both easy
 and more precise than using the pattern-based approach of this plugin.
 
 Call the respective function, for example
@@ -518,7 +568,7 @@ LIMITATIONS & NON-GOALS*nvim-various-textobjs-nvim-various-textobjs--limitations
 
 - This plugin uses pattern matching, so it can be inaccurate in some edge cases.
 - Counts are not supported for most text objects.
-- Most characterwise text objects do not match multi-line objects. Most notably,
+- Most characterwise text objects do not match multiline objects. Most notably,
     this affects the `value` text object.
 - nvim-treesitter-textobjects <https://github.com/nvim-treesitter/nvim-treesitter-textobjects>
     already does an excellent job when it comes to using Treesitter for text
