@@ -1,4 +1,4 @@
-# nvim-various-textobjs 🟪🔷🟡
+# nvim-various-textobjs 🟪🔷🟡 <!-- rumdl-disable-line MD063 `nvim` lowercased -->
 <a href="https://dotfyle.com/plugins/chrisgrieser/nvim-various-textobjs">
 <img alt="badge" src="https://dotfyle.com/plugins/chrisgrieser/nvim-various-textobjs/shield"/></a>
 
@@ -33,15 +33,18 @@ Bundle of more than 30 new text objects for Neovim.
 
 <!-- rumdl-disable MD058 MD013 FIX table parser broken here -->
 
-| text object              | description                                                                                                                 | inner / outer                                                                             | forward-seeking    |     default keymaps      |
-| :----------------------- | :-------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------- | :--------------    | :----------------------: |
-| `indentation`            | surrounding lines with same or higher indentation                                                                           | [see overview from vim-indent-object](https://github.com/michaeljsmith/vim-indent-object) | \-                 | `ii`, `ai`, `aI`, (`iI`) |
-| `restOfIndentation`      | lines downwards with same or higher indentation                                                                             | \-                                                                                        | \-                 |           `R`            |
-| `greedyOuterIndentation` | outer indentation, expanded to blank lines; useful to get functions with annotations                                        | outer includes a blank (like `ap`/`ip`)                                                   | \-                 |        `ag`/`ig`         |
-| `subword`                | segment of a camelCase, snake_case, and kebab-case words                                                                    | outer includes trailing/leading `_` or `-`                                                | \-                 |        `iS`/`aS`         |
-| `toNextClosingBracket`   | from cursor to next closing `]`, `)`, or `}`, can span multiple lines                                                       | \-                                                                                        | small              |           `C`            |
-| `toNextQuotationMark`    | from cursor to next unescaped `"`, `'`, or `` ` ``, can span multiple lines                                                 | \-                                                                                        | small              |           `Q`            |
-| `anyQuote`               | between any unescaped `"`, `'`, or `` ` `` in one line                                                                      | outer includes the quotation marks                                                        | small              |        `iq`/`aq`         |
+| text object              | description                                                                          | inner / outer                                                                             | forward-seeking |     default keymaps      |
+| :----------------------- | :----------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------- | :-------------- | :----------------------: |
+| `indentation`            | surrounding lines with same or higher indentation                                    | [see overview from vim-indent-object](https://github.com/michaeljsmith/vim-indent-object) | \-              | `ii`, `ai`, `aI`, (`iI`) |
+| `restOfIndentation`      | lines downwards with same or higher indentation                                      | \-                                                                                        | \-              |           `R`            |
+| `greedyOuterIndentation` | outer indentation, expanded to blank lines; useful to get functions with annotations | outer includes a blank (like `ap`/`ip`)                                                   | \-              |        `ag`/`ig`         |
+| `subword`                | segment of a camelCase, snake_case, and kebab-case words                             | outer includes trailing/leading `_` or `-`                                                | \-              |        `iS`/`aS`         |
+| `toNextClosingBracket`   | from cursor to next closing `]`, `)`, or `}`, can span multiple lines                | \-                                                                                        | small           |           `C`            |
+| `toNextQuotationMark` | from cursor to next unescaped `"`, `'`, or `` ` `
+`, can span multiple lines                                                 | \-                                                                                        | small              |           `
+Q `            | | `anyQuote `               | between any unescaped `" `, `'
+`, or ` ` ` `` in one line | outer includes the quotation marks | small | `iq`/
+`aq` |
 | `anyBracket`             | between any `()`, `[]`, or `{}` in one line                                                                                 | outer includes the brackets                                                               | small              |        `io`/`ao`         |
 | `restOfParagraph`        | like `}`, but linewise                                                                                                      | \-                                                                                        | \-                 |           `r`            |
 | `entireBuffer`           | entire buffer as one text object                                                                                            | \-                                                                                        | \-                 |           `gG`           |
@@ -276,7 +279,7 @@ vim.keymap.set({ "o", "x" }, "F", function()
 end, { expr = true, desc = "ftp-url textobj" })
 ```
 
-### `ii` on unindented line should select entire buffer
+### `ii` On unindented line should select entire buffer
 Using a simple if-else-block, you can create a hybrid of the inner indentation
 text object and the entire-buffer text object, if you prefer that kind of
 behavior:
