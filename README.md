@@ -1,7 +1,4 @@
-<!-- LTeX: enabled=false -->
-
 # nvim-various-textobjs 🟪🔷🟡
-<!-- LTeX: enabled=true -->
 <a href="https://dotfyle.com/plugins/chrisgrieser/nvim-various-textobjs">
 <img alt="badge" src="https://dotfyle.com/plugins/chrisgrieser/nvim-various-textobjs/shield"/></a>
 
@@ -33,7 +30,8 @@ Bundle of more than 30 new text objects for Neovim.
 <!-- tocstop -->
 
 ## List of text objects
-<!-- LTeX: enabled=false -->
+
+<!-- rumdl-disable MD058 MD013 FIX table parser broken here -->
 
 | text object              | description                                                                                                                 | inner / outer                                                                             | forward-seeking    |     default keymaps      |
 | :----------------------- | :-------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------- | :--------------    | :----------------------: |
@@ -42,19 +40,15 @@ Bundle of more than 30 new text objects for Neovim.
 | `greedyOuterIndentation` | outer indentation, expanded to blank lines; useful to get functions with annotations                                        | outer includes a blank (like `ap`/`ip`)                                                   | \-                 |        `ag`/`ig`         |
 | `subword`                | segment of a camelCase, snake_case, and kebab-case words                                                                    | outer includes trailing/leading `_` or `-`                                                | \-                 |        `iS`/`aS`         |
 | `toNextClosingBracket`   | from cursor to next closing `]`, `)`, or `}`, can span multiple lines                                                       | \-                                                                                        | small              |           `C`            |
-
-| `toNextQuotationMark` | from cursor to next unescaped `"`, `'`, or `` ` `
-`, can span multiple lines                                                 | \-                                                                                        | small              |           `
-Q `            | | `anyQuote `               | between any unescaped `" `, `'
-`, or ` ` ` `` in one line | outer includes the quotation marks | small | `iq`/
-`aq` |
+| `toNextQuotationMark`    | from cursor to next unescaped `"`, `'`, or `` ` ``, can span multiple lines                                                 | \-                                                                                        | small              |           `Q`            |
+| `anyQuote`               | between any unescaped `"`, `'`, or `` ` `` in one line                                                                      | outer includes the quotation marks                                                        | small              |        `iq`/`aq`         |
 | `anyBracket`             | between any `()`, `[]`, or `{}` in one line                                                                                 | outer includes the brackets                                                               | small              |        `io`/`ao`         |
 | `restOfParagraph`        | like `}`, but linewise                                                                                                      | \-                                                                                        | \-                 |           `r`            |
 | `entireBuffer`           | entire buffer as one text object                                                                                            | \-                                                                                        | \-                 |           `gG`           |
 | `nearEoL`                | from cursor position to end of line, excluding last char (and trailing spaces); `{count}` excludes last x chars instead     | \-                                                                                        | \-                 |           `n`            |
 | `lineCharacterwise`      | current line, but characterwise                                                                                             | outer includes indentation & trailing spaces                                              | small, if on blank |        `i_`/`a_`         |
 | `column`                 | column down until indent or shorter line; accepts `{count}` for multiple columns                                            | \-                                                                                        | \-                 |           `\|`           |
-| `value`                  | value of key-value pair, or right side of assignment, excluding trailing comment (does not work for multi-line assignments) | outer includes trailing `,` or `;`                                                        | small              |        `iv`/`av`         |
+| `value`                  | value of key-value pair, or right side of assignment, excluding trailing comment (does not work for multiline assignments)  | outer includes trailing `,` or `;`                                                        | small              |        `iv`/`av`         |
 | `key`                    | key of key-value pair, or left side of an assignment                                                                        | outer includes the `=` or `:`                                                             | small              |        `ik`/`ak`         |
 | `url`                    | `http` links or any other protocol                                                                                          | \-                                                                                        | big                |           `L`            |
 | `number`                 | numbers, similar to `<C-a>`                                                                                                 | inner: only digits, outer: number including minus sign and decimal *point*                | small              |        `in`/`an`         |
@@ -66,14 +60,14 @@ Q `            | | `anyQuote `               | between any unescaped `" `, `'
 | `lastChange`             | last non-deletion-change, yank, or paste (paste-manipulation plugins may interfere)                                         | \-                                                                                        | \-                 |           `g;`           |
 | `notebookCell`           | cell delimited by [double percent comment][jupytext], such as `# %%`                                                        | outer includes the top cell border                                                        | \-                 |        `iN`/`aN`         |
 | `emoji`                  | single emoji (or Nerdfont glyph)                                                                                            | \-                                                                                        | small              |           `.`            |
-| `argument`               | comma-separated argument (not as accurate as the treesitter-textobjects, use as fallback)                                   | outer includes the `,`                                                                    | small              |        `i,`/`a,`         |
+| `argument`               | comma-separated argument (not as accurate as the `treesitter-textobjects`, use as fallback)                                 | outer includes the `,`                                                                    | small              |        `i,`/`a,`         |
 | `filepath`               | UNIX-filepath; supports `~` or `$HOME`, but not spaces in the filepath.                                                     | inner is only the filename                                                                | big                |        `iF`/`aF`         |
 | `color`                  | HEX; RGB or HSL in CSS format; ANSI color code                                                                              | inner includes only the color value                                                       | small              |        `i#`/`a#`         |
 | `doubleSquareBrackets`   | text enclosed by `[[]]`                                                                                                     | outer includes the 4 square brackets                                                      | small              |        `iD`/`aD`         |
 
 [jupytext]:
 <https://jupytext.readthedocs.io/en/latest/formats-scripts.html#the-percent-format>
-<!-- LTeX: enabled=true -->
+<!-- rumdl-disable MD058, MD013 -->
 
 > [!TIP]
 > Some text objects may at first appear redundant, since you can also use `caW`
@@ -240,7 +234,7 @@ vim.keymap.set({ "o", "x" }, "a|", '<cmd>lua require("various-textobjs").column(
 ## Deprecated filetype-specific textobjects
 The previously available filetype-specific text objects `htmlAttribute`,
 `shellPipe`, `cssSelector`, `mdEmphasis`, and `mdFencedCodeBlock` have been
-deprecated, since creating treesitter-based textobjects for them is both easy
+deprecated, since creating treesitter-based text objects for them is both easy
 and more precise than using the pattern-based approach of this plugin.
 
 Call the respective function, for example
@@ -463,7 +457,7 @@ page](https://github.com/chrisgrieser/nvim-various-textobjs/discussions).
 ## Limitations & non-goals
 - This plugin uses pattern matching, so it can be inaccurate in some edge cases.
 - Counts are not supported for most text objects.
-- Most characterwise text objects do not match multi-line objects. Most notably,
+- Most characterwise text objects do not match multiline objects. Most notably,
   this affects the `value` text object.
 - [nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects)
   already does an excellent job when it comes to using Treesitter for text
@@ -482,7 +476,7 @@ page](https://github.com/chrisgrieser/nvim-various-textobjs/discussions).
 - [mini.ai](https://github.com/echasnovski/mini.nvim/blob/main/readmes/mini-ai.md)
 
 ## Credits
-**Thanks**  
+**Thanks** <!-- rumdl-disable-line MD036 -->
 - To the `Valuable Dev` for [their blog post on how to get started with
   creating custom text
   objects](https://thevaluable.dev/vim-create-text-objects/).
