@@ -10,7 +10,7 @@ indent_size = 3
 tab_width = 3
 trim_trailing_whitespace = true
 
-[*.{yml,yaml,scm}]
+[*.{yml,yaml,scm,cff}]
 indent_style = space
 indent_size = 2
 tab_width = 2
@@ -21,6 +21,6 @@ indent_size = 4
 tab_width = 4
 
 [*.md]
+indent_style = space
 indent_size = 4
-tab_width = 4
 trim_trailing_whitespace = false

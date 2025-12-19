@@ -1,4 +1,5 @@
 <!-- LTeX: enabled=false -->
+
 # nvim-various-textobjs 🟪🔷🟡
 <!-- LTeX: enabled=true -->
 <a href="https://dotfyle.com/plugins/chrisgrieser/nvim-various-textobjs">
@@ -13,18 +14,18 @@ Bundle of more than 30 new text objects for Neovim.
 - [List of text objects](#list-of-text-objects)
 - [Installation](#installation)
 - [Configuration](#configuration)
-	* [Options](#options)
-	* [Use your own keybindings](#use-your-own-keybindings)
+    - [Options](#options)
+    - [Use your own keybindings](#use-your-own-keybindings)
 - [Deprecated filetype-specific textobjects](#deprecated-filetype-specific-textobjects)
 - [Advanced usage / API](#advanced-usage--api)
-	* [Dynamically switch text object settings](#dynamically-switch-text-object-settings)
-	* [`ii` on unindented line should select entire buffer](#ii-on-unindented-line-should-select-entire-buffer)
-	* [Smarter `gx` & `gf`](#smarter-gx--gf)
-	* [Delete surrounding indentation](#delete-surrounding-indentation)
-	* [Yank surrounding indentation](#yank-surrounding-indentation)
-	* [Indent last paste](#indent-last-paste)
-	* [Go to next occurrence of a text object](#go-to-next-occurrence-of-a-text-object)
-	* [Other ideas?](#other-ideas)
+    - [Dynamically switch text object settings](#dynamically-switch-text-object-settings)
+    - [`ii` on unindented line should select entire buffer](#ii-on-unindented-line-should-select-entire-buffer)
+    - [Smarter `gx` & `gf`](#smarter-gx--gf)
+    - [Delete surrounding indentation](#delete-surrounding-indentation)
+    - [Yank surrounding indentation](#yank-surrounding-indentation)
+    - [Indent last paste](#indent-last-paste)
+    - [Go to next occurrence of a text object](#go-to-next-occurrence-of-a-text-object)
+    - [Other ideas?](#other-ideas)
 - [Limitations & non-goals](#limitations--non-goals)
 - [Other text object plugins](#other-text-object-plugins)
 - [Credits](#credits)
@@ -41,8 +42,12 @@ Bundle of more than 30 new text objects for Neovim.
 | `greedyOuterIndentation` | outer indentation, expanded to blank lines; useful to get functions with annotations                                        | outer includes a blank (like `ap`/`ip`)                                                   | \-                 |        `ag`/`ig`         |
 | `subword`                | segment of a camelCase, snake_case, and kebab-case words                                                                    | outer includes trailing/leading `_` or `-`                                                | \-                 |        `iS`/`aS`         |
 | `toNextClosingBracket`   | from cursor to next closing `]`, `)`, or `}`, can span multiple lines                                                       | \-                                                                                        | small              |           `C`            |
-| `toNextQuotationMark`    | from cursor to next unescaped `"`, `'`, or `` ` ``, can span multiple lines                                                 | \-                                                                                        | small              |           `Q`            |
-| `anyQuote`               | between any unescaped `"`, `'`, or `` ` `` in one line                                                                      | outer includes the quotation marks                                                        | small              |        `iq`/`aq`         |
+
+| `toNextQuotationMark` | from cursor to next unescaped `"`, `'`, or `` ` `
+`, can span multiple lines                                                 | \-                                                                                        | small              |           `
+Q `            | | `anyQuote `               | between any unescaped `" `, `'
+`, or ` ` ` `` in one line | outer includes the quotation marks | small | `iq`/
+`aq` |
 | `anyBracket`             | between any `()`, `[]`, or `{}` in one line                                                                                 | outer includes the brackets                                                               | small              |        `io`/`ao`         |
 | `restOfParagraph`        | like `}`, but linewise                                                                                                      | \-                                                                                        | \-                 |           `r`            |
 | `entireBuffer`           | entire buffer as one text object                                                                                            | \-                                                                                        | \-                 |           `gG`           |
@@ -67,7 +72,7 @@ Bundle of more than 30 new text objects for Neovim.
 | `doubleSquareBrackets`   | text enclosed by `[[]]`                                                                                                     | outer includes the 4 square brackets                                                      | small              |        `iD`/`aD`         |
 
 [jupytext]:
-https://jupytext.readthedocs.io/en/latest/formats-scripts.html#the-percent-format
+<https://jupytext.readthedocs.io/en/latest/formats-scripts.html#the-percent-format>
 <!-- LTeX: enabled=true -->
 
 > [!TIP]
