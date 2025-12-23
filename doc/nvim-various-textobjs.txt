@@ -1,4 +1,4 @@
-*nvim-various-textobjs.txt*      For Neovim      Last change: 2025 December 19
+*nvim-various-textobjs.txt*      For Neovim      Last change: 2025 December 23
 
 ==============================================================================
 Table of Contents                    *nvim-various-textobjs-table-of-contents*
@@ -46,83 +46,59 @@ TABLE OF CONTENTS*nvim-various-textobjs-nvim-various-textobjs--table-of-contents
 
 LIST OF TEXT OBJECTS*nvim-various-textobjs-nvim-various-textobjs--list-of-text-objects*
 
-  -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  text object              description                                                                                                                                                                                                                                                                                               inner / outer              forward-seeking    default
-                                                                                                                                                                                                                                                                                                                                                                                   keymaps
-  ------------------------ --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- -------------------------- ----------------- ---------
-  indentation              surrounding lines with same or higher indentation                                                                                                                                                                                                                                                         see overview from          -                  ii, ai,
-                                                                                                                                                                                                                                                                                                                                     vim-indent-object                            aI, (iI)
+| text object | description | inner / outer | forward-seeking | default keymaps
+| | :———————– |
+:————————————————————————————————————————-
+|
+:—————————————————————————————-
+| :—————– | | | `indentation` | surrounding lines with same or
+higher indentation | see overview from vim-indent-object
+<https://github.com/michaeljsmith/vim-indent-object> | - | `ii`, `ai`, `aI`,
+(`iI`) | | `restOfIndentation` | lines downwards with same or higher
+indentation | - | - | `R` | | `greedyOuterIndentation` | outer indentation,
+expanded to blank lines; useful to get functions with annotations | outer
+includes a blank (like `ap`/`ip`) | - | `ag`/`ig` | | `subword` | segment of a
+camelCase, snake_case, and kebab-case words | outer includes trailing/leading
+`_` or `-` | - | `iS`/`aS` | | `toNextClosingBracket` | from cursor to next
+closing `]`, `)`, or `}`, can span multiple lines | - | small | `C` | |
+`anyBracket` | between any `()`, `[]`, or `{}` in one line | outer includes the
+brackets | small | `io`/`ao` | | `anyQuote` | between any unescaped `"`, `'`,
+or ``` in one line | outer includes the quotation marks | small | `iq`/`aq` | |
+`toNextQuotationMark` | from cursor to next unescaped `"`, `'`, or ```, can
+span multiple lines | - | small | `Q` | | `restOfParagraph` | like `}`, but
+linewise | - | - | `r` | | `entireBuffer` | entire buffer as one text object |
+- | - | `gG` | | `nearEoL` | from cursor position to end of line, excluding
+last char (and trailing spaces); `{count}` excludes last x chars instead | - |
+- | `n` | | `lineCharacterwise` | current line, but characterwise | outer
+includes indentation & trailing spaces | small, if on blank | `i_`/`a_` | |
+`column` | column down until indent or shorter line; accepts `{count}` for
+multiple columns | - | - | `\|` | | `value` | value of key-value pair, or right
+side of assignment, excluding trailing comment (does not work for multiline
+assignments) | outer includes trailing `,` or `;` | small | `iv`/`av` | | `key`
+| key of key-value pair, or left side of an assignment | outer includes the `=`
+or `:` | small | `ik`/`ak` | | `url` | `http` links or any other protocol | - |
+big | `L` | | `number` | numbers, similar to `<C-a>` | inner: only digits,
+outer: number including minus sign and decimal _point_ | small | `in`/`an` | |
+`diagnostic` | nvim diagnostic | - | ∞ | `!` | | `closedFold` | closed fold |
+outer includes one line after the last folded line | big | `iz`/`az` | |
+`chainMember` | section of a chain connected with `.` (or `:`) like `foo.bar`
+or `foo.baz(para)` | outer includes one `.` (or `:`) | small | `im`/`am` | |
+`visibleInWindow` | all lines visible in the current window | - | - | `gw` | |
+`restOfWindow` | from the cursorline to the last line in the window | - | - |
+`gW` | | `lastChange` | last non-deletion-change, yank, or paste
+(paste-manipulation plugins may interfere) | - | - | `g;` | | `notebookCell` |
+cell delimited by [double percent comment][jupytext], such as `# %%` | outer
+includes the top cell border | - | `iN`/`aN` | | `emoji` | single emoji (or
+Nerdfont glyph) | - | small | `.` | | `argument` | comma-separated argument
+(not as accurate as the `treesitter-textobjects`, use as fallback) | outer
+includes the `,` | small | `i,`/`a,` | | `filepath` | UNIX-filepath; supports
+`~` or `$HOME`, but not spaces in the filepath. | inner is only the filename |
+big | `iF`/`aF` | | `color` | HEX; RGB or HSL in CSS format; ANSI color code |
+inner includes only the color value | small | `i#`/`a#` | |
+`doubleSquareBrackets` | text enclosed by `[[]]` | outer includes the 4 square
+brackets | small | `iD`/`aD` | [jupytext]:
+<https://jupytext.readthedocs.io/en/latest/formats-scripts.html#the-percent-format>
 
-  restOfIndentation        lines downwards with same or higher indentation                                                                                                                                                                                                                                                           -                          -                     R
-
-  greedyOuterIndentation   outer indentation, expanded to blank lines; useful to get functions with annotations                                                                                                                                                                                                                      outer includes a blank     -                   ag/ig
-                                                                                                                                                                                                                                                                                                                                     (like ap/ip)                                 
-
-  subword                  segment of a camelCase, snake_case, and kebab-case words                                                                                                                                                                                                                                                  outer includes             -                   iS/aS
-                                                                                                                                                                                                                                                                                                                                     trailing/leading _ or -                      
-
-  toNextClosingBracket     from cursor to next closing ], ), or }, can span multiple lines                                                                                                                                                                                                                                           -                          small                 C
-
-  toNextQuotationMark      from cursor to next unescaped ", ', or                                                                                                                                                                                                                                                                    outer includes the         small                iq/
-                           ` ` `, can span multiple lines                                                 | \-                                                                                        | small              |           ` Q `            | | `anyQuote `               | between any unescaped `" `, `' `, or ` ` `   quotation marks                              
-                           in one line                                                                                                                                                                                                                                                                                                                                            
-
-  aq                                                                                                                                                                                                                                                                                                                                                                              
-
-  anyBracket               between any (), [], or {} in one line                                                                                                                                                                                                                                                                     outer includes the         small               io/ao
-                                                                                                                                                                                                                                                                                                                                     brackets                                     
-
-  restOfParagraph          like }, but linewise                                                                                                                                                                                                                                                                                      -                          -                     r
-
-  entireBuffer             entire buffer as one text object                                                                                                                                                                                                                                                                          -                          -                    gG
-
-  nearEoL                  from cursor position to end of line, excluding last char (and trailing spaces); {count} excludes last x chars instead                                                                                                                                                                                     -                          -                     n
-
-  lineCharacterwise        current line, but characterwise                                                                                                                                                                                                                                                                           outer includes indentation small, if on        i_/a_
-                                                                                                                                                                                                                                                                                                                                     & trailing spaces          blank             
-
-  column                   column down until indent or shorter line; accepts {count} for multiple columns                                                                                                                                                                                                                            -                          -                    \|
-
-  value                    value of key-value pair, or right side of assignment, excluding trailing comment (does not work for multiline assignments)                                                                                                                                                                                outer includes trailing ,  small               iv/av
-                                                                                                                                                                                                                                                                                                                                     or ;                                         
-
-  key                      key of key-value pair, or left side of an assignment                                                                                                                                                                                                                                                      outer includes the = or :  small               ik/ak
-
-  url                      http links or any other protocol                                                                                                                                                                                                                                                                          -                          big                   L
-
-  number                   numbers, similar to <C-a>                                                                                                                                                                                                                                                                                 inner: only digits, outer: small               in/an
-                                                                                                                                                                                                                                                                                                                                     number including minus                       
-                                                                                                                                                                                                                                                                                                                                     sign and decimal point                       
-
-  diagnostic               nvim diagnostic                                                                                                                                                                                                                                                                                           -                          ∞                     !
-
-  closedFold               closed fold                                                                                                                                                                                                                                                                                               outer includes one line    big                 iz/az
-                                                                                                                                                                                                                                                                                                                                     after the last folded line                   
-
-  chainMember              section of a chain connected with . (or :) like foo.bar or foo.baz(para)                                                                                                                                                                                                                                  outer includes one . (or   small               im/am
-                                                                                                                                                                                                                                                                                                                                     :)                                           
-
-  visibleInWindow          all lines visible in the current window                                                                                                                                                                                                                                                                   -                          -                    gw
-
-  restOfWindow             from the cursorline to the last line in the window                                                                                                                                                                                                                                                        -                          -                    gW
-
-  lastChange               last non-deletion-change, yank, or paste (paste-manipulation plugins may interfere)                                                                                                                                                                                                                       -                          -                    g;
-
-  notebookCell             cell delimited by double percent comment, such as # %%                                                                                                                                                                                                                                                    outer includes the top     -                   iN/aN
-                                                                                                                                                                                                                                                                                                                                     cell border                                  
-
-  emoji                    single emoji (or Nerdfont glyph)                                                                                                                                                                                                                                                                          -                          small                 .
-
-  argument                 comma-separated argument (not as accurate as the treesitter-textobjects, use as fallback)                                                                                                                                                                                                                 outer includes the ,       small               i,/a,
-
-  filepath                 UNIX-filepath; supports ~ or $HOME, but not spaces in the filepath.                                                                                                                                                                                                                                       inner is only the filename big                 iF/aF
-
-  color                    HEX; RGB or HSL in CSS format; ANSI color code                                                                                                                                                                                                                                                            inner includes only the    small               i#/a#
-                                                                                                                                                                                                                                                                                                                                     color value                                  
-
-  doubleSquareBrackets     text enclosed by [[]]                                                                                                                                                                                                                                                                                     outer includes the 4       small               iD/aD
-                                                                                                                                                                                                                                                                                                                                     square brackets                              
-  -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
   [!TIP] Some text objects may at first appear redundant, since you can also use
   `caW` or `cl` if your cursor is standing on the object in question. However,
@@ -316,7 +292,7 @@ behavior. In case you want to have two keymaps, one for each behavior, you can
 use this plugin’s `setup` call before calling the respective text object.
 
 >lua
-    -- Example: one keymap for `http` urls only, one for `ftp` urls only
+    -- example: one keymap for `http` urls only, one for `ftp` urls only
     vim.keymap.set({ "o", "x" }, "H", function()
         require("various-textobjs").setup {
             textobjs = {
