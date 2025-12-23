@@ -1,4 +1,4 @@
-# nvim-various-textobjs 🟪🔷🟡 <!-- rumdl-disable-line MD063 `nvim` lowercased -->
+# nvim-various-textobjs 🟪🔷🟡 <!-- rumdl-disable-line MD063 `nvim` lowerc.-->
 <a href="https://dotfyle.com/plugins/chrisgrieser/nvim-various-textobjs">
 <img alt="badge" src="https://dotfyle.com/plugins/chrisgrieser/nvim-various-textobjs/shield"/></a>
 
@@ -31,46 +31,40 @@ Bundle of more than 30 new text objects for Neovim.
 
 ## List of text objects
 
-<!-- rumdl-disable MD058 MD013 FIX table parser broken here -->
-
-| text object              | description                                                                          | inner / outer                                                                             | forward-seeking |     default keymaps      |
-| :----------------------- | :----------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------- | :-------------- | :----------------------: |
-| `indentation`            | surrounding lines with same or higher indentation                                    | [see overview from vim-indent-object](https://github.com/michaeljsmith/vim-indent-object) | \-              | `ii`, `ai`, `aI`, (`iI`) |
-| `restOfIndentation`      | lines downwards with same or higher indentation                                      | \-                                                                                        | \-              |           `R`            |
-| `greedyOuterIndentation` | outer indentation, expanded to blank lines; useful to get functions with annotations | outer includes a blank (like `ap`/`ip`)                                                   | \-              |        `ag`/`ig`         |
-| `subword`                | segment of a camelCase, snake_case, and kebab-case words                             | outer includes trailing/leading `_` or `-`                                                | \-              |        `iS`/`aS`         |
-| `toNextClosingBracket`   | from cursor to next closing `]`, `)`, or `}`, can span multiple lines                | \-                                                                                        | small           |           `C`            |
-| `toNextQuotationMark` | from cursor to next unescaped `"`, `'`, or `` ` `
-`, can span multiple lines                                                 | \-                                                                                        | small              |           `
-Q `            | | `anyQuote `               | between any unescaped `" `, `'
-`, or ` ` ` `` in one line | outer includes the quotation marks | small | `iq`/
-`aq` |
-| `anyBracket`             | between any `()`, `[]`, or `{}` in one line                                                                                 | outer includes the brackets                                                               | small              |        `io`/`ao`         |
-| `restOfParagraph`        | like `}`, but linewise                                                                                                      | \-                                                                                        | \-                 |           `r`            |
-| `entireBuffer`           | entire buffer as one text object                                                                                            | \-                                                                                        | \-                 |           `gG`           |
-| `nearEoL`                | from cursor position to end of line, excluding last char (and trailing spaces); `{count}` excludes last x chars instead     | \-                                                                                        | \-                 |           `n`            |
-| `lineCharacterwise`      | current line, but characterwise                                                                                             | outer includes indentation & trailing spaces                                              | small, if on blank |        `i_`/`a_`         |
-| `column`                 | column down until indent or shorter line; accepts `{count}` for multiple columns                                            | \-                                                                                        | \-                 |           `\|`           |
-| `value`                  | value of key-value pair, or right side of assignment, excluding trailing comment (does not work for multiline assignments)  | outer includes trailing `,` or `;`                                                        | small              |        `iv`/`av`         |
-| `key`                    | key of key-value pair, or left side of an assignment                                                                        | outer includes the `=` or `:`                                                             | small              |        `ik`/`ak`         |
-| `url`                    | `http` links or any other protocol                                                                                          | \-                                                                                        | big                |           `L`            |
-| `number`                 | numbers, similar to `<C-a>`                                                                                                 | inner: only digits, outer: number including minus sign and decimal *point*                | small              |        `in`/`an`         |
-| `diagnostic`             | nvim diagnostic                                                                                                             | \-                                                                                        | ∞                  |           `!`            |
-| `closedFold`             | closed fold                                                                                                                 | outer includes one line after the last folded line                                        | big                |        `iz`/`az`         |
-| `chainMember`            | section of a chain connected with `.` (or `:`) like `foo.bar` or `foo.baz(para)`                                            | outer includes one `.` (or `:`)                                                           | small              |        `im`/`am`         |
-| `visibleInWindow`        | all lines visible in the current window                                                                                     | \-                                                                                        | \-                 |           `gw`           |
-| `restOfWindow`           | from the cursorline to the last line in the window                                                                          | \-                                                                                        | \-                 |           `gW`           |
-| `lastChange`             | last non-deletion-change, yank, or paste (paste-manipulation plugins may interfere)                                         | \-                                                                                        | \-                 |           `g;`           |
-| `notebookCell`           | cell delimited by [double percent comment][jupytext], such as `# %%`                                                        | outer includes the top cell border                                                        | \-                 |        `iN`/`aN`         |
-| `emoji`                  | single emoji (or Nerdfont glyph)                                                                                            | \-                                                                                        | small              |           `.`            |
-| `argument`               | comma-separated argument (not as accurate as the `treesitter-textobjects`, use as fallback)                                 | outer includes the `,`                                                                    | small              |        `i,`/`a,`         |
-| `filepath`               | UNIX-filepath; supports `~` or `$HOME`, but not spaces in the filepath.                                                     | inner is only the filename                                                                | big                |        `iF`/`aF`         |
-| `color`                  | HEX; RGB or HSL in CSS format; ANSI color code                                                                              | inner includes only the color value                                                       | small              |        `i#`/`a#`         |
-| `doubleSquareBrackets`   | text enclosed by `[[]]`                                                                                                     | outer includes the 4 square brackets                                                      | small              |        `iD`/`aD`         |
-
-[jupytext]:
-<https://jupytext.readthedocs.io/en/latest/formats-scripts.html#the-percent-format>
-<!-- rumdl-disable MD058, MD013 -->
+ <!-- rumdl-disable MD060 MD058 MD013 FIX issue due to `` ` `` -->
+| text object              | description                                                                                                                | inner / outer                                                                             | forward-seeking    |     default keymaps      |
+| :----------------------- | :------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------- | :----------------- | :----------------------: |
+| `indentation`            | surrounding lines with same or higher indentation                                                                          | [see overview from vim-indent-object](https://github.com/michaeljsmith/vim-indent-object) | \-                 | `ii`, `ai`, `aI`, (`iI`) |
+| `restOfIndentation`      | lines downwards with same or higher indentation                                                                            | \-                                                                                        | \-                 |           `R`            |
+| `greedyOuterIndentation` | outer indentation, expanded to blank lines; useful to get functions with annotations                                       | outer includes a blank (like `ap`/`ip`)                                                   | \-                 |        `ag`/`ig`         |
+| `subword`                | segment of a camelCase, snake_case, and kebab-case words                                                                   | outer includes trailing/leading `_` or `-`                                                | \-                 |        `iS`/`aS`         |
+| `toNextClosingBracket`   | from cursor to next closing `]`, `)`, or `}`, can span multiple lines                                                      | \-                                                                                        | small              |           `C`            |
+| `anyBracket`             | between any `()`, `[]`, or `{}` in one line                                                                                | outer includes the brackets                                                               | small              |        `io`/`ao`         |
+| `anyQuote`               | between any unescaped `"`, `'`, or `` ` `` in one line                                                                     | outer includes the quotation marks                                                        | small              |        `iq`/`aq`         |
+| `toNextQuotationMark`    | from cursor to next unescaped `"`, `'`, or `` ` ``, can span multiple lines                                                | \-                                                                                        | small              |           `Q`            |
+| `restOfParagraph`        | like `}`, but linewise                                                                                                     | \-                                                                                        | \-                 |           `r`            |
+| `entireBuffer`           | entire buffer as one text object                                                                                           | \-                                                                                        | \-                 |           `gG`           |
+| `nearEoL`                | from cursor position to end of line, excluding last char (and trailing spaces); `{count}` excludes last x chars instead    | \-                                                                                        | \-                 |           `n`            |
+| `lineCharacterwise`      | current line, but characterwise                                                                                            | outer includes indentation & trailing spaces                                              | small, if on blank |        `i_`/`a_`         |
+| `column`                 | column down until indent or shorter line; accepts `{count}` for multiple columns                                           | \-                                                                                        | \-                 |           `\|`           |
+| `value`                  | value of key-value pair, or right side of assignment, excluding trailing comment (does not work for multiline assignments) | outer includes trailing `,` or `;`                                                        | small              |        `iv`/`av`         |
+| `key`                    | key of key-value pair, or left side of an assignment                                                                       | outer includes the `=` or `:`                                                             | small              |        `ik`/`ak`         |
+| `url`                    | `http` links or any other protocol                                                                                         | \-                                                                                        | big                |           `L`            |
+| `number`                 | numbers, similar to `<C-a>`                                                                                                | inner: only digits, outer: number including minus sign and decimal *point*                | small              |        `in`/`an`         |
+| `diagnostic`             | nvim diagnostic                                                                                                            | \-                                                                                        | ∞                  |           `!`            |
+| `closedFold`             | closed fold                                                                                                                | outer includes one line after the last folded line                                        | big                |        `iz`/`az`         |
+| `chainMember`            | section of a chain connected with `.` (or `:`) like `foo.bar` or `foo.baz(para)`                                           | outer includes one `.` (or `:`)                                                           | small              |        `im`/`am`         |
+| `visibleInWindow`        | all lines visible in the current window                                                                                    | \-                                                                                        | \-                 |           `gw`           |
+| `restOfWindow`           | from the cursorline to the last line in the window                                                                         | \-                                                                                        | \-                 |           `gW`           |
+| `lastChange`             | last non-deletion-change, yank, or paste (paste-manipulation plugins may interfere)                                        | \-                                                                                        | \-                 |           `g;`           |
+| `notebookCell`           | cell delimited by [double percent comment][jupytext], such as `# %%`                                                       | outer includes the top cell border                                                        | \-                 |        `iN`/`aN`         |
+| `emoji`                  | single emoji (or Nerdfont glyph)                                                                                           | \-                                                                                        | small              |           `.`            |
+| `argument`               | comma-separated argument (not as accurate as the `treesitter-textobjects`, use as fallback)                                | outer includes the `,`                                                                    | small              |        `i,`/`a,`         |
+| `filepath`               | UNIX-filepath; supports `~` or `$HOME`, but not spaces in the filepath.                                                    | inner is only the filename                                                                | big                |        `iF`/`aF`         |
+| `color`                  | HEX; RGB or HSL in CSS format; ANSI color code                                                                             | inner includes only the color value                                                       | small              |        `i#`/`a#`         |
+| `doubleSquareBrackets`   | text enclosed by `[[]]`                                                                                                    | outer includes the 4 square brackets                                                      | small              |        `iD`/`aD`         |
+ <!-- rumdl-enable MD060 MD058 MD013 -->
+[jupytext]: <https://jupytext.readthedocs.io/en/latest/formats-scripts.html#the-percent-format>
 
 > [!TIP]
 > Some text objects may at first appear redundant, since you can also use `caW`
@@ -255,7 +249,7 @@ behavior. In case you want to have two keymaps, one for each behavior, you can
 use this plugin's `setup` call before calling the respective text object.
 
 ```lua
--- Example: one keymap for `http` urls only, one for `ftp` urls only
+-- example: one keymap for `http` urls only, one for `ftp` urls only
 vim.keymap.set({ "o", "x" }, "H", function()
 	require("various-textobjs").setup {
 		textobjs = {
@@ -279,7 +273,8 @@ vim.keymap.set({ "o", "x" }, "F", function()
 end, { expr = true, desc = "ftp-url textobj" })
 ```
 
-### `ii` On unindented line should select entire buffer
+<!-- rumdl-disable-next-line MD063 `ii` start -->
+### `ii` on unindented line should select entire buffer
 Using a simple if-else-block, you can create a hybrid of the inner indentation
 text object and the entire-buffer text object, if you prefer that kind of
 behavior:
@@ -481,8 +476,7 @@ page](https://github.com/chrisgrieser/nvim-various-textobjs/discussions).
 ## Credits
 **Thanks** <!-- rumdl-disable-line MD036 -->
 - To the `Valuable Dev` for [their blog post on how to get started with
-  creating custom text
-  objects](https://thevaluable.dev/vim-create-text-objects/).
+  creating custom text objects](https://thevaluable.dev/vim-create-text-objects/).
 - [To `@vypxl` and `@ii14` for figuring out
   dot-repeatability.](https://github.com/chrisgrieser/nvim-spider/pull/4)
 
