@@ -164,7 +164,7 @@ end
 ---@param scope "inner"|"outer" inner is only the filename
 function M.filepath(scope)
 	local pattern = {
-		unixPath = "([.~]?/?[%w_%-.$/]+/)[%w_%-.]+()",
+		unixPath = "([.~]?/?[%w_%-.$/%%]+/)[%w_%-.%%]+()",
 	}
 	core.selectClosestTextobj(pattern, scope, bigForward())
 end
