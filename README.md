@@ -273,7 +273,6 @@ vim.keymap.set({ "o", "x" }, "F", function()
 end, { expr = true, desc = "ftp-url textobj" })
 ```
 
-<!-- rumdl-disable-next-line MD063 `ii` start -->
 ### `ii` on unindented line should select entire buffer
 Using a simple if-else-block, you can create a hybrid of the inner indentation
 text object and the entire-buffer text object, if you prefer that kind of
