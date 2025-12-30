@@ -1,4 +1,4 @@
-# nvim-various-textobjs 🟪🔷🟡 <!-- rumdl-disable-line MD063 `nvim` lowerc.-->
+# nvim-various-textobjs 🟪🔷🟡 <!-- rumdl-disable-line MD063 -->
 <a href="https://dotfyle.com/plugins/chrisgrieser/nvim-various-textobjs">
 <img alt="badge" src="https://dotfyle.com/plugins/chrisgrieser/nvim-various-textobjs/shield"/></a>
 
