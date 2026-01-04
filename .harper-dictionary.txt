@@ -1,4 +1,9 @@
 HSL
+Nerdfont
 characterwise
 cursorline
 dedenting
+linewise
+textobjs
+unescaped
+unindented
