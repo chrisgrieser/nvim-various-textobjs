@@ -194,7 +194,7 @@ function M.selectClosestTextobj(patterns, scope, lookForwLines, smallestMatch)
 			end
 
 			-- stylua: ignore
-			if enableLogging then objLogging[patternName] = { cur.startCol, cur.endCol, row = cur.row, distance = cur.distance, tieloser = cur.tieloser, cursorOnObj = cur.cursorOnObj, zeroWidthTextobj = cur.startCol > cur.endCol and true or nil } end
+			if enableLogging then objLogging[patternName] = { cur.startCol, cur.endCol, row = cur.row, distance = cur.distance, tieloser = cur.tieloser, greedy = cur.greedy, cursorOnObj = cur.cursorOnObj, zeroWidthTextobj = cur.startCol > cur.endCol and true or nil } end
 		end
 	end
 
