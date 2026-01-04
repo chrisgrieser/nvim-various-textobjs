@@ -77,10 +77,12 @@ function M.anyBracket(scope)
 	-- check for smallest match, since we want to find the innermost valid bracket
 	core.selectClosestTextobj(patterns, "outer", smallForward(), "smallest-match")
 
-	-- To make use of balanced patterns `%b()`, we cannot use the pattern syntax
-	-- from charwise-core, which reliase on the use of two empty capture groups
-	-- to determine the inner/outer difference. Thus, we manually remove the
-	-- first and last char from the selection, if we are in inner mode.
+	-- When using of balanced patterns `%b()`, we cannot use the pattern syntax
+	-- from charwise-core where we the outer variant pattern-segments is out into
+	-- capture groups, since `%b()` does not allow for the parenthesis to be
+	-- captured separately.
+	-- Thus, we manually remove the first and last char from the selection if we
+	-- are in inner mode, since we know they are the outer brackets.
 	local found = vim.fn.mode() == "v"
 	if scope == "inner" and found then
 		u.normal("holo") -- remove first and last char from selection
@@ -88,7 +90,6 @@ function M.anyBracket(scope)
 end
 
 ---near end of the line, ignoring trailing whitespace
----(relevant for markdown, where you normally add a space after the `.` ending a sentence.)
 function M.nearEoL()
 	local chars = vim.v.count1
 	local pattern = "().(" .. ("."):rep(chars - 1) .. "%S%s*)$"
@@ -99,7 +100,7 @@ end
 ---current line, but characterwise
 ---@param scope "inner"|"outer" outer includes indentation and trailing spaces
 function M.lineCharacterwise(scope)
-	local pattern = "^(%s*).-(%s*)$" -- use `.-` so inner obj does not match trailing spaces
+	local pattern = "^(%s*).-(%s*)$" -- `.-` so inner obj does not match trailing spaces
 	core.selectClosestTextobj(pattern, scope, smallForward())
 end
 
