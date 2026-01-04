@@ -171,12 +171,19 @@ end
 
 ---@param scope "inner"|"outer" inner excludes the leading dot
 function M.chainMember(scope)
-	-- make with-call greedy, so the call of a chainmember is always included
 	local patterns = {
+		-- make with-call pattern greedy, so the call of a chainmember is always included
 		leadingWithoutCall = "()[%w_]+([:.])",
-		leadingWithCall = { "()[%w_]+%b()([:.])", greedy = true },
+		leadingWithNestedCall = { "()[%w_]+%b()([:.])", greedy = true },
 		followingWithoutCall = "([:.])[%w_]+()",
-		followingWithCall = { "([:.])[%w_]+%b()()", greedy = true },
+		followingWithNestedCall = { "([:.])[%w_]+%b()()", greedy = true },
+
+		-- With only the a balanced pattern `%b()`, nested calls with chain member
+		-- would prefer the outermost one, e.g., in `foo.bar(hello.world())`. Thus
+		-- we add a version disallowing nested calls, which will always match the
+		-- innermost candidate.
+		leadingWithCall = { "()[%w_]+%([^()]*%)([:.])", greedy = true },
+		followingWithCall = { "([:.])[%w_]+%([^()]*%)()", greedy = true },
 	}
 	core.selectClosestTextobj(patterns, scope, smallForward())
 end
