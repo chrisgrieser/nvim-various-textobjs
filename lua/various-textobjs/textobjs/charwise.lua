@@ -173,10 +173,10 @@ end
 function M.chainMember(scope)
 	-- make with-call greedy, so the call of a chainmember is always included
 	local patterns = {
-		leadingWithoutCall = "()[%w_][%w_]*([:.])",
-		leadingWithCall = { "()[%w_][%w_]*%b()([:.])", greedy = true },
-		followingWithoutCall = "([:.])[%w_][%w_]*()",
-		followingWithCall = { "([:.])[%w_][%w_]*%b()()", greedy = true },
+		leadingWithoutCall = "()[%w_]+([:.])",
+		leadingWithCall = { "()[%w_]+%b()([:.])", greedy = true },
+		followingWithoutCall = "([:.])[%w_]+()",
+		followingWithCall = { "([:.])[%w_]+%b()()", greedy = true },
 	}
 	core.selectClosestTextobj(patterns, scope, smallForward())
 end
