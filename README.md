@@ -477,12 +477,13 @@ page](https://github.com/chrisgrieser/nvim-various-textobjs/discussions).
 - [mini.ai](https://github.com/echasnovski/mini.nvim/blob/main/readmes/mini-ai.md)
 
 ## Credits
-**Thanks** <!-- rumdl-disable-line MD036 -->
+**Thanks** <!-- rumdl-disable-line MD036 -->  
 - To the `Valuable Dev` for [their blog post on how to get started with
   creating custom text objects](https://thevaluable.dev/vim-create-text-objects/).
 - [To `@vypxl` and `@ii14` for figuring out
   dot-repeatability.](https://github.com/chrisgrieser/nvim-spider/pull/4)
 
+**About the developer** <!-- rumdl-disable-line MD036 -->  
 In my day job, I am a sociologist studying the social mechanisms underlying the
 digital economy. For my PhD project, I investigate the governance of the app
 economy and how software ecosystems manage the tension between innovation and
