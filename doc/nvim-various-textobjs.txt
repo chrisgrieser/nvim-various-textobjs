@@ -1,4 +1,4 @@
-*nvim-various-textobjs.txt*      For Neovim      Last change: 2026 February 06
+*nvim-various-textobjs.txt*      For Neovim      Last change: 2026 February 10
 
 ==============================================================================
 Table of Contents                    *nvim-various-textobjs-table-of-contents*
@@ -594,11 +594,11 @@ with creating custom text objects
 for figuring out dot-repeatability.
 <https://github.com/chrisgrieser/nvim-spider/pull/4>
 
-In my day job, I am a sociologist studying the social mechanisms underlying the
-digital economy. For my PhD project, I investigate the governance of the app
-economy and how software ecosystems manage the tension between innovation and
-compatibility. If you are interested in this subject, feel free to get in
-touch.
+**About the developer** In my day job, I am a sociologist studying the social
+mechanisms underlying the digital economy. For my PhD project, I investigate
+the governance of the app economy and how software ecosystems manage the
+tension between innovation and compatibility. If you are interested in this
+subject, feel free to get in touch.
 
 - Website <https://chris-grieser.de/>
 - Mastodon <https://pkm.social/@pseudometa>
