@@ -32,8 +32,7 @@ Bundle of more than 30 new text objects for Neovim.
 ## List of text objects
 
 <!-- LTeX: enabled=false -->
-<!-- rumdl breaks with the `` ` `` -->
-<!-- rumdl-disable MD060 MD058 MD013 -->
+
 | text object              | description                                                                                                                 | inner / outer                                                                             | forward-seeking    |     default keymaps      |
 | :----------------------- | :-------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------- | :----------------- | :----------------------: |
 | `indentation`            | Surrounding lines with same or higher indentation.                                                                          | [see overview from vim-indent-object](https://github.com/michaeljsmith/vim-indent-object) | \-                 | `ii`, `ai`, `aI`, (`iI`) |
@@ -67,7 +66,6 @@ Bundle of more than 30 new text objects for Neovim.
 | `doubleSquareBrackets`   | Text enclosed by `[[]]`.                                                                                                    | outer includes the 4 square brackets                                                      | small              |        `iD`/`aD`         |
 
 <!-- LTeX: enabled=true -->
-<!-- rumdl-enable MD060 MD058 MD013 -->
 [jupytext]: https://jupytext.readthedocs.io/en/latest/formats-scripts.html#the-percent-format
 
 > [!TIP]
@@ -478,8 +476,8 @@ page](https://github.com/chrisgrieser/nvim-various-textobjs/discussions).
 
 ## Credits
 **Thanks** <!-- rumdl-disable-line MD036 -->  
-- To the `Valuable Dev` for [their blog post on how to get started with
-  creating custom text objects](https://thevaluable.dev/vim-create-text-objects/).
+- To the `Valuable Dev` for
+  [their blog post on how to get started with creating custom text objects](https://thevaluable.dev/vim-create-text-objects/).
 - [To `@vypxl` and `@ii14` for figuring out
   dot-repeatability.](https://github.com/chrisgrieser/nvim-spider/pull/4)
 
