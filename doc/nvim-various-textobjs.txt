@@ -1,5 +1,5 @@
 *nvim-various-textobjs.txt*
-                                       For Neovim    Last change: 2026 June 22
+                                       For Neovim    Last change: 2026 July 27
 
 ==============================================================================
 Table of Contents                    *nvim-various-textobjs-table-of-contents*
