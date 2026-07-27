@@ -136,7 +136,7 @@ end
 
 ---@param scope "inner"|"outer" outer includes the `:` or `=` after the key
 function M.key(scope)
-	local pattern = "()%S.-( ?[:=])"
+	local pattern = "()%S.-( ?[:=] ?)"
 	core.selectClosestTextobj(pattern, scope, smallForward())
 end
 
