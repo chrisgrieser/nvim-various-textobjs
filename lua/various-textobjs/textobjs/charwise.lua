@@ -33,7 +33,7 @@ end
 function M.anyQuote(scope)
 	-- INFO
 	-- `(").-(")` would be enough if we were just to check for any quote char,
-	-- but to correctly deal with escaped quotes, empty quotes, while keeping
+	-- but to correctly deal with escaped/empty quotes, while keeping
 	-- quotes balanced, we need to employ a more complex system of patterns.
 	--
 	-- * To ignore escaped quotes, we use of frontier patterns `%f[\"]` as quasi
@@ -44,6 +44,7 @@ function M.anyQuote(scope)
 	-- * Caveat B: In a line like `"" + "foo"`, the pattern `(%f[\"]").-(%f[\"]")`
 	--   would match between the 2nd and 3rd quote, but not between the 3rd and 4th
 	--   quote.
+	--
 	-- * To address Caveat B, we also require the first character to not be a
 	--   quote. This makes the pattern fully ignore empty quotes, so that in a
 	--   line `"" + "foo"`, only the string between the 3rd and 4th quote is
@@ -78,8 +79,7 @@ function M.anyBracket(scope)
 	core.selectClosestTextobj(patterns, "outer", smallForward(), "smallest-match")
 
 	-- When using of balanced patterns `%b()`, we cannot use the pattern syntax
-	-- from charwise-core where we the outer variant pattern-segments is out into
-	-- capture groups, since `%b()` does not allow for the parenthesis to be
+	-- from charwise-core, since `%b()` does not allow for the parenthesis to be
 	-- captured separately.
 	-- Thus, we manually remove the first and last char from the selection if we
 	-- are in inner mode, since we know they are the outer brackets.
@@ -134,7 +134,7 @@ function M.value(scope)
 	core.setSelection({ row, startCol }, { row, valueEndCol })
 end
 
----@param scope "inner"|"outer" outer key includes the `:` or `=` after the key
+---@param scope "inner"|"outer" outer includes the `:` or `=` after the key
 function M.key(scope)
 	local pattern = "()%S.-( ?[:=])"
 	core.selectClosestTextobj(pattern, scope, smallForward())
@@ -143,7 +143,7 @@ end
 ---@param scope "inner"|"outer" inner number consists purely of digits, outer number factors in decimal points and includes minus sign
 function M.number(scope)
 	-- Here two different patterns make more sense, so the inner number can match
-	-- before and after the decimal dot. enforcing digital after dot so outer
+	-- before and after the decimal dot. Enforcing digital after dot so outer
 	-- excludes enumrations.
 	local pattern = "%d+" ---@type VariousTextobjs.PatternInput
 	if scope == "outer" then
