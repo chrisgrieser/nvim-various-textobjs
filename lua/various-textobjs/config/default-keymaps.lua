@@ -75,5 +75,10 @@ function M.setup(disabledKeymaps)
 	-- stylua: ignore end
 end
 
+-- exported for the automatic keymap expansion in `init.lua`
+-- (used to detect inner/outer text objects)
+M.innerOuterMaps = innerOuterMaps
+M.oneMaps = oneMaps
+
 --------------------------------------------------------------------------------
 return M

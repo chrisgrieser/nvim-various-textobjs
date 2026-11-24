@@ -30,7 +30,8 @@ function M.toNextQuotationMark()
 end
 
 ---@param scope "inner"|"outer"
-function M.anyQuote(scope)
+---@param search? "forward"|"backward"|"nearest" seeks in this direction, overriding `behavior.searchDirection`
+function M.anyQuote(scope, search)
 	-- INFO
 	-- `(").-(")` would be enough if we were just to check for any quote char,
 	-- but to correctly deal with escaped/empty quotes, while keeping
@@ -65,10 +66,11 @@ function M.anyQuote(scope)
 		["empty `"] = [[(%f[\`]`)(`)]],
 		["escaped quote last `"] = [[(%f[\`]`).*\`(`)]],
 	}
-	core.selectClosestTextobj(patterns, scope, smallForward())
+	core.selectClosestTextobj(patterns, scope, smallForward(), nil, search)
 end
 
 ---@param scope "inner"|"outer"
+---@param search? "forward"|"backward"|"nearest" seeks in this direction, overriding `behavior.searchDirection`
 function M.anyBracket(scope)
 	local patterns = {
 		["()"] = "%b()",
@@ -76,7 +78,7 @@ function M.anyBracket(scope)
 		["{}"] = "%b{}",
 	}
 	-- check for smallest match, since we want to find the innermost valid bracket
-	core.selectClosestTextobj(patterns, "outer", smallForward(), "smallest-match")
+	core.selectClosestTextobj(patterns, "outer", smallForward(), "smallest-match", search)
 
 	-- When using of balanced patterns `%b()`, we cannot use the pattern syntax
 	-- from charwise-core, since `%b()` does not allow for the parenthesis to be
@@ -99,9 +101,10 @@ end
 
 ---current line, but characterwise
 ---@param scope "inner"|"outer" outer includes indentation and trailing spaces
-function M.lineCharacterwise(scope)
+---@param search? "forward"|"backward"|"nearest" seeks in this direction, overriding `behavior.searchDirection`
+function M.lineCharacterwise(scope, search)
 	local pattern = "^(%s*).-(%s*)$" -- `.-` so inner obj does not match trailing spaces
-	core.selectClosestTextobj(pattern, scope, smallForward())
+	core.selectClosestTextobj(pattern, scope, smallForward(), nil, search)
 end
 
 ---@param scope "inner"|"outer" inner value excludes trailing commas or semicolons, outer includes them. Both exclude trailing comments.
@@ -135,13 +138,15 @@ function M.value(scope)
 end
 
 ---@param scope "inner"|"outer" outer includes the `:` or `=` after the key
-function M.key(scope)
+---@param search? "forward"|"backward"|"nearest" seeks in this direction, overriding `behavior.searchDirection`
+function M.key(scope, search)
 	local pattern = "()%S.-( ?[:=] ?)"
-	core.selectClosestTextobj(pattern, scope, smallForward())
+	core.selectClosestTextobj(pattern, scope, smallForward(), nil, search)
 end
 
 ---@param scope "inner"|"outer" inner number consists purely of digits, outer number factors in decimal points and includes minus sign
-function M.number(scope)
+---@param search? "forward"|"backward"|"nearest" seeks in this direction, overriding `behavior.searchDirection`
+function M.number(scope, search)
 	-- Here two different patterns make more sense, so the inner number can match
 	-- before and after the decimal dot. Enforcing digital after dot so outer
 	-- excludes enumrations.
@@ -154,24 +159,27 @@ function M.number(scope)
 			noThousandSep = { "%-?%d+%.?%d*", tieloser = true },
 		}
 	end
-	core.selectClosestTextobj(pattern, "outer", smallForward())
+	core.selectClosestTextobj(pattern, "outer", smallForward(), nil, search)
 end
 
-function M.url()
+---@param search? "forward"|"backward"|"nearest" seeks in this direction, overriding `behavior.searchDirection`
+function M.url(search)
 	local urlPatterns = require("various-textobjs.config.config").config.textobjs.url.patterns
-	core.selectClosestTextobj(urlPatterns, "outer", bigForward())
+	core.selectClosestTextobj(urlPatterns, "outer", bigForward(), nil, search)
 end
 
 ---@param scope "inner"|"outer" inner is only the filename
-function M.filepath(scope)
+---@param search? "forward"|"backward"|"nearest" seeks in this direction, overriding `behavior.searchDirection`
+function M.filepath(scope, search)
 	local pattern = {
 		unixPath = "([.~]?/?[%w_%-.$/%%]+/)[%w_%-.%%]+()",
 	}
-	core.selectClosestTextobj(pattern, scope, bigForward())
+	core.selectClosestTextobj(pattern, scope, bigForward(), nil, search)
 end
 
 ---@param scope "inner"|"outer" inner excludes the leading dot
-function M.chainMember(scope)
+---@param search? "forward"|"backward"|"nearest" seeks in this direction, overriding `behavior.searchDirection`
+function M.chainMember(scope, search)
 	local patterns = {
 		-- make with-call pattern greedy, so the call of a chainmember is always included
 		leadingWithoutCall = "()[%w_]+([:.])",
@@ -186,18 +194,19 @@ function M.chainMember(scope)
 		leadingWithCall = { "()[%w_]+%([^()]*%)([:.])", greedy = true },
 		followingWithCall = { "([:.])[%w_]+%([^()]*%)()", greedy = true },
 	}
-	core.selectClosestTextobj(patterns, scope, smallForward())
+	core.selectClosestTextobj(patterns, scope, smallForward(), nil, search)
 end
 
 ---@param scope "inner"|"outer" outer includes the comma
-function M.argument(scope)
+---@param search? "forward"|"backward"|"nearest" seeks in this direction, overriding `behavior.searchDirection`
+function M.argument(scope, search)
 	local patterns = {
 		-- CAVEAT patterns will not work with arguments that contain a `()`, to
 		-- get those accurately, you will need treeesitter
 		leadingComma = [[(,)[%w_."'%]%[]+()]],
 		followingComma = [[()[%w_."'%]%[]+(,)]],
 	}
-	core.selectClosestTextobj(patterns, scope, smallForward())
+	core.selectClosestTextobj(patterns, scope, smallForward(), nil, search)
 end
 
 function M.lastChange()
@@ -213,13 +222,15 @@ function M.lastChange()
 end
 
 ---@param scope "inner"|"outer" inner selector excludes the brackets themselves
-function M.doubleSquareBrackets(scope)
+---@param search? "forward"|"backward"|"nearest" seeks in this direction, overriding `behavior.searchDirection`
+function M.doubleSquareBrackets(scope, search)
 	local pattern = "(%[%[).-(%]%])"
-	core.selectClosestTextobj(pattern, scope, smallForward())
+	core.selectClosestTextobj(pattern, scope, smallForward(), nil, search)
 end
 
 ---@param scope "inner"|"outer" inner selector only affects the color value
-function M.color(scope)
+---@param search? "forward"|"backward"|"nearest" seeks in this direction, overriding `behavior.searchDirection`
+function M.color(scope, search)
 	local pattern = {
 		["#123456"] = "(#)" .. ("%x"):rep(6) .. "()",
 		["hsl(123, 23%, 23%)"] = "(hsla?%()[%%%d,./deg ]-(%))", -- optionally with `deg`/`%`
@@ -228,7 +239,7 @@ function M.color(scope)
 		["ansi-color-033"] = "\\033%[[%d;]+m",
 		["ansi-color-x1b"] = "\\x1b%[[%d;]+m",
 	}
-	core.selectClosestTextobj(pattern, scope, smallForward())
+	core.selectClosestTextobj(pattern, scope, smallForward(), nil, search)
 end
 
 --------------------------------------------------------------------------------

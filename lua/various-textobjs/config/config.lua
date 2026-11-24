@@ -23,6 +23,20 @@ local defaultConfig = {
 	behavior = {
 		-- save position in jumplist when using text objects
 		jumplist = true,
+
+		-- default direction text objects seek in for the next object. Can be
+		-- overridden per call by passing the direction to a textobj directly,
+		-- e.g. `require("various-textobjs").url("nearest")`.
+		-- * "forward": only seek ahead of the cursor (default, original behavior)
+		-- * "backward": only seek behind the cursor
+		-- * "nearest": seek in both directions and select the object that is
+		--   closer to the cursor: fewer lines away wins (empty lines count
+		--   too), ties are decided by #chars. Objects that enclose the cursor
+		--   always take precedence. The `forwardLooking` seek window only
+		--   bounds how far is searched (in both directions), never which of
+		--   the two candidates is picked.
+		---@type "forward"|"backward"|"nearest"
+		searchDirection = "forward",
 	},
 
 	-- extra configuration for specific text objects
@@ -61,7 +75,7 @@ function M.setup(userConfig)
 	M.config = vim.tbl_deep_extend("force", M.config, userConfig or {})
 
 	if M.config.keymaps.useDefaults then
-		require("various-textobjs..config.default-keymaps").setup(M.config.keymaps.disabledDefaults)
+		require("various-textobjs.config.default-keymaps").setup(M.config.keymaps.disabledDefaults)
 	end
 end
 

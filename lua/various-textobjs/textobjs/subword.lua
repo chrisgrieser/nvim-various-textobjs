@@ -4,7 +4,8 @@ local u = require("various-textobjs.utils")
 --------------------------------------------------------------------------------
 
 ---@param scope "inner"|"outer"
-function M.subword(scope)
+---@param search? "forward"|"backward"|"nearest" seeks in this direction, overriding `behavior.searchDirection`
+function M.subword(scope, search)
 	-- needs to be saved, since using a textobj always results in visual mode
 	local initialMode = vim.fn.mode()
 
@@ -16,7 +17,7 @@ function M.subword(scope)
 		-- e.g., "x" in "xSide" or "sideX" (see #75)
 		singleChar = { "()%a([_-]?)", tieloser = true },
 	}
-	local row, startCol, endCol = core.selectClosestTextobj(patterns, scope, 0)
+	local row, startCol, endCol = core.selectClosestTextobj(patterns, scope, 0, nil, search)
 	if not (row and startCol and endCol) then return end
 
 	-----------------------------------------------------------------------------
