@@ -156,15 +156,12 @@ require("various-textobjs").setup {
 		-- save position in jumplist when using text objects
 		jumplist = true,
 
-		-- default direction text objects seek in for the next object. Can be
-		-- overridden per usage by passing the direction to a textobj directly,
-		-- e.g. `require("various-textobjs").url("nearest")`.
-		-- * "forward": only seek ahead of the cursor (default, original behavior)
+		-- default direction text objects seek in. Can be overridden per keymap,
+		-- see "Per-keymap seeking direction" in the README.
+		-- * "forward": only seek ahead of the cursor (original behavior)
 		-- * "backward": only seek behind the cursor
-		-- * "nearest": seek in both directions and select the object that is
-		--   closer to the cursor in #chars (objects that enclose the cursor
-		--   always take precedence). Example: with `url1 ab[c] url2` and the
-		--   cursor on `c`, `viu` selects `url2`, since it is closer than `url1`.
+		-- * "nearest": seek both ways and pick the closer object; objects
+		--   enclosing the cursor always take precedence
 		---@type "forward"|"backward"|"nearest"
 		searchDirection = "forward",
 	},
@@ -207,6 +204,10 @@ functions. The function names correspond to the text object names from the
 > For dot-repeat to work, you have to call the motions as Ex-commands. Using
 > `function() require("various-textobjs").diagnostic() end` as third argument of
 > the keymap will not work.
+>
+> For pattern-based text objects, you can skip the `<cmd>lua …<CR>` boilerplate by
+> passing the name or function directly, see
+> [Automatic direction maps](#automatic-direction-maps-from-a-single-vimkeymapset).
 
 ```lua
 -- example: `U` for url textobj
@@ -288,53 +289,44 @@ end, { expr = true, desc = "ftp-url textobj" })
 ```
 
 ### Per-keymap seeking direction
-Text objects that support seeking can be given an explicit direction as
-argument, overriding the `behavior.searchDirection` config. All pattern-based
-text objects accept it as last argument (after `inner`/`outer` where they have
-one), e.g. `require("various-textobjs").url("nearest")` or
-`require("various-textobjs").number("inner", "backward")`. Supported
-directions are `"forward"`, `"nearest"` (seeks both ways, picks the closer
-object), and `"backward"`.
+Pattern-based text objects accept a direction as last argument (after
+`inner`/`outer`, if applicable), overriding `behavior.searchDirection`, e.g.
+`require("various-textobjs").url("nearest")` or
+`require("various-textobjs").number("inner", "backward")`. Supported directions
+are `"forward"`, `"backward"`, and `"nearest"` (both ways, closer object wins).
 
-In `"nearest"` mode, both candidates' distances are measured in `#chars` to
-the cursor — the forward one to its start, the backward one to its end,
-counting the length of the lines in between plus their newlines. A blank
-line therefore counts as 1 char (a whitespace-only line as its length + 1),
-so objects separated only by blank lines are still close, and the *closer*
-object wins regardless of how many blank lines sit in between; the
-`forwardLooking` seek window only bounds how far is searched, never which
-of the two candidates is picked.
+In `"nearest"` mode, distances are measured in `#chars` to the cursor: to the
+start of the forward candidate and to the end of the backward one, counting the
+lines in between plus their newlines. A blank line counts as 1 char (a
+whitespace-only line as its length + 1), so the closer object wins no matter how
+many blank lines separate them. The `forwardLooking` seek window only bounds how
+far is searched, never which candidate is picked.
+
+Example: with `url1 ab[c] url2` and the cursor on `c`, `url("nearest")` selects
+`url2`, since it is closer than `url1`.
 
 ### Automatic direction maps from a single `vim.keymap.set`
-When the rhs of a `vim.keymap.set` call (in operator-pending or visual mode)
-is a text object of this plugin — either its **name** as string or the text
-object **function** itself — the single mapping automatically expands into
-the full family of direction maps. The **bare base key seeks in both
-directions** ("nearest"); `n` (next) and `l` (last) prefix it:
+When the rhs of an operator-pending or visual-mode `vim.keymap.set` is a text
+object of this plugin (its **name** as string or the **function** itself), the
+mapping expands into the full family of direction maps. The bare key seeks both
+ways (`nearest`); the prefixes `n` (next) and `l` (last) seek forward and
+backward. Text objects with inner/outer variants get `i`/`a` prefixes instead of
+a bare key:
 
 ```lua
 local vt = require("various-textobjs")
+
 vim.keymap.set({ "o", "x" }, "u", vt.url)
--- generated: u (nearest), nu (forward/next), lu (backward/last),
---            iu, inu, ilu, au, anu, alu (same, with i/a prefixes)
-```
+-- generates: u, nu, lu, iu, inu, ilu, au, anu, alu
 
-For text objects that have inner/outer variants, the `i`/`a` prefixes are
-passed to the text object as the scope and no bare base map is created:
-
-```lua
 vim.keymap.set({ "o", "x" }, "n", "number")
--- generated: in, an (nearest), inn, ann (forward), iln, aln (backward)
+-- generates: in, an, inn, ann, iln, aln
 ```
 
-All other mappings — normal-mode maps, any other rhs (Ex commands, foreign
-functions, Lua functions of other plugins) — pass through to the original
-`vim.keymap.set` untouched. The generated mappings use `<cmd>lua …<CR>` rhs,
-so dot-repeat keeps working; opts like `desc` or `silent` are kept:
-
-```lua
-vim.keymap.set({ "o", "x" }, "u", vt.url, { desc = "url textobj", silent = true })
-```
+All other mappings (normal mode, or any rhs that is not a text object of this
+plugin) pass through to `vim.keymap.set` untouched. The generated rhs is
+`<cmd>lua …<CR>`, so dot-repeat keeps working, and opts like `desc` or `silent`
+are preserved.
 
 ### `ii` on unindented line should select entire buffer
 Using a simple if-else-block, you can create a hybrid of the inner indentation
